@@ -1,0 +1,42 @@
+.LedgerRow {
+    grid-template-rows: auto;
+    gap: 1rem 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+
+    /**
+ * User input values.
+ */
+    --grid-layout-gap: 10px;
+    --grid-column-count: 16;
+    --grid-item--min-width: 120px;
+
+    /**
+     * Calculated values.
+     */
+    --gap-count: calc(var(--grid-column-count) - 1);
+    --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+    --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
+    grid-gap: var(--grid-layout-gap);
+}
+
+@media screen and (min-width: 480px) {
+    .LedgerRow {
+
+    }
+}
+
+.LedgerHeading {
+    display: inline-block;
+    margin: 0 0.5rem 1rem 2rem;
+    text-shadow: 3px 3px 3px #111;
+}
+
+.LedgerCounter {
+    font-size: 1rem;
+    color: orange;
+}
