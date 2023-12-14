@@ -1,0 +1,44 @@
+.App {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.AppHeader {
+  display: flex;
+  padding: 1rem;
+  background-color: #1e2126;
+  margin-bottom: 1rem;
+}
+
+.AppIconHolder {
+
+}
+
+.AppIcon {
+  max-width: 4rem;
+  height: auto;
+  float: left;
+  margin-right: 1rem;
+}
+
+.AppName {
+  font-size: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.AppTagLine {
+  font-weight: 300;
+}
+
+.AppContent {
+
+}
+
+.AppFooter {
+  padding: 1rem;
+  background-color: #1e2126;
+  margin-bottom: 2rem;
+}
