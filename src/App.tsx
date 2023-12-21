@@ -5,10 +5,21 @@ import logo from "./d4ico.png"
 import styles from './App.module.css';
 import Ledger from "./Ledger";
 import useStore from "./Store";
+import ItemView from './ItemView';
 
 function App() {
   const [db, setDb] = useState<Item[]>([]);
   const store = useStore();
+  const [selectedItemId, setSelectedItemId] = useState(db[0]?.id ?? 'none');
+  const selectedItem = db.filter(item => item.id === selectedItemId).pop();
+
+  function onDoubleClickItem(item: Item) {
+    store.toggle(item.id);
+  }
+
+  function onClickItem(item: Item) {
+      setSelectedItemId(item.id);
+  }
 
   useEffect(() => {
     fetchDb()
@@ -30,7 +41,12 @@ function App() {
         </div>
       </header>
       <section className={styles.AppContent}>
-        <Ledger db={db} store={store}></Ledger>
+        <div className={styles.AppContentMain}>
+          <Ledger db={db} store={store} onClickItem={onClickItem} onDoubleClickItem={onDoubleClickItem}></Ledger>
+        </div>
+        <div className={styles.AppSideBar}>
+          {selectedItem && <ItemView item={selectedItem} collected={store.isCollected(selectedItemId)}></ItemView>}
+        </div>
       </section>
       <footer className={styles.AppFooter}>
         Not Affiliated with Blizzard.

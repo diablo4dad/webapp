@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {Item, ItemType} from "./db";
 import ItemView from "./ItemView";
 import styles from "./Ledger.module.css";
@@ -7,17 +8,19 @@ import {Store} from "./Store";
 type Props = {
   db: Item[],
   store: Store,
+  onClickItem: (item: Item) => void,
+  onDoubleClickItem: (item: Item) => void,
 }
 
 const Headings = {
   [ItemType.Mount]: "Mounts",
   [ItemType.MountArmor]: "Mount Armor",
   [ItemType.MountTrophy]: "Mount Trophies",
+  [ItemType.BackTrophy]: "Back Trophies"
 }
 
-function Ledger({ db, store }: Props) {
+function Ledger({ db, store, onClickItem, onDoubleClickItem }: Props) {
   const isCollected = (entry: Item) => store.isCollected(entry.id);
-  const toggle = (entry: Item) => () => store.toggle(entry.id);
   const filterByType = (itemType: ItemType) => (item: Item) => item.type === itemType;
   const itemTypes = Object.values(ItemType);
   const countByItemType = (itemType: ItemType) => db.filter(filterByType(itemType)).length;
@@ -27,11 +30,9 @@ function Ledger({ db, store }: Props) {
     .map(store.getLogEntry)
     .filter(logEntry => logEntry.collected)
     .length;
-  const selectedItemId = db[0]?.id ?? 'none';
-  const selectedItem = db.filter(item => item.id === selectedItemId).pop();
 
   return (
-    <div>
+    <>
       {itemTypes.map(itemType => {
         return (
           <div key={itemType}>
@@ -49,7 +50,8 @@ function Ledger({ db, store }: Props) {
                     key={item.id}
                     data={item}
                     isCollected={isCollected(item)}
-                    onClick={toggle(item)}
+                    onClick={() => onClickItem(item)}
+                    onDoubleClick={() => onDoubleClickItem(item)}
                   />
                 )
               }
@@ -57,8 +59,7 @@ function Ledger({ db, store }: Props) {
           </div>
         )
       })}
-      {selectedItem && <ItemView item={selectedItem}></ItemView>}
-    </div>
+    </>
   )
 }
 
