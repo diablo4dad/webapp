@@ -1,0 +1,263 @@
+/* credit: https://adrianroselli.com/2019/03/under-engineered-toggles.html */
+.toggle [disabled] + label,
+.toggle [disabled]:hover + label {
+    color: #999;
+}
+
+.toggle [type="checkbox"] {
+    position: absolute;
+    top: auto;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    width: 1px;
+    height: 1px;
+    white-space: nowrap;
+}
+
+.toggle [type="checkbox"] + label {
+    display: block;
+    position: relative;
+    padding: 0.5em;
+    padding-left: 4em;
+    max-width: calc(100% - 2em);
+}
+
+.toggle [type="checkbox"]:focus + label,
+.toggle [type="checkbox"]:hover + label {
+    color: #00f;
+}
+
+.toggle [type="checkbox"]:focus + label::before,
+.toggle [type="checkbox"]:hover + label::before {
+    box-shadow: 0 0 0.5em #333;
+}
+
+.toggle [type="checkbox"]:focus + label::after,
+.toggle [type="checkbox"]:hover + label::after {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(0,0,0,.25)'/%3E%3C/svg%3E");
+    background-size: 30%;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.toggle [type="checkbox"] + label::before,
+.toggle [type="checkbox"] + label::after {
+    content: "";
+    position: absolute;
+    height: 1.5em;
+    transition: all 0.25s ease;
+}
+
+.toggle [type="checkbox"] + label::before {
+    left: 0;
+    top: 0.2em;
+    width: 3em;
+    border: 0.2em solid var(--toggle-bg-color-off);
+    background: var(--toggle-bg-color-off);
+    border-radius: 1.1em;
+}
+
+.toggle [type="checkbox"] + label::after {
+    left: 0;
+    top: 0.25em;
+    background-color: #fff;
+    background-position: center center;
+    border-radius: 50%;
+    width: 1.5em;
+    border: 0.15em solid var(--toggle-bg-color-off);
+}
+
+.toggle [type="checkbox"]:checked + label::after {
+    left: 1.6em;
+    border-color: var(--toggle-bg-color-on);
+    color: var(--toggle-bg-color-on);
+}
+
+.toggle [type="checkbox"]:indeterminate + label::after {
+    left: 0.8em;
+}
+
+.toggle [type="checkbox"]:indeterminate + label::before {
+    background-color: #ddd;
+}
+
+.toggle [type="checkbox"]:checked + label::before {
+    background-color: var(--toggle-bg-color-on);
+    border-color: var(--toggle-bg-color-on);
+}
+
+.toggle [type="checkbox"][disabled] + label::before {
+    background-color: transparent;
+    border-color: #ddd;
+}
+
+.toggle [type="checkbox"][disabled] + label::after {
+    border-color: #ddd;
+}
+
+.toggle [disabled]:hover + label {
+    color: #999; /* case for CSS custom property if not supporting IE/Edge */
+}
+
+.toggle [type="checkbox"][disabled]:hover + label::before {
+    box-shadow: none;
+}
+
+.toggle [type="checkbox"][disabled]:hover + label::after {
+    background-image: none;
+}
+
+/* Put toggles on the right like the iOS the kids like */
+
+.toggle.flip [type="checkbox"] + label::before,
+.toggle.flip [type="checkbox"] + label::after {
+    left: auto;
+    right: 0;
+}
+
+.toggle.flip [type="checkbox"] + label::after {
+    left: auto;
+    right: 1.6em;
+}
+
+.toggle.flip [type="checkbox"]:checked + label::after {
+    right: 0;
+}
+
+.toggle.flip [type="checkbox"]:indeterminate + label::after {
+    right: 0.8em;
+}
+
+.toggle.flip [type="checkbox"] + label {
+    padding-left: 0;
+    padding-right: 4em;
+}
+
+/* Windows High Contrast Mode Support */
+@media screen and (-ms-high-contrast: active) {
+    .toggle [type="checkbox"]:focus + label::before,
+    .toggle [type="checkbox"]:hover + label::before {
+        outline: 1px dotted windowText;
+        outline-offset: 0.25em;
+    }
+
+    .toggle [type="checkbox"] + label::after {
+        background-color: windowText;
+    }
+
+    .toggle [type="checkbox"][disabled] + label::after {
+        background-color: transparent;
+    }
+}
+
+/* Reduced motion */
+@media screen and (prefers-reduced-motion: reduce) {
+    .toggle [type="checkbox"] + label::before,
+    .toggle [type="checkbox"] + label::after {
+        transition: none;
+    }
+}
+
+/* Dark mode */
+@media screen and (prefers-color-scheme: dark) {
+    form {
+        background-color: #101010;
+    }
+
+    .toggle {
+        color: #fff;
+    }
+
+    fieldset.toggle {
+        border: 0.1em solid rgba(255, 255, 255, 0.15);
+    }
+
+    .toggle [type="checkbox"]:focus + label,
+    .toggle [type="checkbox"]:hover + label {
+        color: #99f;
+    }
+
+    .toggle [type="checkbox"] + label::before {
+        border-color: #808080;
+        background: #808080;
+    }
+
+    .toggle [type="checkbox"] + label::after {
+        background-color: #101010;
+    }
+
+    .toggle [type="checkbox"]:not([disabled]):indeterminate + label::before {
+        background-color: #444;
+    }
+
+    .toggle [type="checkbox"]:focus + label::after,
+    .toggle [type="checkbox"]:hover + label::after {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(255,255,255,.25)'/%3E%3C/svg%3E");
+    }
+
+    .toggle [type="checkbox"][disabled] + label::before,
+    .toggle [type="checkbox"][disabled] + label::after {
+        border-color: #555;
+    }
+}
+
+/* RTL */
+/* https://twitter.com/dror3go/status/1102946375396982784 */
+*[dir="rtl"] .toggle [type="checkbox"] + label {
+    padding-left: 0;
+    padding-right: 4em;
+}
+
+*[dir="rtl"] .toggle [type="checkbox"] + label::before,
+*[dir="rtl"] .toggle [type="checkbox"] + label::after {
+    left: auto;
+    right: 0;
+}
+
+*[dir="rtl"] .toggle [type="checkbox"] + label::after {
+    right: 0;
+}
+
+*[dir="rtl"] .toggle [type="checkbox"]:checked + label::after {
+    right: 1.6em;
+}
+
+*[dir="rtl"] .toggle [type="checkbox"]:indeterminate + label::after {
+    right: 0.8em;
+}
+
+/* Put toggles on the right like the iOS the kids like */
+
+*[dir="rtl"] .toggle.flip [type="checkbox"] + label::before,
+*[dir="rtl"] .toggle.flip [type="checkbox"] + label::after {
+    left: 0;
+    right: auto;
+}
+
+*[dir="rtl"] .toggle.flip [type="checkbox"] + label::after {
+    right: auto;
+    left: 1.6em;
+}
+
+*[dir="rtl"] .toggle.flip [type="checkbox"]:checked + label::after {
+    left: 0;
+}
+
+*[dir="rtl"] .toggle.flip [type="checkbox"]:indeterminate + label::after {
+    left: 0.8em;
+}
+
+*[dir="rtl"] .toggle.flip [type="checkbox"] + label {
+    padding-right: 0;
+    padding-left: 4em;
+}
+
+/* Print styles */
+@media print {
+    .toggle [type="checkbox"] + label::before,
+    .toggle [type="checkbox"] + label::after,
+    .toggle [type="checkbox"][disabled] + label {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+}

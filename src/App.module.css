@@ -10,7 +10,6 @@
   display: flex;
   padding: 1rem;
   background-color: #1e2126;
-  margin-bottom: 1rem;
 }
 
 .AppIconHolder {
@@ -34,7 +33,23 @@
 }
 
 .AppContent {
+  display: flex;
+  width: 100%;
+}
 
+.AppSideBar {
+  width: 50rem;
+  background-color: #252930;
+  border-left: 2px solid #1d2026;
+}
+
+.AppSideBar div {
+  position: sticky;
+  top: 0;
+}
+
+.AppContentMain {
+  width: 100%;
 }
 
 .AppFooter {

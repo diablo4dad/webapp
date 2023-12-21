@@ -8,6 +8,7 @@ enum ItemType {
   Mount = "Mount",
   MountArmor = "Horse Armor",
   MountTrophy = "Trophy",
+  BackTrophy = "Back Trophy"
 }
 
 type Item = {

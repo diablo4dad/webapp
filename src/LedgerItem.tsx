@@ -5,6 +5,7 @@ import styles from "./LedgerItem.module.css"
 type Props = {
   data: Item,
   onClick: () => void,
+  onDoubleClick: () => void,
   isCollected: boolean,
 }
 
@@ -16,7 +17,7 @@ function LedgerItem({ data, isCollected, onClick }: Props) {
 
   return (
     <div className={classNames} onClick={onClick}>
-      <img className={styles.ArtifactImage} src={`icons/${data.icon}.webp`} alt={data.name}/>
+      <img className={styles.ArtifactImage} src={`webp/${data.icon}.webp`} alt={data.name}/>
       <div className={styles.ArtifactName}>{data.name}</div>
       <div className={styles.ArtifactTick} hidden={!isCollected}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="3 3 16 16">
