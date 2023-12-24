@@ -16,7 +16,7 @@
 .ArtifactCollected {
     border-color: #39404d;
     background-color: #303640;
-    box-shadow: 2px 2px 2px #111;
+    box-shadow: 1px 1px 1px rgba(17, 17, 17, 0.8);
 }
 
 .ArtifactImage {

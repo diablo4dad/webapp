@@ -38,6 +38,10 @@ function ItemView({item, collected}: ItemProps) {
                     </div>
                 </div>
             </div>
+            <div className={styles.ItemTags}>
+                <span className={styles.ItemTag}>Season 2</span>
+                <span className={styles.ItemTag}>Cash Shop</span>
+            </div>
         </div>
     );
 }

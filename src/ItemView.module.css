@@ -108,5 +108,21 @@
     max-width: 128px;
     height: auto;
     top: 1rem;
-    right: 1rem;
+    right: 2rem;
+}
+
+.ItemTags {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.ItemTag {
+    background-color: #3E885B;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+}
+
+.ItemTag:not(:last-child) {
+    margin-right: 0.5rem;
 }
