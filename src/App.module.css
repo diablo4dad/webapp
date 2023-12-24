@@ -8,12 +8,34 @@
 
 .AppHeader {
   display: flex;
-  padding: 1rem;
+  padding: 1rem 2rem;
   background-color: #1e2126;
+  align-items: center;
 }
 
 .AppIconHolder {
 
+}
+
+.AppNameHolder {
+  width: 100%;
+}
+
+.AppSettings {
+}
+
+.AppSettingsBtn {
+  display: flex;
+  border: 1px solid #39404d;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  max-width: 3rem;
+  background-color: #303640;
+
+}
+
+.AppSettings svg {
+  fill: #6F7D8C;
 }
 
 .AppIcon {
@@ -25,11 +47,10 @@
 
 .AppName {
   font-size: 1.5rem;
-  margin-top: 0.75rem;
 }
 
 .AppTagLine {
-  font-weight: 300;
+  font-size: 0.875rem;
 }
 
 .AppContent {
@@ -40,7 +61,7 @@
 .AppSideBar {
   width: 50rem;
   background-color: #252930;
-  border-left: 2px solid #1d2026;
+  border-right: 1px solid #1d2026;
 }
 
 .AppSideBar div {
