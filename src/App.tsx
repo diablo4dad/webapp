@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import fetchDb, {Item} from "./db"
+import fetchDb, {Item, StrapiHit, StrapiResultSet} from "./db"
 import logo from "./d4ico.png"
 
 import styles from './App.module.css';
@@ -8,16 +8,16 @@ import useStore from "./Store";
 import ItemView from './ItemView';
 
 function App() {
-  const [db, setDb] = useState<Item[]>([]);
+  const [db, setDb] = useState<StrapiResultSet<Item>>({data: []});
   const store = useStore();
-  const [selectedItemId, setSelectedItemId] = useState(db[0]?.id ?? 'none');
-  const selectedItem = db.filter(item => item.id === selectedItemId).pop();
+  const [selectedItemId, setSelectedItemId] = useState(db.data[0]?.id ?? 'none');
+  const selectedItem = db.data.filter(item => item.id === selectedItemId).pop();
 
-  function onDoubleClickItem(item: Item) {
+  function onDoubleClickItem(item: StrapiHit<Item>) {
     store.toggle(item.id);
   }
 
-  function onClickItem(item: Item) {
+  function onClickItem(item: StrapiHit<Item>) {
       setSelectedItemId(item.id);
   }
 
@@ -25,14 +25,18 @@ function App() {
     fetchDb()
       .then(data => {
         console.log("DB Initialised...", data);
-        setDb(data)
+        if (Array.isArray(data.data)) {
+            setDb(data)
+        }
+      })
+     .catch(e => {
+        console.error('Read DB error', e);
       });
   }, [setDb]);
 
   return (
     <div className={styles.App}>
         <section className={styles.AppContent}>
-
             <div className={styles.AppSideBar}>
                 <div>
                     <header className={styles.AppHeader}>

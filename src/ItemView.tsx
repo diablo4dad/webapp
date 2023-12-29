@@ -1,4 +1,4 @@
-import { Item } from "./db"
+import {Item, StrapiHit} from "./db"
 import styles from "./ItemView.module.css"
 import necromancer from "./necromancer.webp"
 import druid from "./druid.webp"
@@ -8,16 +8,18 @@ import sorceress from "./sorceress.webp"
 import Toggle from "./Toggle";
 
 type ItemProps = {
-    item: Item,
+    item: StrapiHit<Item>,
     collected: boolean,
 }
 
 function ItemView({item, collected}: ItemProps) {
+    const itemUrl = 'http://localhost:1337' + item.attributes.icon?.data?.attributes.url ?? 'missing.webp';
+
     return (
         <div className={styles.Panel}>
-            <img src={"webp/" + item.icon + ".webp"} className={styles.ItemImage} alt={item.name}/>
-            <div className={styles.ItemTitle}>{item.name}</div>
-            <div className={styles.ItemType}>{item.type}</div>
+            <img src={itemUrl} className={styles.ItemImage} alt={item.attributes.name}/>
+            <div className={styles.ItemTitle}>{item.attributes.name}</div>
+            <div className={styles.ItemType}>{item.attributes.itemType}</div>
             <div className={styles.ItemClasses}>
                 <img className={styles.ItemClassIcon} src={barbarian} alt="Necromancer"/>
                 <img className={styles.ItemClassIcon} src={druid} alt="Druid"/>
@@ -25,7 +27,7 @@ function ItemView({item, collected}: ItemProps) {
                 <img className={styles.ItemClassIcon} src={rogue} alt="Rogue"/>
                 <img className={styles.ItemClassIcon} src={sorceress} alt="Sorceress"/>
             </div>
-            <div className={styles.ItemDescription} hidden={!item.description || true}>{item.description}</div>
+            <div className={styles.ItemDescription} hidden={!item.attributes.description || true}>{item.attributes.description}</div>
             <div className={styles.ItemActions}>
                 <Toggle name="collected" checked={collected}>Collected</Toggle>
                 <Toggle name="hidden" checked={collected}>Hidden</Toggle>

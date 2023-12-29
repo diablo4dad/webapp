@@ -1,16 +1,17 @@
 import {useState} from "react";
 
 type ArtifactMeta = {
-  itemId: string,
+  id: number,
   collected: boolean,
-  collectedDate?: Date
+  collectedDate?: Date,
+  hidden: boolean,
 }
 
 type Store = {
   data: StoreData,
-  getLogEntry: (artifactId: string) => ArtifactMeta,
-  isCollected: (artifactId: string) => boolean,
-  toggle: (artifactId: string) => void,
+  getLogEntry: (artifactId: number) => ArtifactMeta,
+  isCollected: (artifactId: number) => boolean,
+  toggle: (artifactId: number) => void,
 }
 
 type StoreData = {
@@ -21,10 +22,11 @@ type CollectionLog = {
   entries: ArtifactMeta[]
 }
 
-function initArtifactMeta(artifactId: string): ArtifactMeta {
+function initArtifactMeta(artifactId: number): ArtifactMeta {
   return {
-    itemId: artifactId,
+    id: artifactId,
     collected: false,
+    hidden: false,
   }
 }
 
@@ -56,18 +58,18 @@ function loadData(): StoreData {
 function useStore(): Store {
   const [data, setData] = useState(loadData());
 
-  function getLogEntry(artifactId: string): ArtifactMeta {
+  function getLogEntry(artifactId: number): ArtifactMeta {
     const logEntry = data
       .collectionLog
       .entries
-      .filter(l => l.itemId === artifactId)
+      .filter(l => l.id === artifactId)
       .pop();
 
     return logEntry ?? initArtifactMeta(artifactId);
   }
 
-  function toggle(artifactId: string) {
-    const doesExist = data.collectionLog.entries.find(e => e.itemId === artifactId);
+  function toggle(artifactId: number) {
+    const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
     if (!doesExist) {
       const logEntry = initArtifactMeta(artifactId);
       logEntry.collected = true;
@@ -92,7 +94,7 @@ function useStore(): Store {
       ...data,
       collectionLog: {
         entries: data.collectionLog.entries.map(e => {
-          if (e.itemId !== artifactId) {
+          if (e.id !== artifactId) {
             return e;
           } else {
             console.log("Current State...", e.collected);
@@ -110,7 +112,7 @@ function useStore(): Store {
     persistData(updatedData);
   }
 
-  function isCollected(artifactId: string): boolean {
+  function isCollected(artifactId: number): boolean {
     return getLogEntry(artifactId).collected;
   }
 
