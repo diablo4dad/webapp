@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import fetchDb, {Item, StrapiHit, StrapiResultSet} from "./db"
+import fetchDb, {
+    Collection,
+    createEmptyResultSet,
+    getDefaultItemIdFromCollection,
+    Item,
+    StrapiHit,
+} from "./db"
 import logo from "./d4ico.png"
 
 import styles from './App.module.css';
@@ -8,10 +14,13 @@ import useStore from "./Store";
 import ItemView from './ItemView';
 
 function App() {
-  const [db, setDb] = useState<StrapiResultSet<Item>>({data: []});
   const store = useStore();
-  const [selectedItemId, setSelectedItemId] = useState(db.data[0]?.id ?? 'none');
-  const selectedItem = db.data.filter(item => item.id === selectedItemId).pop();
+  const [db, setDb] = useState(createEmptyResultSet<Collection>());
+  const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdFromCollection(db));
+  const items = db.data.flatMap(c => c.attributes.items?.data ?? []);
+  const selectedItem = items.filter(item => item.id === selectedItemId).pop();
+
+  // https://www.thegamer.com/diablo-4-all-mount-trophies-unlock-guide/#diablo-4-all-pve-mount-trophies
 
   function onDoubleClickItem(item: StrapiHit<Item>) {
     store.toggle(item.id);
@@ -29,9 +38,6 @@ function App() {
             setDb(data)
         }
       })
-     .catch(e => {
-        console.error('Read DB error', e);
-      });
   }, [setDb]);
 
   return (

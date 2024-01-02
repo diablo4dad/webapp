@@ -1,8 +1,8 @@
 .LedgerRow {
     grid-template-rows: auto;
     gap: 1rem 1rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
     margin-bottom: 1rem;
 
     /**
@@ -32,7 +32,7 @@
 
 .LedgerHeading {
     display: inline-block;
-    margin: 1.5rem 0.5rem 1rem 2rem;
+    margin: 1rem 0.5rem 1rem 2rem;
     text-shadow: 3px 3px 3px #111;
     font-size: 3rem;
 }

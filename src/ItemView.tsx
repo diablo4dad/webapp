@@ -7,6 +7,35 @@ import barbarian from "./barbarian.webp"
 import sorceress from "./sorceress.webp"
 import Toggle from "./Toggle";
 
+function composeDescription(item: Item): string {
+    // description override
+    if (item.claimDescription) {
+        return item.claimDescription;
+    }
+
+    switch (item.claim) {
+        case "Cash Shop":
+            return "Purchased from the cash shop.";
+        case "Battle Pass":
+            return `Season ${item.season} Battle Pass reward.`
+        case "Monster Drop":
+        case "Boss Drop":
+        case "World Boss Drop":
+        case "Uber Boss Drop":
+            return `Dropped by ${item.claimMonster}.`;
+        case "Zone Drop":
+            return `Dropped within ${item.claimZone}.`;
+        case "Challenge Reward":
+            return "";
+        case "Promotional":
+            return "";
+        case "Vendor":
+            return "";
+        default:
+            return "";
+    }
+}
+
 type ItemProps = {
     item: StrapiHit<Item>,
     collected: boolean,
@@ -35,14 +64,13 @@ function ItemView({item, collected}: ItemProps) {
             <div className={styles.ItemLocations}>
                 <div className={styles.ItemLocation}>
                     <div className={styles.ItemLocationInfo}>
-                        <div className={styles.ItemLocationDescription}>Dropped by Ashava the Pestilent.</div>
-                        <div className={styles.ItemLocationCategory}>World Boss Drop</div>
+                        <div className={styles.ItemLocationDescription}>{composeDescription(item.attributes)}</div>
+                        <div className={styles.ItemLocationCategory}>{item.attributes.claim}</div>
                     </div>
                 </div>
             </div>
             <div className={styles.ItemTags}>
-                <span className={styles.ItemTag}>Season 2</span>
-                <span className={styles.ItemTag}>Cash Shop</span>
+                {item.attributes.season != null && <span className={styles.ItemTag}>Season {item.attributes.season}</span>}
             </div>
         </div>
     );

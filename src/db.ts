@@ -8,6 +8,8 @@ enum ItemType {
 type Item = {
   claim?: string,
   claimDescription?: string,
+  claimMonster?: string,
+  claimZone?: string,
   createdAt: string,
   publishedAt: string,
   updatedAt: string,
@@ -21,7 +23,7 @@ type Item = {
   season?: number,
   transMog: boolean,
   usableByClass: string[],
-  collection: StrapiResult<Collection>,
+  collection?: StrapiResult<Collection>,
 }
 
 type StrapiMediaFormats = {
@@ -66,7 +68,7 @@ type Collection = {
   createdAt: string,
   publishedAt: string,
   updatedAt: string,
-  items: StrapiHit<Item[]>,
+  items?: StrapiResultSet<Item>,
 }
 
 type StrapiResult<T> = {
@@ -83,13 +85,23 @@ type StrapiHit<T> = {
   attributes: T,
 }
 
-async function fetchDb(): Promise<StrapiResultSet<Item>> {
-  const resp = await fetch('http://localhost:1337/api/items?populate=*');
-  const data: StrapiResultSet<Item> = await resp.json();
+function createEmptyResultSet<T>(): StrapiResultSet<T> {
+  return {
+    data: []
+  }
+}
+
+function getDefaultItemIdFromCollection(result: StrapiResultSet<Collection>): number {
+  return (result.data[0]?.attributes.items?.data ?? [])[0]?.id ?? -1;
+}
+
+async function fetchDb(): Promise<StrapiResultSet<Collection>> {
+  const resp = await fetch('http://localhost:1337/api/collections?populate[items][populate][0]=icon&sort[0]=order');
+  const data: StrapiResultSet<Collection> = await resp.json();
   console.log("Fetched Items", data);
   return data;
 }
 
 export default fetchDb;
-export { ItemType, fetchDb };
+export { ItemType, fetchDb, createEmptyResultSet, getDefaultItemIdFromCollection };
 export type { Item, Collection, StrapiHit, StrapiResultSet, StrapiMedia, StrapiMediaFormat, StrapiMediaFormats };
