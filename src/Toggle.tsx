@@ -6,7 +6,7 @@ type ToggleProps = {
   checked?: boolean,
   disabled?: boolean,
   flip?: boolean,
-  onChange?: ChangeEventHandler,
+  onChange?: ChangeEventHandler<HTMLInputElement>,
 }
 
 function Toggle({name, children, onChange, disabled, flip, checked = false}: PropsWithChildren<ToggleProps>) {
