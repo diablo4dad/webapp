@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
     };
 }
 
-function selectRandomItem(items: StrapiHit<Item>[]): StrapiHit<Item> {
+function selectRandomItem(items: StrapiHit<Item>[]): StrapiHit<Item> | undefined {
     return items[Math.floor(Math.random() * items.length)];
 }
 
