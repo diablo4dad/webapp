@@ -65,6 +65,7 @@ type Collection = {
   id: number,
   name: string,
   order: number,
+  description: string,
   createdAt: string,
   publishedAt: string,
   updatedAt: string,
