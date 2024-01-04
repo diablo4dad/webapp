@@ -9,7 +9,7 @@ type Props = {
   isCollected: boolean,
 }
 
-function LedgerItem({ data, isCollected, onClick }: Props) {
+function LedgerItem({ data, isCollected, onClick, onDoubleClick }: Props) {
   const classNames = [
     styles.Artifact,
     isCollected ? styles.ArtifactCollected : null,
@@ -17,7 +17,7 @@ function LedgerItem({ data, isCollected, onClick }: Props) {
 
   const imageUrl = 'http://localhost:1337' + data.attributes.icon?.data?.attributes.url ?? 'missing.webp';
   return (
-    <div className={classNames} onClick={onClick}>
+    <div className={classNames} onClick={onClick} onDoubleClick={onDoubleClick}>
       <img className={styles.ArtifactImage} src={imageUrl} alt={data.attributes.name}/>
       <div className={styles.ArtifactName}>{data.attributes.name}</div>
       <div className={styles.ArtifactTick} hidden={!isCollected}>
