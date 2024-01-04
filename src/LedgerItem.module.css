@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    background-color: #252930;
+    background-color: #23272e;
 }
 
 .ArtifactContent {
@@ -14,10 +14,10 @@
 
 .ArtifactCollected {
     /*border-color: #39404d;*/
-    /*border: 1px solid #1d2026;*/
+    border: 1px solid #1d2026;
 
     background-color: #303640;
-    box-shadow: 1px 1px 1px rgba(17, 17, 17, 0.8);
+    /*box-shadow: 1px 1px 1px rgba(17, 17, 17, 0.8);*/
 }
 
 .ArtifactImage {
