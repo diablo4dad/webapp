@@ -3,7 +3,7 @@
     gap: 1rem 1rem;
     margin-left: 2rem;
     margin-right: 2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 
     /**
  * User input values.
@@ -30,9 +30,24 @@
     }
 }
 
+.LedgerGroup {
+
+}
+
+.LedgerGroupHeading {
+    padding: 1rem 2rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+
+    border-top: 1px solid #39404d;
+    border-bottom: 1px solid #39404d;
+    background-color: #303640;
+    box-shadow: 1px 1px 1px rgba(17, 17, 17, 0.8);
+}
+
 .LedgerHeading {
     display: inline-block;
-    margin: 1rem 0.5rem 1rem 2rem;
+    margin: 1rem 0.5rem 1rem 0;
     text-shadow: 3px 3px 3px #111;
     font-size: 3rem;
 }
