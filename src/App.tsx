@@ -24,20 +24,16 @@ if (process.env.NODE_ENV === 'production') {
     };
 }
 
+function selectRandomItem(items: StrapiHit<Item>[]): StrapiHit<Item> {
+    return items[Math.floor(Math.random() * items.length)];
+}
+
 function App() {
     const store = useStore();
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
     const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdFromCollection(db));
     const items = db.data.flatMap(c => c.attributes.items?.data ?? []);
-    const selectedItem = items.filter(item => item.id === selectedItemId).pop();
-
-    function onDoubleClickItem(item: StrapiHit<Item>) {
-        store.toggle(item.id);
-    }
-
-    function onClickItem(item: StrapiHit<Item>) {
-        setSelectedItemId(item.id);
-    }
+    const selectedItem = items.filter(item => item.id === selectedItemId).pop() ?? selectRandomItem(items);
 
     useEffect(() => {
         fetchDb()
@@ -96,8 +92,8 @@ function App() {
                     <Ledger
                         db={db}
                         store={store}
-                        onClickItem={onClickItem}
-                        onDoubleClickItem={onDoubleClickItem}
+                        onClickItem={item => setSelectedItemId(item.id)}
+                        onDoubleClickItem={item => store.toggle(item.id)}
                     ></Ledger>
                 </div>
             </section>
