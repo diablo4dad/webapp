@@ -1,7 +1,6 @@
 .Artifact {
     position: relative;
     border-radius: 0.5rem;
-    border: 1px solid #1d2026;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -14,7 +13,9 @@
 }
 
 .ArtifactCollected {
-    border-color: #39404d;
+    /*border-color: #39404d;*/
+    /*border: 1px solid #1d2026;*/
+
     background-color: #303640;
     box-shadow: 1px 1px 1px rgba(17, 17, 17, 0.8);
 }
