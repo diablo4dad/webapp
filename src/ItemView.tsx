@@ -41,6 +41,10 @@ function generateIconUrl(item: StrapiHit<Item>): string {
     return SERVER_ADDR + item.attributes.icon?.data?.attributes.url ?? 'missing.webp';
 }
 
+function generateEditUrl(item: StrapiHit<Item>): string {
+    return SERVER_ADDR + "/admin/content-manager/collectionType/api::item.item/" + item.id;
+}
+
 function usableBy(clazz: string, item: StrapiHit<Item>): boolean {
     return item.attributes.usableByClass.includes(clazz);
 }
@@ -88,6 +92,11 @@ function ItemView({item, collected, hidden, onClickCollected, onClickHidden}: It
             </div>
             <div className={styles.ItemTags}>
                 {item.attributes.season != null && <span className={styles.ItemTag}>Season {item.attributes.season}</span>}
+                {item.attributes.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
+            </div>
+            <div className={styles.ItemMeta}>
+                Item ID: {item.attributes.itemId}
+                {process.env.NODE_ENV === "development" && <span> | <a href={generateEditUrl(item)} target="_blank">Edit</a></span>}
             </div>
         </div>
     );
