@@ -48,7 +48,7 @@
     display: inline-block;
     margin: 0 0.5rem 0.25rem 0;
     /*text-shadow: 3px 3px 3px #111;*/
-    font-size: 3rem;
+    font-size: 1.5rem;
 }
 
 .LedgerDescription {
@@ -59,4 +59,8 @@
 .LedgerCounter {
     font-size: 1rem;
     color: orange;
+}
+
+.LedgerComplete {
+
 }

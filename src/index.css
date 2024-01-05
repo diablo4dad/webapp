@@ -54,3 +54,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+a {
+  color: orange;
+}
+
+a:hover {
+  color: #cc8500;
+}

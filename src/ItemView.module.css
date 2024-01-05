@@ -114,6 +114,14 @@
 .ItemTags {
     padding-left: 2rem;
     padding-right: 2rem;
+    margin-bottom: 1rem;
+}
+
+.ItemMeta {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    font-size: 0.875rem;
+    color: #ccc;
 }
 
 .ItemTag {
