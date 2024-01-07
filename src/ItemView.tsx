@@ -9,7 +9,7 @@ import Toggle from "./Toggle";
 import {SERVER_ADDR} from "./config";
 
 function composeDescription(item: Item): string {
-    // description override
+    // setting a description overrides inferred/default
     if (item.claimDescription) {
         return item.claimDescription;
     }
@@ -25,15 +25,21 @@ function composeDescription(item: Item): string {
         case "Uber Boss Drop":
             return `Dropped by ${item.claimMonster}.`;
         case "Zone Drop":
-            return `Dropped within ${item.claimZone}.`;
+            if (item.claimZone === "Sanctuary") {
+                return `Dropped by monsters and chests throughout ${item.claimZone}.`;
+            } else {
+                return `Dropped by monsters and chests within ${item.claimZone}.`;
+            }
         case "Challenge Reward":
-            return "";
+            return "Awarded for completing a challenge.";
         case "Promotional":
-            return "";
+            return "This is a limited time promotional item.";
         case "Vendor":
-            return "";
+            return "Purchased from a vendor.";
+        case "PvP Drop":
+            return "Dropped by killed players and Baleful Chests in the Fields of Hatred."
         default:
-            return "";
+            return "Description unavailable.";
     }
 }
 
@@ -92,6 +98,7 @@ function ItemView({item, collected, hidden, onClickCollected, onClickHidden}: It
             </div>
             <div className={styles.ItemTags}>
                 {item.attributes.season != null && <span className={styles.ItemTag}>Season {item.attributes.season}</span>}
+                {item.attributes.premium && <span className={styles.ItemTag}>Premium</span>}
                 {item.attributes.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
             </div>
             <div className={styles.ItemMeta}>

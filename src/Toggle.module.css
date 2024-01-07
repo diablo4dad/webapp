@@ -24,7 +24,7 @@
 
 .toggle [type="checkbox"]:focus + label,
 .toggle [type="checkbox"]:hover + label {
-    color: #00f;
+    color: orange;
 }
 
 .toggle [type="checkbox"]:focus + label::before,
