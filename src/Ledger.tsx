@@ -50,12 +50,12 @@ function Ledger({db, store, onClickItem, onDoubleClickItem}: Props) {
     return (
         <>
             {db.data.map(collection => (
-                <div className={getLedgerClasses(store, collection)} key={collection.id}>
+                <div className={getLedgerClasses(store, collection)} key={collection.id} hidden={collection.attributes.items?.data.length === 0}>
                     <div className={styles.LedgerGroupHeading}>
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}</h1>
                         <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
                         {process.env.NODE_ENV === 'development' &&
-                            <span> | <a href={generateEditCategoryUrl(collection)}>Edit</a></span>
+                            <span> | <a target="_blank" href={generateEditCategoryUrl(collection)}>Edit</a></span>
                         }
                         <div className={styles.LedgerDescription}>{collection.attributes.description}</div>
                     </div>

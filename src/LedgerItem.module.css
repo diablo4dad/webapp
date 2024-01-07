@@ -45,13 +45,22 @@
     color: #aaa;
 }
 
-.ArtifactTick {
+.ArtifactIcons {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    width: 15%;
 }
 
-.ArtifactTick svg {
+.ArtifactIcons svg {
+    width: 15%;
+    float: right;
+    margin-left: 0.125rem;
+}
+
+.ArtifactIconCollection svg {
     fill: forestgreen;
+}
+
+.ArtifactIconPremium svg {
+    fill: orange;
 }
