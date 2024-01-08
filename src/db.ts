@@ -93,7 +93,7 @@ function createEmptyResultSet<T>(): StrapiResultSet<T> {
   }
 }
 
-function getDefaultItemIdFromCollection(result: StrapiResultSet<Collection>): number {
+function getDefaultItemIdForCollection(result: StrapiResultSet<Collection>): number {
   return (result.data[0]?.attributes.items?.data ?? [])[0]?.id ?? -1;
 }
 
@@ -105,5 +105,5 @@ async function fetchDb(): Promise<StrapiResultSet<Collection>> {
 }
 
 export default fetchDb;
-export { ItemType, fetchDb, createEmptyResultSet, getDefaultItemIdFromCollection };
+export { ItemType, fetchDb, createEmptyResultSet, getDefaultItemIdForCollection };
 export type { Item, Collection, StrapiHit, StrapiResultSet, StrapiMedia, StrapiMediaFormat, StrapiMediaFormats };

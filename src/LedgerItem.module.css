@@ -6,6 +6,7 @@
     flex-direction: column;
     flex: 1;
     background-color: #23272e;
+    border: 1px solid #23272e;
 }
 
 .ArtifactContent {
@@ -62,5 +63,5 @@
 }
 
 .ArtifactIconPremium svg {
-    fill: orange;
+    fill: forestgreen;
 }

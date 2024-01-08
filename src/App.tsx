@@ -2,21 +2,28 @@ import React, {useEffect, useState} from 'react';
 import fetchDb, {
     Collection,
     createEmptyResultSet,
-    getDefaultItemIdFromCollection,
+    getDefaultItemIdForCollection,
     Item,
     StrapiHit,
+    StrapiResultSet,
 } from "./db"
 import logo from "./d4ico.png"
 
 import styles from './App.module.css';
 import Ledger from "./Ledger";
-import useStore from "./Store";
-import ItemView from './ItemView';
+import useStore, {ItemFlag, Store} from "./Store";
+import ItemSidebar from './ItemSidebar';
+import ConfigSidebar from "./ConfigSidebar";
+
+enum SideBarType {
+    ITEM = 'item',
+    CONFIG = 'config'
+}
 
 // references:
 // https://www.thegamer.com/diablo-4-all-mount-trophies-unlock-guide/#diablo-4-all-pve-mount-trophies
 // https://www.wowhead.com/diablo-4/guide/gameplay/all-mounts-appearances-sources
-// https://mythicdrop.com/guide/diablo-4-mount-armor
+// https://www.reddit.com/r/diablo4/comments/17d68kq/ultimate_fomo_guide_2_all_d4_events_and_promotions/?rdt=39151
 
 // disable console logging in prod
 if (process.env.NODE_ENV === 'production') {
@@ -28,19 +35,113 @@ function selectRandomItem(items: StrapiHit<Item>[]): StrapiHit<Item> | undefined
     return items[Math.floor(Math.random() * items.length)];
 }
 
+function reduceItems(db: StrapiResultSet<Collection>): StrapiHit<Item>[] {
+    return db.data.flatMap(c => c.attributes.items?.data ?? [])
+}
+
+function reduceItemTypes(items: StrapiHit<Item>[]): string[] {
+    return items.reduce<string[]>((a, c) => a.includes(c.attributes.itemType) ? a : [...a, c.attributes.itemType], []);
+}
+
+function filterCollectionItems(collection: StrapiResultSet<Collection>, filter: (data: StrapiHit<Item>) => boolean) {
+    return {
+        ...collection,
+        data: collection.data.map(c => ({
+            ...c,
+            attributes: {
+                ...c.attributes,
+                items: {
+                    ...c.attributes.items,
+                    data: (c.attributes.items?.data ?? []).filter(filter),
+                }
+            }
+        }))
+    }
+}
+
+function filterItemsByType(itemTypesToDisplay: string[]): (item: StrapiHit<Item>) => boolean {
+    return (item: StrapiHit<Item>) => itemTypesToDisplay.includes(item.attributes.itemType);
+}
+
+function filterPremiumItems(): (item: StrapiHit<Item>) => boolean {
+    return (item: StrapiHit<Item>) => item.attributes.premium !== true;
+}
+
+function filterPromotionalItems(): (item: StrapiHit<Item>) => boolean {
+    return (item: StrapiHit<Item>) => item.attributes.claim !== "Promotional";
+}
+
+function filterOutOfRotationItems(): (item: StrapiHit<Item>) => boolean {
+    return (item: StrapiHit<Item>) => item.attributes.outOfRotation !== true;
+}
+
+function filterHiddenItems(store: Store): (item: StrapiHit<Item>) => boolean {
+    return (item: StrapiHit<Item>) => !store.isHidden(item.id);
+}
+
+function applyAllFilters(collection: StrapiResultSet<Collection>, params: FilterParams): StrapiResultSet<Collection> {
+    let c = { ...collection };
+    c = filterCollectionItems(c, filterItemsByType(params.itemTypesToDisplay));
+    c = params.showPremium ? c : filterCollectionItems(c, filterPremiumItems());
+    c = params.showOutOfRotation ? c : filterCollectionItems(c, filterOutOfRotationItems());
+    c = params.showPromotional ? c : filterCollectionItems(c, filterPromotionalItems());
+    c = params.showHidden ? c : filterCollectionItems(c, filterHiddenItems(params.store));
+    return c;
+}
+
+type FilterParams = {
+    store: Store,
+    itemTypesToDisplay: string[],
+    showPremium: boolean,
+    showPromotional: boolean,
+    showOutOfRotation: boolean,
+    showHidden: boolean,
+}
+
 function App() {
+    // deps
     const store = useStore();
+
+    // references
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
-    const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdFromCollection(db));
-    const items = db.data.flatMap(c => c.attributes.items?.data ?? []);
-    const selectedItem = items.filter(item => item.id === selectedItemId).pop() ?? selectRandomItem(items);
+    const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdForCollection(db));
+    const [sideBar, setSideBar] = useState(SideBarType.ITEM);
+    const [itemFilters, setItemFilters] = useState<string[]>([]);
+
+    // computed properties
+    const items = reduceItems(db);
+    const selectedItem = items.filter(i => i.id === selectedItemId).pop() ?? selectRandomItem(items);
+    const itemTypes = reduceItemTypes(items);
+    const filteredDb = applyAllFilters(db, {
+        store,
+        itemTypesToDisplay: itemFilters,
+        showHidden: true,
+        showPromotional: true,
+        showPremium: false,
+        showOutOfRotation: true,
+    });
+
+    function onToggleConfig() {
+        setSideBar(sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG);
+    }
+
+    function onClickItem(item: StrapiHit<Item>) {
+        setSelectedItemId(item.id);
+        setSideBar(SideBarType.ITEM);
+    }
+
+    function onDoubleClickItem(item: StrapiHit<Item>) {
+        store.toggle(item.id);
+    }
 
     useEffect(() => {
         fetchDb()
             .then(data => {
                 console.log("DB Initialised...", data);
+
                 if (Array.isArray(data.data)) {
-                    setDb(data)
+                    setDb(data);
+                    setItemFilters(reduceItemTypes(reduceItems(data)));
                 }
             });
     }, [setDb]);
@@ -56,14 +157,12 @@ function App() {
                             </div>
                             <div className={styles.AppNameHolder}>
                                 <div className={styles.AppName}>Diablo IV Collection Log</div>
-                                <div className={styles.AppTagLine}>Bringing closure to the completionist in you</div>
+                                <div className={styles.AppTagLine}>Bringing closure to the completionist in you.</div>
                             </div>
                             <div className={styles.AppSettings}>
-                                <div className={styles.AppSettingsBtn}>
+                                <button className={styles.AppSettingsBtn} onClick={onToggleConfig}>
                                     <svg
                                         viewBox="0 -256 1792 1792"
-                                        id="svg3025"
-                                        version="1.1"
                                         width="100%"
                                         height="100%">
                                         <g
@@ -74,26 +173,33 @@ function App() {
                                                 id="path3029"/>
                                         </g>
                                     </svg>
-                                </div>
+                                </button>
                             </div>
                         </header>
-                        {selectedItem &&
-                            <ItemView
+                        {sideBar === SideBarType.ITEM && selectedItem &&
+                            <ItemSidebar
                                 item={selectedItem}
                                 hidden={false}
                                 collected={store.isCollected(selectedItemId)}
-                                onClickCollected={() => store.toggle(selectedItemId)}
-                                onClickHidden={() => console.log("TODO hide me.")}
-                            ></ItemView>
+                                onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
+                                onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
+                            ></ItemSidebar>
+                        }
+                        {sideBar === SideBarType.CONFIG &&
+                            <ConfigSidebar
+                                options={itemTypes}
+                                value={itemFilters}
+                                onChange={value => setItemFilters(value)}
+                            ></ConfigSidebar>
                         }
                     </div>
                 </div>
                 <div className={styles.AppContentMain}>
                     <Ledger
-                        db={db}
+                        db={filteredDb}
                         store={store}
-                        onClickItem={item => setSelectedItemId(item.id)}
-                        onDoubleClickItem={item => store.toggle(item.id)}
+                        onClickItem={onClickItem}
+                        onDoubleClickItem={onDoubleClickItem}
                     ></Ledger>
                 </div>
             </section>
