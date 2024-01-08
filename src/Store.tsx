@@ -1,17 +1,24 @@
 import {useState} from "react";
 
+enum ItemFlag {
+  COLLECTED,
+  HIDDEN,
+}
+
 type ArtifactMeta = {
   id: number,
   collected: boolean,
   collectedDate?: Date,
   hidden: boolean,
+  flags: ItemFlag[],
 }
 
 type Store = {
   data: StoreData,
   getLogEntry: (artifactId: number) => ArtifactMeta,
   isCollected: (artifactId: number) => boolean,
-  toggle: (artifactId: number) => void,
+  isHidden: (artifactId: number) => boolean,
+  toggle: (artifactId: number, flag?: ItemFlag) => void,
 }
 
 type StoreData = {
@@ -27,6 +34,7 @@ function initArtifactMeta(artifactId: number): ArtifactMeta {
     id: artifactId,
     collected: false,
     hidden: false,
+    flags: [],
   }
 }
 
@@ -68,12 +76,13 @@ function useStore(): Store {
     return logEntry ?? initArtifactMeta(artifactId);
   }
 
-  function toggle(artifactId: number) {
+  function toggle(artifactId: number, flag: ItemFlag = ItemFlag.COLLECTED) {
     const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
     if (!doesExist) {
       const logEntry = initArtifactMeta(artifactId);
       logEntry.collected = true;
       logEntry.collectedDate = new Date();
+      logEntry.flags.push(ItemFlag.COLLECTED);
 
       const updatedData = {
         ...data,
@@ -98,10 +107,12 @@ function useStore(): Store {
             return e;
           } else {
             console.log("Current State...", e.collected);
+            const flagIndex = e.flags.indexOf(flag);
             return {
               ...e,
               collected: !e.collected,
               collectedDate: !e.collected ? undefined : new Date(),
+              flags: flagIndex === -1 ? [...e.flags, flag] : e.flags.splice(flagIndex, flagIndex),
             };
           }
         }),
@@ -113,7 +124,11 @@ function useStore(): Store {
   }
 
   function isCollected(artifactId: number): boolean {
-    return getLogEntry(artifactId).collected;
+    return getLogEntry(artifactId).flags.includes(ItemFlag.COLLECTED);
+  }
+
+  function isHidden(artifactId: number): boolean {
+    return getLogEntry(artifactId).flags.includes(ItemFlag.HIDDEN);
   }
 
   return {
@@ -121,8 +136,10 @@ function useStore(): Store {
     getLogEntry,
     toggle,
     isCollected,
+    isHidden,
   };
 }
 
 export default useStore;
 export type { Store, StoreData };
+export { ItemFlag };

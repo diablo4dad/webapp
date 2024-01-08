@@ -1,5 +1,5 @@
 import {Item, StrapiHit} from "./db"
-import styles from "./ItemView.module.css"
+import styles from "./ItemSidebar.module.css"
 import necromancer from "./necromancer.webp"
 import druid from "./druid.webp"
 import rogue from "./rogue.webp"
@@ -63,7 +63,7 @@ type ItemProps = {
     onClickHidden: (hidden: boolean) => void,
 }
 
-function ItemView({item, collected, hidden, onClickCollected, onClickHidden}: ItemProps) {
+function ItemSidebar({item, collected, hidden, onClickCollected, onClickHidden}: ItemProps) {
     const itemUrl = generateIconUrl(item);
 
     return (
@@ -109,4 +109,4 @@ function ItemView({item, collected, hidden, onClickCollected, onClickHidden}: It
     );
 }
 
-export default ItemView
+export default ItemSidebar
