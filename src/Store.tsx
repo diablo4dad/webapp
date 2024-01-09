@@ -7,9 +7,6 @@ enum ItemFlag {
 
 type ArtifactMeta = {
   id: number,
-  collected: boolean,
-  collectedDate?: Date,
-  hidden: boolean,
   flags: ItemFlag[],
 }
 
@@ -32,8 +29,6 @@ type CollectionLog = {
 function initArtifactMeta(artifactId: number): ArtifactMeta {
   return {
     id: artifactId,
-    collected: false,
-    hidden: false,
     flags: [],
   }
 }
@@ -80,9 +75,7 @@ function useStore(): Store {
     const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
     if (!doesExist) {
       const logEntry = initArtifactMeta(artifactId);
-      logEntry.collected = true;
-      logEntry.collectedDate = new Date();
-      logEntry.flags.push(ItemFlag.COLLECTED);
+      logEntry.flags.push(flag);
 
       const updatedData = {
         ...data,
@@ -106,13 +99,11 @@ function useStore(): Store {
           if (e.id !== artifactId) {
             return e;
           } else {
-            console.log("Current State...", e.collected);
             const flagIndex = e.flags.indexOf(flag);
+
             return {
               ...e,
-              collected: !e.collected,
-              collectedDate: !e.collected ? undefined : new Date(),
-              flags: flagIndex === -1 ? [...e.flags, flag] : e.flags.splice(flagIndex, flagIndex),
+              flags: flagIndex === -1 ? [...e.flags, flag] : e.flags.filter((_, i) => i !== flagIndex),
             };
           }
         }),
