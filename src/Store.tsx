@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 
 enum ItemFlag {
   COLLECTED,
@@ -16,9 +17,12 @@ type Store = {
   isCollected: (artifactId: number) => boolean,
   isHidden: (artifactId: number) => boolean,
   toggle: (artifactId: number, flag?: ItemFlag) => void,
+  saveConfig: (config: Configuration) => void,
+  loadConfig: () => Configuration | undefined,
 }
 
 type StoreData = {
+  config: Configuration,
   collectionLog: CollectionLog
 }
 
@@ -35,6 +39,7 @@ function initArtifactMeta(artifactId: number): ArtifactMeta {
 
 function initStore(): StoreData {
   return {
+    config: DEFAULT_CONFIG,
     collectionLog: {
       entries: [],
     },
@@ -122,12 +127,28 @@ function useStore(): Store {
     return getLogEntry(artifactId).flags.includes(ItemFlag.HIDDEN);
   }
 
+  function saveConfig(configuration: Configuration) {
+    const updatedData = {
+      ...data,
+      config: configuration,
+    };
+
+    setData(updatedData);
+    persistData(updatedData);
+  }
+
+  function loadConfig(): Configuration {
+    return data.config;
+  }
+
   return {
     data,
     getLogEntry,
     toggle,
     isCollected,
     isHidden,
+    saveConfig,
+    loadConfig,
   };
 }
 
