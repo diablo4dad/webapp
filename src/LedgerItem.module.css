@@ -21,6 +21,10 @@
     /*box-shadow: 1px 1px 1px rgba(17, 17, 17, 0.8);*/
 }
 
+.ArtifactHidden {
+    opacity: 0.5;
+}
+
 .ArtifactImage {
     filter: brightness(25%);
     padding: 0.5rem 0.5rem 0;
@@ -49,19 +53,23 @@
 .ArtifactIcons {
     position: absolute;
     top: 0.5rem;
+    left: 0.5rem;
     right: 0.5rem;
 }
 
 .ArtifactIcons svg {
     width: 15%;
-    float: right;
     margin-left: 0.125rem;
 }
 
 .ArtifactIconCollection svg {
+    position: absolute;
+    right: 0;
     fill: forestgreen;
 }
 
 .ArtifactIconPremium svg {
+    position: absolute;
+    left: 0;
     fill: #ccc;
 }
