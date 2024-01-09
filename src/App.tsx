@@ -56,10 +56,6 @@ function reduceItems(db: StrapiResultSet<Collection>): StrapiHit<Item>[] {
     return db.data.flatMap(c => c.attributes.items?.data ?? [])
 }
 
-function reduceItemTypes(items: StrapiHit<Item>[]): string[] {
-    return items.reduce<string[]>((a, c) => a.includes(c.attributes.itemType) ? a : [...a, c.attributes.itemType], []);
-}
-
 function filterCollectionItems(collection: StrapiResultSet<Collection>, filter: (data: StrapiHit<Item>) => boolean) {
     return {
         ...collection,
@@ -139,7 +135,7 @@ function App() {
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
     const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdForCollection(db));
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
-    const [config, setConfig] = useState<Configuration>(DEFAULT_CONFIG);
+    const [config, setConfig] = useState<Configuration>(store.loadConfig() ?? DEFAULT_CONFIG);
 
     // computed properties
     const items = reduceItems(db);
@@ -157,6 +153,11 @@ function App() {
 
     function onDoubleClickItem(item: StrapiHit<Item>) {
         store.toggle(item.id);
+    }
+
+    function onConfigChange(config: Configuration) {
+        store.saveConfig(config);
+        setConfig(config);
     }
 
     useEffect(() => {
@@ -212,7 +213,7 @@ function App() {
                         {sideBar === SideBarType.CONFIG &&
                             <ConfigSidebar
                                 config={config}
-                                onChange={setConfig}
+                                onChange={onConfigChange}
                             ></ConfigSidebar>
                         }
                     </div>
