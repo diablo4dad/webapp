@@ -18,10 +18,6 @@ function composeCollectionTag(store: Store, collection: StrapiHit<Collection>): 
     return `[${collected}/${total}]`;
 }
 
-function isCollected(store: Store, entry: StrapiHit<Item>): boolean {
-    return store.isCollected(entry.id);
-}
-
 function isComplete(store: Store, collection: StrapiHit<Collection>): boolean {
     return countItemsInCollection(collection) === countItemsInCollectionOwned(store, collection)
 }
@@ -64,7 +60,8 @@ function Ledger({db, store, onClickItem, onDoubleClickItem}: Props) {
                             <LedgerItem
                                 key={item.id}
                                 data={item}
-                                isCollected={isCollected(store, item)}
+                                isCollected={store.isCollected(item.id)}
+                                isHidden={store.isHidden(item.id)}
                                 onClick={() => onClickItem(item)}
                                 onDoubleClick={() => onDoubleClickItem(item)}
                             />
