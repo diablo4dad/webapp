@@ -21,6 +21,7 @@ type Item = {
   description: string,
   outOfRotation?: boolean,
   premium?: boolean,
+  promotional?: boolean,
   season?: number,
   transMog: boolean,
   usableByClass: string[],

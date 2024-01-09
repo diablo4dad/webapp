@@ -13,12 +13,28 @@ import styles from './App.module.css';
 import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./Store";
 import ItemSidebar from './ItemSidebar';
-import ConfigSidebar from "./ConfigSidebar";
+import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 
 enum SideBarType {
     ITEM = 'item',
     CONFIG = 'config'
 }
+
+enum ItemGroup {
+    MOUNTS = "mounts",
+    HORSE_ARMOR = "horse_armor",
+    TROPHIES = "trophies",
+    ARMOR = "armor",
+    WEAPONS = "weapons",
+}
+
+const itemGroups = new Map([
+    [ItemGroup.MOUNTS, ["Mount"]],
+    [ItemGroup.HORSE_ARMOR, ["Horse Armor"]],
+    [ItemGroup.TROPHIES, ["Trophy", "Back Trophy"]],
+    [ItemGroup.WEAPONS, ["Axe", "Dagger", "Focus", "Mace", "Scythe", "Shield", "Sword", "Totem", "Wand", "Two-Handed Axe", "Bow", "Crossbow", "Two-Handed Mace", "Polearm", "Two-Handed Scythe", "Staff", "Two-Handed Sword"]],
+    [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]]
+]);
 
 // references:
 // https://www.thegamer.com/diablo-4-all-mount-trophies-unlock-guide/#diablo-4-all-pve-mount-trophies
@@ -28,6 +44,7 @@ enum SideBarType {
 // disable console logging in prod
 if (process.env.NODE_ENV === 'production') {
     console.log = function () {
+        return;
     };
 }
 
@@ -68,7 +85,7 @@ function filterPremiumItems(): (item: StrapiHit<Item>) => boolean {
 }
 
 function filterPromotionalItems(): (item: StrapiHit<Item>) => boolean {
-    return (item: StrapiHit<Item>) => item.attributes.claim !== "Promotional";
+    return (item: StrapiHit<Item>) => item.attributes.promotional !== true;
 }
 
 function filterOutOfRotationItems(): (item: StrapiHit<Item>) => boolean {
@@ -79,23 +96,39 @@ function filterHiddenItems(store: Store): (item: StrapiHit<Item>) => boolean {
     return (item: StrapiHit<Item>) => !store.isHidden(item.id);
 }
 
-function applyAllFilters(collection: StrapiResultSet<Collection>, params: FilterParams): StrapiResultSet<Collection> {
-    let c = { ...collection };
-    c = filterCollectionItems(c, filterItemsByType(params.itemTypesToDisplay));
-    c = params.showPremium ? c : filterCollectionItems(c, filterPremiumItems());
-    c = params.showOutOfRotation ? c : filterCollectionItems(c, filterOutOfRotationItems());
-    c = params.showPromotional ? c : filterCollectionItems(c, filterPromotionalItems());
-    c = params.showHidden ? c : filterCollectionItems(c, filterHiddenItems(params.store));
-    return c;
+function aggregateItemTypes(config: Configuration): string[] {
+    return Array<string>()
+        .concat(config.showMounts ? itemGroups.get(ItemGroup.MOUNTS) ?? [] : [])
+        .concat(config.showHorseArmor ? itemGroups.get(ItemGroup.HORSE_ARMOR) ?? [] : [])
+        .concat(config.showTrophies ? itemGroups.get(ItemGroup.TROPHIES) ?? [] : [])
+        .concat(config.showArmor ? itemGroups.get(ItemGroup.ARMOR) ?? [] : [])
+        .concat(config.showWeapons ? itemGroups.get(ItemGroup.WEAPONS) ?? [] : []);
 }
 
-type FilterParams = {
-    store: Store,
-    itemTypesToDisplay: string[],
-    showPremium: boolean,
-    showPromotional: boolean,
-    showOutOfRotation: boolean,
-    showHidden: boolean,
+function selectItemOrDefault(items: StrapiHit<Item>[], selectedItemId: number): StrapiHit<Item> | undefined {
+    return items.filter(i => i.id === selectedItemId).pop() ?? selectRandomItem(items);
+}
+
+function filterDb(collection: StrapiResultSet<Collection>, store: Store, config: Configuration): StrapiResultSet<Collection> {
+    let c = filterCollectionItems(collection, filterItemsByType(aggregateItemTypes(config)));
+
+    if (!config.showPremium) {
+        c = filterCollectionItems(c, filterPremiumItems());
+    }
+
+    if (!config.showOutOfRotation) {
+        c = filterCollectionItems(c, filterOutOfRotationItems());
+    }
+
+    if (!config.showPromotional) {
+        c = filterCollectionItems(c, filterPromotionalItems());
+    }
+
+    if (!config.showHidden) {
+        c = filterCollectionItems(c, filterHiddenItems(store));
+    }
+
+    return c;
 }
 
 function App() {
@@ -106,20 +139,12 @@ function App() {
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
     const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdForCollection(db));
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
-    const [itemFilters, setItemFilters] = useState<string[]>([]);
+    const [config, setConfig] = useState<Configuration>(DEFAULT_CONFIG);
 
     // computed properties
     const items = reduceItems(db);
-    const selectedItem = items.filter(i => i.id === selectedItemId).pop() ?? selectRandomItem(items);
-    const itemTypes = reduceItemTypes(items);
-    const filteredDb = applyAllFilters(db, {
-        store,
-        itemTypesToDisplay: itemFilters,
-        showHidden: true,
-        showPromotional: true,
-        showPremium: false,
-        showOutOfRotation: true,
-    });
+    const selectedItem = selectItemOrDefault(items, selectedItemId);
+    const filteredDb = filterDb(db, store, config);
 
     function onToggleConfig() {
         setSideBar(sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG);
@@ -141,7 +166,6 @@ function App() {
 
                 if (Array.isArray(data.data)) {
                     setDb(data);
-                    setItemFilters(reduceItemTypes(reduceItems(data)));
                 }
             });
     }, [setDb]);
@@ -179,7 +203,7 @@ function App() {
                         {sideBar === SideBarType.ITEM && selectedItem &&
                             <ItemSidebar
                                 item={selectedItem}
-                                hidden={false}
+                                hidden={store.isHidden(selectedItemId)}
                                 collected={store.isCollected(selectedItemId)}
                                 onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
                                 onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
@@ -187,9 +211,8 @@ function App() {
                         }
                         {sideBar === SideBarType.CONFIG &&
                             <ConfigSidebar
-                                options={itemTypes}
-                                value={itemFilters}
-                                onChange={value => setItemFilters(value)}
+                                config={config}
+                                onChange={setConfig}
                             ></ConfigSidebar>
                         }
                     </div>

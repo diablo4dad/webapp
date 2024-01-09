@@ -1,31 +1,57 @@
-import Select from "react-select";
 import styles from "./ConfigSidebar.module.css"
+import Toggle from "./Toggle";
+
+type Configuration = {
+    showMounts: boolean,
+    showHorseArmor: boolean,
+    showTrophies: boolean,
+    showArmor: boolean,
+    showWeapons: boolean,
+    showPremium: boolean,
+    showPromotional: boolean,
+    showOutOfRotation: boolean,
+    showHidden: boolean,
+}
+
+const DEFAULT_CONFIG: Configuration = {
+    showMounts: true,
+    showHorseArmor: true,
+    showTrophies: true,
+    showArmor: true,
+    showWeapons: true,
+    showPremium: true,
+    showPromotional: true,
+    showOutOfRotation: true,
+    showHidden: false,
+}
 
 type ConfigSidebarProps = {
-    options: string[],
-    value: string[],
-    onChange: (value: string[]) => void,
+    config: Configuration,
+    onChange: (newConfig: Configuration) => void,
 }
 
-type OptionType = {
-    value: string,
-    label: string,
-}
-
-function ConfigSidebar({ options, value, onChange }: ConfigSidebarProps) {
-    const labeledOptions = options.map<OptionType>(i => ({ value: i, label: i }));
-    const values = labeledOptions.filter(o => value.includes(o.value));
-
+function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps) {
     return (
         <div className={styles.Panel}>
-            <Select
-                isMulti={true}
-                value={values}
-                options={labeledOptions}
-                onChange={newValue => onChange(newValue.map(v => v.value))}
-            ></Select>
+            <fieldset>
+                <legend>Transmogs</legend>
+                <Toggle name="mounts" checked={config.showMounts} flip={true} onChange={e => onChange({ ...config, showMounts: e.target.checked })}>Mounts</Toggle>
+                <Toggle name="horseArmor" checked={config.showHorseArmor} flip={true} onChange={e => onChange({ ...config, showHorseArmor: e.target.checked })}>Horse Armor</Toggle>
+                <Toggle name="trophies" checked={config.showTrophies} flip={true} onChange={e => onChange({ ...config, showTrophies: e.target.checked })}>Trophies</Toggle>
+                <Toggle name="armor" checked={config.showArmor} flip={true} onChange={e => onChange({ ...config, showArmor: e.target.checked })}>Armor</Toggle>
+                <Toggle name="weapons" checked={config.showWeapons} flip={true} onChange={e => onChange({ ...config, showWeapons: e.target.checked })}>Weapons</Toggle>
+            </fieldset>
+            <fieldset>
+                <legend>Transmog Filters</legend>
+                <Toggle name="premium" checked={config.showPremium} flip={true} onChange={e => onChange({ ...config, showPremium: e.target.checked })}>Show Premium</Toggle>
+                <Toggle name="promotional" checked={config.showPromotional} flip={true} onChange={e => onChange({ ...config, showPromotional: e.target.checked })}>Show Promotional</Toggle>
+                <Toggle name="outOfRotation" checked={config.showOutOfRotation} flip={true} onChange={e => onChange({ ...config, showOutOfRotation: e.target.checked })}>Show Out of Rotation</Toggle>
+                <Toggle name="hidden" checked={config.showHidden} flip={true} onChange={e => onChange({ ...config, showHidden: e.target.checked })}>Show Hidden</Toggle>
+            </fieldset>
         </div>
     );
 }
 
 export default ConfigSidebar;
+export { DEFAULT_CONFIG };
+export type { Configuration };

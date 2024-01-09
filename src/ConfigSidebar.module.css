@@ -1,3 +1,6 @@
 .Panel {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
     padding: 2rem;
 }
