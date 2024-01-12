@@ -29,7 +29,7 @@
   border: 1px solid #39404d;
   padding: 0.5rem;
   border-radius: 0.5rem;
-  max-width: 3rem;
+  max-width: 5rem;
   background-color: #303640;
 
 }
@@ -54,17 +54,15 @@
 }
 
 .AppContent {
-  display: flex;
   width: 100%;
 }
 
 .AppSideBar {
-  width: 50rem;
   background-color: #252930;
   border-right: 1px solid #1d2026;
 }
 
-.AppSideBar div {
+.AppSideBar > div {
   position: sticky;
   top: 0;
 }
@@ -76,4 +74,14 @@
 .AppFooter {
   padding: 3rem 2rem;
   background-color: #1e2126;
+}
+
+@media screen and (min-width: 1200px) {
+  .AppSideBar {
+    width: 50rem;
+  }
+
+  .AppContent {
+    display: flex;
+  }
 }

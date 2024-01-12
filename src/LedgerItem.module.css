@@ -1,75 +1,167 @@
 .Artifact {
-    position: relative;
-    border-radius: 0.5rem;
     cursor: pointer;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    padding: 0.5rem 2rem;
+    align-items: center;
+    opacity: 0.75;
+}
+
+.ArtifactImage {
+    width: 4rem;
+}
+
+.ArtifactInfo {
     flex: 1;
-    background-color: #23272e;
-    border: 1px solid #23272e;
+    padding: 0 1rem;
 }
 
-.ArtifactContent {
+.ArtifactName {
+    color: orange;
+    margin-bottom: 0.25rem;
+    font-size: 1.5rem;
+}
+
+.ArtifactItemType {
+    display: block;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: #ccc;
+}
+
+.ArtifactClaim {
+    text-transform: uppercase;
+}
+
+.ArtifactClaimDescription {
+    margin-bottom: 0.25rem;
+}
+
+.ArtifactIcons {
 
 }
 
-.ArtifactCollected {
-    /*border-color: #39404d;*/
-    border: 1px solid #1d2026;
+.ArtifactIcon:not(:last-child) {
+    margin-right: 0.5rem;
+}
 
-    background-color: #303640;
-    /*box-shadow: 1px 1px 1px rgba(17, 17, 17, 0.8);*/
+.ArtifactIcons svg {
+    width: 2.5rem;
+}
+
+.ArtifactIcon svg {
+    opacity: 0.05;
+    fill: #ccc;
 }
 
 .ArtifactHidden {
     opacity: 0.5;
 }
 
-.ArtifactImage {
-    filter: brightness(25%);
-    padding: 0.5rem 0.5rem 0;
-}
-
 .Artifact:hover .ArtifactImage {
     filter: brightness(125%);
+}
+
+
+.ArtifactCollected {
+    opacity: 1;
 }
 
 .ArtifactCollected .ArtifactImage {
     filter: none;
 }
 
-.Artifact:hover .ArtifactName,
-.ArtifactCollected .ArtifactName {
-    color: #fff;
-}
-
-.ArtifactName {
-    text-align: center;
-    font-size: 0.75rem;
-    padding: 0.5rem;
-    color: #aaa;
-}
-
-.ArtifactIcons {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    right: 0.5rem;
-}
-
-.ArtifactIcons svg {
-    width: 15%;
-    margin-left: 0.125rem;
-}
-
 .ArtifactIconCollection svg {
-    position: absolute;
-    right: 0;
     fill: forestgreen;
 }
 
-.ArtifactIconPremium svg {
-    position: absolute;
-    left: 0;
-    fill: #ccc;
+.ArtifactPremium .ArtifactIconPremium svg,
+.ArtifactCollected .ArtifactIconCollection svg {
+    opacity: 1;
+}
+
+@media screen and (max-width: 1199px) {
+    .Artifact:nth-child(even) {
+        background-color: #23272e;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .Artifact {
+        position: relative;
+        border-radius: 0.5rem;
+        flex-direction: column;
+        flex: 1;
+        align-items: inherit;
+        background-color: #23272e;
+        border: 1px solid #23272e;
+        padding: 0;
+        opacity: 1;
+    }
+
+    .ArtifactImage {
+        width: auto;
+        padding: 0.5rem 0.5rem 0;
+        filter: brightness(25%);
+    }
+
+    .ArtifactInfo {
+        text-align: center;
+        padding: 0.5rem;
+    }
+
+    .ArtifactName {
+        color: #aaa;
+        font-size: 0.75rem;
+    }
+
+    .ArtifactItemType {
+        display: none;
+    }
+
+    .ArtifactClaim {
+        display: none;
+    }
+
+    .ArtifactClaimDescription {
+        display: none;
+    }
+
+    .ArtifactIcons {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        right: 0.5rem;
+    }
+
+    .ArtifactIcons svg {
+        width: 15%;
+        margin-left: 0.125rem;
+    }
+
+    .ArtifactIcon:not(:last-child) {
+        margin-right: 0;
+    }
+
+    .ArtifactIconCollection svg {
+        position: absolute;
+        right: 0;
+    }
+
+    .ArtifactIconPremium svg {
+        opacity: 0;
+        position: absolute;
+        left: 0;
+    }
+
+    .ArtifactCollected {
+        border: 1px solid #1d2026;
+        background-color: #303640;
+    }
+
+    .Artifact:hover .ArtifactName,
+    .ArtifactCollected .ArtifactName {
+        color: #fff;
+    }
 }

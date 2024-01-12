@@ -108,3 +108,38 @@ async function fetchDb(): Promise<StrapiResultSet<Collection>> {
 export default fetchDb;
 export { ItemType, fetchDb, createEmptyResultSet, getDefaultItemIdForCollection };
 export type { Item, Collection, StrapiHit, StrapiResultSet, StrapiMedia, StrapiMediaFormat, StrapiMediaFormats };
+
+export function composeDescription(item: Item): string {
+  // setting a description overrides inferred/default
+  if (item.claimDescription) {
+    return item.claimDescription;
+  }
+
+  switch (item.claim) {
+    case "Cash Shop":
+      return "Purchased from the cash shop.";
+    case "Battle Pass":
+      return `Season ${item.season} Battle Pass reward.`
+    case "Monster Drop":
+    case "Boss Drop":
+    case "World Boss Drop":
+    case "Uber Boss Drop":
+      return `Dropped by ${item.claimMonster}.`;
+    case "Zone Drop":
+      if (item.claimZone === "Sanctuary") {
+        return `Dropped by monsters and chests throughout ${item.claimZone}.`;
+      } else {
+        return `Dropped by monsters and chests within ${item.claimZone}.`;
+      }
+    case "Challenge Reward":
+      return "Awarded for completing a challenge.";
+    case "Promotional":
+      return "This is a limited time promotional item.";
+    case "Vendor":
+      return "Purchased from a vendor.";
+    case "PvP Drop":
+      return "Dropped by killed players and Baleful Chests in the Fields of Hatred."
+    default:
+      return "Description unavailable.";
+  }
+}

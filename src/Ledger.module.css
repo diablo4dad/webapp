@@ -1,42 +1,9 @@
-.LedgerRow {
-    grid-template-rows: auto;
-    gap: 1rem 1rem;
-    margin-left: 2rem;
-    margin-right: 2rem;
-    margin-bottom: 2rem;
-
-    /**
- * User input values.
- */
-    --grid-layout-gap: 10px;
-    --grid-column-count: 16;
-    --grid-item--min-width: 120px;
-
-    /**
-     * Calculated values.
-     */
-    --gap-count: calc(var(--grid-column-count) - 1);
-    --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
-    --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
-
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
-    grid-gap: var(--grid-layout-gap);
-}
-
-@media screen and (min-width: 480px) {
-    .LedgerRow {
-
-    }
-}
-
 .LedgerGroup {
 
 }
 
 .LedgerGroupHeading {
     padding: 2rem 2rem;
-    margin-bottom: 2rem;
 
     border-top: 1px solid #1d2026;
     border-bottom: 1px solid #1d2026;
@@ -61,6 +28,37 @@
     color: orange;
 }
 
-.LedgerComplete {
+.LedgerRow {
+    display: flex;
+    flex-direction: column;
+}
 
+@media screen and (min-width: 480px) {
+
+}
+
+@media screen and (min-width: 1200px) {
+    .LedgerRow {
+        --grid-layout-gap: 10px;
+        --grid-column-count: 16;
+        --grid-item--min-width: 120px;
+
+        --gap-count: calc(var(--grid-column-count) - 1);
+        --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+        --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+
+        grid-template-rows: auto;
+        gap: 1rem 1rem;
+        margin-left: 2rem;
+        margin-right: 2rem;
+        margin-bottom: 2rem;
+
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
+        grid-gap: var(--grid-layout-gap);
+    }
+
+    .LedgerGroupHeading {
+        margin-bottom: 2rem;
+    }
 }
