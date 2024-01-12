@@ -50,7 +50,7 @@
     flex-direction: column;
 }
 
-.LedgerCardView {
+.LedgerCardView .LedgerRow {
     --grid-layout-gap: 10px;
     --grid-column-count: 16;
     --grid-item--min-width: 120px;
@@ -66,6 +66,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
     grid-gap: var(--grid-layout-gap);
+    flex-direction: row;
 }
 
 .LedgerCardView .LedgerGroupHeading {
@@ -77,5 +78,198 @@
         top: 0;
         padding: 2rem 2rem;
         height: 6rem;
+    }
+}
+
+.Artifact {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    opacity: 0.5;
+}
+
+.Artifact:hover {
+    opacity: 1;
+}
+
+.ArtifactImage {
+    width: 4rem;
+}
+
+.ArtifactInfo {
+    flex: 1;
+    padding: 0 1rem;
+}
+
+.ArtifactName {
+    color: orange;
+    margin-bottom: 0.125rem;
+    font-size: 1rem;
+}
+
+.ArtifactItemType {
+    display: block;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    color: #ccc;
+}
+
+.ArtifactClaim {
+    text-transform: uppercase;
+}
+
+.ArtifactClaimDescription {
+    margin-bottom: 0.25rem;
+}
+
+.ArtifactIcons {
+
+}
+
+.ArtifactIcon:not(:last-child) {
+    margin-right: 0.5rem;
+}
+
+.ArtifactIcons svg {
+    width: 2rem;
+}
+
+.ArtifactIcon svg {
+    opacity: 0.05;
+    fill: #ccc;
+}
+
+.ArtifactHidden .ArtifactName {
+    text-decoration: line-through;
+    color: #999 !important;
+}
+
+.Artifact:hover .ArtifactImage {
+    filter: brightness(125%);
+}
+
+
+.ArtifactCollected {
+    opacity: 1;
+}
+
+.ArtifactCollected .ArtifactImage {
+    filter: none;
+}
+
+.ArtifactIconCollection svg {
+    fill: #3E885B;
+}
+
+.ArtifactCollected .ArtifactIconCollection svg {
+    opacity: 1;
+}
+
+.ArtifactIconPremium svg {
+    display: none;
+}
+
+.ArtifactIconPremiumTitle svg {
+    display: inline-block;
+    width: 0.875rem;
+    margin-left: 0.25rem;
+}
+
+.Artifact:nth-child(even) {
+    background-color: #23272e;
+}
+
+.LedgerCardView .Artifact {
+    position: relative;
+    border-radius: 0.5rem;
+    flex-direction: column;
+    flex: 1;
+    align-items: inherit;
+    background-color: #23272e;
+    border: 1px solid #23272e;
+    padding: 0;
+    opacity: 1;
+}
+
+.LedgerCardView .ArtifactImage {
+    width: auto;
+    padding: 0.5rem 0.5rem 0;
+    filter: brightness(25%);
+}
+
+.LedgerCardView .ArtifactInfo {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.LedgerCardView .ArtifactName {
+    color: #aaa;
+    font-size: 0.75rem;
+}
+
+.LedgerCardView .ArtifactItemType {
+    display: none;
+}
+
+.LedgerCardView .ArtifactClaim {
+    display: none;
+}
+
+.LedgerCardView .ArtifactClaimDescription {
+    display: none;
+}
+
+.LedgerCardView .ArtifactIcons {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+}
+
+.LedgerCardView .ArtifactIcons svg {
+    width: 15%;
+    margin-left: 0.125rem;
+}
+
+.LedgerCardView .ArtifactIcon:not(:last-child) {
+    margin-right: 0;
+}
+
+.LedgerCardView .ArtifactIconCollection svg {
+    position: absolute;
+    right: 0;
+}
+
+.LedgerCardView .ArtifactIconPremium svg {
+    display: block;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+}
+
+.LedgerCardView .ArtifactCollected {
+    border: 1px solid #1d2026;
+    background-color: #303640;
+}
+
+.LedgerCardView .ArtifactPremium .ArtifactIconPremium svg {
+    opacity: 1;
+}
+
+.ArtifactCard:hover .ArtifactName,
+.LedgerCardView .ArtifactCollected .ArtifactName {
+    color: #fff;
+}
+
+@media screen and (min-width: 1200px) {
+    .Artifact {
+        padding: 0.5rem 2rem;
+    }
+
+    .ArtifactIcons svg {
+        width: 3rem;
     }
 }
