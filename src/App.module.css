@@ -77,6 +77,10 @@
   background-color: #1e2126;
 }
 
+.AppFooterItem:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
 @media screen and (min-width: 1200px) {
   .AppName {
     font-size: 1.5rem;
