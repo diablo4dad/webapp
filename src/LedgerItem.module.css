@@ -180,3 +180,13 @@
 .ArtifactCard .ArtifactCollected .ArtifactName {
     color: #fff;
 }
+
+@media screen and (min-width: 1200px) {
+    .Artifact {
+        padding: 0.5rem 2rem;
+    }
+
+    .ArtifactIcons svg {
+        width: 3rem;
+    }
+}
