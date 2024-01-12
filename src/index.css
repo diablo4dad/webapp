@@ -62,3 +62,17 @@ a {
 a:hover {
   color: #cc8500;
 }
+
+html {
+  font-size: 13px;
+}
+@media screen and (min-width: 320px) {
+  html {
+    font-size: calc(12px + 3 * ((100vw - 320px) / 680));
+  }
+}
+@media screen and (min-width: 1200px) {
+  html {
+    font-size: 16px;
+  }
+}
