@@ -95,92 +95,88 @@
     margin-left: 0.25rem;
 }
 
-@media screen and (max-width: 1199px) {
-    .Artifact:nth-child(even) {
-        background-color: #23272e;
-    }
+.Artifact:nth-child(even) {
+    background-color: #23272e;
 }
 
-@media screen and (min-width: 1200px) {
-    .Artifact {
-        position: relative;
-        border-radius: 0.5rem;
-        flex-direction: column;
-        flex: 1;
-        align-items: inherit;
-        background-color: #23272e;
-        border: 1px solid #23272e;
-        padding: 0;
-        opacity: 1;
-    }
+.ArtifactCard {
+    position: relative;
+    border-radius: 0.5rem;
+    flex-direction: column;
+    flex: 1;
+    align-items: inherit;
+    background-color: #23272e;
+    border: 1px solid #23272e;
+    padding: 0;
+    opacity: 1;
+}
 
-    .ArtifactImage {
-        width: auto;
-        padding: 0.5rem 0.5rem 0;
-        filter: brightness(25%);
-    }
+.ArtifactCard .ArtifactImage {
+    width: auto;
+    padding: 0.5rem 0.5rem 0;
+    filter: brightness(25%);
+}
 
-    .ArtifactInfo {
-        text-align: center;
-        padding: 0.5rem;
-    }
+.ArtifactCard .ArtifactInfo {
+    text-align: center;
+    padding: 0.5rem;
+}
 
-    .ArtifactName {
-        color: #aaa;
-        font-size: 0.75rem;
-    }
+.ArtifactCard .ArtifactName {
+    color: #aaa;
+    font-size: 0.75rem;
+}
 
-    .ArtifactItemType {
-        display: none;
-    }
+.ArtifactCard .ArtifactItemType {
+    display: none;
+}
 
-    .ArtifactClaim {
-        display: none;
-    }
+.ArtifactCard .ArtifactClaim {
+    display: none;
+}
 
-    .ArtifactClaimDescription {
-        display: none;
-    }
+.ArtifactCard .ArtifactClaimDescription {
+    display: none;
+}
 
-    .ArtifactIcons {
-        position: absolute;
-        top: 0.5rem;
-        left: 0.5rem;
-        right: 0.5rem;
-    }
+.ArtifactCard .ArtifactIcons {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+}
 
-    .ArtifactIcons svg {
-        width: 15%;
-        margin-left: 0.125rem;
-    }
+.ArtifactCard .ArtifactIcons svg {
+    width: 15%;
+    margin-left: 0.125rem;
+}
 
-    .ArtifactIcon:not(:last-child) {
-        margin-right: 0;
-    }
+.ArtifactCard .ArtifactIcon:not(:last-child) {
+    margin-right: 0;
+}
 
-    .ArtifactIconCollection svg {
-        position: absolute;
-        right: 0;
-    }
+.ArtifactCard .ArtifactIconCollection svg {
+    position: absolute;
+    right: 0;
+}
 
-    .ArtifactIconPremium svg {
-        display: block;
-        opacity: 0;
-        position: absolute;
-        left: 0;
-    }
+.ArtifactCard .ArtifactIconPremium svg {
+    display: block;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+}
 
-    .ArtifactCollected {
-        border: 1px solid #1d2026;
-        background-color: #303640;
-    }
+.ArtifactCard .ArtifactCollected {
+    border: 1px solid #1d2026;
+    background-color: #303640;
+}
 
-    .ArtifactPremium .ArtifactIconPremium svg {
-        opacity: 1;
-    }
+.ArtifactCard .ArtifactPremium .ArtifactIconPremium svg {
+    opacity: 1;
+}
 
-        .Artifact:hover .ArtifactName,
-    .ArtifactCollected .ArtifactName {
-        color: #fff;
-    }
+.ArtifactCard:hover .ArtifactName,
+.ArtifactCard .ArtifactCollected .ArtifactName {
+    color: #fff;
 }

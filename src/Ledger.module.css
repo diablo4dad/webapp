@@ -2,17 +2,24 @@
 }
 
 .LedgerGroupHeading {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    box-sizing: border-box;
+
     position: sticky;
     top: 6rem;
 
-    z-index: 5;
+    height: 6rem;
+
+    z-index: 4;
 
     padding: 1rem;
 
     border-top: 1px solid #1d2026;
     border-bottom: 1px solid #1d2026;
     background-color: #303640;
-    /*box-shadow: 1px 1px 1px rgba(17, 17, 17, 0.8);*/
+    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
 }
 
 .LedgerHeading {
@@ -28,8 +35,18 @@
 }
 
 .LedgerCounter {
+    display: inline-block;
     font-size: 1rem;
     color: orange;
+    font-weight: 400;
+    margin-left: 0.25rem;
+}
+
+.LedgerEdit {
+    display: inline-block;
+    font-size: 1rem;
+    margin-left: 0.25rem;
+    font-weight: 400;
 }
 
 .LedgerRow {
@@ -37,27 +54,31 @@
     flex-direction: column;
 }
 
+.LedgerCardView {
+    --grid-layout-gap: 10px;
+    --grid-column-count: 16;
+    --grid-item--min-width: 120px;
+
+    --gap-count: calc(var(--grid-column-count) - 1);
+    --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+    --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+
+    grid-template-rows: auto;
+    gap: 1rem 1rem;
+    padding: 2rem;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
+    grid-gap: var(--grid-layout-gap);
+}
+
+.LedgerCardView .LedgerGroupHeading {
+    position: inherit;
+    padding: 2rem 2rem;
+}
+
 @media screen and (min-width: 1200px) {
-    .LedgerRow {
-        --grid-layout-gap: 10px;
-        --grid-column-count: 16;
-        --grid-item--min-width: 120px;
-
-        --gap-count: calc(var(--grid-column-count) - 1);
-        --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
-        --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
-
-        grid-template-rows: auto;
-        gap: 1rem 1rem;
-        padding: 2rem;
-
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
-        grid-gap: var(--grid-layout-gap);
-    }
-
     .LedgerGroupHeading {
-        position: inherit;
-        padding: 2rem 2rem;
+        top: 0;
     }
 }
