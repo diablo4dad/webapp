@@ -2,9 +2,13 @@
     cursor: pointer;
     display: flex;
     flex-direction: row;
-    padding: 0.5rem 2rem;
+    padding: 0.5rem 1rem;
     align-items: center;
-    opacity: 0.75;
+    opacity: 0.5;
+}
+
+.Artifact:hover {
+    opacity: 1;
 }
 
 .ArtifactImage {
@@ -18,15 +22,15 @@
 
 .ArtifactName {
     color: orange;
-    margin-bottom: 0.25rem;
-    font-size: 1.5rem;
+    margin-bottom: 0.125rem;
+    font-size: 1rem;
 }
 
 .ArtifactItemType {
     display: block;
     text-transform: uppercase;
     margin-bottom: 0.75rem;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: #ccc;
 }
 
@@ -47,7 +51,7 @@
 }
 
 .ArtifactIcons svg {
-    width: 2.5rem;
+    width: 2rem;
 }
 
 .ArtifactIcon svg {
@@ -76,9 +80,18 @@
     fill: forestgreen;
 }
 
-.ArtifactPremium .ArtifactIconPremium svg,
 .ArtifactCollected .ArtifactIconCollection svg {
     opacity: 1;
+}
+
+.ArtifactIconPremium svg {
+    display: none;
+}
+
+.ArtifactIconPremiumTitle svg {
+    display: inline-block;
+    width: 0.875rem;
+    margin-left: 0.25rem;
 }
 
 @media screen and (max-width: 1199px) {
@@ -150,6 +163,7 @@
     }
 
     .ArtifactIconPremium svg {
+        display: block;
         opacity: 0;
         position: absolute;
         left: 0;
@@ -160,7 +174,11 @@
         background-color: #303640;
     }
 
-    .Artifact:hover .ArtifactName,
+    .ArtifactPremium .ArtifactIconPremium svg {
+        opacity: 1;
+    }
+
+        .Artifact:hover .ArtifactName,
     .ArtifactCollected .ArtifactName {
         color: #fff;
     }

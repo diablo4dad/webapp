@@ -8,7 +8,7 @@
 
 .AppHeader {
   display: flex;
-  padding: 1rem 2rem;
+  padding: 1rem;
   background-color: #1e2126;
   align-items: center;
 }
@@ -19,6 +19,7 @@
 
 .AppNameHolder {
   width: 100%;
+  margin-right: 1rem;
 }
 
 .AppSettings {
@@ -46,7 +47,8 @@
 }
 
 .AppName {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  margin-bottom: 0.125rem;
 }
 
 .AppTagLine {
@@ -77,11 +79,19 @@
 }
 
 @media screen and (min-width: 1200px) {
+  .AppName {
+    font-size: 1.5rem;
+  }
+
   .AppSideBar {
     width: 50rem;
   }
 
   .AppContent {
     display: flex;
+  }
+
+  .AppHeader {
+    padding: 1rem 2rem;
   }
 }
