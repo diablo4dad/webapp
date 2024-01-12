@@ -59,8 +59,9 @@
     fill: #ccc;
 }
 
-.ArtifactHidden {
-    opacity: 0.5;
+.ArtifactHidden .ArtifactName {
+    text-decoration: line-through;
+    color: #999 !important;
 }
 
 .Artifact:hover .ArtifactImage {
