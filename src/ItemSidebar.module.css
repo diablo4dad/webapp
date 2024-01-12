@@ -1,4 +1,5 @@
 .Panel {
+    display: none;
 }
 
 .PanelHeading {
@@ -105,9 +106,9 @@
     position: relative;
     z-index: 1;
     float: right;
-    max-width: 128px;
+    max-width: 5rem;
     height: auto;
-    top: 1rem;
+    top: 3rem;
     right: 2rem;
 }
 
@@ -122,9 +123,11 @@
     padding-right: 2rem;
     font-size: 0.875rem;
     color: #ccc;
+    margin-bottom: 1rem;
 }
 
 .ItemTag {
+    display: inline-block;
     background-color: #3E885B;
     border-radius: 1rem;
     font-size: 0.875rem;
@@ -133,4 +136,17 @@
 
 .ItemTag:not(:last-child) {
     margin-right: 0.5rem;
+}
+
+@media screen and (min-width: 480px) {
+    .ItemImage {
+        top: 1rem;
+        max-width: 128px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .Panel {
+        display: inherit;
+    }
 }

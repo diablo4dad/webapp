@@ -22,7 +22,7 @@
   --toggle-bg-color-off: #2D3239;
 
   /* breakpoints */
-  --xs-breakpoint: 420px;
+  --xs-breakpoint: 960px;
   --viewport-max: 960px;
 }
 
