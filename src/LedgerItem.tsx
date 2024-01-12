@@ -23,10 +23,7 @@ function LedgerItem({data, isCollected, isHidden, onClick, onDoubleClick}: Props
         <div className={classNames} onClick={onClick} onDoubleClick={onDoubleClick}>
             <img className={styles.ArtifactImage} src={imageUrl} alt={data.attributes.name}/>
             <div className={styles.ArtifactInfo}>
-                <div className={styles.ArtifactName}>
-                    <span>{data.attributes.name}</span>
-
-                </div>
+                <div className={styles.ArtifactName}>{data.attributes.name}</div>
                 <div className={styles.ArtifactItemType}>
                     <span>{data.attributes.itemType} | {data.attributes.claim}</span>
                     <span className={styles.ArtifactIconPremiumTitle} hidden={!data.attributes.premium}>
