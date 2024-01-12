@@ -75,6 +75,7 @@
 .AppFooter {
   padding: 3rem 2rem;
   background-color: #1e2126;
+  text-align: center;
 }
 
 .AppFooterItem:not(:last-child) {

@@ -229,12 +229,13 @@ function App() {
                 </div>
             </section>
             <footer className={styles.AppFooter}>
-                <div className={styles.AppFooterItem}>Get in touch <a href="https://discord.gg/hWMTQcbE">Diablo IV
-                    Completionist Discord Server</a>.
-                </div>
-                <div className={styles.AppFooterItem}>Game Version: <code>{D4_BUILD}</code></div>
                 <div className={styles.AppFooterItem}>Site Version: <code>{SITE_VERSION}</code></div>
-                <div className={styles.AppFooterItem}>Not Affiliated with Activision Blizzard, Inc.</div>
+                <div className={styles.AppFooterItem}>Game Version: <code>{D4_BUILD}</code></div>
+                <div className={styles.AppFooterItem}>
+                    Not Affiliated with Activision Blizzard, Inc.<br></br>
+                    This is a fan-site built by fans, for fans.
+                </div>
+                <div className={styles.AppFooterItem}><a href="https://discord.gg/hWMTQcbE">Get in touch</a></div>
             </footer>
         </div>
     );
