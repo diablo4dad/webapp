@@ -10,14 +10,10 @@
     position: sticky;
     top: 6rem;
 
-    height: 6rem;
-
     z-index: 4;
 
     padding: 1rem;
 
-    border-top: 1px solid #1d2026;
-    border-bottom: 1px solid #1d2026;
     background-color: #303640;
     box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
 }
@@ -74,11 +70,12 @@
 
 .LedgerCardView .LedgerGroupHeading {
     position: inherit;
-    padding: 2rem 2rem;
 }
 
 @media screen and (min-width: 1200px) {
     .LedgerGroupHeading {
         top: 0;
+        padding: 2rem 2rem;
+        height: 6rem;
     }
 }

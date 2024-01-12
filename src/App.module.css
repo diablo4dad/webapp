@@ -7,10 +7,11 @@
 }
 
 .AppHeader {
-  height: 4rem;
+  height: 6rem;
   display: flex;
   padding: 1rem;
   background-color: #1e2126;
+  box-sizing: border-box;
   align-items: center;
 }
 
@@ -83,6 +84,12 @@
 }
 
 @media screen and (min-width: 1200px) {
+  .AppHeader {
+    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #303640;
+  }
+
   .AppName {
     font-size: 1.5rem;
   }
@@ -102,7 +109,4 @@
     flex: 1;
   }
 
-  .AppHeader {
-    padding: 1rem 2rem;
-  }
 }
