@@ -14,6 +14,7 @@ import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./Store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
+import {D4_BUILD, SITE_VERSION} from "./config";
 
 enum SideBarType {
     ITEM = 'item',
@@ -228,7 +229,12 @@ function App() {
                 </div>
             </section>
             <footer className={styles.AppFooter}>
-                Not Affiliated with Blizzard.
+                <div className={styles.AppFooterItem}>Get in touch <a href="https://discord.gg/hWMTQcbE">Diablo IV
+                    Completionist Discord Server</a>.
+                </div>
+                <div className={styles.AppFooterItem}>Game Version: <code>{D4_BUILD}</code></div>
+                <div className={styles.AppFooterItem}>Site Version: <code>{SITE_VERSION}</code></div>
+                <div className={styles.AppFooterItem}>Not Affiliated with Activision Blizzard, Inc.</div>
             </footer>
         </div>
     );
