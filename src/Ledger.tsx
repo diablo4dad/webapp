@@ -22,11 +22,11 @@ function isComplete(store: Store, collection: StrapiHit<Collection>): boolean {
     return countItemsInCollection(collection) === countItemsInCollectionOwned(store, collection)
 }
 
-function getLedgerClasses(store: Store, collection: StrapiHit<Collection>): string {
+function getLedgerClasses(store: Store, collection: StrapiHit<Collection>, view: 'list' | 'card'): string {
     const classes = [
         styles.LedgerGroup,
         isComplete(store, collection) ? styles.LedgerComplete : '',
-        // styles.LedgerCardView,
+        view === 'card' ? styles.LedgerCardView : '',
     ];
 
     return classes.filter(i => i !== '').join(' ');
@@ -41,9 +41,10 @@ type Props = {
     store: Store,
     onClickItem: (item: StrapiHit<Item>) => void,
     onDoubleClickItem: (item: StrapiHit<Item>) => void,
+    view: 'list' | 'card',
 }
 
-function Ledger({db, store, onClickItem, onDoubleClickItem}: Props) {
+function Ledger({db, store, onClickItem, onDoubleClickItem, view}: Props) {
     function getClassNamesForItem(item: StrapiHit<Item>) {
         return [
             styles.Artifact,
@@ -60,7 +61,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem}: Props) {
     return (
         <>
             {db.data.map(collection => (
-                <div className={getLedgerClasses(store, collection)} key={collection.id}
+                <div className={getLedgerClasses(store, collection, view)} key={collection.id}
                      hidden={collection.attributes.items?.data.length === 0}>
                     <div className={styles.LedgerGroupHeading}>
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}

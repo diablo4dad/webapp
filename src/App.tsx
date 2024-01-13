@@ -225,6 +225,7 @@ function App() {
                         store={store}
                         onClickItem={onClickItem}
                         onDoubleClickItem={onDoubleClickItem}
+                        view={config.view}
                     ></Ledger>
                 </div>
             </section>
