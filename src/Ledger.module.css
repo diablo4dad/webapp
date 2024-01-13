@@ -155,10 +155,6 @@
     opacity: 1;
 }
 
-.ArtifactCollected .ArtifactImage {
-    filter: none;
-}
-
 .ArtifactIconCollection svg {
     fill: #3E885B;
 }
@@ -206,7 +202,7 @@
 
 .LedgerCardView .ArtifactName {
     color: #aaa;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
 }
 
 .LedgerCardView .ArtifactItemType {
@@ -271,4 +267,8 @@
     .ArtifactIcons svg {
         width: 3rem;
     }
+}
+
+.ArtifactCollected .ArtifactImage {
+    filter: none;
 }
