@@ -50,9 +50,9 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="outOfRotation" checked={config.showOutOfRotation} flip={true} onChange={e => onChange({ ...config, showOutOfRotation: e.target.checked })}>Show Out of Rotation</Toggle>
                 <Toggle name="hidden" checked={config.showHidden} flip={true} onChange={e => onChange({ ...config, showHidden: e.target.checked })}>Show Hidden</Toggle>
             </fieldset>
-            <fieldset>
-                <legend>Ledger Options</legend>
-                <Toggle name="card" checked={config.view === 'card'} flip={true} onChange={e => onChange({ ...config, view: e.target.checked ? 'card' : 'list'})}>Card View</Toggle>
+            <fieldset className={styles.ViewOptions}>
+                <legend>View Options</legend>
+                <Toggle name="card" checked={config.view === 'card'} flip={true} onChange={e => onChange({ ...config, view: e.target.checked ? 'card' : 'list'})}>Card Layout</Toggle>
             </fieldset>
         </div>
     );
