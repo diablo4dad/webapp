@@ -161,6 +161,10 @@ function App() {
         setConfig(config);
     }
 
+    function getConfigBtnClasses() {
+        return styles.AppSettingsBtn + (sideBar === 'config' ? ' ' + styles.AppSettingsBtnPressed : '');
+    }
+
     useEffect(() => {
         fetchDb()
             .then(data => {
@@ -186,7 +190,7 @@ function App() {
                                 <div className={styles.AppTagLine}>Bringing closure to the completionist in you.</div>
                             </div>
                             <div className={styles.AppSettings}>
-                                <button className={styles.AppSettingsBtn} onClick={onToggleConfig}>
+                                <button className={getConfigBtnClasses()} onClick={onToggleConfig}>
                                     <svg
                                         viewBox="0 -256 1792 1792"
                                         width="100%"
