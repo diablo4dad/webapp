@@ -6,11 +6,7 @@ import rogue from "./rogue.webp"
 import barbarian from "./barbarian.webp"
 import sorceress from "./sorceress.webp"
 import Toggle from "./Toggle";
-import {SERVER_ADDR} from "./config";
-
-function generateIconUrl(item: StrapiHit<Item>): string {
-    return SERVER_ADDR + item.attributes.icon?.data?.attributes.url ?? 'missing.webp';
-}
+import {getImageUri, SERVER_ADDR} from "./config";
 
 function generateEditUrl(item: StrapiHit<Item>): string {
     return SERVER_ADDR + "/admin/content-manager/collectionType/api::item.item/" + item.id;
@@ -29,11 +25,9 @@ type ItemProps = {
 }
 
 function ItemSidebar({item, collected, hidden, onClickCollected, onClickHidden}: ItemProps) {
-    const itemUrl = generateIconUrl(item);
-
     return (
         <div className={styles.Panel}>
-            <img src={itemUrl} className={styles.ItemImage} alt={item.attributes.name}/>
+            <img src={getImageUri(item)} className={styles.ItemImage} alt={item.attributes.name}/>
             <div className={styles.ItemTitle}>{item.attributes.name}</div>
             <div className={styles.ItemType}>{item.attributes.itemType}</div>
             <div className={styles.ItemClasses}>

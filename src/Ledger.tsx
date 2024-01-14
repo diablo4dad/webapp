@@ -1,7 +1,7 @@
 import {Collection, composeDescription, Item, StrapiHit, StrapiResultSet} from "./db";
 import styles from "./Ledger.module.css";
 import {Store} from "./Store";
-import {SERVER_ADDR} from "./config";
+import {getImageUri, SERVER_ADDR} from "./config";
 import React from "react";
 
 function countItemsInCollection(collection: StrapiHit<Collection>): number {
@@ -77,10 +77,6 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view}: Props) {
         ].filter(cn => cn !== null).join(' ');
     }
 
-    function getImageUrlForItem(item: StrapiHit<Item>) {
-        return 'http://localhost:1337' + item.attributes.icon?.data?.attributes.url ?? 'missing.webp';
-    }
-
     return (
         <>
             {db.data.map(collection => (
@@ -102,7 +98,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view}: Props) {
                                  onClick={() => onClickItem(item)}
                                  onDoubleClick={() => onDoubleClickItem(item)}
                                  onTouchStart={onTouchStart(() => onDoubleClickItem(item))}>
-                                <img className={styles.ArtifactImage} src={getImageUrlForItem(item)}
+                                <img className={styles.ArtifactImage} src={getImageUri(item)}
                                      alt={item.attributes.name}/>
                                 <div className={styles.ArtifactInfo}>
                                     <div className={styles.ArtifactName}>{item.attributes.name}</div>

@@ -1,9 +1,4 @@
-enum ItemType {
-  Mount = "Mount",
-  MountArmor = "Horse Armor",
-  MountTrophy = "Trophy",
-  BackTrophy = "Back Trophy"
-}
+import {getCollectionUri} from "./config";
 
 type Item = {
   claim?: string,
@@ -14,9 +9,10 @@ type Item = {
   publishedAt: string,
   updatedAt: string,
   itemId: string,
-  itemType: ItemType,
+  itemType: string,
   magicType: string,
   icon?: StrapiResult<StrapiMedia>,
+  iconId?: number,
   name: string,
   description: string,
   outOfRotation?: boolean,
@@ -99,14 +95,11 @@ function getDefaultItemIdForCollection(result: StrapiResultSet<Collection>): num
 }
 
 async function fetchDb(): Promise<StrapiResultSet<Collection>> {
-  const resp = await fetch('http://localhost:1337/api/collections?populate[items][populate][0]=icon&sort[0]=order');
-  const data: StrapiResultSet<Collection> = await resp.json();
-  console.log("Fetched Items", data);
-  return data;
+  return (await fetch(getCollectionUri())).json();
 }
 
 export default fetchDb;
-export { ItemType, fetchDb, createEmptyResultSet, getDefaultItemIdForCollection };
+export { fetchDb, createEmptyResultSet, getDefaultItemIdForCollection };
 export type { Item, Collection, StrapiHit, StrapiResultSet, StrapiMedia, StrapiMediaFormat, StrapiMediaFormats };
 
 export function composeDescription(item: Item): string {
