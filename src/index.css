@@ -63,6 +63,12 @@ a:hover {
   color: #cc8500;
 }
 
+fieldset {
+  border: 1px solid #303640;
+  background-color: #1d2026;
+  border-radius: 0.5rem;
+}
+
 html {
   font-size: 13px;
 }

@@ -36,7 +36,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
     return (
         <div className={styles.Panel}>
             <fieldset>
-                <legend>Transmogs</legend>
+                <legend>Items</legend>
                 <Toggle name="mounts" checked={config.showMounts} flip={true} onChange={e => onChange({ ...config, showMounts: e.target.checked })}>Mounts</Toggle>
                 <Toggle name="horseArmor" checked={config.showHorseArmor} flip={true} onChange={e => onChange({ ...config, showHorseArmor: e.target.checked })}>Horse Armor</Toggle>
                 <Toggle name="trophies" checked={config.showTrophies} flip={true} onChange={e => onChange({ ...config, showTrophies: e.target.checked })}>Trophies</Toggle>
@@ -44,14 +44,14 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="weapons" checked={config.showWeapons} flip={true} onChange={e => onChange({ ...config, showWeapons: e.target.checked })}>Weapons</Toggle>
             </fieldset>
             <fieldset>
-                <legend>Transmog Filters</legend>
+                <legend>Filters</legend>
                 <Toggle name="premium" checked={config.showPremium} flip={true} onChange={e => onChange({ ...config, showPremium: e.target.checked })}>Show Premium</Toggle>
                 <Toggle name="promotional" checked={config.showPromotional} flip={true} onChange={e => onChange({ ...config, showPromotional: e.target.checked })}>Show Promotional</Toggle>
                 <Toggle name="outOfRotation" checked={config.showOutOfRotation} flip={true} onChange={e => onChange({ ...config, showOutOfRotation: e.target.checked })}>Show Out of Rotation</Toggle>
                 <Toggle name="hidden" checked={config.showHidden} flip={true} onChange={e => onChange({ ...config, showHidden: e.target.checked })}>Show Hidden</Toggle>
             </fieldset>
             <fieldset className={styles.ViewOptions}>
-                <legend>View Options</legend>
+                <legend>Display Options</legend>
                 <Toggle name="card" checked={config.view === 'card'} flip={true} onChange={e => onChange({ ...config, view: e.target.checked ? 'card' : 'list'})}>Card Layout</Toggle>
             </fieldset>
         </div>
