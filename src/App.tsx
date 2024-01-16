@@ -235,7 +235,7 @@ function App() {
             </section>
             <footer className={styles.AppFooter}>
                 <div className={styles.AppFooterItem}>Site Version: <code>{SITE_VERSION}</code></div>
-                <div className={styles.AppFooterItem}>Game Version: <code>{D4_BUILD}</code></div>
+                {/*<div className={styles.AppFooterItem}>Game Version: <code>{D4_BUILD}</code></div>*/}
                 <div className={styles.AppFooterItem}>
                     Not Affiliated with Activision Blizzard, Inc.<br></br>
                     This is a fan-site built by fans, for fans.
