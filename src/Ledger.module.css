@@ -8,14 +8,15 @@
     box-sizing: border-box;
 
     position: sticky;
-    top: 6rem;
+    top: calc(6rem - 1px); /* fixes annoying 1px gap between the header */
 
     z-index: 4;
 
     padding: 1rem;
 
     background-color: #303640;
-    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
+    border-top: 1px solid #23272e;
+    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.125);
 }
 
 .LedgerHeading {
@@ -79,6 +80,10 @@
         padding: 2rem 2rem;
         height: 6rem;
     }
+
+    .LedgerRow {
+        box-shadow: 3px 3px 7px rgba(17, 17, 17, 0.125) inset;
+    }
 }
 
 .Artifact {
@@ -87,7 +92,6 @@
     flex-direction: row;
     padding: 0.5rem 1rem;
     align-items: center;
-    opacity: 0.5;
 }
 
 .Artifact:hover {
@@ -96,11 +100,14 @@
 
 .ArtifactImage {
     width: 4rem;
+    filter: brightness(25%);
+
 }
 
 .ArtifactInfo {
     flex: 1;
     padding: 0 1rem;
+    opacity: 0.5;
 }
 
 .ArtifactName {
@@ -151,7 +158,11 @@
     filter: brightness(125%);
 }
 
-.ArtifactCollected {
+.Artifact:hover .ArtifactInfo {
+    opacity: 1;
+}
+
+.ArtifactCollected .ArtifactInfo {
     opacity: 1;
 }
 
@@ -192,7 +203,6 @@
 .LedgerCardView .ArtifactImage {
     width: auto;
     padding: 0.5rem 0.5rem 0;
-    filter: brightness(25%);
 }
 
 .LedgerCardView .ArtifactInfo {
@@ -248,6 +258,7 @@
 .LedgerCardView .ArtifactCollected {
     border: 1px solid #1d2026;
     background-color: #303640;
+    box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
 }
 
 .LedgerCardView .ArtifactPremium .ArtifactIconPremium svg {
