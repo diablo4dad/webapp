@@ -24,7 +24,7 @@ const DEFAULT_CONFIG: Configuration = {
     showPromotional: true,
     showOutOfRotation: true,
     showHidden: false,
-    view: 'list',
+    view: 'card',
 }
 
 type ConfigSidebarProps = {

@@ -116,6 +116,7 @@
     position: inherit;
     width: 50rem;
     border-right: 1px solid #1d2026;
+    border-bottom: none;
   }
 
   .AppSideBar > div {
