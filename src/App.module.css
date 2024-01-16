@@ -83,7 +83,7 @@
   top: 0;
   z-index: 10;
   background-color: #252930;
-  border-right: 1px solid #1d2026;
+  border-bottom: 1px solid #303640;
 }
 
 .AppContentMain {
@@ -102,9 +102,9 @@
 
 @media screen and (min-width: 1200px) {
   .AppHeader {
-    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
+    /*box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);*/
     padding: 1rem 2rem;
-    border-bottom: 1px solid #303640;
+    /*border-bottom: 1px solid #303640;*/
   }
 
   .AppName {
@@ -112,8 +112,10 @@
   }
 
   .AppSideBar {
+    z-index: 10;
     position: inherit;
     width: 50rem;
+    border-right: 1px solid #1d2026;
   }
 
   .AppSideBar > div {
@@ -125,5 +127,4 @@
     display: flex;
     flex: 1;
   }
-
 }
