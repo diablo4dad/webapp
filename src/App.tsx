@@ -14,7 +14,7 @@ import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./Store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
-import {D4_BUILD, SITE_VERSION} from "./config";
+import {SITE_VERSION} from "./config";
 
 enum SideBarType {
     ITEM = 'item',
@@ -128,20 +128,20 @@ function filterDb(collection: StrapiResultSet<Collection>, store: Store, config:
     return c;
 }
 
-function App() {
-    // deps
-    const store = useStore();
+function isScreenSmall(window: Window): boolean {
+    return window.innerWidth <= 1200;
+}
 
-    // references
+function App() {
+    const store = useStore();
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
-    const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdForCollection(db));
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [config, setConfig] = useState<Configuration>(store.loadConfig() ?? DEFAULT_CONFIG);
-
-    // computed properties
-    const items = reduceItems(db);
-    const selectedItem = selectItemOrDefault(items, selectedItemId);
+    const [smallScreen, setSmallScreen] = useState(isScreenSmall(window));
     const filteredDb = filterDb(db, store, config);
+    const items = reduceItems(filteredDb);
+    const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdForCollection(filteredDb));
+    const selectedItem = selectItemOrDefault(items, selectedItemId);
 
     function onToggleConfig() {
         setSideBar(sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG);
@@ -168,13 +168,23 @@ function App() {
     useEffect(() => {
         fetchDb()
             .then(data => {
-                console.log("DB Initialised...", data);
-
                 if (Array.isArray(data.data)) {
                     setDb(data);
                 }
             });
     }, [setDb]);
+
+    useEffect(() => {
+        function onResize() {
+            setSmallScreen(isScreenSmall(window));
+        }
+
+        window.addEventListener('resize', onResize);
+
+        return () => {
+            window.removeEventListener('resize', onResize);
+        }
+    }, []);
 
     return (
         <div className={styles.App}>
@@ -229,13 +239,12 @@ function App() {
                         store={store}
                         onClickItem={onClickItem}
                         onDoubleClickItem={onDoubleClickItem}
-                        view={config.view}
+                        view={smallScreen ? 'list' : config.view}
                     ></Ledger>
                 </div>
             </section>
             <footer className={styles.AppFooter}>
                 <div className={styles.AppFooterItem}>Site Version: <code>{SITE_VERSION}</code></div>
-                {/*<div className={styles.AppFooterItem}>Game Version: <code>{D4_BUILD}</code></div>*/}
                 <div className={styles.AppFooterItem}>
                     Not Affiliated with Activision Blizzard, Inc.<br></br>
                     This is a fan-site built by fans, for fans.

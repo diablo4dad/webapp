@@ -131,7 +131,7 @@ export function composeDescription(item: Item): string {
     case "Vendor":
       return "Purchased from a vendor.";
     case "PvP Drop":
-      return "Dropped by killed players and Baleful Chests in the Fields of Hatred."
+      return "Dropped by killing players and looting Baleful Chests."
     default:
       return "Description unavailable.";
   }

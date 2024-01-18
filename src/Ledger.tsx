@@ -68,47 +68,20 @@ type Props = {
 }
 
 function Ledger({db, store, onClickItem, onDoubleClickItem, view}: Props) {
-    const containerRef = useRef(null);
-    const [groupActive, setGroupActive] = useState(false);
-
     function getClassNamesForItem(item: StrapiHit<Item>) {
         return [
             styles.Artifact,
             store.isCollected(item.id) ? styles.ArtifactCollected : null,
             store.isHidden(item.id) ? styles.ArtifactHidden : null,
             item.attributes.premium ? styles.ArtifactPremium : null,
-            groupActive ? styles.LedgerGroupActive : null,
         ].filter(cn => cn !== null).join(' ');
     }
-
-    useEffect(() => {
-        function onInteraction(entries: IntersectionObserverEntry[]) {
-            const [entry] = entries;
-            setGroupActive(entry.intersectionRatio < 1);
-            console.log("Intersecting: " + (entry.intersectionRatio < 1));
-        }
-
-        const observer = new IntersectionObserver(onInteraction, {
-            threshold: [1]
-        });
-
-        const ref = containerRef.current;
-
-        if (ref) {
-            observer.observe(ref);
-
-            return () => {
-                observer.unobserve(ref);
-            };
-        }
-    }, [setGroupActive]);
 
     return (
         <>
             {db.data.map(collection => (
                 <div className={getLedgerClasses(store, collection, view)} key={collection.id}
-                     hidden={collection.attributes.items?.data.length === 0}
-                     ref={containerRef}>
+                     hidden={collection.attributes.items?.data.length === 0}>
                     <div className={styles.LedgerGroupHeading}>
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}
                             <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>

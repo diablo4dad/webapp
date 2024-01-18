@@ -4,7 +4,7 @@ const path = require('path');
 const IMG_SRC = 'C:\\Users\\Sam\\Documents\\d4-texture-extractor\\webp';
 const IMG_DEST = 'C:\\Users\\Sam\\Documents\\d4log\\public\\icons';
 
-fetch("http://localhost:1337/api/collections?populate[items][populate][0]=icon&sort[0]=order").then((resp) => {
+fetch("http://localhost:1337/api/collections?populate[0]=items&sort[0]=order").then((resp) => {
     resp.json().then(json => {
         fs.writeFileSync('public/collection.json', JSON.stringify(json));
 
