@@ -1,0 +1,26 @@
+# Diablo IV Collection Log
+
+A web app that allows Diablo IV players keep track of their Transmog
+collections.
+
+## [Unreleased]
+
+## [1.1.0] - 2023-02-20
+
+### Added
+
+- Added missing "Sturdy Saddle" horse armor from Vendor collection.
+
+
+## [1.0.0] - 2023-02-18
+
+### Added
+
+- Initial Diablo IV Collection Log release.
+- Displays Transmogs in chronological and curated grouping.
+- Toggle to mark items as "collected".
+- Toggle to hide individual items from any collection.
+- Config options to show/hide item type groups (mounts, horse armor, trophies,
+  weapons, armor).
+- Config options to filter items by promotional, premium, out of rotation.
+- Two layout options: card view and list view.
