@@ -9,7 +9,7 @@ Requests from the Reddit publication:
 - [ ] Correct mount names;
     - [ ] Ghastly Reins -> Spectral Charger mount.
     - [ ][PH] Blizzcon Horse mount -> Lapisvein, from Shop "Symposium Steed".
-- [ ] Add "Hide Collected" filter.
+- [x] Add "Hide Collected" filter.
 - [ ] Add Headstone, Portals and Emotes.
 - [ ] Add all standard/base transmogs for weapons and armor.
 - [x] Update the trophies "Crest of Rathma" and "Assassin's Satchel", to

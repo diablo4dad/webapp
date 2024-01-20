@@ -240,6 +240,7 @@ function App() {
                         onClickItem={onClickItem}
                         onDoubleClickItem={onDoubleClickItem}
                         view={smallScreen ? 'list' : config.view}
+                        showCollected={config.showCollected}
                     ></Ledger>
                 </div>
             </section>

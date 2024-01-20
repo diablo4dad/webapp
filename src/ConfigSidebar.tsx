@@ -11,6 +11,7 @@ type Configuration = {
     showPromotional: boolean,
     showOutOfRotation: boolean,
     showHidden: boolean,
+    showCollected: boolean,
     view: 'card' | 'list',
 }
 
@@ -24,6 +25,7 @@ const DEFAULT_CONFIG: Configuration = {
     showPromotional: true,
     showOutOfRotation: true,
     showHidden: false,
+    showCollected: true,
     view: 'card',
 }
 
@@ -49,6 +51,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="promotional" checked={config.showPromotional} flip={true} onChange={e => onChange({ ...config, showPromotional: e.target.checked })}>Show Promotional</Toggle>
                 <Toggle name="outOfRotation" checked={config.showOutOfRotation} flip={true} onChange={e => onChange({ ...config, showOutOfRotation: e.target.checked })}>Show Out of Rotation</Toggle>
                 <Toggle name="hidden" checked={config.showHidden} flip={true} onChange={e => onChange({ ...config, showHidden: e.target.checked })}>Show Hidden</Toggle>
+                <Toggle name="collected" checked={config.showCollected} flip={true} onChange={e => onChange({ ...config, showCollected: e.target.checked })}>Show Collected</Toggle>
             </fieldset>
             <fieldset className={styles.ViewOptions}>
                 <legend>Display Options</legend>

@@ -51,6 +51,10 @@
     flex-direction: column;
 }
 
+.LedgerNoMoreItems {
+    padding: 1rem;
+}
+
 .LedgerCardView .LedgerRow {
     --grid-layout-gap: 10px;
     --grid-column-count: 16;
@@ -83,6 +87,11 @@
 
     .LedgerRow {
         box-shadow: 3px 3px 7px rgba(17, 17, 17, 0.125) inset;
+    }
+
+
+    .LedgerNoMoreItems {
+        padding: 1rem 2rem;
     }
 }
 
