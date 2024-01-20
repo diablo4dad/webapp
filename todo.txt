@@ -12,7 +12,7 @@ Requests from the Reddit publication:
 - [ ] Add "Hide Collected" filter.
 - [ ] Add Headstone, Portals and Emotes.
 - [ ] Add all standard/base transmogs for weapons and armor.
-- [ ] Update the trophies "Crest of Rathma" and "Assassin's Satchel", to
+- [x] Update the trophies "Crest of Rathma" and "Assassin's Satchel", to
       indicate they seem to be from the Dry Steppes and Kehjistan PvP zones,
       respectively.
 - [ ] Add a "collection mode" so you can quickly click collected items without
