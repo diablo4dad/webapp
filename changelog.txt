@@ -13,6 +13,7 @@ collections.
 - Filter to show/hide collected items.
 - Collapsable collections; click anywhere on the header to toggle.
 - Progress bar to track total progress with option to disable.
+- Display option to inverse the card "collected" modifier.
 
 ### Changed
 

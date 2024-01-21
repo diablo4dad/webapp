@@ -13,6 +13,7 @@ type Configuration = {
     showHidden: boolean,
     showCollected: boolean,
     view: 'card' | 'list',
+    inverseCards: boolean,
     showProgress: boolean,
 }
 
@@ -29,6 +30,7 @@ const DEFAULT_CONFIG: Configuration = {
     showCollected: true,
     view: 'card',
     showProgress: true,
+    inverseCards: false,
 }
 
 type ConfigSidebarProps = {
@@ -58,6 +60,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
             <fieldset>
                 <legend>Display Options</legend>
                 <Toggle name="card" checked={config.view === 'card'} flip={true} onChange={e => onChange({ ...config, view: e.target.checked ? 'card' : 'list'})}>Card Layout</Toggle>
+                <Toggle name="inverse" checked={config.inverseCards} flip={true} onChange={e => onChange({ ...config, inverseCards: e.target.checked })}>Inverse Cards</Toggle>
                 <Toggle name="progress" checked={config.showProgress} flip={true} onChange={e => onChange({ ...config, showProgress: e.target.checked })}>Progress Bar</Toggle>
             </fieldset>
         </div>
