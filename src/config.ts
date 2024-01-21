@@ -8,7 +8,7 @@ function getCollectionUri(): string {
     if (process.env.NODE_ENV === 'production') {
         return '/collection.json';
     } else {
-        return SERVER_ADDR + '/api/collections?populate[items][populate][0]=icon&sort[0]=order';
+        return SERVER_ADDR + '/api/collections?populate[items][populate][0]=icon&sort[0]=order&pagination[pageSize]=50';
     }
 }
 

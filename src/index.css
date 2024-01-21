@@ -1,5 +1,9 @@
 @import-normalize;
 
+* {
+  box-sizing: border-box;
+}
+
 :root {
   --card-border-color: #333;
 }

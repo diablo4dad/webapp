@@ -1,0 +1,69 @@
+/* block */
+.Progress {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem;
+    position: sticky;
+    bottom: 0; /* fix gap in chrome */
+    background-color: rgba(39, 43, 51, 0.95);
+    z-index: 1000;
+    border-top: 1px solid  #1e2126;
+    /*box-shadow: 0 -3px 3px rgba(17, 17, 17, 0.125);*/
+    justify-content: center;
+}
+
+@media screen and (min-width: 1200px) {
+    .Progress {
+        padding: 1rem 2rem;
+    }
+}
+
+/* elements */
+.ProgressBar {
+    box-sizing: content-box;
+    height: 1.25rem;
+    position: relative;
+    background: #1d2026;
+    border-radius: 25px;
+    padding: 0.5rem;
+    /*box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.25);*/
+    flex: 1;
+    align-items: center;
+    border: 1px solid #303640;
+    text-align: center;
+    width: 100%;
+
+    min-width: 20rem;
+    max-width: 40rem;
+}
+
+.ProgressBarFill {
+    display: block;
+    height: 100%;
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+    border-top-left-radius:  2rem;
+    border-bottom-left-radius: 2rem;
+    background-color: #3E885B;
+    /*background-image: linear-gradient(*/
+    /*        center bottom,*/
+    /*        #3E885B 37%,*/
+    /*        #499f6d 69%*/
+    /*);*/
+    /*box-shadow: inset 0 2px 9px rgba(255, 255, 255, 0.3),*/
+    /*inset 0 -2px 6px rgba(0, 0, 0, 0.4);*/
+    position: relative;
+    overflow: hidden;
+}
+
+.ProgressTicker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ProgressTickerText {
+
+}
+
+/* modifiers */

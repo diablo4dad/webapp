@@ -15,6 +15,7 @@ import useStore, {ItemFlag, Store} from "./Store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 import {SITE_VERSION} from "./config";
+import Progress from "./Progress";
 
 enum SideBarType {
     ITEM = 'item',
@@ -242,6 +243,12 @@ function App() {
                         view={smallScreen ? 'list' : config.view}
                         showCollected={config.showCollected}
                     ></Ledger>
+                    {config.showProgress &&
+                        <Progress
+                            totalCollected={items.reduce((a, c) => store.isCollected(c.id) ? a + 1 : a, 0)}
+                            collectionSize={items.length}
+                        ></Progress>
+                    }
                 </div>
             </section>
             <footer className={styles.AppFooter}>

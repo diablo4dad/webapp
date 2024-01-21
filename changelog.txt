@@ -9,9 +9,10 @@ collections.
 
 ### Added
 
-- Added missing "Sturdy Saddle" horse armor from Vendor collection.
-- Added filter to show/hide collected items.
-- Added collapsable collections; click anywhere on the header to toggle.
+- Missing "Sturdy Saddle" horse armor from Vendor collection.
+- Filter to show/hide collected items.
+- Collapsable collections; click anywhere on the header to toggle.
+- Progress bar to track total progress with option to disable.
 
 ### Changed
 
