@@ -104,7 +104,7 @@ function aggregateItemTypes(config: Configuration): string[] {
 }
 
 function selectItemOrDefault(items: StrapiHit<Item>[], selectedItemId: number): StrapiHit<Item> | undefined {
-    return items.filter(i => i.id === selectedItemId).pop() ?? selectRandomItem(items);
+    return items.filter(i => i.id === selectedItemId).pop() ?? items.at(0);
 }
 
 function filterDb(collection: StrapiResultSet<Collection>, store: Store, config: Configuration): StrapiResultSet<Collection> {
