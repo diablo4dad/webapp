@@ -93,6 +93,7 @@
   padding: 3rem 2rem;
   background-color: #1e2126;
   text-align: center;
+  border-top: 1px solid #1d2026;
 }
 
 .AppFooterItem:not(:last-child) {
