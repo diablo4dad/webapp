@@ -85,9 +85,9 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected}
     return (
         <>
             {db.data.map(collection => (
-                <div className={getLedgerClasses(store, collection, view)} key={collection.id}
+                <details className={getLedgerClasses(store, collection, view)} key={collection.id}
                      hidden={collection.attributes.items?.data.length === 0}>
-                    <div className={styles.LedgerGroupHeading}>
+                    <summary className={styles.LedgerGroupHeading}>
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}
                             <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
                             {process.env.NODE_ENV === 'development' &&
@@ -96,7 +96,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected}
                             }
                         </h1>
                         <div className={styles.LedgerDescription}>{collection.attributes.description}</div>
-                    </div>
+                    </summary>
                     {
                         !showCollected && isEveryItemCollected(collection) ? <div className={styles.LedgerNoMoreItems}>Complete!</div> :
                             <div className={styles.LedgerRow}>
@@ -153,7 +153,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected}
                                 )}
                             </div>
                     }
-                </div>
+                </details>
             ))}
         </>
     )

@@ -4,7 +4,7 @@ Requests from the Reddit publication:
 - [ ] Add items dropped by "super rares".
 - [ ] Add option to inverse opacity of collected items.
 - [ ] Add account log in to save progress.
-- [ ] Add collapsable groups.
+- [x] Add collapsable groups.
 - [ ] Add all store Transmogs.
 - [ ] Correct mount names;
     - [ ] Ghastly Reins -> Spectral Charger mount.
