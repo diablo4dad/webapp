@@ -242,6 +242,7 @@ function App() {
                         onDoubleClickItem={onDoubleClickItem}
                         view={smallScreen ? 'list' : config.view}
                         showCollected={config.showCollected}
+                        inverseCards={config.inverseCards}
                     ></Ledger>
                     {config.showProgress &&
                         <Progress

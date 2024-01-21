@@ -2,7 +2,7 @@ Requests from the Reddit publication:
 
 - [x] Add the missing "Sturdy Saddle" horse armor.
 - [ ] Add items dropped by "super rares".
-- [ ] Add option to inverse opacity of collected items.
+- [x] Add option to inverse opacity of collected items.
 - [ ] Add account log in to save progress.
 - [x] Add collapsable groups.
 - [ ] Add all store Transmogs.

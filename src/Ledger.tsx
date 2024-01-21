@@ -2,7 +2,7 @@ import {Collection, composeDescription, Item, StrapiHit, StrapiResultSet} from "
 import styles from "./Ledger.module.css";
 import {Store} from "./Store";
 import {getImageUri, SERVER_ADDR} from "./config";
-import React, {useEffect, useRef, useState} from "react";
+import React from "react";
 
 function countItemsInCollection(collection: StrapiHit<Collection>): number {
     return collection.attributes.items?.data.length ?? 0;
@@ -22,11 +22,12 @@ function isComplete(store: Store, collection: StrapiHit<Collection>): boolean {
     return countItemsInCollection(collection) === countItemsInCollectionOwned(store, collection)
 }
 
-function getLedgerClasses(store: Store, collection: StrapiHit<Collection>, view: 'list' | 'card'): string {
+function getLedgerClasses(store: Store, collection: StrapiHit<Collection>, view: 'list' | 'card', inverse: boolean): string {
     const classes = [
         styles.LedgerGroup,
         isComplete(store, collection) ? styles.LedgerComplete : '',
         view === 'card' ? styles.LedgerCardView : '',
+        inverse ? styles.LedgerInverse : '',
     ];
 
     return classes.filter(i => i !== '').join(' ');
@@ -66,9 +67,10 @@ type Props = {
     onDoubleClickItem: (item: StrapiHit<Item>) => void,
     view: 'list' | 'card',
     showCollected: boolean,
+    inverseCards?: boolean,
 }
 
-function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected}: Props) {
+function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected, inverseCards = false}: Props) {
     function getClassNamesForItem(item: StrapiHit<Item>) {
         return [
             styles.Artifact,
@@ -85,7 +87,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected}
     return (
         <>
             {db.data.map(collection => (
-                <details className={getLedgerClasses(store, collection, view)} key={collection.id}
+                <details className={getLedgerClasses(store, collection, view, inverseCards)} key={collection.id}
                      hidden={collection.attributes.items?.data.length === 0}>
                     <summary className={styles.LedgerGroupHeading}>
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}
