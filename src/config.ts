@@ -2,7 +2,7 @@ import {Item, StrapiHit} from "./db";
 
 const SERVER_ADDR = 'http://localhost:1337'
 const D4_BUILD = '1.2.3.47954'
-const SITE_VERSION = '1.0.0'
+const SITE_VERSION = '1.1.0'
 
 function getCollectionUri(): string {
     if (process.env.NODE_ENV === 'production') {
