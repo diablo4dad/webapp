@@ -19,7 +19,7 @@
     position: relative;
     padding: 0.5em;
     padding-left: 4em;
-    max-width: calc(100% - 2em);
+    max-width: 100%;
     cursor: pointer;
 }
 
