@@ -5,7 +5,9 @@ collections.
 
 ## [Unreleased]
 
-## [1.1.0] - 2023-02-20
+## [1.2.0] - ?
+
+## [1.1.0] - 2023-01-21
 
 ### Added
 
@@ -21,7 +23,7 @@ collections.
 - Updated the descriptions of the "Assassin's Satchel" and "Crest of Rathma"
   trophies to indicate which respective zones they drop from.
 
-## [1.0.0] - 2023-02-18
+## [1.0.0] - 2023-01-18
 
 ### Added
 
