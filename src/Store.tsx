@@ -138,7 +138,7 @@ function useStore(): Store {
   }
 
   function loadConfig(): Configuration {
-    return data.config;
+    return { ...DEFAULT_CONFIG, ...data.config };
   }
 
   return {
