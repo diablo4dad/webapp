@@ -18,4 +18,5 @@ Requests from the Reddit publication:
 - [ ] Add a "collection mode" so you can quickly click collected items without
       having to double-click or use the toggle.
 - [x] Add total count/progress bar.
-- [ ] Add the Mountain Dew and Coco Fresh Tea promotions.
+- [x] Add the Mountain Dew and Coco Fresh Tea promotions.
+- [x] Add Call of Duty items.
