@@ -59,10 +59,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 6rem;
 }
 
 .ProgressTickerText {
-
+    font-size: 1.25rem;
 }
 
 /* modifiers */
