@@ -166,7 +166,7 @@
 }
 
 .Artifact:hover .ArtifactImage {
-    filter: brightness(125%);
+    filter: brightness(125%) !important;
 }
 
 .Artifact:hover .ArtifactInfo {
@@ -305,6 +305,7 @@
 }
 
 .LedgerCardView.LedgerInverse .ArtifactImage {
+    filter: none;
 }
 
 .LedgerCardView.LedgerInverse .ArtifactName {
