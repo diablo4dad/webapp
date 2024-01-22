@@ -7,13 +7,13 @@ collections.
 
 ## [1.1.1] - 2023-01-22
 
+### Added
+
+- Overall percentage to progress bar.
+
 ### Changed
 
 - Style and layout of the site footer.
-
-### Updated
-
-- Added overall percentage to progress bar.
 
 ### Fixed
 
