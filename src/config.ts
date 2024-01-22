@@ -2,7 +2,9 @@ import {Item, StrapiHit} from "./db";
 
 const SERVER_ADDR = 'http://localhost:1337'
 const D4_BUILD = '1.2.3.47954'
-const SITE_VERSION = '1.1.0'
+const SITE_VERSION = '1.1.1'
+const LAST_UPDATED = 'January 22nd, 2024'
+const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
 
 function getCollectionUri(): string {
     if (process.env.NODE_ENV === 'production') {
@@ -24,6 +26,8 @@ export {
     D4_BUILD,
     SITE_VERSION,
     SERVER_ADDR,
+    LAST_UPDATED,
+    DISCORD_INVITE_LINK,
     getCollectionUri,
     getImageUri,
 }
