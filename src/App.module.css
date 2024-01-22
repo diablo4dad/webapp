@@ -90,14 +90,41 @@
 }
 
 .AppFooter {
-  padding: 3rem 2rem;
   background-color: #1e2126;
-  text-align: center;
   border-top: 1px solid #1d2026;
 }
 
-.AppFooterItem:not(:last-child) {
-  margin-bottom: 0.5rem;
+.AppFooterDiscord {
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.AppFooterDiscordIcon {
+  width: 4rem;
+  height: auto;
+  margin: 0 auto 0.5rem;
+}
+
+.AppFooterDiscordInfoSlugs {
+  font-size: 0.875rem;
+  color: #ccc;
+}
+
+.AppFooterDiscordLink {
+  display: inline-block;
+  text-decoration: none;
+  margin-bottom: 0.25rem;
+}
+
+.AppFooterSiteMeta {
+  font-size: 0.875rem;
+  padding: 2rem 1rem 0;
+  text-align: center;
+  color: #ccc;
+}
+
+.AppFooterSiteMeta div:not(:last-child) {
+  margin-bottom: 0.25rem;
 }
 
 @media screen and (min-width: 1200px) {
@@ -127,5 +154,29 @@
   .AppContent {
     display: flex;
     flex: 1;
+  }
+
+  .AppFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row-reverse;
+  }
+
+  .AppFooterDiscord {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: left;
+  }
+
+  .AppFooterDiscordIcon {
+    margin: 0 0.5rem 0 0;
+  }
+
+  .AppFooterSiteMeta {
+    text-align: right;
+    padding: 2rem;
   }
 }
