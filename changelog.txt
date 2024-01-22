@@ -11,6 +11,10 @@ collections.
 
 - Style and layout of the site footer.
 
+### Updated
+
+- Added overall percentage to progress bar.
+
 ### Fixed
 
 - Expired discord invite, replaced with permalink.
