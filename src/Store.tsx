@@ -1,6 +1,12 @@
 import {useState} from "react";
 import {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 
+const DEFAULT_VIEW: ViewState = {
+  ledger: {
+    // empty
+  }
+}
+
 enum ItemFlag {
   COLLECTED,
   HIDDEN,
@@ -11,6 +17,18 @@ type ArtifactMeta = {
   flags: ItemFlag[],
 }
 
+type ViewState = {
+  ledger: LedgerState,
+}
+
+type LedgerState = {
+  [key: string]: CollectionState,
+}
+
+type CollectionState = {
+  isOpen: boolean,
+}
+
 type Store = {
   data: StoreData,
   getLogEntry: (artifactId: number) => ArtifactMeta,
@@ -18,12 +36,17 @@ type Store = {
   isHidden: (artifactId: number) => boolean,
   toggle: (artifactId: number, flag?: ItemFlag) => void,
   saveConfig: (config: Configuration) => void,
-  loadConfig: () => Configuration | undefined,
+  loadConfig: () => Configuration,
+  saveView: (view: ViewState) => void,
+  loadView: () => ViewState,
+  toggleCollectionOpen: (collectionId: number, isOpen: boolean) => void,
+  isCollectionOpen: (collectionId: number) => boolean,
 }
 
 type StoreData = {
   config: Configuration,
-  collectionLog: CollectionLog
+  collectionLog: CollectionLog,
+  view: ViewState,
 }
 
 type CollectionLog = {
@@ -40,6 +63,11 @@ function initArtifactMeta(artifactId: number): ArtifactMeta {
 function initStore(): StoreData {
   return {
     config: DEFAULT_CONFIG,
+    view: {
+      ledger: {
+        // empty
+      }
+    },
     collectionLog: {
       entries: [],
     },
@@ -141,6 +169,41 @@ function useStore(): Store {
     return { ...DEFAULT_CONFIG, ...data.config };
   }
 
+  function loadView(): ViewState {
+    return {
+      ...DEFAULT_VIEW,
+      ...data.view,
+    };
+  }
+
+  function saveView(view: ViewState) {
+    const updatedData = {
+      ...data,
+      view,
+    }
+
+    setData(updatedData);
+    persistData(updatedData);
+  }
+
+  function toggleCollectionOpen(collectionId: number, isOpen: boolean) {
+    const currentData = loadView();
+    const updatedData: ViewState = {
+      ledger: {
+        ...currentData.ledger,
+        [collectionId]: {
+          isOpen
+        }
+      }
+    }
+
+    saveView(updatedData);
+  }
+
+  function isCollectionOpen(collectionId: number): boolean {
+    return loadView().ledger[collectionId]?.isOpen ?? false;
+  }
+
   return {
     data,
     getLogEntry,
@@ -149,6 +212,10 @@ function useStore(): Store {
     isHidden,
     saveConfig,
     loadConfig,
+    loadView,
+    saveView,
+    toggleCollectionOpen,
+    isCollectionOpen,
   };
 }
 

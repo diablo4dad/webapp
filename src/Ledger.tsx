@@ -88,7 +88,9 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected,
         <>
             {db.data.map(collection => (
                 <details className={getLedgerClasses(store, collection, view, inverseCards)} key={collection.id}
-                     hidden={collection.attributes.items?.data.length === 0}>
+                     hidden={collection.attributes.items?.data.length === 0}
+                     open={store.isCollectionOpen(collection.id)}
+                     onToggle={e => store.toggleCollectionOpen(collection.id, e.currentTarget.open)}>
                     <summary className={styles.LedgerGroupHeading}>
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}
                             <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
