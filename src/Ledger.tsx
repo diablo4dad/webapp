@@ -63,8 +63,8 @@ function onTouchStart(handler: () => void) {
 type Props = {
     db: StrapiResultSet<Collection>,
     store: Store,
-    onClickItem: (item: StrapiHit<Item>) => void,
-    onDoubleClickItem: (item: StrapiHit<Item>) => void,
+    onClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<Item>) => void,
+    onDoubleClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<Item>) => void,
     view: 'list' | 'card',
     showCollected: boolean,
     inverseCards?: boolean,
@@ -107,9 +107,9 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected,
                                 {(collection.attributes.items?.data ?? []).map(item =>
                                     !showCollected && store.isCollected(item.id) ? null :
                                         <div className={getClassNamesForItem(item)}
-                                             onClick={() => onClickItem(item)}
-                                             onDoubleClick={() => onDoubleClickItem(item)}
-                                             onTouchStart={onTouchStart(() => onDoubleClickItem(item))}
+                                             onClick={() => onClickItem(collection, item)}
+                                             onDoubleClick={() => onDoubleClickItem(collection, item)}
+                                             onTouchStart={onTouchStart(() => onDoubleClickItem(collection, item))}
                                              key={item.id}>
                                             <img className={styles.ArtifactImage} src={getImageUri(item)}
                                                  alt={item.attributes.name}/>

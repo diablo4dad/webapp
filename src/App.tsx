@@ -161,19 +161,20 @@ function App() {
     const [smallScreen, setSmallScreen] = useState(isScreenSmall(window));
     const filteredDb = filterDb(db, store, config);
     const items = reduceItems(filteredDb);
-    const [selectedItemId, setSelectedItemId] = useState(getDefaultItemIdForCollection(filteredDb));
+    const [selectedItemId, setSelectedItemId] = useState(store.getLastSelectedItem()?.itemId ?? getDefaultItemIdForCollection(filteredDb));
     const selectedItem = selectItemOrDefault(items, selectedItemId);
 
     function onToggleConfig() {
         setSideBar(sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG);
     }
 
-    function onClickItem(item: StrapiHit<Item>) {
+    function onClickItem(collection: StrapiHit<Collection>, item: StrapiHit<Item>) {
         setSelectedItemId(item.id);
         setSideBar(SideBarType.ITEM);
+        store.setLastSelectedItem(collection.id, item.id);
     }
 
-    function onDoubleClickItem(item: StrapiHit<Item>) {
+    function onDoubleClickItem(_: StrapiHit<Collection>, item: StrapiHit<Item>) {
         store.toggle(item.id);
     }
 
