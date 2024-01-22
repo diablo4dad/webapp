@@ -5,6 +5,12 @@ collections.
 
 ## [Unreleased]
 
+## [1.1.2] - 2023-01-23
+
+### Fixed
+
+- Overall percentage text squashed on small screens.
+
 ## [1.1.1] - 2023-01-22
 
 ### Added
