@@ -17,6 +17,26 @@ import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 import {DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
 import Progress from "./Progress";
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+    apiKey: "AIzaSyDT_Sh2rufVus0ISono5Pb4ZGnU1LDF8CU",
+    authDomain: "d4log-bfc60.firebaseapp.com",
+    projectId: "d4log-bfc60",
+    storageBucket: "d4log-bfc60.appspot.com",
+    messagingSenderId: "37093938675",
+    appId: "1:37093938675:web:a529225838441b0780ae86",
+    measurementId: "G-DJ7FMXPHKQ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 enum SideBarType {
     ITEM = 'item',
     CONFIG = 'config'

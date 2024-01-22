@@ -10,6 +10,7 @@ collections.
 ### Added
 
 - Overall percentage to progress bar.
+- Analytics for usage/visitation visibility.
 
 ### Changed
 
