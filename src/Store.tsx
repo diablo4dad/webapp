@@ -19,6 +19,12 @@ type ArtifactMeta = {
 
 type ViewState = {
   ledger: LedgerState,
+  lastSelected?: Selection,
+}
+
+type Selection = {
+  collectionId: number,
+  itemId: number,
 }
 
 type LedgerState = {
@@ -41,6 +47,8 @@ type Store = {
   loadView: () => ViewState,
   toggleCollectionOpen: (collectionId: number, isOpen: boolean) => void,
   isCollectionOpen: (collectionId: number) => boolean,
+  setLastSelectedItem: (collectionId: number, itemId: number) => void,
+  getLastSelectedItem: () => Selection | undefined,
 }
 
 type StoreData = {
@@ -189,6 +197,7 @@ function useStore(): Store {
   function toggleCollectionOpen(collectionId: number, isOpen: boolean) {
     const currentData = loadView();
     const updatedData: ViewState = {
+      ...currentData,
       ledger: {
         ...currentData.ledger,
         [collectionId]: {
@@ -204,6 +213,23 @@ function useStore(): Store {
     return loadView().ledger[collectionId]?.isOpen ?? false;
   }
 
+  function setLastSelectedItem(collectionId: number, itemId: number) {
+    const currentData = loadView();
+    const updatedData: ViewState = {
+      ...currentData,
+      lastSelected: {
+        collectionId,
+        itemId,
+      }
+    }
+
+    saveView(updatedData);
+  }
+
+  function getLastSelectedItem(): Selection | undefined {
+    return loadView().lastSelected;
+  }
+
   return {
     data,
     getLogEntry,
@@ -216,6 +242,8 @@ function useStore(): Store {
     saveView,
     toggleCollectionOpen,
     isCollectionOpen,
+    setLastSelectedItem,
+    getLastSelectedItem,
   };
 }
 
