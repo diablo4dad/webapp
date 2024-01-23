@@ -210,66 +210,62 @@ function App() {
     }, []);
 
     return (
-        <div className={styles.App}>
-            <section className={styles.AppContent}>
-                <aside className={styles.AppSideBar}>
-                    <div className={styles.AppSideBarContent}>
-                        <div className={styles.AppSideBarContentTop}>
-                            <header className={styles.AppHeader}>
-                                <div className={styles.AppIconHolder}>
-                                    <img className={styles.AppIcon} src={logo} alt="Diablo 4"/>
-                                </div>
-                                <div className={styles.AppNameHolder}>
-                                    <div className={styles.AppName}>Diablo IV Collection Log</div>
-                                    <div className={styles.AppTagLine}>Bringing closure to the completionist in you.</div>
-                                </div>
-                                <div className={styles.AppSettings}>
-                                    <button className={getConfigBtnClasses()} onClick={onToggleConfig}>
-                                        <Gear />
-                                    </button>
-                                </div>
-                            </header>
-                            {sideBar === SideBarType.ITEM && selectedItem &&
-                                <ItemSidebar
-                                    item={selectedItem}
-                                    hidden={store.isHidden(selectedItemId)}
-                                    collected={store.isCollected(selectedItemId)}
-                                    onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
-                                    onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
-                                ></ItemSidebar>
-                            }
-                            {sideBar === SideBarType.CONFIG &&
-                                <ConfigSidebar
-                                    config={config}
-                                    onChange={onConfigChange}
-                                ></ConfigSidebar>
-                            }
-                        </div>
-                        <footer className={styles.AppSideBarContentBottom}>
-                            <DiscordInvite></DiscordInvite>
-                            <VersionInfo></VersionInfo>
-                        </footer>
+        <div className={styles.Shell}>
+            <aside className={styles.Sidebar}>
+                <div className={styles.SideBarContent}>
+                    <div className={styles.SideBarContentTop}>
+                        <header className={styles.Header}>
+                            <img className={styles.HeaderIcon} src={logo} alt="Diablo 4"/>
+                            <div className={styles.HeaderInfo}>
+                                <div className={styles.HeaderName}>Diablo IV Collection Log</div>
+                                <div className={styles.HeaderTagLine}>Bringing closure to the completionist in you.</div>
+                            </div>
+                            <div className={styles.HeaderButtons}>
+                                <button className={getConfigBtnClasses()} onClick={onToggleConfig}>
+                                    <Gear />
+                                </button>
+                            </div>
+                        </header>
+                        {sideBar === SideBarType.ITEM && selectedItem &&
+                            <ItemSidebar
+                                item={selectedItem}
+                                hidden={store.isHidden(selectedItemId)}
+                                collected={store.isCollected(selectedItemId)}
+                                onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
+                                onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
+                            ></ItemSidebar>
+                        }
+                        {sideBar === SideBarType.CONFIG &&
+                            <ConfigSidebar
+                                config={config}
+                                onChange={onConfigChange}
+                            ></ConfigSidebar>
+                        }
                     </div>
-                </aside>
-                <div className={styles.AppContentMain}>
-                    <Ledger
-                        db={filteredDb}
-                        store={store}
-                        onClickItem={onClickItem}
-                        onDoubleClickItem={onDoubleClickItem}
-                        view={smallScreen ? 'list' : config.view}
-                        showCollected={config.showCollected}
-                        inverseCards={config.inverseCards}
-                    ></Ledger>
-                    {config.showProgress &&
-                        <Progress
-                            totalCollected={items.reduce((a, c) => store.isCollected(c.id) ? a + 1 : a, 0)}
-                            collectionSize={items.length}
-                        ></Progress>
-                    }
+                    <footer className={styles.SideBarContentBottom}>
+                        <DiscordInvite></DiscordInvite>
+                        <VersionInfo></VersionInfo>
+                    </footer>
                 </div>
-            </section>
-            <footer className={styles.AppFooter}>
+            </aside>
+            <main className={styles.Content}>
+                <Ledger
+                    db={filteredDb}
+                    store={store}
+                    onClickItem={onClickItem}
+                    onDoubleClickItem={onDoubleClickItem}
+                    view={smallScreen ? 'list' : config.view}
+                    showCollected={config.showCollected}
+                    inverseCards={config.inverseCards}
+                ></Ledger>
+                {config.showProgress &&
+                    <Progress
+                        totalCollected={items.reduce((a, c) => store.isCollected(c.id) ? a + 1 : a, 0)}
+                        collectionSize={items.length}
+                    ></Progress>
+                }
+            </main>
+            <footer className={styles.Footer}>
                 <DiscordInvite></DiscordInvite>
                 <VersionInfo></VersionInfo>
             </footer>
