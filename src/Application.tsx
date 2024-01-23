@@ -211,9 +211,9 @@ function Application(): ReactElement<HTMLDivElement> {
     return (
         <div className={styles.Shell}>
             <aside className={styles.Sidebar}>
-                <div className={styles.SidebarContent}>
-                    <div className={styles.SidebarContentTop}>
-                        <header className={styles.Header}>
+                <div className={styles.SidebarLayout}>
+                    <div className={styles.SidebarLayoutTop}>
+                        <header className={styles.SidebarHeader}>
                             <img className={styles.HeaderIcon} src={logo} alt="Diablo 4"/>
                             <div className={styles.HeaderInfo}>
                                 <div className={styles.HeaderInfoName}>Diablo IV Collection Log</div>
@@ -226,19 +226,25 @@ function Application(): ReactElement<HTMLDivElement> {
                                 </button>
                             </div>
                         </header>
-                        {sideBar === SideBarType.ITEM && selectedItem && <ItemSidebar
-                            item={selectedItem}
-                            hidden={store.isHidden(selectedItemId)}
-                            collected={store.isCollected(selectedItemId)}
-                            onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
-                            onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
-                        />}
-                        {sideBar === SideBarType.CONFIG && <ConfigSidebar
-                            config={config}
-                            onChange={onConfigChange}
-                        />}
+                        <section className={styles.SidebarContent}>
+                            {sideBar === SideBarType.ITEM && selectedItem &&
+                                <ItemSidebar
+                                    item={selectedItem}
+                                    hidden={store.isHidden(selectedItemId)}
+                                    collected={store.isCollected(selectedItemId)}
+                                    onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
+                                    onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
+                                />
+                            }
+                            {sideBar === SideBarType.CONFIG &&
+                                <ConfigSidebar
+                                    config={config}
+                                    onChange={onConfigChange}
+                                />
+                            }
+                        </section>
                     </div>
-                    <div className={styles.SidebarContentBottom}>
+                    <div className={styles.SidebarLayoutBottom}>
                         <footer className={styles.SidebarFooter}>
                             <DiscordInvite />
                             <VersionInfo />
@@ -256,10 +262,12 @@ function Application(): ReactElement<HTMLDivElement> {
                     showCollected={config.showCollected}
                     inverseCards={config.inverseCards}
                 />
-                {config.showProgress && <Progress
-                    totalCollected={items.reduce((a, c) => store.isCollected(c.id) ? a + 1 : a, 0)}
-                    collectionSize={items.length}
-                />}
+                {config.showProgress &&
+                    <Progress
+                        totalCollected={items.reduce((a, c) => store.isCollected(c.id) ? a + 1 : a, 0)}
+                        collectionSize={items.length}
+                    />
+                }
             </main>
             <footer className={styles.Footer}>
                 <DiscordInvite />

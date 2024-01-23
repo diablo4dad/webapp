@@ -13,15 +13,20 @@
   background-color: #252930;
 }
 
-.SidebarContent {
-  display: block;
+.SidebarLayout {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
-.SidebarContentTop {
-  display: block;
+.SidebarLayoutTop {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto;
 }
 
-.SidebarContentBottom {
+.SidebarLayoutBottom {
   display: none;
 }
 
@@ -29,13 +34,20 @@
   display: block;
 }
 
-.Header {
+.SidebarHeader {
   height: 6rem;
   display: flex;
   padding: 1rem;
   background-color: #1e2126;
   box-sizing: border-box;
   align-items: center;
+}
+
+.SidebarContent {
+  flex: 1;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
 }
 
 .HeaderIcon {
@@ -150,7 +162,7 @@
     flex-direction: row;
   }
 
-  .Header {
+  .SidebarHeader {
     padding: 1rem 2rem;
   }
 
@@ -166,7 +178,7 @@
     z-index: 10;
   }
 
-  .SidebarContent {
+  .SidebarLayout {
     position: sticky;
     top: 0;
 
@@ -176,7 +188,7 @@
     height: 100vh;
   }
 
-  .SidebarContentBottom {
+  .SidebarLayoutBottom {
     display: block;
   }
 
