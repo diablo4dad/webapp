@@ -9,7 +9,7 @@ import fetchDb, {
 } from "./db"
 import logo from "./d4ico.png"
 
-import styles from './App.module.css';
+import styles from './Application.module.css';
 import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./Store";
 import ItemSidebar from './ItemSidebar';
@@ -35,8 +35,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const application = initializeApp(firebaseConfig);
+const analytics = getAnalytics(application);
 
 enum SideBarType {
     ITEM = 'item',
