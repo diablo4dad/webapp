@@ -153,7 +153,7 @@ function DiscordInvite(): ReactElement<HTMLDivElement> {
     );
 }
 
-function App(): ReactElement<HTMLDivElement> {
+function Application(): ReactElement<HTMLDivElement> {
     const store = useStore();
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
@@ -226,32 +226,28 @@ function App(): ReactElement<HTMLDivElement> {
                                 </button>
                             </div>
                         </header>
-                        {sideBar === SideBarType.ITEM && selectedItem &&
-                            <ItemSidebar
-                                item={selectedItem}
-                                hidden={store.isHidden(selectedItemId)}
-                                collected={store.isCollected(selectedItemId)}
-                                onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
-                                onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
-                            ></ItemSidebar>
-                        }
-                        {sideBar === SideBarType.CONFIG &&
-                            <ConfigSidebar
-                                config={config}
-                                onChange={onConfigChange}
-                            ></ConfigSidebar>
-                        }
+                        {sideBar === SideBarType.ITEM && selectedItem && <ItemSidebar
+                            item={selectedItem}
+                            hidden={store.isHidden(selectedItemId)}
+                            collected={store.isCollected(selectedItemId)}
+                            onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
+                            onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
+                        />}
+                        {sideBar === SideBarType.CONFIG && <ConfigSidebar
+                            config={config}
+                            onChange={onConfigChange}
+                        />}
                     </div>
                     <div className={styles.SidebarContentBottom}>
                         <footer className={styles.SidebarFooter}>
-                            <DiscordInvite></DiscordInvite>
-                            <VersionInfo></VersionInfo>
+                            <DiscordInvite />
+                            <VersionInfo />
                         </footer>
                     </div>
                 </div>
             </aside>
             <main className={styles.Content}>
-            <Ledger
+                <Ledger
                     db={filteredDb}
                     store={store}
                     onClickItem={onClickItem}
@@ -259,20 +255,18 @@ function App(): ReactElement<HTMLDivElement> {
                     view={smallScreen ? 'list' : config.view}
                     showCollected={config.showCollected}
                     inverseCards={config.inverseCards}
-                ></Ledger>
-                {config.showProgress &&
-                    <Progress
-                        totalCollected={items.reduce((a, c) => store.isCollected(c.id) ? a + 1 : a, 0)}
-                        collectionSize={items.length}
-                    ></Progress>
-                }
+                />
+                {config.showProgress && <Progress
+                    totalCollected={items.reduce((a, c) => store.isCollected(c.id) ? a + 1 : a, 0)}
+                    collectionSize={items.length}
+                />}
             </main>
             <footer className={styles.Footer}>
-                <DiscordInvite></DiscordInvite>
-                <VersionInfo></VersionInfo>
+                <DiscordInvite />
+                <VersionInfo />
             </footer>
         </div>
     );
 }
 
-export default App;
+export default Application;
