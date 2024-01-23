@@ -1,10 +1,10 @@
 import {composeDescription, Item, StrapiHit} from "./db"
 import styles from "./ItemSidebar.module.css"
-import necromancer from "./necromancer.webp"
-import druid from "./druid.webp"
-import rogue from "./rogue.webp"
-import barbarian from "./barbarian.webp"
-import sorceress from "./sorceress.webp"
+import necromancer from "./ gfx/necromancer.webp"
+import druid from "./ gfx/druid.webp"
+import rogue from "./ gfx/rogue.webp"
+import barbarian from "./ gfx/barbarian.webp"
+import sorceress from "./ gfx/sorceress.webp"
 import Toggle from "./Toggle";
 import {getImageUri, SERVER_ADDR} from "./config";
 
