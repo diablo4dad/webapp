@@ -61,9 +61,11 @@ function ItemSidebar({item, collected, hidden, onClickCollected, onClickHidden}:
                 {item.attributes.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
             </div>
             <div className={styles.ItemMeta}>
-                Item ID: {item.attributes.itemId}
-                {process.env.NODE_ENV === "development" && <span> | <a href={generateEditUrl(item)} target="_blank">Edit</a></span>}
-                {process.env.NODE_ENV === "development" && <span> | Icon ID: {item.attributes.iconId}</span>}
+                <div>
+                    Item ID: {item.attributes.itemId}
+                    {process.env.NODE_ENV === "development" && <span> | <a href={generateEditUrl(item)} target="_blank">Edit</a></span>}
+                </div>
+                {process.env.NODE_ENV === "development" && <div>Image ID: {item.attributes.iconId}</div>}
             </div>
         </div>
     );

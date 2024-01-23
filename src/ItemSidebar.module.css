@@ -126,6 +126,10 @@
     margin-bottom: 1rem;
 }
 
+.ItemMeta > div {
+    margin-bottom: 0.25rem;
+}
+
 .ItemTag {
     display: inline-block;
     background-color: #3E885B;

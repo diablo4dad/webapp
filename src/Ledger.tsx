@@ -95,8 +95,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected,
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}
                             <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
                             {process.env.NODE_ENV === 'development' &&
-                                <span className={styles.LedgerEdit}> |
-                                <a target="_blank" href={generateEditCategoryUrl(collection)} rel="noreferrer">Edit</a></span>
+                                <span className={styles.LedgerEdit}> | <a target="_blank" href={generateEditCategoryUrl(collection)} rel="noreferrer">Edit</a></span>
                             }
                         </h1>
                         <div className={styles.LedgerDescription}>{collection.attributes.description}</div>
