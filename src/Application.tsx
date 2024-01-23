@@ -226,6 +226,8 @@ function Application(): ReactElement<HTMLDivElement> {
                                 </button>
                             </div>
                         </header>
+                    </div>
+                    <div className={styles.SidebarLayoutBottom}>
                         <section className={styles.SidebarContent}>
                             {sideBar === SideBarType.ITEM && selectedItem &&
                                 <ItemSidebar
@@ -243,11 +245,9 @@ function Application(): ReactElement<HTMLDivElement> {
                                 />
                             }
                         </section>
-                    </div>
-                    <div className={styles.SidebarLayoutBottom}>
                         <footer className={styles.SidebarFooter}>
-                            <DiscordInvite />
-                            <VersionInfo />
+                            <DiscordInvite/>
+                            <VersionInfo/>
                         </footer>
                     </div>
                 </div>
@@ -270,8 +270,8 @@ function Application(): ReactElement<HTMLDivElement> {
                 }
             </main>
             <footer className={styles.Footer}>
-                <DiscordInvite />
-                <VersionInfo />
+                <DiscordInvite/>
+                <VersionInfo/>
             </footer>
         </div>
     );
