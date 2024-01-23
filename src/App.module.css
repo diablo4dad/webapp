@@ -85,18 +85,25 @@
   background-color: #252930;
 }
 
+.AppSideBarContentBottom {
+  display: none;
+}
+
 .AppContentMain {
   width: 100%;
 }
 
 .AppFooter {
+  display: block;
   background-color: #1e2126;
   border-top: 1px solid #1d2026;
 }
 
 .AppFooterDiscord {
-  padding: 2rem 1rem;
+  padding: 0 1rem;
   text-align: center;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 .AppFooterDiscordIcon {
@@ -118,7 +125,8 @@
 
 .AppFooterSiteMeta {
   font-size: 0.875rem;
-  padding: 2rem 1rem 0;
+  padding: 0 1rem;
+  margin-bottom: 2rem;
   text-align: center;
   color: #ccc;
 }
@@ -146,9 +154,17 @@
     border-bottom: none;
   }
 
-  .AppSideBar > div {
+  .AppSideBarContent {
+    display: flex;
+    flex-direction: column;
     position: sticky;
     top: 0;
+    justify-content: space-between;
+    height: 100vh;
+  }
+
+  .AppSideBarContentBottom {
+    display: block;
   }
 
   .AppContent {
@@ -157,26 +173,35 @@
   }
 
   .AppFooter {
-    display: flex;
+    display: none;
     justify-content: space-between;
     align-items: center;
-    flex-direction: row-reverse;
   }
 
   .AppFooterDiscord {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
+    padding: 1rem 2rem;
     text-align: left;
+    margin: 0;
+    background-color: #303640;
   }
 
   .AppFooterDiscordIcon {
-    margin: 0 0.5rem 0 0;
+    margin: 0 1rem 0 0;
+  }
+
+  .AppFooterDiscordInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .AppFooterSiteMeta {
-    text-align: right;
-    padding: 2rem;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin: 0;
+    padding: 1rem 2rem;
   }
 }
