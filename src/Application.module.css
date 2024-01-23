@@ -22,15 +22,14 @@
 .SidebarLayoutTop {
   display: flex;
   flex-direction: column;
-  overflow: auto;
 }
 
 .SidebarLayoutBottom {
-  display: none;
+  display: block;
 }
 
 .SidebarFooter {
-  display: block;
+  display: none;
 }
 
 .SidebarHeader {
@@ -186,6 +185,10 @@
     height: 100vh;
   }
 
+  .SidebarFooter {
+    display: block;
+  }
+
   .SidebarLayoutBottom {
     display: flex;
     flex: 1;
@@ -224,5 +227,9 @@
     gap: 1rem;
     margin: 0;
     padding: 1rem 2rem;
+  }
+
+  .SiteVersion div:not(:last-child) {
+    margin-bottom: 0;
   }
 }
