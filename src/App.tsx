@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import fetchDb, {
     Collection,
     createEmptyResultSet,
@@ -154,7 +154,33 @@ function isScreenSmall(window: Window): boolean {
     return window.innerWidth <= 1200;
 }
 
-function App() {
+
+function VersionInfo(): ReactElement<HTMLDivElement> {
+    return (
+        <div className={styles.SiteVersion}>
+            <div>Last updated {LAST_UPDATED}</div>
+            <div>Site Version <code>{SITE_VERSION}</code></div>
+        </div>
+    );
+}
+
+function DiscordInvite(): ReactElement<HTMLDivElement> {
+    return (
+        <div className={styles.Discord}>
+            <div className={styles.DiscordIcon}>
+                <a href={DISCORD_INVITE_LINK}>
+                    <Discord></Discord>
+                </a>
+            </div>
+            <div className={styles.DiscordInfo}>
+                <a className={styles.DiscordInfoLink} href={DISCORD_INVITE_LINK}>Join the Discord Server</a>
+                <div className={styles.DiscordInfoSlugs}>Patch Notes | Job Board | Bragging</div>
+            </div>
+        </div>
+    );
+}
+
+function App(): ReactElement<HTMLDivElement> {
     const store = useStore();
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
@@ -185,7 +211,7 @@ function App() {
     }
 
     function getConfigBtnClasses() {
-        return styles.AppSettingsBtn + (sideBar === 'config' ? ' ' + styles.AppSettingsBtnPressed : '');
+        return styles.HeaderButton + (sideBar === 'config' ? ' ' + styles.HeaderButtonPressed : '');
     }
 
     useEffect(() => {
@@ -212,13 +238,14 @@ function App() {
     return (
         <div className={styles.Shell}>
             <aside className={styles.Sidebar}>
-                <div className={styles.SideBarContent}>
-                    <div className={styles.SideBarContentTop}>
+                <div className={styles.SidebarContent}>
+                    <div className={styles.SidebarContentTop}>
                         <header className={styles.Header}>
                             <img className={styles.HeaderIcon} src={logo} alt="Diablo 4"/>
                             <div className={styles.HeaderInfo}>
-                                <div className={styles.HeaderName}>Diablo IV Collection Log</div>
-                                <div className={styles.HeaderTagLine}>Bringing closure to the completionist in you.</div>
+                                <div className={styles.HeaderInfoName}>Diablo IV Collection Log</div>
+                                <div className={styles.HeaderInfoTagLine}>Bringing closure to the completionist in you.
+                                </div>
                             </div>
                             <div className={styles.HeaderButtons}>
                                 <button className={getConfigBtnClasses()} onClick={onToggleConfig}>
@@ -242,14 +269,16 @@ function App() {
                             ></ConfigSidebar>
                         }
                     </div>
-                    <footer className={styles.SideBarContentBottom}>
-                        <DiscordInvite></DiscordInvite>
-                        <VersionInfo></VersionInfo>
-                    </footer>
+                    <div className={styles.SidebarContentBottom}>
+                        <footer className={styles.SidebarFooter}>
+                            <DiscordInvite></DiscordInvite>
+                            <VersionInfo></VersionInfo>
+                        </footer>
+                    </div>
                 </div>
             </aside>
             <main className={styles.Content}>
-                <Ledger
+            <Ledger
                     db={filteredDb}
                     store={store}
                     onClickItem={onClickItem}
@@ -269,31 +298,6 @@ function App() {
                 <DiscordInvite></DiscordInvite>
                 <VersionInfo></VersionInfo>
             </footer>
-        </div>
-    );
-}
-
-function VersionInfo() {
-    return (
-        <div className={styles.AppFooterSiteMeta}>
-            <div>Last updated {LAST_UPDATED}</div>
-            <div>Site Version <code>{SITE_VERSION}</code></div>
-        </div>
-    );
-}
-
-function DiscordInvite() {
-    return (
-        <div className={styles.AppFooterDiscord}>
-            <div className={styles.AppFooterDiscordIcon}>
-                <a href={DISCORD_INVITE_LINK}>
-                    <Discord></Discord>
-                </a>
-            </div>
-            <div className={styles.AppFooterDiscordInfo}>
-                <a className={styles.AppFooterDiscordLink} href={DISCORD_INVITE_LINK}>Join the Discord Server</a>
-                <div className={styles.AppFooterDiscordInfoSlugs}>Patch Notes | Job Board | Bragging</div>
-            </div>
         </div>
     );
 }
