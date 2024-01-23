@@ -12,6 +12,10 @@ collections.
 - Remember collection open/closed state.
 - Remember last selected item.
 
+### Changed
+
+- Moved Discord link and site info from footer to sidebar (xl).
+
 ### Fixed
 
 - Overall percentage text squashed on small screens.
