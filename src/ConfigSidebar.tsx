@@ -57,7 +57,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="hidden" checked={config.showHidden} flip={true} onChange={e => onChange({ ...config, showHidden: e.target.checked })}>Show Hidden</Toggle>
                 <Toggle name="collected" checked={config.showCollected} flip={true} onChange={e => onChange({ ...config, showCollected: e.target.checked })}>Show Collected</Toggle>
             </fieldset>
-            <fieldset>
+            <fieldset className={styles.ViewOptions}>
                 <legend>Display Options</legend>
                 <Toggle name="card" checked={config.view === 'card'} flip={true} onChange={e => onChange({ ...config, view: e.target.checked ? 'card' : 'list'})}>Card Layout</Toggle>
                 <Toggle name="inverse" checked={config.inverseCards} flip={true} onChange={e => onChange({ ...config, inverseCards: e.target.checked })}>Inverse Cards</Toggle>
