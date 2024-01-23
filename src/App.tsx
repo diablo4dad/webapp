@@ -212,7 +212,7 @@ function App() {
     return (
         <div className={styles.App}>
             <section className={styles.AppContent}>
-                <div className={styles.AppSideBar}>
+                <aside className={styles.AppSideBar}>
                     <div className={styles.AppSideBarContent}>
                         <div className={styles.AppSideBarContentTop}>
                             <header className={styles.AppHeader}>
@@ -245,12 +245,12 @@ function App() {
                                 ></ConfigSidebar>
                             }
                         </div>
-                        <div className={styles.AppSideBarContentBottom}>
+                        <footer className={styles.AppSideBarContentBottom}>
                             <DiscordInvite></DiscordInvite>
                             <VersionInfo></VersionInfo>
-                        </div>
+                        </footer>
                     </div>
-                </div>
+                </aside>
                 <div className={styles.AppContentMain}>
                     <Ledger
                         db={filteredDb}
@@ -270,12 +270,8 @@ function App() {
                 </div>
             </section>
             <footer className={styles.AppFooter}>
-                <div className={styles.AppFooterItem}>
-                    <DiscordInvite></DiscordInvite>
-                </div>
-                <div className={styles.AppFooterItem}>
-                    <VersionInfo></VersionInfo>
-                </div>
+                <DiscordInvite></DiscordInvite>
+                <VersionInfo></VersionInfo>
             </footer>
         </div>
     );
