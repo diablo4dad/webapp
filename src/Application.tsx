@@ -16,27 +16,7 @@ import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 import {DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
 import Progress from "./Progress";
-
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import {Discord, Gear} from "./Icons";
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyDT_Sh2rufVus0ISono5Pb4ZGnU1LDF8CU",
-    authDomain: "d4log-bfc60.firebaseapp.com",
-    projectId: "d4log-bfc60",
-    storageBucket: "d4log-bfc60.appspot.com",
-    messagingSenderId: "37093938675",
-    appId: "1:37093938675:web:a529225838441b0780ae86",
-    measurementId: "G-DJ7FMXPHKQ"
-};
-
-// Initialize Firebase
-const application = initializeApp(firebaseConfig);
-const analytics = getAnalytics(application);
 
 enum SideBarType {
     ITEM = 'item',
@@ -63,13 +43,6 @@ const itemGroups = new Map([
 // https://www.thegamer.com/diablo-4-all-mount-trophies-unlock-guide/#diablo-4-all-pve-mount-trophies
 // https://www.wowhead.com/diablo-4/guide/gameplay/all-mounts-appearances-sources
 // https://www.reddit.com/r/diablo4/comments/17d68kq/ultimate_fomo_guide_2_all_d4_events_and_promotions/?rdt=39151
-
-// disable console logging in prod
-if (process.env.NODE_ENV === 'production') {
-    console.log = function () {
-        return;
-    };
-}
 
 function selectRandomItem(items: StrapiHit<Item>[]): StrapiHit<Item> | undefined {
     return items[Math.floor(Math.random() * items.length)];
