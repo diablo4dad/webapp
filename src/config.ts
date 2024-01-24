@@ -2,8 +2,8 @@ import {Item, StrapiHit} from "./db";
 
 const SERVER_ADDR = 'http://localhost:1337'
 const D4_BUILD = '1.2.3.47954'
-const SITE_VERSION = '1.1.2'
-const LAST_UPDATED = 'January 23rd, 2024'
+const SITE_VERSION = '1.1.3'
+const LAST_UPDATED = 'January 24th, 2024'
 const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
 
 function getCollectionUri(): string {

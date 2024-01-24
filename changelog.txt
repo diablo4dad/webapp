@@ -5,6 +5,17 @@ collections.
 
 ## [Unreleased]
 
+## [1.1.3] - 2023-01-24
+
+### Added
+
+- Season of the Construct collection with Battle Pass items
+- Lord Zirs head trophy to Dungeon Boss collection
+
+### Changed
+
+- Marked Season of Blood collection as out of rotation
+
 ## [1.1.2] - 2023-01-23
 
 ### Added
