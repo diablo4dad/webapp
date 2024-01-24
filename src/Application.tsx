@@ -147,7 +147,7 @@ function DiscordInvite(): ReactElement<HTMLDivElement> {
             </div>
             <div className={styles.DiscordInfo}>
                 <a className={styles.DiscordInfoLink} href={DISCORD_INVITE_LINK}>Join the Discord Server</a>
-                <div className={styles.DiscordInfoSlugs}>Patch Notes | Job Board | Bragging</div>
+                <div className={styles.DiscordInfoSlugs}>Site News | Help Wanted | Bragging</div>
             </div>
         </div>
     );
