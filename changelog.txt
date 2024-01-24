@@ -9,12 +9,13 @@ collections.
 
 ### Added
 
-- Season of the Construct collection with Battle Pass items
-- Lord Zirs head trophy to Dungeon Boss collection
+- Season of the Construct collection with Battle Pass items.
+- Zir's Bloody Skull and Varshan's Severed Head to respective season
+  collections.
 
 ### Changed
 
-- Marked Season of Blood collection as out of rotation
+- Marked Season of Blood collection as out of rotation.
 
 ## [1.1.2] - 2023-01-23
 
