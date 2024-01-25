@@ -23,12 +23,13 @@ function isComplete(store: Store, collection: StrapiHit<Collection>): boolean {
     return countItemsInCollection(collection) === countItemsInCollectionOwned(store, collection)
 }
 
-function getLedgerClasses(store: Store, collection: StrapiHit<Collection>, view: 'list' | 'card', inverse: boolean): string {
+function getLedgerClasses(isComplete: boolean, hideComplete: boolean, inverse: boolean, view: 'list' | 'card'): string {
     const classes = [
         styles.LedgerGroup,
-        isComplete(store, collection) ? styles.LedgerComplete : '',
+        isComplete ? styles.LedgerComplete : '',
         view === 'card' ? styles.LedgerCardView : '',
         inverse ? styles.LedgerInverse : '',
+        hideComplete && isComplete ? styles.LedgerHidden : '',
     ];
 
     return classes.filter(i => i !== '').join(' ');
@@ -66,12 +67,13 @@ type Props = {
     store: Store,
     onClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<Item>) => void,
     onDoubleClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<Item>) => void,
+    hideCollectedItems: boolean,
+    hideCompleteCollections: boolean,
+    inverseCardLayout: boolean,
     view: 'list' | 'card',
-    showCollected: boolean,
-    inverseCards?: boolean,
 }
 
-function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected, inverseCards = false}: Props) {
+function Ledger({db, store, onClickItem, onDoubleClickItem, view, hideCollectedItems, hideCompleteCollections, inverseCardLayout}: Props) {
     function getClassNamesForItem(item: StrapiHit<Item>) {
         return [
             styles.Artifact,
@@ -88,10 +90,13 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected,
     return (
         <>
             {db.data.map(collection => (
-                <details className={getLedgerClasses(store, collection, view, inverseCards)} key={collection.id}
-                     hidden={collection.attributes.items?.data.length === 0}
-                     open={store.isCollectionOpen(collection.id)}
-                     onToggle={e => store.toggleCollectionOpen(collection.id, e.currentTarget.open)}>
+                <details
+                    className={getLedgerClasses(isComplete(store, collection), hideCompleteCollections, inverseCardLayout, view)}
+                    key={collection.id}
+                    hidden={collection.attributes.items?.data.length === 0}
+                    open={store.isCollectionOpen(collection.id)}
+                    onToggle={e => store.toggleCollectionOpen(collection.id, e.currentTarget.open)}
+                >
                     <summary className={styles.LedgerGroupHeading}>
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}
                             <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
@@ -102,10 +107,10 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, showCollected,
                         <div className={styles.LedgerDescription}>{collection.attributes.description}</div>
                     </summary>
                     {
-                        !showCollected && isEveryItemCollected(collection) ? <div className={styles.LedgerNoMoreItems}>Complete!</div> :
+                        hideCollectedItems && isEveryItemCollected(collection) ? <div className={styles.LedgerNoMoreItems}>Complete!</div> :
                             <div className={styles.LedgerRow}>
                                 {(collection.attributes.items?.data ?? []).map(item =>
-                                    !showCollected && store.isCollected(item.id) ? null :
+                                    hideCollectedItems && store.isCollected(item.id) ? null :
                                         <div className={getClassNamesForItem(item)}
                                              onClick={() => onClickItem(collection, item)}
                                              onDoubleClick={() => onDoubleClickItem(collection, item)}

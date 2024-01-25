@@ -5,6 +5,16 @@ collections.
 
 ## [Unreleased]
 
+## [1.1.4] - 2023-01-25
+
+### Added
+
+- Filter to hide complete collections (including header).
+
+### Changed
+
+- Renamed filter and display settings to make their purpose clearer.
+
 ## [1.1.3] - 2023-01-24
 
 ### Added
