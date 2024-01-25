@@ -116,7 +116,7 @@ function filterDb(collection: StrapiResultSet<Collection>, store: Store, config:
         c = filterCollectionItems(c, filterPromotionalItems());
     }
 
-    if (!config.showHidden) {
+    if (!config.showHiddenItems) {
         c = filterCollectionItems(c, filterHiddenItems(store));
     }
 
@@ -147,7 +147,7 @@ function DiscordInvite(): ReactElement<HTMLDivElement> {
             </div>
             <div className={styles.DiscordInfo}>
                 <a className={styles.DiscordInfoLink} href={DISCORD_INVITE_LINK}>Join the Discord Server</a>
-                <div className={styles.DiscordInfoSlugs}>Site News | Help Wanted | Bragging</div>
+                <div className={styles.DiscordInfoSlugs}>Site News | Help Needed | Bragging</div>
             </div>
         </div>
     );
@@ -259,12 +259,13 @@ function Application(): ReactElement<HTMLDivElement> {
                     onClickItem={onClickItem}
                     onDoubleClickItem={onDoubleClickItem}
                     view={smallScreen ? 'list' : config.view}
-                    showCollected={config.showCollected}
-                    inverseCards={config.inverseCards}
+                    hideCollectedItems={config.hideCollectedItems}
+                    hideCompleteCollections={config.hideCompleteCollections}
+                    inverseCardLayout={config.inverseCardLayout}
                 />
-                {config.showProgress &&
+                {config.enableProgressBar &&
                     <Progress
-                        totalCollected={items.reduce((a, c) => store.isCollected(c.id) ? a + 1 : a, 0)}
+                        totalCollected={items.filter(i => store.isCollected(i.id)).length}
                         collectionSize={items.length}
                     />
                 }

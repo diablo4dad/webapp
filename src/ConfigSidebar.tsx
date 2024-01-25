@@ -10,11 +10,12 @@ type Configuration = {
     showPremium: boolean,
     showPromotional: boolean,
     showOutOfRotation: boolean,
-    showHidden: boolean,
-    showCollected: boolean,
+    showHiddenItems: boolean,
+    hideCollectedItems: boolean,
+    hideCompleteCollections: boolean,
     view: 'card' | 'list',
-    inverseCards: boolean,
-    showProgress: boolean,
+    inverseCardLayout: boolean,
+    enableProgressBar: boolean,
 }
 
 const DEFAULT_CONFIG: Configuration = {
@@ -26,11 +27,12 @@ const DEFAULT_CONFIG: Configuration = {
     showPremium: false,
     showPromotional: false,
     showOutOfRotation: false,
-    showHidden: false,
-    showCollected: true,
+    showHiddenItems: false,
+    hideCollectedItems: true,
+    hideCompleteCollections: false,
     view: 'card',
-    showProgress: true,
-    inverseCards: false,
+    enableProgressBar: true,
+    inverseCardLayout: false,
 }
 
 type ConfigSidebarProps = {
@@ -51,17 +53,18 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
             </fieldset>
             <fieldset>
                 <legend>Filters</legend>
-                <Toggle name="premium" checked={config.showPremium} flip={true} onChange={e => onChange({ ...config, showPremium: e.target.checked })}>Show Premium</Toggle>
-                <Toggle name="promotional" checked={config.showPromotional} flip={true} onChange={e => onChange({ ...config, showPromotional: e.target.checked })}>Show Promotional</Toggle>
-                <Toggle name="outOfRotation" checked={config.showOutOfRotation} flip={true} onChange={e => onChange({ ...config, showOutOfRotation: e.target.checked })}>Show Out of Rotation</Toggle>
-                <Toggle name="hidden" checked={config.showHidden} flip={true} onChange={e => onChange({ ...config, showHidden: e.target.checked })}>Show Hidden</Toggle>
-                <Toggle name="collected" checked={config.showCollected} flip={true} onChange={e => onChange({ ...config, showCollected: e.target.checked })}>Show Collected</Toggle>
+                <Toggle name="showPremium" checked={config.showPremium} flip={true} onChange={e => onChange({ ...config, showPremium: e.target.checked })}>Show Premium</Toggle>
+                <Toggle name="showPromotional" checked={config.showPromotional} flip={true} onChange={e => onChange({ ...config, showPromotional: e.target.checked })}>Show Promotional</Toggle>
+                <Toggle name="showOutOfRotation" checked={config.showOutOfRotation} flip={true} onChange={e => onChange({ ...config, showOutOfRotation: e.target.checked })}>Show Out of Rotation</Toggle>
+                <Toggle name="showExcludedItems" checked={config.showHiddenItems} flip={true} onChange={e => onChange({ ...config, showHiddenItems: e.target.checked })}>Show Hidden Items</Toggle>
+                <Toggle name="hideCollectedItems" checked={config.hideCollectedItems} flip={true} onChange={e => onChange({ ...config, hideCollectedItems: e.target.checked })}>Hide Collected Items</Toggle>
+                <Toggle name="hideCompleteCollections" checked={config.hideCompleteCollections} flip={true} onChange={e => onChange({ ...config, hideCompleteCollections: e.target.checked })}>Hide Complete Collections</Toggle>
             </fieldset>
             <fieldset className={styles.ViewOptions}>
                 <legend>Display Options</legend>
-                <Toggle name="card" checked={config.view === 'card'} flip={true} onChange={e => onChange({ ...config, view: e.target.checked ? 'card' : 'list'})}>Card Layout</Toggle>
-                <Toggle name="inverse" checked={config.inverseCards} flip={true} onChange={e => onChange({ ...config, inverseCards: e.target.checked })}>Inverse Cards</Toggle>
-                <Toggle name="progress" checked={config.showProgress} flip={true} onChange={e => onChange({ ...config, showProgress: e.target.checked })}>Progress Bar</Toggle>
+                <Toggle name="card" checked={config.view === 'card'} flip={true} onChange={e => onChange({ ...config, view: e.target.checked ? 'card' : 'list'})}>Use Card Layout</Toggle>
+                <Toggle name="inverse" checked={config.inverseCardLayout} flip={true} onChange={e => onChange({ ...config, inverseCardLayout: e.target.checked })}>Inverse Card Layout</Toggle>
+                <Toggle name="progress" checked={config.enableProgressBar} flip={true} onChange={e => onChange({ ...config, enableProgressBar: e.target.checked })}>Enable Progress Bar</Toggle>
             </fieldset>
         </div>
     );

@@ -81,6 +81,10 @@
     position: inherit;
 }
 
+.LedgerHidden {
+    display: none;
+}
+
 @media screen and (min-width: 1200px) {
     .LedgerGroupHeading {
         top: 0;
