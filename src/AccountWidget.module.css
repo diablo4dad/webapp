@@ -1,16 +1,28 @@
 .Account {
-    display: flex;
-    align-items: center;
+
 }
 
 .AccountText {
-    margin-right: 1rem;
-
     color: #ccc;
-    text-align: right;
     font-size: 0.875rem;
+    margin-bottom: 1rem;
 }
 
 .AccountIcons > button:not(:last-child) {
     margin-right: 1rem;
+}
+
+.AccountRow {
+    display: flex;
+    align-items: center;
+}
+
+.AccountRow .AccountText {
+    text-align: right;
+    margin-right: 1rem;
+    margin-bottom: 0;
+}
+
+@media screen and (min-width: 1200px) {
+
 }

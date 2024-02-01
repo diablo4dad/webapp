@@ -12,10 +12,11 @@ enum BtnColours {
 type Props = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> & {
     pressed?: boolean,
     colour?: BtnColours,
+    showOnly?: 'desktop' | 'mobile'
 }
 
 
-function Button({ pressed = false, colour = BtnColours.Grey, children, ...props }: Props) {
+function Button({ pressed = false, colour = BtnColours.Grey, showOnly, children, ...props }: Props) {
     function getColour() {
         switch (colour) {
             case BtnColours.Discord:
@@ -31,7 +32,9 @@ function Button({ pressed = false, colour = BtnColours.Grey, children, ...props 
         return [
             styles.Btn,
             pressed ? styles.BtnPressed : null,
-            getColour()
+            getColour(),
+            showOnly === 'mobile' ? styles.BtnMobile : null,
+            showOnly === 'desktop' ? styles.BtnDesktop : null,
         ].filter(c => c !== null).join(' ');
     }
 

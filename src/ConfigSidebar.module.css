@@ -9,7 +9,25 @@
     display: none;
 }
 
+.CloseButton {
+    display: block;
+    margin: 1rem auto;
+    color: orange;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.CloseButton:hover {
+    color: #cc8500;
+}
+
 @media screen and (min-width: 1200px) {
+    .CloseButton {
+        display: none;
+    }
+
     .ViewOptions {
         display: block;
     }

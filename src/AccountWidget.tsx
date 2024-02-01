@@ -2,10 +2,26 @@ import styles from "./AccountWidget.module.css";
 import Button, {BtnColours} from "./Button";
 import {BattleNet, Discord} from "./Icons";
 import React from "react";
+import {exec} from "node:child_process";
 
-function AccountWidget() {
+enum Orientation {
+    COLUMN,
+    ROW,
+}
+
+type Props = {
+    orientation?: Orientation
+}
+
+function AccountWidget({ orientation = Orientation.COLUMN }: Props) {
+    function getClasses() {
+        return [
+            styles.Account,
+            orientation === Orientation.ROW ? styles.AccountRow : null,
+        ].filter(c => c !== null).join(' ');
+    }
     return (
-        <div className={styles.Account}>
+        <div className={getClasses()}>
             <div className={styles.AccountText}>
                 <div>You are not authenticated</div>
                 <div>Login to backup your progress</div>
@@ -22,4 +38,5 @@ function AccountWidget() {
     )
 }
 
+export {Orientation}
 export default AccountWidget
