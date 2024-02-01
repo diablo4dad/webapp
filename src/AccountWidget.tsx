@@ -24,7 +24,7 @@ function AccountWidget({ orientation = Orientation.COLUMN }: Props) {
         <div className={getClasses()}>
             <div className={styles.AccountText}>
                 <div>You are not authenticated</div>
-                <div>Login to backup your progress</div>
+                <div>Login to save your progress</div>
             </div>
             <div className={styles.AccountIcons}>
                 <Button colour={BtnColours.Discord}>

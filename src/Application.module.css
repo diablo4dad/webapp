@@ -13,6 +13,11 @@
   z-index: 5000;
 }
 
+.PageContent {
+  display: flex;
+  flex: 1;
+}
+
 .Header {
   width: 100%;
   height: 6rem;
@@ -53,6 +58,7 @@
 .Shell {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .Sidebar {
@@ -143,7 +149,12 @@
 }
 
 .Content {
+  position: relative;
   width: 100%;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .Footer {
@@ -193,7 +204,6 @@
 
 @media screen and (min-width: 1200px) {
   .Shell {
-    flex: 1;
     flex-direction: row;
   }
 
@@ -206,7 +216,7 @@
   }
 
   .PageContent {
-    flex: 1;
+    display: block;
     overflow: auto;
   }
 
@@ -246,6 +256,11 @@
 
   .HeaderInfoName {
     font-size: 1.5rem;
+  }
+
+  .Content {
+    display: block;
+    flex: auto;
   }
 
   .Sidebar {

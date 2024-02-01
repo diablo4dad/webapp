@@ -1,6 +1,7 @@
 import AccountWidget from "./AccountWidget";
 import styles from "./MobileMenu.module.css"
 import {ContentType} from "./config";
+import {Close} from "./Icons";
 
 type Props = {
     onNavigate: (place: ContentType) => void,
@@ -15,7 +16,9 @@ function MobileMenu({ onNavigate, onClose }: Props) {
             <div className={styles.MobileMenuAccount}>
                 <AccountWidget></AccountWidget>
             </div>
-            <button className={styles.MobileMenuClose} onClick={onClose}>Close</button>
+            <button className={styles.MobileMenuClose} onClick={onClose}>
+                <Close></Close>
+            </button>
         </div>
     );
 }

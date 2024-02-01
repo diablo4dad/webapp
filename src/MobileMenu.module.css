@@ -1,32 +1,49 @@
 .MobileMenu {
-    text-align: center;
+    width: 100%;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
-.MobileMenuClose,
 .MobileMenuLink {
-    margin: 1rem auto;
+    padding: 1rem 0;
     display: block;
     font-size: 1.25rem;
+    text-align: center;
+    width: 100%;
     color: orange;
     background-color: transparent;
     border: none;
     cursor: pointer;
-    padding: 0;
 }
 
-.MobileMenuClose:hover,
 .MobileMenuLink:hover {
     color: #cc8500;
 }
 
 .MobileMenuAccount {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    background-color: #1e2126;
+    text-align: center;
     padding-top: 2rem;
     padding-bottom: 2rem;
+    background-color: #23272e;
+    margin-top: 1rem;
 }
 
 .MobileMenuClose {
+    position: absolute;
+    display: block;
+    top: 1rem;
+    right: 1rem;
+
     font-size: 1rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0;
+
+    cursor: pointer;
+}
+
+.MobileMenuClose svg {
+    width: 3rem;
+    height: 3rem;
+    fill: #8394a6;
 }
