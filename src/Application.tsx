@@ -17,6 +17,8 @@ import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 import {DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
 import Progress from "./Progress";
 import {Discord, Gear} from "./Icons";
+import Button from "./Button";
+import AccountWidget from "./AccountWidget";
 
 enum SideBarType {
     ITEM = 'item',
@@ -183,9 +185,6 @@ function Application(): ReactElement<HTMLDivElement> {
         setConfig(config);
     }
 
-    function getConfigBtnClasses() {
-        return styles.HeaderButton + (sideBar === 'config' ? ' ' + styles.HeaderButtonPressed : '');
-    }
 
     useEffect(() => {
         fetchDb()
@@ -209,67 +208,87 @@ function Application(): ReactElement<HTMLDivElement> {
     }, []);
 
     return (
-        <div className={styles.Shell}>
-            <aside className={styles.Sidebar}>
-                <div className={styles.SidebarLayout}>
-                    <div className={styles.SidebarLayoutTop}>
-                        <header className={styles.SidebarHeader}>
+        <div className={styles.Page}>
+            <div className={styles.PageHeader}>
+                <header className={styles.Header}>
+                    <div className={styles.HeaderLeft}>
+                        <div className={styles.HeaderLeftContent}>
                             <img className={styles.HeaderIcon} src={logo} alt="Diablo 4"/>
                             <div className={styles.HeaderInfo}>
-                                <div className={styles.HeaderInfoName}>Diablo IV Collection Log</div>
-                                <div className={styles.HeaderInfoTagLine}>Bringing closure to the completionist in you.
+                                <div className={styles.HeaderInfoName}>diablo4.dad</div>
+                                <div className={styles.HeaderInfoTagLine}>Bringing closure to the completionist
+                                    in you
                                 </div>
                             </div>
                             <div className={styles.HeaderButtons}>
-                                <button className={getConfigBtnClasses()} onClick={onToggleConfig}>
+                                <Button
+                                    onClick={onToggleConfig}
+                                    pressed={sideBar === SideBarType.CONFIG}
+                                >
                                     <Gear />
-                                </button>
+                                </Button>
                             </div>
-                        </header>
+                        </div>
                     </div>
-                    <div className={styles.SidebarLayoutBottom}>
-                        <section className={styles.SidebarContent}>
-                            {sideBar === SideBarType.ITEM && selectedItem &&
-                                <ItemSidebar
-                                    item={selectedItem}
-                                    hidden={store.isHidden(selectedItemId)}
-                                    collected={store.isCollected(selectedItemId)}
-                                    onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
-                                    onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
+                    <div className={styles.HeaderRight}>
+                        <div className={styles.HeaderRightContent}>
+                            {config.enableProgressBar &&
+                                <Progress
+                                    totalCollected={items.filter(i => store.isCollected(i.id)).length}
+                                    collectionSize={items.length}
                                 />
                             }
-                            {sideBar === SideBarType.CONFIG &&
-                                <ConfigSidebar
-                                    config={config}
-                                    onChange={onConfigChange}
-                                />
-                            }
-                        </section>
-                        <footer className={styles.SidebarFooter}>
-                            <DiscordInvite/>
-                            <VersionInfo/>
-                        </footer>
+                            <AccountWidget></AccountWidget>
+                        </div>
                     </div>
+                </header>
+            </div>
+            <div className={styles.PageContent}>
+                <div className={styles.Shell}>
+                    <aside className={styles.Sidebar}>
+                        <div className={styles.SidebarLayout}>
+                            <div className={styles.SidebarLayoutTop}>
+
+                            </div>
+                            <div className={styles.SidebarLayoutBottom}>
+                                <section className={styles.SidebarContent}>
+                                {sideBar === SideBarType.ITEM && selectedItem &&
+                                        <ItemSidebar
+                                            item={selectedItem}
+                                            hidden={store.isHidden(selectedItemId)}
+                                            collected={store.isCollected(selectedItemId)}
+                                            onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
+                                            onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
+                                        />
+                                    }
+                                    {sideBar === SideBarType.CONFIG &&
+                                        <ConfigSidebar
+                                            config={config}
+                                            onChange={onConfigChange}
+                                        />
+                                    }
+                                </section>
+                                <footer className={styles.SidebarFooter}>
+                                    <DiscordInvite/>
+                                    <VersionInfo/>
+                                </footer>
+                            </div>
+                        </div>
+                    </aside>
+                    <main className={styles.Content}>
+                        <Ledger
+                            db={filteredDb}
+                            store={store}
+                            onClickItem={onClickItem}
+                            onDoubleClickItem={onDoubleClickItem}
+                            view={smallScreen ? 'list' : config.view}
+                            hideCollectedItems={config.hideCollectedItems}
+                            hideCompleteCollections={config.hideCompleteCollections}
+                            inverseCardLayout={config.inverseCardLayout}
+                        />
+                    </main>
                 </div>
-            </aside>
-            <main className={styles.Content}>
-                <Ledger
-                    db={filteredDb}
-                    store={store}
-                    onClickItem={onClickItem}
-                    onDoubleClickItem={onDoubleClickItem}
-                    view={smallScreen ? 'list' : config.view}
-                    hideCollectedItems={config.hideCollectedItems}
-                    hideCompleteCollections={config.hideCompleteCollections}
-                    inverseCardLayout={config.inverseCardLayout}
-                />
-                {config.enableProgressBar &&
-                    <Progress
-                        totalCollected={items.filter(i => store.isCollected(i.id)).length}
-                        collectionSize={items.length}
-                    />
-                }
-            </main>
+            </div>
             <footer className={styles.Footer}>
                 <DiscordInvite/>
                 <VersionInfo/>

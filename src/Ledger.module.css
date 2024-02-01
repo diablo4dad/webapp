@@ -16,7 +16,7 @@
 
     background-color: #303640;
     border-top: 1px solid #23272e;
-    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.125);
+    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
 
     cursor: pointer;
 }
@@ -93,7 +93,7 @@
     }
 
     .LedgerRow {
-        box-shadow: 3px 3px 7px rgba(17, 17, 17, 0.125) inset;
+        /*box-shadow: 3px 3px 7px rgba(17, 17, 17, 0.125) inset;*/
     }
 
 
