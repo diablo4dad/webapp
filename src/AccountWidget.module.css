@@ -1,0 +1,16 @@
+.Account {
+    display: flex;
+    align-items: center;
+}
+
+.AccountText {
+    margin-right: 1rem;
+
+    color: #ccc;
+    text-align: right;
+    font-size: 0.875rem;
+}
+
+.AccountIcons > button:not(:last-child) {
+    margin-right: 1rem;
+}

@@ -1,15 +1,58 @@
-.Shell {
-  display: flex;
-  flex-direction: column;
+.Page {
   min-height: 100vh;
   background-color: #282c34;
   color: white;
 }
 
-.Sidebar {
+.PageHeader {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 5000;
+}
+
+.Header {
+  width: 100%;
+  height: 6rem;
+  display: flex;
+  background-color: #1e2126;
+  box-sizing: border-box;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
+  border-bottom: 1px solid #303640;
+}
+
+.HeaderLeft {
+  width: 100%;
+}
+
+.HeaderLeftContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.HeaderRight {
+  display: none;
+  width: 100%;
+}
+
+.HeaderRightContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.HeaderRightContent {
+
+}
+
+.Shell {
+  display: flex;
+  flex-direction: column;
+}
+
+.Sidebar {
   background-color: #252930;
 }
 
@@ -30,15 +73,6 @@
 
 .SidebarFooter {
   display: none;
-}
-
-.SidebarHeader {
-  height: 6rem;
-  display: flex;
-  padding: 1rem;
-  background-color: #1e2126;
-  box-sizing: border-box;
-  align-items: center;
 }
 
 .SidebarContent {
@@ -66,6 +100,7 @@
 
 .HeaderInfoTagLine {
   font-size: 0.875rem;
+  color: #ccc;
 }
 
 .HeaderButtons {
@@ -143,8 +178,7 @@
 
 .SiteVersion {
   font-size: 0.875rem;
-  padding: 0 1rem;
-  margin-bottom: 2rem;
+  padding: 0 1rem 2rem;
   text-align: center;
   color: #ccc;
 }
@@ -159,8 +193,52 @@
     flex-direction: row;
   }
 
-  .SidebarHeader {
+  .Page {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  .PageHeader {
+  }
+
+  .PageContent {
+    flex: 1;
+    overflow: auto;
+  }
+
+  .PageFooter {
+
+  }
+
+  .Header {
+    flex-direction: row;
+  }
+
+  .HeaderLeft {
+    width: 50rem;
+  }
+
+  .HeaderLeftContent {
     padding: 1rem 2rem;
+  }
+
+  .HeaderRight {
+    display: block;
+  }
+
+  .HeaderRightContent {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem 1rem 0;
+  }
+
+  .HeaderRightContent > div:nth-child(1) {
+    max-width: 40%;
+    min-width: 20rem;
+    margin: 0 auto;
   }
 
   .HeaderInfoName {
@@ -182,7 +260,9 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100vh;
+    flex: 1;
+
+    height: calc(100vh - 6rem);
   }
 
   .SidebarFooter {
