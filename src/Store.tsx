@@ -83,7 +83,7 @@ function initStore(): StoreData {
 }
 
 function persistData(data: StoreData) {
-  console.log("Persisting Store...", data);
+  console.log("Saving...");
   localStorage.setItem("d4log", JSON.stringify(data));
 }
 
@@ -91,10 +91,10 @@ function loadData(): StoreData {
   const localData = localStorage.getItem("d4log");
   if (localData) {
     const parsedData = JSON.parse(localData);
-    console.log("Loaded Store...", parsedData);
+    console.log("Collection loaded from HTML5 Storage.");
     return parsedData;
   } else {
-    console.log("Initialising Store...");
+    console.log("Initialising New Collection...");
     return initStore();
   }
 }
@@ -206,7 +206,9 @@ function useStore(): Store {
       }
     }
 
-    saveView(updatedData);
+    if (isCollectionOpen(collectionId) !== isOpen) {
+      saveView(updatedData);
+    }
   }
 
   function isCollectionOpen(collectionId: number): boolean {

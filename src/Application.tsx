@@ -200,6 +200,8 @@ function Application(): ReactElement<HTMLDivElement> {
     }
 
     useEffect(() => {
+        console.log("Fetching Database...");
+
         fetchDb()
             .then(data => {
                 if (Array.isArray(data.data)) {
