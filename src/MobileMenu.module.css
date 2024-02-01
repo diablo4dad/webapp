@@ -1,0 +1,32 @@
+.MobileMenu {
+    text-align: center;
+}
+
+.MobileMenuClose,
+.MobileMenuLink {
+    margin: 1rem auto;
+    display: block;
+    font-size: 1.25rem;
+    color: orange;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.MobileMenuClose:hover,
+.MobileMenuLink:hover {
+    color: #cc8500;
+}
+
+.MobileMenuAccount {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    background-color: #1e2126;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.MobileMenuClose {
+    font-size: 1rem;
+}

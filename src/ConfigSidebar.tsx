@@ -38,9 +38,10 @@ const DEFAULT_CONFIG: Configuration = {
 type ConfigSidebarProps = {
     config: Configuration,
     onChange: (newConfig: Configuration) => void,
+    onClose: () => void,
 }
 
-function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps) {
+function ConfigSidebar({ config = DEFAULT_CONFIG, onChange, onClose }: ConfigSidebarProps) {
     return (
         <div className={styles.Panel}>
             <fieldset>
@@ -66,6 +67,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="inverse" checked={config.inverseCardLayout} flip={true} onChange={e => onChange({ ...config, inverseCardLayout: e.target.checked })}>Inverse Card Layout</Toggle>
                 <Toggle name="progress" checked={config.enableProgressBar} flip={true} onChange={e => onChange({ ...config, enableProgressBar: e.target.checked })}>Enable Progress Bar</Toggle>
             </fieldset>
+            <button className={styles.CloseButton} onClick={onClose}>Close</button>
         </div>
     );
 }

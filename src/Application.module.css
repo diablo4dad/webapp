@@ -2,6 +2,9 @@
   min-height: 100vh;
   background-color: #282c34;
   color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .PageHeader {
@@ -53,6 +56,7 @@
 }
 
 .Sidebar {
+  display: none;
   background-color: #252930;
 }
 
@@ -194,9 +198,8 @@
   }
 
   .Page {
-    display: flex;
     height: 100vh;
-    flex-direction: column;
+    justify-content: flex-start;
   }
 
   .PageHeader {
@@ -246,6 +249,7 @@
   }
 
   .Sidebar {
+    display: block;
     position: inherit;
     width: 50rem;
     border-right: 1px solid #1d2026;

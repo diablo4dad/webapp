@@ -10,6 +10,24 @@
     box-shadow: 1px 2px 5px #111;
 }
 
+.BtnMobile {
+    display: inline-block;
+}
+
+.BtnDesktop {
+    display: none;
+}
+
+@media screen and (min-width: 1200px) {
+    .BtnMobile {
+        display: none;
+    }
+
+    .BtnDesktop {
+        display: inline-block;
+    }
+}
+
 .Btn svg {
     width: 2rem;
     height: 2rem;

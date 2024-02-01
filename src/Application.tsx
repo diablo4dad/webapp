@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect, useState} from 'react';
+import React, {ReactElement, useEffect, useRef, useState} from 'react';
 import fetchDb, {
     Collection,
     createEmptyResultSet,
@@ -14,11 +14,12 @@ import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./Store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
-import {DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
+import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
 import Progress from "./Progress";
-import {Discord, Gear} from "./Icons";
+import {Discord, Gear, Hamburger} from "./Icons";
 import Button from "./Button";
-import AccountWidget from "./AccountWidget";
+import AccountWidget, {Orientation} from "./AccountWidget";
+import MobileMenu from "./MobileMenu";
 
 enum SideBarType {
     ITEM = 'item',
@@ -159,8 +160,10 @@ function Application(): ReactElement<HTMLDivElement> {
     const store = useStore();
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
+    const [content, setContent] = useState(ContentType.LEDGER);
     const [config, setConfig] = useState<Configuration>(store.loadConfig() ?? DEFAULT_CONFIG);
     const [smallScreen, setSmallScreen] = useState(isScreenSmall(window));
+    const history = useRef([ContentType.LEDGER]);
     const filteredDb = filterDb(db, store, config);
     const items = reduceItems(filteredDb);
     const [selectedItemId, setSelectedItemId] = useState(store.getLastSelectedItem()?.itemId ?? getDefaultItemIdForCollection(filteredDb));
@@ -185,6 +188,16 @@ function Application(): ReactElement<HTMLDivElement> {
         setConfig(config);
     }
 
+    function pushHistory(content: ContentType) {
+        if (content !== ContentType.MOBILE_MENU) {
+            history.current.push(content);
+        }
+        return content;
+    }
+
+    function popHistory(): ContentType {
+        return history.current.pop() ?? ContentType.LEDGER;
+    }
 
     useEffect(() => {
         fetchDb()
@@ -224,8 +237,16 @@ function Application(): ReactElement<HTMLDivElement> {
                                 <Button
                                     onClick={onToggleConfig}
                                     pressed={sideBar === SideBarType.CONFIG}
+                                    showOnly={"desktop"}
                                 >
                                     <Gear />
+                                </Button>
+                                <Button
+                                    onClick={() => setContent(content === ContentType.MOBILE_MENU ? popHistory() : pushHistory(ContentType.MOBILE_MENU))}
+                                    pressed={content === ContentType.MOBILE_MENU}
+                                    showOnly={"mobile"}
+                                >
+                                    <Hamburger />
                                 </Button>
                             </div>
                         </div>
@@ -238,7 +259,7 @@ function Application(): ReactElement<HTMLDivElement> {
                                     collectionSize={items.length}
                                 />
                             }
-                            <AccountWidget></AccountWidget>
+                            <AccountWidget orientation={Orientation.ROW}></AccountWidget>
                         </div>
                     </div>
                 </header>
@@ -247,9 +268,7 @@ function Application(): ReactElement<HTMLDivElement> {
                 <div className={styles.Shell}>
                     <aside className={styles.Sidebar}>
                         <div className={styles.SidebarLayout}>
-                            <div className={styles.SidebarLayoutTop}>
-
-                            </div>
+                            <div className={styles.SidebarLayoutTop}></div>
                             <div className={styles.SidebarLayoutBottom}>
                                 <section className={styles.SidebarContent}>
                                 {sideBar === SideBarType.ITEM && selectedItem &&
@@ -265,6 +284,7 @@ function Application(): ReactElement<HTMLDivElement> {
                                         <ConfigSidebar
                                             config={config}
                                             onChange={onConfigChange}
+                                            onClose={() => setContent(popHistory())}
                                         />
                                     }
                                 </section>
@@ -276,16 +296,31 @@ function Application(): ReactElement<HTMLDivElement> {
                         </div>
                     </aside>
                     <main className={styles.Content}>
-                        <Ledger
-                            db={filteredDb}
-                            store={store}
-                            onClickItem={onClickItem}
-                            onDoubleClickItem={onDoubleClickItem}
-                            view={smallScreen ? 'list' : config.view}
-                            hideCollectedItems={config.hideCollectedItems}
-                            hideCompleteCollections={config.hideCompleteCollections}
-                            inverseCardLayout={config.inverseCardLayout}
-                        />
+                        {content === ContentType.LEDGER &&
+                            <Ledger
+                                db={filteredDb}
+                                store={store}
+                                onClickItem={onClickItem}
+                                onDoubleClickItem={onDoubleClickItem}
+                                view={smallScreen ? 'list' : config.view}
+                                hideCollectedItems={config.hideCollectedItems}
+                                hideCompleteCollections={config.hideCompleteCollections}
+                                inverseCardLayout={config.inverseCardLayout}
+                            />
+                        }
+                        {content === ContentType.MOBILE_MENU &&
+                            <MobileMenu
+                                onNavigate={(place) => setContent(pushHistory(place))}
+                                onClose={() => setContent(popHistory())}
+                            ></MobileMenu>
+                        }
+                        {content === ContentType.CONFIG &&
+                            <ConfigSidebar
+                                config={config}
+                                onChange={onConfigChange}
+                                onClose={() => setContent(popHistory())}
+                            />
+                        }
                     </main>
                 </div>
             </div>

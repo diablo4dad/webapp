@@ -31,3 +31,9 @@ export {
     getCollectionUri,
     getImageUri,
 }
+
+export enum ContentType {
+    MOBILE_MENU = 'menu',
+    LEDGER = 'ledger',
+    CONFIG = 'config'
+}
