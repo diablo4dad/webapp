@@ -128,10 +128,6 @@ function filterDb(collection: StrapiResultSet<Collection>, store: Store, config:
     return c;
 }
 
-function isScreenSmall(window: Window): boolean {
-    return window.innerWidth <= 1200;
-}
-
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
     return (
@@ -164,7 +160,6 @@ function Application(): ReactElement<HTMLDivElement> {
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [content, setContent] = useState(ContentType.LEDGER);
     const [config, setConfig] = useState<Configuration>(store.loadConfig() ?? DEFAULT_CONFIG);
-    const [smallScreen, setSmallScreen] = useState(isScreenSmall(window));
     const history = useRef([ContentType.LEDGER]);
     const filteredDb = filterDb(db, store, config);
     const items = reduceItems(filteredDb);
@@ -211,18 +206,6 @@ function Application(): ReactElement<HTMLDivElement> {
                 }
             });
     }, [setDb]);
-
-    useEffect(() => {
-        function onResize() {
-            setSmallScreen(isScreenSmall(window));
-        }
-
-        window.addEventListener('resize', onResize);
-
-        return () => {
-            window.removeEventListener('resize', onResize);
-        }
-    }, []);
 
     return (
         <div className={styles.Page}>
@@ -308,7 +291,7 @@ function Application(): ReactElement<HTMLDivElement> {
                                 store={store}
                                 onClickItem={onClickItem}
                                 onDoubleClickItem={onDoubleClickItem}
-                                view={smallScreen ? 'list' : config.view}
+                                view={config.view}
                                 hideCollectedItems={config.hideCollectedItems}
                                 hideCompleteCollections={config.hideCompleteCollections}
                                 inverseCardLayout={config.inverseCardLayout}

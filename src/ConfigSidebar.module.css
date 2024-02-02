@@ -9,10 +9,6 @@
     margin: 0;
 }
 
-.ViewOptions {
-    display: none;
-}
-
 .CloseButton {
     display: block;
     margin: 1rem auto;
@@ -34,9 +30,5 @@
 
     .CloseButton {
         display: none;
-    }
-
-    .ViewOptions {
-        display: block;
     }
 }
