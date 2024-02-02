@@ -334,7 +334,7 @@ function Application(): ReactElement<HTMLDivElement> {
                     </main>
                 </div>
             </div>
-            {config.enableProgressBar &&
+            {config.enableProgressBar && content === ContentType.LEDGER &&
                 <div className={styles.ProgressMobile}>
                     <Progress
                         totalCollected={items.filter(i => store.isCollected(i.id)).length}
