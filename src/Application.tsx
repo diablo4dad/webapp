@@ -211,9 +211,15 @@ function Application(): ReactElement<HTMLDivElement> {
     }
 
     function pushHistory(content: ContentType) {
-        if (content !== ContentType.MOBILE_MENU) {
-            history.current.push(content);
+        if ([ContentType.CONFIG, ContentType.MOBILE_MENU].includes(content)) {
+            return content;
         }
+        if (history.current.length && history.current[history.current.length - 1] === content) {
+            return content;
+        }
+
+        history.current.push(content);
+
         return content;
     }
 
@@ -226,29 +232,16 @@ function Application(): ReactElement<HTMLDivElement> {
 
         signInWithPopup(auth, provider)
             .then((result) => {
-                // This gives you a Google Access Token. You can use it to access the Google API.
                 const credential = GoogleAuthProvider.credentialFromResult(result);
                 if (credential) {
-                    const token = credential.accessToken;
-                    // The signed-in user info.
                     const user = result.user;
-                    // IdP data available using getAdditionalUserInfo(result)
-                    // ...
                     console.log("Logged in.", { ...user });
                 } else {
                     console.error("Signed in but Credential was null.");
                 }
-
             }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            // ...
-        });
+                console.log("Error signing in.", error);
+            });
     }
 
     function signOut() {
