@@ -1,5 +1,6 @@
 import {useState} from "react";
 import {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
+import {isScreenSmall} from "./config";
 
 const DEFAULT_VIEW: ViewState = {
   ledger: {
@@ -70,7 +71,10 @@ function initArtifactMeta(artifactId: number): ArtifactMeta {
 
 function initStore(): StoreData {
   return {
-    config: DEFAULT_CONFIG,
+    config: {
+      ...DEFAULT_CONFIG,
+      view: isScreenSmall(window) ? 'list' : 'card',
+    },
     view: {
       ledger: {
         // empty

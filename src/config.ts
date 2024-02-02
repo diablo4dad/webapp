@@ -6,6 +6,10 @@ const SITE_VERSION = '1.1.4'
 const LAST_UPDATED = 'January 25th, 2024'
 const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
 
+function isScreenSmall(window: Window): boolean {
+    return window.innerWidth <= 1200;
+}
+
 function getCollectionUri(): string {
     if (process.env.NODE_ENV === 'production') {
         return '/collection.json';
@@ -30,6 +34,7 @@ export {
     DISCORD_INVITE_LINK,
     getCollectionUri,
     getImageUri,
+    isScreenSmall,
 }
 
 export enum ContentType {
