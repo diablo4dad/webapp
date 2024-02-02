@@ -1,8 +1,8 @@
 .Button {
     position: absolute;
     display: block;
-    top: 1rem;
-    right: 1rem;
+    top: 1.5rem;
+    right: 1.5rem;
 
     font-size: 1rem;
     background-color: transparent;
@@ -18,11 +18,11 @@
 }
 
 .Button svg {
-    width: 3rem;
-    height: 3rem;
-    fill: #d38a36;
+    width: 2rem;
+    height: 2rem;
+    fill: #ccc;
 }
 
 .Button:hover svg {
-    fill: #f29f3f;
+    fill: #e6e6e6;
 }
