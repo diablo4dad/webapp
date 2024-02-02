@@ -1,8 +1,13 @@
-import styles from "./AccountWidget.module.css";
+import styles from "./Authenticate.module.css";
 import Button, {BtnColours} from "./Button";
-import {BattleNet, Discord} from "./Icons";
+import {BattleNet, Discord, Google} from "./Icons";
 import React from "react";
-import {exec} from "node:child_process";
+
+enum AuthGiant {
+    GOOGLE,
+    DISCORD,
+    BATTLE_NET,
+}
 
 enum Orientation {
     COLUMN,
@@ -10,16 +15,18 @@ enum Orientation {
 }
 
 type Props = {
-    orientation?: Orientation
+    orientation?: Orientation,
+    onAuth: (auth: AuthGiant) => void,
 }
 
-function AccountWidget({ orientation = Orientation.COLUMN }: Props) {
+function Authenticate({ orientation = Orientation.COLUMN, onAuth }: Props) {
     function getClasses() {
         return [
             styles.Account,
             orientation === Orientation.ROW ? styles.AccountRow : null,
         ].filter(c => c !== null).join(' ');
     }
+
     return (
         <div className={getClasses()}>
             <div className={styles.AccountText}>
@@ -27,16 +34,19 @@ function AccountWidget({ orientation = Orientation.COLUMN }: Props) {
                 <div>Login to save your progress</div>
             </div>
             <div className={styles.AccountIcons}>
-                <Button colour={BtnColours.Discord}>
+                <Button onClick={() => onAuth(AuthGiant.GOOGLE)}>
+                    <Google/>
+                </Button>
+                <Button colour={BtnColours.Discord} onClick={() => onAuth(AuthGiant.DISCORD)}>
                     <Discord/>
                 </Button>
-                <Button colour={BtnColours.BattleNet}>
+                <Button colour={BtnColours.BattleNet} onClick={() => onAuth(AuthGiant.BATTLE_NET)}>
                     <BattleNet/>
                 </Button>
             </div>
         </div>
-    )
+    );
 }
 
-export {Orientation}
-export default AccountWidget
+export {Orientation, AuthGiant}
+export default Authenticate

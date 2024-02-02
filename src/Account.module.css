@@ -1,0 +1,75 @@
+.Block {
+    display: flex;
+    align-items: center;
+    flex-direction: column-reverse;
+}
+
+.Text {
+}
+
+.TextLine1 {
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.TextLine2 {
+    color: #ccc;
+    font-size: 0.875rem;
+}
+
+.TextActive {
+    display: block;
+}
+
+.TextLogout {
+    display: inline-block;
+    text-align: center;
+    color: orange;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    font-size: 1.25rem;
+    cursor: pointer;
+    margin-top: 2rem;
+}
+
+.TextLogout:hover {
+    color: #cc8500;
+}
+
+.Icon {
+    border: 1px solid #39404d;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: #303640;
+    margin-bottom: 1rem;
+}
+
+.Icon svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+
+.Row {
+    flex-direction: row;
+}
+
+.Row .TextActive,
+.Row .TextLogout {
+    display: inline;
+}
+
+.Row .TextLogout {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.Row .Icon {
+    margin-left: 1rem;
+    margin-bottom: 0;
+}
+
+.Row .Text {
+    text-align: right;
+}
