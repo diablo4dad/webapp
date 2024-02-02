@@ -8,7 +8,7 @@
 }
 
 .TextLine1 {
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
     font-size: 0.875rem;
 }
 
@@ -55,13 +55,17 @@
     flex-direction: row;
 }
 
+.Row .TextLine1 {
+    margin-bottom: 0;
+}
+
 .Row .TextActive,
 .Row .TextLogout {
     display: inline;
 }
 
 .Row .TextLogout {
-    font-size: 1rem;
+    font-size: 0.875rem;
     margin: 0;
 }
 
