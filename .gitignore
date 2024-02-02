@@ -2,3 +2,4 @@ node_modules
 public/icons
 public/collection.json
 /build/
+/.firebase/
