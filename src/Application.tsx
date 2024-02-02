@@ -257,6 +257,9 @@ function Application(): ReactElement<HTMLDivElement> {
     useEffect(() => {
         console.log("Bootstrapping...");
 
+        // load html5 storage
+        store.init();
+
         // add user state listener
         auth.onAuthStateChanged((user) => {
             console.log("Auth state changed.", { ...user });
@@ -266,11 +269,12 @@ function Application(): ReactElement<HTMLDivElement> {
                 const docRef = doc(firestore, "collections", user.uid);
                 getDoc(docRef).then((snapshot) => {
                     if (!snapshot.exists()) {
-                        console.log("Collection does not exist.");
+                        console.log("Collection is empty.");
+
                         return;
                     }
 
-                    console.log("Got Collection from Firestore.", snapshot.data());
+                    console.log("Got Collection Snapshot.", snapshot.data());
                 });
             }
         });
