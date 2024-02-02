@@ -8,6 +8,18 @@
     margin-bottom: 1rem;
 }
 
+.AccountLoginText {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: orange;
+    cursor: pointer;
+}
+
+.AccountLoginText:hover {
+    color: #cc8500;
+}
+
 .AccountIcons > button:not(:last-child) {
     margin-right: 1rem;
 }

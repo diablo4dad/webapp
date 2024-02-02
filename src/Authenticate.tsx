@@ -31,7 +31,7 @@ function Authenticate({ orientation = Orientation.COLUMN, onAuth }: Props) {
         <div className={getClasses()}>
             <div className={styles.AccountText}>
                 <div>You are not authenticated</div>
-                <div>Login to save your progress</div>
+                <div className={styles.AccountLoginText} onClick={() => onAuth(AuthGiant.GOOGLE)}>Login to save your progress</div>
             </div>
             <div className={styles.AccountIcons}>
                 <Button onClick={() => onAuth(AuthGiant.GOOGLE)}>

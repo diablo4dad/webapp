@@ -20,9 +20,9 @@
 .Button svg {
     width: 3rem;
     height: 3rem;
-    fill: #dd0707;
+    fill: #d38a36;
 }
 
 .Button:hover svg {
-    fill: #f70707;
+    fill: #f29f3f;
 }
