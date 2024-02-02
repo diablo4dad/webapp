@@ -1,6 +1,8 @@
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 import {isScreenSmall, VERSION} from "./config";
+import {doc, getDoc, setDoc} from "firebase/firestore";
+import {firestore} from "./firebase";
 
 const DEFAULT_VIEW: ViewState = {
   ledger: {
@@ -41,7 +43,7 @@ type CollectionState = {
 
 type Store = {
   data: StoreData,
-  init: () => void,
+  init: (uid?: string) => void,
   getLogEntry: (artifactId: number) => ArtifactMeta,
   isCollected: (artifactId: number) => boolean,
   isHidden: (artifactId: number) => boolean,
@@ -97,9 +99,16 @@ function initStore(): StoreData {
   };
 }
 
-function persistData(data: StoreData) {
+function persistData(data: StoreData, uid?: string) {
   console.log("Saving...");
   localStorage.setItem("d4log", JSON.stringify(data));
+
+  if (uid) {
+    const docRef = doc(firestore, "collections", uid);
+    setDoc(docRef, data.collectionLog).then(() => {
+      console.log("Wrote Collection to Firestore.")
+    });
+  }
 }
 
 function isPatchNeeded(data: StoreData) {
@@ -123,7 +132,7 @@ function isPatchNeeded(data: StoreData) {
 }
 
 
-function loadData(): StoreData {
+function loadFromLocalStorage(): StoreData {
   const localData = localStorage.getItem("d4log");
   if (localData) {
     const parsedData: StoreData = JSON.parse(localData);
@@ -165,9 +174,41 @@ function loadData(): StoreData {
 
 function useStore(): Store {
   const [data, setData] = useState(initStore());
+  const userId = useRef<string>();
 
-  function init() {
-    setData(loadData());
+  function init(uid?: string): Promise<StoreData> {
+    return new Promise((resolve, reject) => {
+      userId.current = uid;
+
+      if (uid) {
+        const docRef = doc(firestore, "collections", uid);
+        getDoc(docRef).then((snapshot) => {
+          // instantiate new collection
+          if (!snapshot.exists()) {
+            console.log("Collection is empty.");
+            const newData = loadFromLocalStorage();
+            persistData(newData, uid);
+            setData(newData);
+            resolve(newData);
+            return;
+          }
+
+          // sync with firestore
+          console.log("Got Collection Snapshot.", snapshot.data());
+          const newData = {
+            ...loadFromLocalStorage(),
+            collectionLog: snapshot.data() as CollectionLog
+          }
+          setData(newData);
+          resolve(newData);
+        });
+      } else {
+        // offline
+        const newData = loadFromLocalStorage();
+        setData(newData);
+        resolve(newData);
+      }
+    });
   }
 
   function getLogEntry(artifactId: number): ArtifactMeta {
@@ -205,7 +246,7 @@ function useStore(): Store {
       };
 
       setData(updatedData);
-      persistData(updatedData);
+      persistData(updatedData, userId.current);
       return;
     }
 
@@ -232,7 +273,7 @@ function useStore(): Store {
     };
 
     setData(updatedData);
-    persistData(updatedData);
+    persistData(updatedData, userId.current);
   }
 
   function isCollected(artifactId: number): boolean {

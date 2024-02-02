@@ -23,33 +23,11 @@ import MobileMenu from "./MobileMenu";
 import MobileCloseButton from "./MobileCloseButton";
 import MobileHeader from "./MobileHeader";
 
-import {initializeApp} from "firebase/app";
-import {getAnalytics} from "firebase/analytics";
-import {getAuth, GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
 import Account, {Direction} from "./Account";
+import {auth} from "./firebase";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDT_Sh2rufVus0ISono5Pb4ZGnU1LDF8CU",
-    authDomain: "d4log-bfc60.firebaseapp.com",
-    projectId: "d4log-bfc60",
-    storageBucket: "d4log-bfc60.appspot.com",
-    messagingSenderId: "37093938675",
-    appId: "1:37093938675:web:a529225838441b0780ae86",
-    measurementId: "G-DJ7FMXPHKQ"
-};
-
-// Instantiate Firebase
-const application = initializeApp(firebaseConfig);
-const analytics = getAnalytics(application); // required
-const auth = getAuth(application);
-const firestore = getFirestore(application);
-
-console.log("Firebase initialised.", {
-    name: analytics.app.name,
-    currentUser: auth.currentUser
-});
 
 enum SideBarType {
     ITEM = 'item',
@@ -261,22 +239,12 @@ function Application(): ReactElement<HTMLDivElement> {
         store.init();
 
         // add user state listener
-        auth.onAuthStateChanged((user) => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
             console.log("Auth state changed.", { ...user });
             setUser(user);
 
-            if (user) {
-                const docRef = doc(firestore, "collections", user.uid);
-                getDoc(docRef).then((snapshot) => {
-                    if (!snapshot.exists()) {
-                        console.log("Collection is empty.");
-
-                        return;
-                    }
-
-                    console.log("Got Collection Snapshot.", snapshot.data());
-                });
-            }
+            // init firebase storage
+            store.init(user?.uid);
         });
 
         // load database
@@ -286,6 +254,11 @@ function Application(): ReactElement<HTMLDivElement> {
                     setDb(data);
                 }
             });
+
+        return () => {
+            console.log("Tearing Down application...");
+            unsubscribe();
+        };
     }, [setDb]);
 
     return (
