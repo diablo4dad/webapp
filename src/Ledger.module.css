@@ -9,7 +9,7 @@
     box-sizing: border-box;
 
     position: sticky;
-    top: calc(6rem - 1px); /* fixes annoying 1px gap between the header */
+    top: 6rem;
 
     z-index: 4;
 

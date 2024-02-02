@@ -1,0 +1,8 @@
+.Block {
+    padding: 1.875rem 2rem;
+    font-size: 1.25rem;
+    color: #ccc;
+    background-color: #303640;
+    border-bottom: 1px solid #23272e;
+    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
+}

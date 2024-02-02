@@ -1,0 +1,28 @@
+.Button {
+    position: absolute;
+    display: block;
+    top: 1rem;
+    right: 1rem;
+
+    font-size: 1rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0;
+
+    cursor: pointer;
+}
+
+.Button:active svg {
+    position: relative;
+    top: 1px;
+}
+
+.Button svg {
+    width: 3rem;
+    height: 3rem;
+    fill: #6F7D8C;
+}
+
+.Button:hover svg {
+    fill: #8394a6;
+}

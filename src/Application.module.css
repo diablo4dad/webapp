@@ -26,8 +26,6 @@
   box-sizing: border-box;
   align-items: center;
   flex-direction: column;
-  box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
-  border-bottom: 1px solid #303640;
 }
 
 .HeaderLeft {
@@ -153,7 +151,6 @@
   width: 100%;
   display: flex;
   flex: 1;
-  justify-content: center;
   flex-direction: column;
 }
 
@@ -226,6 +223,8 @@
 
   .Header {
     flex-direction: row;
+    box-shadow: 0 1px 3px rgba(17, 17, 17, 0.5);
+    border-bottom: 1px solid #303640;
   }
 
   .HeaderLeft {

@@ -20,6 +20,8 @@ import {Discord, Gear, Hamburger} from "./Icons";
 import Button from "./Button";
 import AccountWidget, {Orientation} from "./AccountWidget";
 import MobileMenu from "./MobileMenu";
+import MobileCloseButton from "./MobileCloseButton";
+import MobileHeader from "./MobileHeader";
 
 enum SideBarType {
     ITEM = 'item',
@@ -286,7 +288,6 @@ function Application(): ReactElement<HTMLDivElement> {
                                         <ConfigSidebar
                                             config={config}
                                             onChange={onConfigChange}
-                                            onClose={() => setContent(popHistory())}
                                         />
                                     }
                                 </section>
@@ -311,17 +312,21 @@ function Application(): ReactElement<HTMLDivElement> {
                             />
                         }
                         {content === ContentType.MOBILE_MENU &&
-                            <MobileMenu
-                                onNavigate={(place) => setContent(pushHistory(place))}
-                                onClose={() => setContent(popHistory())}
-                            ></MobileMenu>
+                            <>
+                                <MobileHeader>Menu</MobileHeader>
+                                <MobileMenu onNavigate={(place) => setContent(pushHistory(place))} />
+                                <MobileCloseButton onClick={() => setContent(popHistory())} />
+                            </>
                         }
                         {content === ContentType.CONFIG &&
-                            <ConfigSidebar
-                                config={config}
-                                onChange={onConfigChange}
-                                onClose={() => setContent(popHistory())}
-                            />
+                            <>
+                                <MobileHeader>Settings</MobileHeader>
+                                <ConfigSidebar
+                                    config={config}
+                                    onChange={onConfigChange}
+                                />
+                                <MobileCloseButton onClick={() => setContent(popHistory())} />
+                            </>
                         }
                     </main>
                 </div>
