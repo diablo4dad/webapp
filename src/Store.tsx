@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
-import {isScreenSmall} from "./config";
+import {isScreenSmall, VERSION} from "./config";
 
 const DEFAULT_VIEW: ViewState = {
   ledger: {
@@ -15,7 +15,10 @@ enum ItemFlag {
 
 type ArtifactMeta = {
   id: number,
-  flags: ItemFlag[],
+  collected: boolean,
+  hidden: boolean,
+  // deprecated:
+  flags?: ItemFlag[],
 }
 
 type ViewState = {
@@ -38,6 +41,7 @@ type CollectionState = {
 
 type Store = {
   data: StoreData,
+  init: () => void,
   getLogEntry: (artifactId: number) => ArtifactMeta,
   isCollected: (artifactId: number) => boolean,
   isHidden: (artifactId: number) => boolean,
@@ -56,6 +60,11 @@ type StoreData = {
   config: Configuration,
   collectionLog: CollectionLog,
   view: ViewState,
+  version?: {
+    major: number,
+    minor: number,
+    revision: number,
+  },
 }
 
 type CollectionLog = {
@@ -65,12 +74,14 @@ type CollectionLog = {
 function initArtifactMeta(artifactId: number): ArtifactMeta {
   return {
     id: artifactId,
-    flags: [],
+    collected: false,
+    hidden: false,
   }
 }
 
 function initStore(): StoreData {
   return {
+    version: VERSION,
     config: {
       ...DEFAULT_CONFIG,
       view: isScreenSmall(window) ? 'list' : 'card',
@@ -91,11 +102,60 @@ function persistData(data: StoreData) {
   localStorage.setItem("d4log", JSON.stringify(data));
 }
 
+function isPatchNeeded(data: StoreData) {
+  if (data.version === undefined) {
+    return true;
+  }
+
+  if (data.version.major < VERSION.major) {
+    return true;
+  }
+
+  if (data.version.minor < VERSION.minor) {
+    return true;
+  }
+
+  if (data.version.revision < VERSION.revision) {
+    return true;
+  }
+
+  return false;
+}
+
+
 function loadData(): StoreData {
   const localData = localStorage.getItem("d4log");
   if (localData) {
-    const parsedData = JSON.parse(localData);
+    const parsedData: StoreData = JSON.parse(localData);
     console.log("Collection loaded from HTML5 Storage.");
+
+    // patch <1.2.0 collections
+    if (isPatchNeeded(parsedData)) {
+      console.log("Migrating collection to 1.2.0...");
+
+      // convert flags to booleans
+      parsedData.collectionLog.entries = parsedData.collectionLog.entries.map(i => {
+        // this the preferred format for firestore queries
+        if (i.flags) {
+          i.collected = i.flags.includes(ItemFlag.COLLECTED);
+          i.hidden = i.flags.includes(ItemFlag.HIDDEN);
+          delete i.flags;
+        }
+
+        return i;
+      });
+
+      // bump schema
+      parsedData.version = {
+        major: 1,
+        minor: 2,
+        revision: 0,
+      };
+
+      // save changes
+      persistData(parsedData);
+    }
+
     return parsedData;
   } else {
     console.log("Initialising New Collection...");
@@ -104,7 +164,11 @@ function loadData(): StoreData {
 }
 
 function useStore(): Store {
-  const [data, setData] = useState(loadData());
+  const [data, setData] = useState(initStore());
+
+  function init() {
+    setData(loadData());
+  }
 
   function getLogEntry(artifactId: number): ArtifactMeta {
     const logEntry = data
@@ -120,7 +184,15 @@ function useStore(): Store {
     const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
     if (!doesExist) {
       const logEntry = initArtifactMeta(artifactId);
-      logEntry.flags.push(flag);
+
+      switch (flag) {
+        case ItemFlag.COLLECTED:
+          logEntry.collected = true;
+          break;
+        case ItemFlag.HIDDEN:
+          logEntry.hidden = true;
+          break;
+      }
 
       const updatedData = {
         ...data,
@@ -144,12 +216,16 @@ function useStore(): Store {
           if (e.id !== artifactId) {
             return e;
           } else {
-            const flagIndex = e.flags.indexOf(flag);
+            switch (flag) {
+              case ItemFlag.COLLECTED:
+                e.collected = !e.collected;
+                break;
+              case ItemFlag.HIDDEN:
+                e.hidden = !e.hidden;
+                break;
+            }
 
-            return {
-              ...e,
-              flags: flagIndex === -1 ? [...e.flags, flag] : e.flags.filter((_, i) => i !== flagIndex),
-            };
+            return e;
           }
         }),
       }
@@ -160,11 +236,11 @@ function useStore(): Store {
   }
 
   function isCollected(artifactId: number): boolean {
-    return getLogEntry(artifactId).flags.includes(ItemFlag.COLLECTED);
+    return getLogEntry(artifactId).collected;
   }
 
   function isHidden(artifactId: number): boolean {
-    return getLogEntry(artifactId).flags.includes(ItemFlag.HIDDEN);
+    return getLogEntry(artifactId).hidden;
   }
 
   function saveConfig(configuration: Configuration) {
@@ -229,7 +305,10 @@ function useStore(): Store {
       }
     }
 
-    saveView(updatedData);
+    const current = currentData.lastSelected;
+    if (current?.collectionId !== collectionId || current?.itemId !== itemId) {
+      saveView(updatedData);
+    }
   }
 
   function getLastSelectedItem(): Selection | undefined {
@@ -238,6 +317,7 @@ function useStore(): Store {
 
   return {
     data,
+    init,
     getLogEntry,
     toggle,
     isCollected,
