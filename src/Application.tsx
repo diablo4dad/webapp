@@ -26,6 +26,8 @@ import MobileHeader from "./MobileHeader";
 import {initializeApp} from "firebase/app";
 import {getAnalytics} from "firebase/analytics";
 import {getAuth, GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+
 import Account, {Direction} from "./Account";
 
 const firebaseConfig = {
@@ -42,6 +44,8 @@ const firebaseConfig = {
 const application = initializeApp(firebaseConfig);
 const analytics = getAnalytics(application); // required
 const auth = getAuth(application);
+const firestore = getFirestore(application);
+
 console.log("Firebase initialised.", {
     name: analytics.app.name,
     currentUser: auth.currentUser
@@ -257,6 +261,18 @@ function Application(): ReactElement<HTMLDivElement> {
         auth.onAuthStateChanged((user) => {
             console.log("Auth state changed.", { ...user });
             setUser(user);
+
+            if (user) {
+                const docRef = doc(firestore, "collections", user.uid);
+                getDoc(docRef).then((snapshot) => {
+                    if (!snapshot.exists()) {
+                        console.log("Collection does not exist.");
+                        return;
+                    }
+
+                    console.log("Got Collection from Firestore.", snapshot.data());
+                });
+            }
         });
 
         // load database
