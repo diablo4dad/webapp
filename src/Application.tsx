@@ -18,10 +18,34 @@ import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./co
 import Progress from "./Progress";
 import {Discord, Gear, Hamburger} from "./Icons";
 import Button from "./Button";
-import AccountWidget, {Orientation} from "./AccountWidget";
+import Authenticate, {AuthGiant, Orientation} from "./Authenticate";
 import MobileMenu from "./MobileMenu";
 import MobileCloseButton from "./MobileCloseButton";
 import MobileHeader from "./MobileHeader";
+
+import {initializeApp} from "firebase/app";
+import {getAnalytics} from "firebase/analytics";
+import {getAuth, GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
+import Account, {Direction} from "./Account";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDT_Sh2rufVus0ISono5Pb4ZGnU1LDF8CU",
+    authDomain: "d4log-bfc60.firebaseapp.com",
+    projectId: "d4log-bfc60",
+    storageBucket: "d4log-bfc60.appspot.com",
+    messagingSenderId: "37093938675",
+    appId: "1:37093938675:web:a529225838441b0780ae86",
+    measurementId: "G-DJ7FMXPHKQ"
+};
+
+// Instantiate Firebase
+const application = initializeApp(firebaseConfig);
+const analytics = getAnalytics(application); // required
+const auth = getAuth(application);
+console.log("Firebase initialised.", {
+    name: analytics.app.name,
+    currentUser: auth.currentUser
+});
 
 enum SideBarType {
     ITEM = 'item',
@@ -156,6 +180,7 @@ function DiscordInvite(): ReactElement<HTMLDivElement> {
 
 function Application(): ReactElement<HTMLDivElement> {
     const store = useStore();
+    const [user, setUser] = useState<User | null>(null);
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [content, setContent] = useState(ContentType.LEDGER);
@@ -196,9 +221,52 @@ function Application(): ReactElement<HTMLDivElement> {
         return history.current.pop() ?? ContentType.LEDGER;
     }
 
-    useEffect(() => {
-        console.log("Fetching Database...");
+    function signIn(giant: AuthGiant) {
+        const provider = new GoogleAuthProvider();
 
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                if (credential) {
+                    const token = credential.accessToken;
+                    // The signed-in user info.
+                    const user = result.user;
+                    // IdP data available using getAdditionalUserInfo(result)
+                    // ...
+                    console.log("Logged in.", { ...user });
+                } else {
+                    console.error("Signed in but Credential was null.");
+                }
+
+            }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+        });
+    }
+
+    function signOut() {
+        auth.signOut().then(() => {
+            console.log("Signed out.");
+        })
+    }
+
+    useEffect(() => {
+        console.log("Bootstrapping...");
+
+        // add user state listener
+        auth.onAuthStateChanged((user) => {
+            console.log("Auth state changed.", { ...user });
+            setUser(user);
+        });
+
+        // load database
         fetchDb()
             .then(data => {
                 if (Array.isArray(data.data)) {
@@ -249,7 +317,12 @@ function Application(): ReactElement<HTMLDivElement> {
                             {!config.enableProgressBar &&
                                 <div>{/*Progress Bar Disabled*/}</div>
                             }
-                            <AccountWidget orientation={Orientation.ROW}></AccountWidget>
+                            {user === null &&
+                                <Authenticate orientation={Orientation.ROW} onAuth={signIn}/>
+                            }
+                            {user !== null &&
+                                <Account currentUser={user} onLogout={signOut} direction={Direction.ROW}/>
+                            }
                         </div>
                     </div>
                 </header>
@@ -300,7 +373,7 @@ function Application(): ReactElement<HTMLDivElement> {
                         {content === ContentType.MOBILE_MENU &&
                             <>
                                 <MobileHeader>Menu</MobileHeader>
-                                <MobileMenu onNavigate={(place) => setContent(pushHistory(place))} />
+                                <MobileMenu currentUser={user} onNavigate={(place) => setContent(pushHistory(place))} onAuth={signIn} onLogout={signOut} />
                                 <MobileCloseButton onClick={() => setContent(popHistory())} />
                             </>
                         }
