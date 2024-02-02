@@ -5,6 +5,24 @@ collections.
 
 ## [Unreleased]
 
+## [1.2.0]
+
+### Added
+
+- Navigation hamburger menu (mobile).
+- Close button and heading to the settings screen (mobile).
+- Card layout and extra display options (mobile).
+
+### Changed
+
+- Set default "Show Hidden Items" value to disabled.
+- Increased width of header to run fullscreen (desktop).
+- Moved progress bar from the footer to the header (desktop).
+
+### Fixed
+
+- Settings clipping on small screens (mobile).
+
 ## [1.1.4] - 2023-01-25
 
 ### Added
