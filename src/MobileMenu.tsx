@@ -5,20 +5,16 @@ import {Close} from "./Icons";
 
 type Props = {
     onNavigate: (place: ContentType) => void,
-    onClose: () => void,
 }
 
-function MobileMenu({ onNavigate, onClose }: Props) {
+function MobileMenu({ onNavigate }: Props) {
     return (
         <div className={styles.MobileMenu}>
+            <button className={styles.MobileMenuLink} onClick={() => onNavigate(ContentType.LEDGER)}>Collection</button>
             <button className={styles.MobileMenuLink} onClick={() => onNavigate(ContentType.CONFIG)}>Settings</button>
-            <button className={styles.MobileMenuLink} onClick={() => onNavigate(ContentType.LEDGER)}>Collection Log</button>
             <div className={styles.MobileMenuAccount}>
                 <AccountWidget></AccountWidget>
             </div>
-            <button className={styles.MobileMenuClose} onClick={onClose}>
-                <Close></Close>
-            </button>
         </div>
     );
 }

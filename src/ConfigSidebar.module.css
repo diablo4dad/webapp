@@ -2,7 +2,11 @@
     display: flex;
     flex-direction: column;
     row-gap: 2rem;
-    padding: 2rem;
+    padding: 2rem 1rem;
+}
+
+.Fieldset {
+    margin: 0;
 }
 
 .ViewOptions {
@@ -24,6 +28,10 @@
 }
 
 @media screen and (min-width: 1200px) {
+    .Panel {
+        padding: 2rem;
+    }
+
     .CloseButton {
         display: none;
     }
