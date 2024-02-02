@@ -37,12 +37,12 @@ function Authenticate({ orientation = Orientation.COLUMN, onAuth }: Props) {
                 <Button onClick={() => onAuth(AuthGiant.GOOGLE)}>
                     <Google/>
                 </Button>
-                <Button colour={BtnColours.Discord} onClick={() => onAuth(AuthGiant.DISCORD)}>
-                    <Discord/>
-                </Button>
-                <Button colour={BtnColours.BattleNet} onClick={() => onAuth(AuthGiant.BATTLE_NET)}>
-                    <BattleNet/>
-                </Button>
+                {/*<Button colour={BtnColours.Discord} onClick={() => onAuth(AuthGiant.DISCORD)}>*/}
+                {/*    <Discord/>*/}
+                {/*</Button>*/}
+                {/*<Button colour={BtnColours.BattleNet} onClick={() => onAuth(AuthGiant.BATTLE_NET)}>*/}
+                {/*    <BattleNet/>*/}
+                {/*</Button>*/}
             </div>
         </div>
     );
