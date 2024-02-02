@@ -28,7 +28,7 @@ const DEFAULT_CONFIG: Configuration = {
     showPromotional: false,
     showOutOfRotation: false,
     showHiddenItems: false,
-    hideCollectedItems: true,
+    hideCollectedItems: false,
     hideCompleteCollections: false,
     view: 'card',
     enableProgressBar: true,
