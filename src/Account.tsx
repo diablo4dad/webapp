@@ -31,7 +31,6 @@ function Account({ currentUser, onLogout, direction = Direction.COLUMN }: Props)
                     <span> </span>
                     <button className={styles.TextLogout} onClick={onLogout}>Logout</button>
                 </div>
-
             </div>
             <div className={styles.Badge}>
                 {['firebase', 'google'].includes(currentUser.providerId) &&
