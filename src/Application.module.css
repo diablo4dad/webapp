@@ -49,10 +49,6 @@
   flex-direction: column;
 }
 
-.HeaderRightContent {
-
-}
-
 .Shell {
   display: flex;
   flex-direction: column;
@@ -154,10 +150,18 @@
   flex-direction: column;
 }
 
+.ProgressMobile {
+  padding: 1rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 5000;
+  background-color: #1e2126;
+}
+
 .Footer {
   display: block;
   background-color: #1e2126;
-  border-top: 1px solid #1d2026;
+  border-top: 1px solid #282c34;
 }
 
 .Discord {
@@ -250,7 +254,6 @@
   .HeaderRightContent > div:nth-child(1) {
     max-width: 40%;
     min-width: 20rem;
-    margin: 0 auto;
   }
 
   .HeaderInfoName {
@@ -292,6 +295,10 @@
     flex: 1;
     flex-direction: column;
     overflow: auto;
+  }
+
+  .ProgressMobile {
+    display: none;
   }
 
   .Footer {

@@ -263,6 +263,9 @@ function Application(): ReactElement<HTMLDivElement> {
                                     collectionSize={items.length}
                                 />
                             }
+                            {!config.enableProgressBar &&
+                                <div>{/*Progress Bar Disabled*/}</div>
+                            }
                             <AccountWidget orientation={Orientation.ROW}></AccountWidget>
                         </div>
                     </div>
@@ -331,6 +334,14 @@ function Application(): ReactElement<HTMLDivElement> {
                     </main>
                 </div>
             </div>
+            {config.enableProgressBar &&
+                <div className={styles.ProgressMobile}>
+                    <Progress
+                        totalCollected={items.filter(i => store.isCollected(i.id)).length}
+                        collectionSize={items.length}
+                    />
+                </div>
+            }
             <footer className={styles.Footer}>
                 <DiscordInvite/>
                 <VersionInfo/>
