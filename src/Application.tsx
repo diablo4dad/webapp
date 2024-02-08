@@ -40,6 +40,7 @@ enum ItemGroup {
     TROPHIES = "trophies",
     ARMOR = "armor",
     WEAPONS = "weapons",
+    BODY = "body"
 }
 
 const itemGroups = new Map([
@@ -47,7 +48,8 @@ const itemGroups = new Map([
     [ItemGroup.HORSE_ARMOR, ["Horse Armor"]],
     [ItemGroup.TROPHIES, ["Trophy", "Back Trophy"]],
     [ItemGroup.WEAPONS, ["Axe", "Dagger", "Focus", "Mace", "Scythe", "Shield", "Sword", "Totem", "Wand", "Two-Handed Axe", "Bow", "Crossbow", "Two-Handed Mace", "Polearm", "Two-Handed Scythe", "Staff", "Two-Handed Sword"]],
-    [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]]
+    [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]],
+    [ItemGroup.BODY, ["Body Marking"]],
 ]);
 
 // references:
@@ -105,7 +107,8 @@ function aggregateItemTypes(config: Configuration): string[] {
         .concat(config.showHorseArmor ? itemGroups.get(ItemGroup.HORSE_ARMOR) ?? [] : [])
         .concat(config.showTrophies ? itemGroups.get(ItemGroup.TROPHIES) ?? [] : [])
         .concat(config.showArmor ? itemGroups.get(ItemGroup.ARMOR) ?? [] : [])
-        .concat(config.showWeapons ? itemGroups.get(ItemGroup.WEAPONS) ?? [] : []);
+        .concat(config.showWeapons ? itemGroups.get(ItemGroup.WEAPONS) ?? [] : [])
+        .concat(config.showBody ? itemGroups.get(ItemGroup.BODY) ?? [] : []);
 }
 
 function selectItemOrDefault(items: StrapiHit<Item>[], selectedItemId: number): StrapiHit<Item> | undefined {

@@ -7,6 +7,7 @@ type Configuration = {
     showTrophies: boolean,
     showArmor: boolean,
     showWeapons: boolean,
+    showBody: boolean,
     showPremium: boolean,
     showPromotional: boolean,
     showOutOfRotation: boolean,
@@ -24,6 +25,7 @@ const DEFAULT_CONFIG: Configuration = {
     showTrophies: true,
     showArmor: true,
     showWeapons: true,
+    showBody: true,
     showPremium: false,
     showPromotional: false,
     showOutOfRotation: false,
@@ -50,6 +52,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="trophies" checked={config.showTrophies} flip={true} onChange={e => onChange({ ...config, showTrophies: e.target.checked })}>Trophies</Toggle>
                 <Toggle name="armor" checked={config.showArmor} flip={true} onChange={e => onChange({ ...config, showArmor: e.target.checked })}>Armor</Toggle>
                 <Toggle name="weapons" checked={config.showWeapons} flip={true} onChange={e => onChange({ ...config, showWeapons: e.target.checked })}>Weapons</Toggle>
+                <Toggle name="body" checked={config.showBody} flip={true} onChange={e => onChange({ ...config, showBody: e.target.checked })}>Body Markings</Toggle>
             </fieldset>
             <fieldset className={styles.Fieldset}>
                 <legend>Filters</legend>
