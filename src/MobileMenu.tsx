@@ -15,7 +15,7 @@ type Props = {
 function MobileMenu({ onNavigate, onAuth, currentUser, onLogout }: Props) {
     return (
         <div className={styles.MobileMenu}>
-            <button className={styles.MobileMenuLink} onClick={() => onNavigate(ContentType.LEDGER)}>My Collection</button>
+            <button className={styles.MobileMenuLink} onClick={() => onNavigate(ContentType.LEDGER)}>Your Collection</button>
             <button className={styles.MobileMenuLink} onClick={() => onNavigate(ContentType.CONFIG)}>Settings</button>
             <div className={styles.MobileMenuAccount}>
                 {currentUser === null &&

@@ -4,7 +4,7 @@ const SERVER_ADDR = 'http://localhost:1337'
 const D4_BUILD = '1.2.3.47954'
 const SITE_VERSION = '1.2.0'
 const VERSION = {major: 1, minor: 2, revision: 0}
-const LAST_UPDATED = 'January 25th, 2024'
+const LAST_UPDATED = 'February 8th, 2024'
 const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
 
 function isScreenSmall(window: Window): boolean {
