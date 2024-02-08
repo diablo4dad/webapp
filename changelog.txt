@@ -9,9 +9,13 @@ collections.
 
 ### Added
 
+- Account logins using Google.
+- Sync collections to server when logged in.
 - Navigation hamburger menu (mobile).
 - Close button and heading to the settings screen (mobile).
 - Card layout and extra display options (mobile).
+- Lunar Awakening Event collection.
+- Body Markings item category filter.
 
 ### Changed
 
