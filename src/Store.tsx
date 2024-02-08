@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 import {isScreenSmall, VERSION} from "./config";
 import {doc, getDoc, setDoc} from "firebase/firestore";
@@ -99,18 +99,6 @@ function initStore(): StoreData {
   };
 }
 
-function persistData(data: StoreData, uid?: string) {
-  console.log("Saving...");
-  localStorage.setItem("d4log", JSON.stringify(data));
-
-  if (uid) {
-    const docRef = doc(firestore, "collections", uid);
-    setDoc(docRef, data.collectionLog).then(() => {
-      console.log("Wrote Collection to Firestore.")
-    });
-  }
-}
-
 function isPatchNeeded(data: StoreData) {
   if (data.version === undefined) {
     return true;
@@ -131,50 +119,75 @@ function isPatchNeeded(data: StoreData) {
   return false;
 }
 
-
-function loadFromLocalStorage(): StoreData {
-  const localData = localStorage.getItem("d4log");
-  if (localData) {
-    const parsedData: StoreData = JSON.parse(localData);
-    console.log("Collection loaded from HTML5 Storage.");
-
-    // patch <1.2.0 collections
-    if (isPatchNeeded(parsedData)) {
-      console.log("Migrating collection to 1.2.0...");
-
-      // convert flags to booleans
-      parsedData.collectionLog.entries = parsedData.collectionLog.entries.map(i => {
-        // this the preferred format for firestore queries
-        if (i.flags) {
-          i.collected = i.flags.includes(ItemFlag.COLLECTED);
-          i.hidden = i.flags.includes(ItemFlag.HIDDEN);
-          delete i.flags;
-        }
-
-        return i;
-      });
-
-      // bump schema
-      parsedData.version = {
-        major: 1,
-        minor: 2,
-        revision: 0,
-      };
-
-      // save changes
-      persistData(parsedData);
-    }
-
-    return parsedData;
-  } else {
-    console.log("Initialising New Collection...");
-    return initStore();
-  }
-}
+const debounce = (fn: Function, ms = 300) => {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: any[]) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+  };
+};
 
 function useStore(): Store {
   const [data, setData] = useState(initStore());
   const userId = useRef<string>();
+
+  const commitToFirebase = useCallback(
+    debounce((uid: string, data: StoreData) => {
+      const docRef = doc(firestore, "collections", uid);
+      setDoc(docRef, data.collectionLog).then(() => {
+        console.log("Wrote Collection to Firestore.")
+      });
+    }, 3000)
+  , []);
+
+  function persistData(data: StoreData, uid?: string) {
+    console.log("Saving...");
+    localStorage.setItem("d4log", JSON.stringify(data));
+
+    if (uid) {
+      commitToFirebase(uid, data);
+    }
+  }
+
+  function loadFromLocalStorage(): StoreData {
+    const localData = localStorage.getItem("d4log");
+    if (localData) {
+      const parsedData: StoreData = JSON.parse(localData);
+      console.log("Collection loaded from HTML5 Storage.");
+
+      // patch <1.2.0 collections
+      if (isPatchNeeded(parsedData)) {
+        console.log("Migrating collection to 1.2.0...");
+
+        // convert flags to booleans
+        parsedData.collectionLog.entries = parsedData.collectionLog.entries.map(i => {
+          // this the preferred format for firestore queries
+          if (i.flags) {
+            i.collected = i.flags.includes(ItemFlag.COLLECTED);
+            i.hidden = i.flags.includes(ItemFlag.HIDDEN);
+            delete i.flags;
+          }
+
+          return i;
+        });
+
+        // bump schema
+        parsedData.version = {
+          major: 1,
+          minor: 2,
+          revision: 0,
+        };
+
+        // save changes
+        persistData(parsedData);
+      }
+
+      return parsedData;
+    } else {
+      console.log("Initialising New Collection...");
+      return initStore();
+    }
+  }
 
   function init(uid?: string): Promise<StoreData> {
     return new Promise((resolve, reject) => {
