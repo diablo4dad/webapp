@@ -169,9 +169,8 @@ function Application(): ReactElement<HTMLDivElement> {
     const [db, setDb] = useState(createEmptyResultSet<Collection>());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [content, setContent] = useState(ContentType.LEDGER);
-    const [config, setConfig] = useState<Configuration>(store.loadConfig() ?? DEFAULT_CONFIG);
     const history = useRef([ContentType.LEDGER]);
-    const filteredDb = filterDb(db, store, config);
+    const filteredDb = filterDb(db, store, store.loadConfig());
     const items = reduceItems(filteredDb);
     const [selectedItemId, setSelectedItemId] = useState(store.getLastSelectedItem()?.itemId ?? getDefaultItemIdForCollection(filteredDb));
     const selectedItem = selectItemOrDefault(items, selectedItemId);
@@ -196,7 +195,6 @@ function Application(): ReactElement<HTMLDivElement> {
 
     function onConfigChange(config: Configuration) {
         store.saveConfig(config);
-        setConfig(config);
     }
 
     function pushHistory(content: ContentType) {
@@ -301,13 +299,13 @@ function Application(): ReactElement<HTMLDivElement> {
                     </div>
                     <div className={styles.HeaderRight}>
                         <div className={styles.HeaderRightContent}>
-                            {config.enableProgressBar &&
+                            {store.loadConfig().enableProgressBar &&
                                 <Progress
                                     totalCollected={items.filter(i => store.isCollected(i.id)).length}
                                     collectionSize={items.length}
                                 />
                             }
-                            {!config.enableProgressBar &&
+                            {!store.loadConfig().enableProgressBar &&
                                 <div>{/*Progress Bar Disabled*/}</div>
                             }
                             {user === null &&
@@ -338,7 +336,7 @@ function Application(): ReactElement<HTMLDivElement> {
                                     }
                                     {sideBar === SideBarType.CONFIG &&
                                         <ConfigSidebar
-                                            config={config}
+                                            config={store.loadConfig()}
                                             onChange={onConfigChange}
                                         />
                                     }
@@ -358,10 +356,10 @@ function Application(): ReactElement<HTMLDivElement> {
                                 onClickItem={onClickItem}
                                 onDoubleClickItem={onDoubleClickItem}
                                 onSelectAllToggle={onSelectAll}
-                                view={config.view}
-                                hideCollectedItems={config.hideCollectedItems}
-                                hideCompleteCollections={config.hideCompleteCollections}
-                                inverseCardLayout={config.inverseCardLayout}
+                                view={store.loadConfig().view}
+                                hideCollectedItems={store.loadConfig().hideCollectedItems}
+                                hideCompleteCollections={store.loadConfig().hideCompleteCollections}
+                                inverseCardLayout={store.loadConfig().inverseCardLayout}
                             />
                         }
                         {content === ContentType.MOBILE_MENU &&
@@ -375,7 +373,7 @@ function Application(): ReactElement<HTMLDivElement> {
                             <>
                                 <MobileHeader>Settings</MobileHeader>
                                 <ConfigSidebar
-                                    config={config}
+                                    config={store.loadConfig()}
                                     onChange={onConfigChange}
                                 />
                                 <MobileCloseButton onClick={() => setContent(popHistory())} />
@@ -384,7 +382,7 @@ function Application(): ReactElement<HTMLDivElement> {
                     </main>
                 </div>
             </div>
-            {config.enableProgressBar && content === ContentType.LEDGER &&
+            {store.loadConfig().enableProgressBar && content === ContentType.LEDGER &&
                 <div className={styles.ProgressMobile}>
                     <Progress
                         totalCollected={items.filter(i => store.isCollected(i.id)).length}

@@ -59,6 +59,7 @@ type Store = {
 }
 
 type StoreData = {
+  default: boolean,
   config: Configuration,
   collectionLog: CollectionLog,
   view: ViewState,
@@ -83,6 +84,7 @@ function initArtifactMeta(artifactId: number): ArtifactMeta {
 
 function initStore(): StoreData {
   return {
+    default: true,
     version: VERSION,
     config: {
       ...DEFAULT_CONFIG,
@@ -140,12 +142,14 @@ function useStore(): Store {
     }, 1500)
   , []);
 
-  const persistData = useCallback((data: StoreData, uid?: string) => {
-    console.log("Saving...");
-    localStorage.setItem("d4log", JSON.stringify(data));
+  const persistData = useCallback((context: StoreData, uid?: string) => {
+    if (!context.default) {
+      console.log("Saving...");
+      localStorage.setItem("d4log", JSON.stringify(context));
 
-    if (uid) {
-      commitToFirebase(uid, data);
+      if (uid) {
+        commitToFirebase(uid, context);
+      }
     }
   }, [commitToFirebase]);
 
@@ -186,7 +190,10 @@ function useStore(): Store {
         persistData(parsedData);
       }
 
-      return parsedData;
+      return {
+        ...parsedData,
+        default: false,
+      };
     } else {
       console.log("Initialising New Collection...");
       return initStore();
@@ -300,13 +307,10 @@ function useStore(): Store {
   }
 
   function saveConfig(configuration: Configuration) {
-    const updatedData = {
+    setData(data => ({
       ...data,
       config: configuration,
-    };
-
-    setData(updatedData);
-    persistData(updatedData);
+    }));
   }
 
   function loadConfig(): Configuration {
@@ -321,13 +325,10 @@ function useStore(): Store {
   }
 
   function saveView(view: ViewState) {
-    const updatedData = {
+    setData(data => ({
       ...data,
       view,
-    }
-
-    setData(updatedData);
-    persistData(updatedData);
+    }));
   }
 
   function toggleCollectionOpen(collectionId: number, isOpen: boolean) {
