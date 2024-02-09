@@ -139,7 +139,7 @@ function useStore(): Store {
       setDoc(docRef, data.collectionLog).then(() => {
         console.log("Wrote Collection to Firestore.")
       });
-    }, 1500)
+    }, 800)
   , []);
 
   const persistData = useCallback((context: StoreData, uid?: string) => {
