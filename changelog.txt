@@ -11,6 +11,10 @@ collections.
 
 - Select All / None actions to collections
 
+### Changed
+
+- Site title to "Diablo 4 Dad"
+
 ### Fixed
 
 - Settings/configuration was not saving

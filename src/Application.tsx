@@ -274,7 +274,7 @@ function Application(): ReactElement<HTMLDivElement> {
                         <div className={styles.HeaderLeftContent}>
                             <img className={styles.HeaderIcon} src={logo} alt="Diablo 4"/>
                             <div className={styles.HeaderInfo}>
-                                <div className={styles.HeaderInfoName}>diablo4.dad</div>
+                                <div className={styles.HeaderInfoName}>Diablo 4 Dad</div>
                                 <div className={styles.HeaderInfoTagLine}>Bringing closure to the completionist
                                     in you
                                 </div>
