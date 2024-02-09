@@ -67,13 +67,14 @@ type Props = {
     store: Store,
     onClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<Item>) => void,
     onDoubleClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<Item>) => void,
+    onSelectAllToggle: (collection: StrapiHit<Collection>, selectAll: boolean) => void,
     hideCollectedItems: boolean,
     hideCompleteCollections: boolean,
     inverseCardLayout: boolean,
     view: 'list' | 'card',
 }
 
-function Ledger({db, store, onClickItem, onDoubleClickItem, view, hideCollectedItems, hideCompleteCollections, inverseCardLayout}: Props) {
+function Ledger({db, store, onClickItem, onDoubleClickItem, onSelectAllToggle, view, hideCollectedItems, hideCompleteCollections, inverseCardLayout}: Props) {
     function getClassNamesForItem(item: StrapiHit<Item>) {
         return [
             styles.Artifact,
@@ -101,8 +102,15 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, view, hideCollectedI
                         <h1 className={styles.LedgerHeading}>{collection.attributes.name}
                             <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
                             {process.env.NODE_ENV === 'development' &&
-                                <span className={styles.LedgerEdit}> | <a target="_blank" href={generateEditCategoryUrl(collection)} rel="noreferrer">Edit</a></span>
+                                <span className={styles.LedgerEdit}> | <a target="_blank"
+                                                                          href={generateEditCategoryUrl(collection)}
+                                                                          rel="noreferrer">Edit</a></span>
                             }
+                            <span className={styles.LedgerSelectControls}>
+                                <button className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, true)}>Select All</button>
+                                <span> | </span>
+                                <button className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, false)}>None</button>
+                            </span>
                         </h1>
                         <div className={styles.LedgerDescription}>{collection.attributes.description}</div>
                     </summary>

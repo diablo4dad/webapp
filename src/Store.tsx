@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
 import {isScreenSmall, VERSION} from "./config";
 import {doc, getDoc, setDoc} from "firebase/firestore";
@@ -47,7 +47,7 @@ type Store = {
   getLogEntry: (artifactId: number) => ArtifactMeta,
   isCollected: (artifactId: number) => boolean,
   isHidden: (artifactId: number) => boolean,
-  toggle: (artifactId: number, flag?: ItemFlag) => void,
+  toggle: (artifactId: number, flag?: ItemFlag, enabled?: boolean) => void,
   saveConfig: (config: Configuration) => void,
   loadConfig: () => Configuration,
   saveView: (view: ViewState) => void,
@@ -137,17 +137,21 @@ function useStore(): Store {
       setDoc(docRef, data.collectionLog).then(() => {
         console.log("Wrote Collection to Firestore.")
       });
-    }, 3000)
+    }, 1500)
   , []);
 
-  function persistData(data: StoreData, uid?: string) {
+  const persistData = useCallback((data: StoreData, uid?: string) => {
     console.log("Saving...");
     localStorage.setItem("d4log", JSON.stringify(data));
 
     if (uid) {
       commitToFirebase(uid, data);
     }
-  }
+  }, [commitToFirebase]);
+
+  useEffect(() => {
+    persistData(data, userId.current);
+  }, [persistData, data]);
 
   function loadFromLocalStorage(): StoreData {
     const localData = localStorage.getItem("d4log");
@@ -234,59 +238,57 @@ function useStore(): Store {
     return logEntry ?? initArtifactMeta(artifactId);
   }
 
-  function toggle(artifactId: number, flag: ItemFlag = ItemFlag.COLLECTED) {
-    const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
-    if (!doesExist) {
-      const logEntry = initArtifactMeta(artifactId);
+  function toggle(artifactId: number, flag: ItemFlag = ItemFlag.COLLECTED, enabled?: boolean) {
+    function updateData(data: StoreData) {
+      const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
+      if (!doesExist) {
+        const logEntry = initArtifactMeta(artifactId);
 
-      switch (flag) {
-        case ItemFlag.COLLECTED:
-          logEntry.collected = true;
-          break;
-        case ItemFlag.HIDDEN:
-          logEntry.hidden = true;
-          break;
+        switch (flag) {
+          case ItemFlag.COLLECTED:
+            logEntry.collected = enabled ?? true;
+            break;
+          case ItemFlag.HIDDEN:
+            logEntry.hidden = enabled ?? true;
+            break;
+        }
+
+        return {
+          ...data,
+          collectionLog: {
+            ...data.collectionLog,
+            entries: [
+              ...data.collectionLog.entries,
+              logEntry,
+            ],
+          }
+        };
       }
 
-      const updatedData = {
+      return {
         ...data,
         collectionLog: {
-          entries: [
-            ...data.collectionLog.entries,
-            logEntry,
-          ],
+          entries: data.collectionLog.entries.map(e => {
+            if (e.id !== artifactId) {
+              return e;
+            } else {
+              switch (flag) {
+                case ItemFlag.COLLECTED:
+                  e.collected = enabled ?? !e.collected;
+                  break;
+                case ItemFlag.HIDDEN:
+                  e.hidden = enabled ?? !e.hidden;
+                  break;
+              }
+
+              return e;
+            }
+          }),
         }
       };
-
-      setData(updatedData);
-      persistData(updatedData, userId.current);
-      return;
     }
 
-    const updatedData ={
-      ...data,
-      collectionLog: {
-        entries: data.collectionLog.entries.map(e => {
-          if (e.id !== artifactId) {
-            return e;
-          } else {
-            switch (flag) {
-              case ItemFlag.COLLECTED:
-                e.collected = !e.collected;
-                break;
-              case ItemFlag.HIDDEN:
-                e.hidden = !e.hidden;
-                break;
-            }
-
-            return e;
-          }
-        }),
-      }
-    };
-
-    setData(updatedData);
-    persistData(updatedData, userId.current);
+    setData(updateData);
   }
 
   function isCollected(artifactId: number): boolean {

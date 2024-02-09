@@ -190,6 +190,10 @@ function Application(): ReactElement<HTMLDivElement> {
         store.toggle(item.id);
     }
 
+    function onSelectAll(collection: StrapiHit<Collection>, selectAll: boolean) {
+        collection.attributes.items?.data.map(i => i.id).forEach(i => store.toggle(i, ItemFlag.COLLECTED, selectAll));
+    }
+
     function onConfigChange(config: Configuration) {
         store.saveConfig(config);
         setConfig(config);
@@ -353,6 +357,7 @@ function Application(): ReactElement<HTMLDivElement> {
                                 store={store}
                                 onClickItem={onClickItem}
                                 onDoubleClickItem={onDoubleClickItem}
+                                onSelectAllToggle={onSelectAll}
                                 view={config.view}
                                 hideCollectedItems={config.hideCollectedItems}
                                 hideCompleteCollections={config.hideCompleteCollections}
