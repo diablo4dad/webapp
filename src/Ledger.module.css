@@ -50,6 +50,25 @@
     color: #ccc;
 }
 
+.LedgerSelectControls {
+    float: right;
+    font-size: 0.875rem;
+    color: #ccc;
+}
+
+.LedgerSelectBtn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: white;
+    cursor: pointer;
+}
+
+.LedgerSelectBtn:hover {
+    color: orange;
+}
+
+
 .LedgerRow {
     display: flex;
     flex-direction: column;
