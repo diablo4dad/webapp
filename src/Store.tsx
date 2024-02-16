@@ -61,6 +61,7 @@ type Store = {
 type StoreData = {
   default: boolean,
   config: Configuration,
+  hiddenCollectionItems: number[],
   collectionLog: CollectionLog,
   view: ViewState,
   version?: {
@@ -98,23 +99,24 @@ function initStore(): StoreData {
     collectionLog: {
       entries: [],
     },
+    hiddenCollectionItems: [],
   };
 }
 
-function isPatchNeeded(data: StoreData) {
+function isPatchNeeded(data: StoreData, major: number, minor: number, revision: number) {
   if (data.version === undefined) {
     return true;
   }
 
-  if (data.version.major < VERSION.major) {
+  if (data.version.major < major) {
     return true;
   }
 
-  if (data.version.minor < VERSION.minor) {
+  if (data.version.minor < minor) {
     return true;
   }
 
-  if (data.version.revision < VERSION.revision) {
+  if (data.version.revision < revision) {
     return true;
   }
 
@@ -164,7 +166,7 @@ function useStore(): Store {
       console.log("Collection loaded from HTML5 Storage.");
 
       // patch <1.2.0 collections
-      if (isPatchNeeded(parsedData)) {
+      if (isPatchNeeded(parsedData, 1, 2, 0)) {
         console.log("Migrating collection to 1.2.0...");
 
         // convert flags to booleans
@@ -183,6 +185,21 @@ function useStore(): Store {
         parsedData.version = {
           major: 1,
           minor: 2,
+          revision: 0,
+        };
+
+        // save changes
+        persistData(parsedData);
+      }
+
+      if (isPatchNeeded(parsedData, 1, 3, 0)) {
+        // append hidden collection items array
+        parsedData.hiddenCollectionItems = [];
+
+        // bump schema
+        parsedData.version = {
+          major: 1,
+          minor: 3,
           revision: 0,
         };
 
@@ -247,6 +264,26 @@ function useStore(): Store {
 
   function toggle(artifactId: number, flag: ItemFlag = ItemFlag.COLLECTED, enabled?: boolean) {
     function updateData(data: StoreData) {
+      if (flag === ItemFlag.HIDDEN) {
+        if (data.hiddenCollectionItems.includes(artifactId) && (enabled === false)) {
+          const hiddenCollectionItems = data.hiddenCollectionItems.splice(data.hiddenCollectionItems.indexOf(artifactId), 1);
+          return {
+            ...data,
+            hiddenCollectionItems,
+          }
+        }
+
+        if (!data.hiddenCollectionItems.includes(artifactId) && (enabled || enabled === undefined)) {
+          const hiddenCollectionItems = [...data.hiddenCollectionItems, artifactId];
+          return {
+            ...data,
+            hiddenCollectionItems,
+          }
+        }
+
+        return data;
+      }
+
       const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
       if (!doesExist) {
         const logEntry = initArtifactMeta(artifactId);
@@ -254,9 +291,6 @@ function useStore(): Store {
         switch (flag) {
           case ItemFlag.COLLECTED:
             logEntry.collected = enabled ?? true;
-            break;
-          case ItemFlag.HIDDEN:
-            logEntry.hidden = enabled ?? true;
             break;
         }
 
@@ -283,9 +317,6 @@ function useStore(): Store {
                 case ItemFlag.COLLECTED:
                   e.collected = enabled ?? !e.collected;
                   break;
-                case ItemFlag.HIDDEN:
-                  e.hidden = enabled ?? !e.hidden;
-                  break;
               }
 
               return e;
@@ -303,7 +334,7 @@ function useStore(): Store {
   }
 
   function isHidden(artifactId: number): boolean {
-    return getLogEntry(artifactId).hidden;
+    return data.hiddenCollectionItems.includes(artifactId);
   }
 
   function saveConfig(configuration: Configuration) {
@@ -364,6 +395,10 @@ function useStore(): Store {
 
     const current = currentData.lastSelected;
     if (current?.collectionId !== collectionId || current?.itemId !== itemId) {
+      console.log("Updating last selected item...", {
+        collectionId,
+        itemId
+      })
       saveView(updatedData);
     }
   }

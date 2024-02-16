@@ -1,16 +1,18 @@
-import {Collection, composeDescription, Item, StrapiHit, StrapiResultSet} from "./db";
+import {Collection, CollectionItem, composeDescription, Item, StrapiHit, StrapiResultSet} from "./db";
 import styles from "./Ledger.module.css";
 import {Store} from "./Store";
-import {getImageUri, SERVER_ADDR} from "./config";
+import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
 import React from "react";
 import {Currency, Tick} from "./Icons";
 
 function countItemsInCollection(collection: StrapiHit<Collection>): number {
-    return collection.attributes.items?.data.length ?? 0;
+    return collection.attributes.collectionItems?.data.length ?? 0;
 }
 
 function countItemsInCollectionOwned(store: Store, collection: StrapiHit<Collection>): number {
-    return collection.attributes.items?.data.map(item => item.id).filter(store.isCollected).length ?? 0;
+    return collection.attributes.collectionItems?.data.flatMap(
+        collectionItem => collectionItem.attributes.items?.data.map(item => item.id) ?? []
+    ).filter(store.isCollected).length ?? 0;
 }
 
 function composeCollectionTag(store: Store, collection: StrapiHit<Collection>): string {
@@ -65,8 +67,8 @@ function onTouchStart(handler: () => void) {
 type Props = {
     db: StrapiResultSet<Collection>,
     store: Store,
-    onClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<Item>) => void,
-    onDoubleClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<Item>) => void,
+    onClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<CollectionItem>) => void,
+    onDoubleClickItem: (collection: StrapiHit<Collection>, item: StrapiHit<CollectionItem>) => void,
     onSelectAllToggle: (collection: StrapiHit<Collection>, selectAll: boolean) => void,
     hideCollectedItems: boolean,
     hideCompleteCollections: boolean,
@@ -75,17 +77,21 @@ type Props = {
 }
 
 function Ledger({db, store, onClickItem, onDoubleClickItem, onSelectAllToggle, view, hideCollectedItems, hideCompleteCollections, inverseCardLayout}: Props) {
-    function getClassNamesForItem(item: StrapiHit<Item>) {
+    function getClassNamesForItem(collectionItem: StrapiHit<CollectionItem>) {
         return [
             styles.Artifact,
-            store.isCollected(item.id) ? styles.ArtifactCollected : null,
-            store.isHidden(item.id) ? styles.ArtifactHidden : null,
-            item.attributes.premium ? styles.ArtifactPremium : null,
+            collectionItem.attributes.items?.data.some(item => store.isCollected(item.id)) ? styles.ArtifactCollected : null,
+            store.isHidden(collectionItem.id) ? styles.ArtifactHidden : null,
+            collectionItem.attributes.premium ? styles.ArtifactPremium : null,
         ].filter(cn => cn !== null).join(' ');
     }
 
     function isEveryItemCollected(collection: StrapiHit<Collection>) {
-        return collection.attributes.items?.data.every(item => store.isCollected(item.id));
+        return collection.attributes.collectionItems?.data.every(
+            collectionItem => collectionItem.attributes.items?.data.some(
+                item => store.isCollected(item.id)
+            )
+        );
     }
 
     return (
@@ -94,7 +100,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, onSelectAllToggle, v
                 <details
                     className={getLedgerClasses(isComplete(store, collection), hideCompleteCollections, inverseCardLayout, view)}
                     key={collection.id}
-                    hidden={collection.attributes.items?.data.length === 0}
+                    hidden={collection.attributes.collectionItems?.data.length === 0}
                     open={store.isCollectionOpen(collection.id)}
                     onToggle={e => store.toggleCollectionOpen(collection.id, e.currentTarget.open)}
                 >
@@ -117,25 +123,30 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, onSelectAllToggle, v
                     {
                         hideCollectedItems && isEveryItemCollected(collection) ? <div className={styles.LedgerNoMoreItems}>Complete!</div> :
                             <div className={styles.LedgerRow}>
-                                {(collection.attributes.items?.data ?? []).map(item =>
-                                    hideCollectedItems && store.isCollected(item.id) ? null :
-                                        <div className={getClassNamesForItem(item)}
-                                             onClick={() => onClickItem(collection, item)}
-                                             onDoubleClick={() => onDoubleClickItem(collection, item)}
-                                             onTouchStart={onTouchStart(() => onDoubleClickItem(collection, item))}
-                                             key={item.id}>
+                                {(collection.attributes.collectionItems?.data ?? []).map(collectionItem => {
+                                    const item = getDefaultItemFromCollectionItems(collectionItem);
+                                    if (!item) {
+                                        return null;
+                                    }
+
+                                    return hideCollectedItems && collectionItem.attributes.items?.data.some(item => store.isCollected(item.id)) ? null :
+                                        <div className={getClassNamesForItem(collectionItem)}
+                                             onClick={() => onClickItem(collection, collectionItem)}
+                                             onDoubleClick={() => onDoubleClickItem(collection, collectionItem)}
+                                             onTouchStart={onTouchStart(() => onDoubleClickItem(collection, collectionItem))}
+                                             key={collectionItem.id}>
                                             <img className={styles.ArtifactImage} src={getImageUri(item)}
                                                  alt={item.attributes.name}/>
                                             <div className={styles.ArtifactInfo}>
                                                 <div className={styles.ArtifactName}>{item.attributes.name}</div>
                                                 <div className={styles.ArtifactItemType}>
-                                                    <span>{item.attributes.itemType} | {item.attributes.claim}</span>
+                                                    <span>{item.attributes.itemType} | {collectionItem.attributes.claim}</span>
                                                     <span className={styles.ArtifactIconPremiumTitle}
-                                                          hidden={!item.attributes.premium}>
+                                                          hidden={!collectionItem.attributes.premium}>
                                                         <Currency />
                                                     </span>
                                                 </div>
-                                                <div className={styles.ArtifactClaimDescription}>{composeDescription(item.attributes)}</div>
+                                                <div className={styles.ArtifactClaimDescription}>{composeDescription(collectionItem.attributes)}</div>
                                             </div>
                                             <div className={styles.ArtifactIcons}>
                                                 <span className={styles.ArtifactIcon + ' ' + styles.ArtifactIconPremium}>
@@ -146,7 +157,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, onSelectAllToggle, v
                                                 </span>
                                             </div>
                                         </div>
-                                )}
+                                })}
                             </div>
                     }
                 </details>

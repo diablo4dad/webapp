@@ -1,4 +1,4 @@
-import {composeDescription, Item, StrapiHit} from "./db"
+import {CollectionItem, composeDescription, Item, StrapiHit} from "./db"
 import styles from "./ItemSidebar.module.css"
 import necromancer from "./ gfx/necromancer.webp"
 import druid from "./ gfx/druid.webp"
@@ -6,7 +6,7 @@ import rogue from "./ gfx/rogue.webp"
 import barbarian from "./ gfx/barbarian.webp"
 import sorceress from "./ gfx/sorceress.webp"
 import Toggle from "./Toggle";
-import {getImageUri, SERVER_ADDR} from "./config";
+import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
 
 function generateEditUrl(item: StrapiHit<Item>): string {
     return SERVER_ADDR + "/admin/content-manager/collectionType/api::item.item/" + item.id;
@@ -17,14 +17,19 @@ function usableBy(clazz: string, item: StrapiHit<Item>): boolean {
 }
 
 type ItemProps = {
-    item: StrapiHit<Item>,
+    collectionItem: StrapiHit<CollectionItem>,
     collected: boolean,
     hidden: boolean,
     onClickCollected: (collected: boolean) => void,
     onClickHidden: (hidden: boolean) => void,
 }
 
-function ItemSidebar({item, collected, hidden, onClickCollected, onClickHidden}: ItemProps) {
+function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onClickHidden}: ItemProps) {
+    const item = getDefaultItemFromCollectionItems(collectionItem);
+    if (!item) {
+        return null;
+    }
+
     return (
         <div className={styles.Panel}>
             <img src={getImageUri(item)} className={styles.ItemImage} alt={item.attributes.name}/>
@@ -50,15 +55,15 @@ function ItemSidebar({item, collected, hidden, onClickCollected, onClickHidden}:
             <div className={styles.ItemLocations}>
                 <div className={styles.ItemLocation}>
                     <div className={styles.ItemLocationInfo}>
-                        <div className={styles.ItemLocationDescription}>{composeDescription(item.attributes)}</div>
-                        <div className={styles.ItemLocationCategory}>{item.attributes.claim}</div>
+                        <div className={styles.ItemLocationDescription}>{composeDescription(collectionItem.attributes)}</div>
+                        <div className={styles.ItemLocationCategory}>{collectionItem.attributes.claim}</div>
                     </div>
                 </div>
             </div>
             <div className={styles.ItemTags}>
-                {item.attributes.season != null && <span className={styles.ItemTag}>Season {item.attributes.season}</span>}
-                {item.attributes.premium && <span className={styles.ItemTag}>Premium</span>}
-                {item.attributes.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
+                {collectionItem.attributes.season != null && <span className={styles.ItemTag}>Season {collectionItem.attributes.season}</span>}
+                {collectionItem.attributes.premium && <span className={styles.ItemTag}>Premium</span>}
+                {collectionItem.attributes.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
             </div>
             <div className={styles.ItemMeta}>
                 <div>

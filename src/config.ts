@@ -1,4 +1,4 @@
-import {Item, StrapiHit} from "./db";
+import {CollectionItem, Item, StrapiHit} from "./db";
 
 const SERVER_ADDR = 'http://localhost:1337'
 const D4_BUILD = '1.2.3.47954'
@@ -15,7 +15,7 @@ function getCollectionUri(): string {
     if (process.env.NODE_ENV === 'production') {
         return '/collection.json';
     } else {
-        return SERVER_ADDR + '/api/collections?populate[items][populate][0]=icon&sort[0]=order&pagination[pageSize]=50';
+        return SERVER_ADDR + '/api/collections?populate[collectionItems][populate][items][populate][0]=icon&sort[0]=order&pagination[pageSize]=50';
     }
 }
 
@@ -25,6 +25,10 @@ function getImageUri(item: StrapiHit<Item>): string {
     } else {
         return SERVER_ADDR + item.attributes.icon?.data?.attributes.url ?? 'missing.webp';
     }
+}
+
+function getDefaultItemFromCollectionItems(collectionItems: StrapiHit<CollectionItem>): StrapiHit<Item> | undefined {
+    return collectionItems.attributes.items?.data[0];
 }
 
 export {
@@ -37,6 +41,7 @@ export {
     getCollectionUri,
     getImageUri,
     isScreenSmall,
+    getDefaultItemFromCollectionItems,
 }
 
 export enum ContentType {
