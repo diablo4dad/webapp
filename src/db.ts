@@ -1,10 +1,6 @@
 import {getCollectionUri} from "./config";
 
 type Item = {
-  claim?: string,
-  claimDescription?: string,
-  claimMonster?: string,
-  claimZone?: string,
   createdAt: string,
   publishedAt: string,
   updatedAt: string,
@@ -15,14 +11,33 @@ type Item = {
   iconId?: number,
   name: string,
   description: string,
+  transMog: boolean,
+  usableByClass: string[],
+}
+
+type CollectionItem = {
   outOfRotation?: boolean,
   premium?: boolean,
   promotional?: boolean,
   season?: number,
-  transMog: boolean,
-  usableByClass: string[],
-  collection?: StrapiResult<Collection>,
+  claim?: string,
+  claimDescription?: string,
+  claimMonster?: string,
+  claimZone?: string,
+  items?: StrapiResultSet<Item>
 }
+
+type Collection = {
+  id: number,
+  name: string,
+  order: number,
+  description: string,
+  createdAt: string,
+  publishedAt: string,
+  updatedAt: string,
+  collectionItems?: StrapiResultSet<CollectionItem>,
+}
+
 
 type StrapiMediaFormats = {
   thumbnail?: StrapiMediaFormat,
@@ -59,17 +74,6 @@ type StrapiMedia = {
   width: number,
 }
 
-type Collection = {
-  id: number,
-  name: string,
-  order: number,
-  description: string,
-  createdAt: string,
-  publishedAt: string,
-  updatedAt: string,
-  items?: StrapiResultSet<Item>,
-}
-
 type StrapiResult<T> = {
   data: StrapiHit<T>,
 }
@@ -91,7 +95,7 @@ function createEmptyResultSet<T>(): StrapiResultSet<T> {
 }
 
 function getDefaultItemIdForCollection(result: StrapiResultSet<Collection>): number {
-  return (result.data[0]?.attributes.items?.data ?? [])[0]?.id ?? -1;
+  return (result.data[0]?.attributes.collectionItems?.data ?? [])[0]?.id ?? -1;
 }
 
 async function fetchDb(): Promise<StrapiResultSet<Collection>> {
@@ -100,9 +104,9 @@ async function fetchDb(): Promise<StrapiResultSet<Collection>> {
 
 export default fetchDb;
 export { fetchDb, createEmptyResultSet, getDefaultItemIdForCollection };
-export type { Item, Collection, StrapiHit, StrapiResultSet, StrapiMedia, StrapiMediaFormat, StrapiMediaFormats };
+export type { Item, Collection, CollectionItem, StrapiHit, StrapiResultSet, StrapiMedia, StrapiMediaFormat, StrapiMediaFormats };
 
-export function composeDescription(item: Item): string {
+export function composeDescription(item: CollectionItem): string {
   // setting a description overrides inferred/default
   if (item.claimDescription) {
     return item.claimDescription;

@@ -1,6 +1,7 @@
 import React, {ReactElement, useEffect, useRef, useState} from 'react';
 import fetchDb, {
     Collection,
+    CollectionItem,
     createEmptyResultSet,
     getDefaultItemIdForCollection,
     Item,
@@ -13,8 +14,14 @@ import styles from './Application.module.css';
 import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./Store";
 import ItemSidebar from './ItemSidebar';
-import ConfigSidebar, {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
-import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
+import ConfigSidebar, {Configuration} from "./ConfigSidebar";
+import {
+    ContentType,
+    DISCORD_INVITE_LINK,
+    getDefaultItemFromCollectionItems,
+    LAST_UPDATED,
+    SITE_VERSION
+} from "./config";
 import Progress from "./Progress";
 import {Discord, Gear, Hamburger} from "./Icons";
 import Button from "./Button";
@@ -61,11 +68,11 @@ function selectRandomItem(items: StrapiHit<Item>[]): StrapiHit<Item> | undefined
     return items[Math.floor(Math.random() * items.length)];
 }
 
-function reduceItems(db: StrapiResultSet<Collection>): StrapiHit<Item>[] {
-    return db.data.flatMap(c => c.attributes.items?.data ?? [])
+function reduceItems(db: StrapiResultSet<Collection>): StrapiHit<CollectionItem>[] {
+    return db.data.flatMap(c => c.attributes.collectionItems?.data ?? [])
 }
 
-function filterCollectionItems(collection: StrapiResultSet<Collection>, filter: (data: StrapiHit<Item>) => boolean) {
+function filterCollectionItems(collection: StrapiResultSet<Collection>, filter: (data: StrapiHit<CollectionItem>) => boolean) {
     return {
         ...collection,
         data: collection.data.map(c => ({
@@ -73,32 +80,32 @@ function filterCollectionItems(collection: StrapiResultSet<Collection>, filter: 
             attributes: {
                 ...c.attributes,
                 items: {
-                    ...c.attributes.items,
-                    data: (c.attributes.items?.data ?? []).filter(filter),
+                    ...c.attributes.collectionItems,
+                    data: (c.attributes.collectionItems?.data ?? []).filter(filter),
                 }
             }
         }))
     }
 }
 
-function filterItemsByType(itemTypesToDisplay: string[]): (item: StrapiHit<Item>) => boolean {
-    return (item: StrapiHit<Item>) => itemTypesToDisplay.includes(item.attributes.itemType);
+function filterItemsByType(itemTypesToDisplay: string[]): (item: StrapiHit<CollectionItem>) => boolean {
+    return (item: StrapiHit<CollectionItem>) => itemTypesToDisplay.includes(getDefaultItemFromCollectionItems(item)?.attributes.itemType ?? "");
 }
 
-function filterPremiumItems(): (item: StrapiHit<Item>) => boolean {
-    return (item: StrapiHit<Item>) => item.attributes.premium !== true;
+function filterPremiumItems(): (item: StrapiHit<CollectionItem>) => boolean {
+    return (item: StrapiHit<CollectionItem>) => item.attributes.premium !== true;
 }
 
-function filterPromotionalItems(): (item: StrapiHit<Item>) => boolean {
-    return (item: StrapiHit<Item>) => item.attributes.promotional !== true;
+function filterPromotionalItems(): (item: StrapiHit<CollectionItem>) => boolean {
+    return (item: StrapiHit<CollectionItem>) => item.attributes.promotional !== true;
 }
 
-function filterOutOfRotationItems(): (item: StrapiHit<Item>) => boolean {
-    return (item: StrapiHit<Item>) => item.attributes.outOfRotation !== true;
+function filterOutOfRotationItems(): (item: StrapiHit<CollectionItem>) => boolean {
+    return (item: StrapiHit<CollectionItem>) => item.attributes.outOfRotation !== true;
 }
 
-function filterHiddenItems(store: Store): (item: StrapiHit<Item>) => boolean {
-    return (item: StrapiHit<Item>) => !store.isHidden(item.id);
+function filterHiddenItems(store: Store): (item: StrapiHit<CollectionItem>) => boolean {
+    return (item: StrapiHit<CollectionItem>) => !store.isHidden(item.id);
 }
 
 function aggregateItemTypes(config: Configuration): string[] {
@@ -111,8 +118,8 @@ function aggregateItemTypes(config: Configuration): string[] {
         .concat(config.showBody ? itemGroups.get(ItemGroup.BODY) ?? [] : []);
 }
 
-function selectItemOrDefault(items: StrapiHit<Item>[], selectedItemId: number): StrapiHit<Item> | undefined {
-    return items.filter(i => i.id === selectedItemId).pop() ?? items.at(0);
+function selectItemOrDefault(collectionItems: StrapiHit<CollectionItem>[], selectedItemId: number): StrapiHit<CollectionItem> | undefined {
+    return collectionItems.filter(i => i.id === selectedItemId).pop() ?? collectionItems.at(0);
 }
 
 function filterDb(collection: StrapiResultSet<Collection>, store: Store, config: Configuration): StrapiResultSet<Collection> {
@@ -171,26 +178,27 @@ function Application(): ReactElement<HTMLDivElement> {
     const [content, setContent] = useState(ContentType.LEDGER);
     const history = useRef([ContentType.LEDGER]);
     const filteredDb = filterDb(db, store, store.loadConfig());
-    const items = reduceItems(filteredDb);
-    const [selectedItemId, setSelectedItemId] = useState(store.getLastSelectedItem()?.itemId ?? getDefaultItemIdForCollection(filteredDb));
-    const selectedItem = selectItemOrDefault(items, selectedItemId);
+    const collectionItems = reduceItems(filteredDb);
+    const lastSelected = store.getLastSelectedItem();
+    const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(lastSelected?.itemId ?? getDefaultItemIdForCollection(filteredDb));
+    const selectedCollectionItem = selectItemOrDefault(collectionItems, selectedCollectionItemId);
 
     function onToggleConfig() {
         setSideBar(sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG);
     }
 
-    function onClickItem(collection: StrapiHit<Collection>, item: StrapiHit<Item>) {
-        setSelectedItemId(item.id);
+    function onClickItem(collection: StrapiHit<Collection>, collectionItem: StrapiHit<CollectionItem>) {
+        setSelectedCollectionItemId(collectionItem.id);
         setSideBar(SideBarType.ITEM);
-        store.setLastSelectedItem(collection.id, item.id);
+        store.setLastSelectedItem(collection.id, collectionItem.id);
     }
 
-    function onDoubleClickItem(_: StrapiHit<Collection>, item: StrapiHit<Item>) {
-        store.toggle(item.id);
+    function onDoubleClickItem(_: StrapiHit<Collection>, collectionItem: StrapiHit<CollectionItem>) {
+        collectionItem.attributes.items?.data.forEach(item => store.toggle(item.id));
     }
 
     function onSelectAll(collection: StrapiHit<Collection>, selectAll: boolean) {
-        collection.attributes.items?.data.map(i => i.id).forEach(i => store.toggle(i, ItemFlag.COLLECTED, selectAll));
+        collection.attributes.collectionItems?.data.map(collectionItem => collectionItem.attributes.items?.data.map(i => i.id).forEach(i => store.toggle(i, ItemFlag.COLLECTED, selectAll)));
     }
 
     function onConfigChange(config: Configuration) {
@@ -301,8 +309,8 @@ function Application(): ReactElement<HTMLDivElement> {
                         <div className={styles.HeaderRightContent}>
                             {store.loadConfig().enableProgressBar &&
                                 <Progress
-                                    totalCollected={items.filter(i => store.isCollected(i.id)).length}
-                                    collectionSize={items.length}
+                                    totalCollected={collectionItems.filter(collectionItem => collectionItem.attributes.items?.data.some(i => store.isCollected(i.id))).length}
+                                    collectionSize={collectionItems.length}
                                 />
                             }
                             {!store.loadConfig().enableProgressBar &&
@@ -325,13 +333,13 @@ function Application(): ReactElement<HTMLDivElement> {
                             <div className={styles.SidebarLayoutTop}></div>
                             <div className={styles.SidebarLayoutBottom}>
                                 <section className={styles.SidebarContent}>
-                                {sideBar === SideBarType.ITEM && selectedItem &&
+                                    {sideBar === SideBarType.ITEM && selectedCollectionItem &&
                                         <ItemSidebar
-                                            item={selectedItem}
-                                            hidden={store.isHidden(selectedItemId)}
-                                            collected={store.isCollected(selectedItemId)}
-                                            onClickCollected={() => store.toggle(selectedItemId, ItemFlag.COLLECTED)}
-                                            onClickHidden={() => store.toggle(selectedItemId, ItemFlag.HIDDEN)}
+                                            collectionItem={selectedCollectionItem}
+                                            hidden={store.isHidden(selectedCollectionItemId)}
+                                            collected={selectedCollectionItem.attributes.items?.data.some(i => store.isCollected(i.id)) ?? false}
+                                            onClickCollected={(collected) => selectedCollectionItem.attributes.items?.data.forEach(i => store.toggle(i.id, ItemFlag.COLLECTED, collected))}
+                                            onClickHidden={(hidden) => store.toggle(selectedCollectionItemId, ItemFlag.HIDDEN, hidden)}
                                         />
                                     }
                                     {sideBar === SideBarType.CONFIG &&
@@ -385,8 +393,8 @@ function Application(): ReactElement<HTMLDivElement> {
             {store.loadConfig().enableProgressBar && content === ContentType.LEDGER &&
                 <div className={styles.ProgressMobile}>
                     <Progress
-                        totalCollected={items.filter(i => store.isCollected(i.id)).length}
-                        collectionSize={items.length}
+                        totalCollected={collectionItems.filter(i => store.isCollected(i.id)).length}
+                        collectionSize={collectionItems.length}
                     />
                 </div>
             }
