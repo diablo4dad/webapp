@@ -1,4 +1,4 @@
-import {CollectionItem, Item, StrapiHit} from "./db";
+import {DadCollectionItem, DadItem, DEFAULT_ITEM} from "./db";
 
 const SERVER_ADDR = 'http://localhost:1337'
 const D4_BUILD = '1.2.3.47954'
@@ -19,16 +19,16 @@ function getCollectionUri(): string {
     }
 }
 
-function getImageUri(item: StrapiHit<Item>): string {
+function getImageUri(item: DadItem): string {
     if (process.env.NODE_ENV === 'production') {
-        return '/icons/' + item.attributes.iconId + '.webp';
+        return '/icons/' + item.iconId + '.webp';
     } else {
-        return SERVER_ADDR + item.attributes.icon?.data?.attributes.url ?? 'missing.webp';
+        return SERVER_ADDR + item.icon?.url ?? 'missing.webp';
     }
 }
 
-function getDefaultItemFromCollectionItems(collectionItems: StrapiHit<CollectionItem>): StrapiHit<Item> | undefined {
-    return collectionItems.attributes.items?.data[0];
+function getDefaultItemFromCollectionItems(collectionItems: DadCollectionItem): DadItem {
+    return collectionItems.items[0] ?? DEFAULT_ITEM;
 }
 
 export {

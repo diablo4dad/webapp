@@ -1,12 +1,12 @@
 import React, {ReactElement, useEffect, useRef, useState} from 'react';
 import fetchDb, {
-    Collection,
-    CollectionItem,
-    createEmptyResultSet,
+    createEmptyDb,
+    DadCollection,
+    DadCollectionItem,
+    DadDb,
+    DEFAULT_COLLECTION_ITEM,
     getDefaultItemIdForCollection,
-    Item,
-    StrapiHit,
-    StrapiResultSet,
+    strapiToDad,
 } from "./db"
 import logo from "./ gfx/d4ico.png"
 
@@ -15,13 +15,7 @@ import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./Store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration} from "./ConfigSidebar";
-import {
-    ContentType,
-    DISCORD_INVITE_LINK,
-    getDefaultItemFromCollectionItems,
-    LAST_UPDATED,
-    SITE_VERSION
-} from "./config";
+import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
 import Progress from "./Progress";
 import {Discord, Gear, Hamburger} from "./Icons";
 import Button from "./Button";
@@ -59,53 +53,41 @@ const itemGroups = new Map([
     [ItemGroup.BODY, ["Body Marking"]],
 ]);
 
-// references:
-// https://www.thegamer.com/diablo-4-all-mount-trophies-unlock-guide/#diablo-4-all-pve-mount-trophies
-// https://www.wowhead.com/diablo-4/guide/gameplay/all-mounts-appearances-sources
-// https://www.reddit.com/r/diablo4/comments/17d68kq/ultimate_fomo_guide_2_all_d4_events_and_promotions/?rdt=39151
-
-function selectRandomItem(items: StrapiHit<Item>[]): StrapiHit<Item> | undefined {
-    return items[Math.floor(Math.random() * items.length)];
+function reduceItems(db: DadDb): DadCollectionItem[] {
+    return db.collections.flatMap(c => c.collectionItems);
 }
 
-function reduceItems(db: StrapiResultSet<Collection>): StrapiHit<CollectionItem>[] {
-    return db.data.flatMap(c => c.attributes.collectionItems?.data ?? [])
-}
-
-function filterCollectionItems(collection: StrapiResultSet<Collection>, filter: (data: StrapiHit<CollectionItem>) => boolean) {
+function filterCollectionItems(db: DadDb, filter: (dci: DadCollectionItem) => boolean): DadDb {
     return {
-        ...collection,
-        data: collection.data.map(c => ({
-            ...c,
-            attributes: {
-                ...c.attributes,
-                items: {
-                    ...c.attributes.collectionItems,
-                    data: (c.attributes.collectionItems?.data ?? []).filter(filter),
-                }
-            }
-        }))
+        collections: db.collections.map(dc => {
+            return {
+                ...dc,
+                collectionItems: dc.collectionItems.filter(filter),
+            };
+        }),
+    };
+}
+
+function filterItemsByType(itemTypes: string[]): (dci: DadCollectionItem) => boolean {
+    return function (dci: DadCollectionItem) {
+        return itemTypes.flatMap(it => dci.items.filter(di => di.itemType === it)).length !== 0;
     }
 }
 
-function filterItemsByType(itemTypesToDisplay: string[]): (item: StrapiHit<CollectionItem>) => boolean {
-    return (item: StrapiHit<CollectionItem>) => itemTypesToDisplay.includes(getDefaultItemFromCollectionItems(item)?.attributes.itemType ?? "");
+function filterPremiumItems(): (dci: DadCollectionItem) => boolean {
+    return (dci: DadCollectionItem) => dci.premium !== true;
 }
 
-function filterPremiumItems(): (item: StrapiHit<CollectionItem>) => boolean {
-    return (item: StrapiHit<CollectionItem>) => item.attributes.premium !== true;
+function filterPromotionalItems(): (dci: DadCollectionItem) => boolean {
+    return (dci: DadCollectionItem) => dci.promotional !== true;
 }
 
-function filterPromotionalItems(): (item: StrapiHit<CollectionItem>) => boolean {
-    return (item: StrapiHit<CollectionItem>) => item.attributes.promotional !== true;
+function filterOutOfRotationItems(): (dci: DadCollectionItem) => boolean {
+    return (dci: DadCollectionItem) => dci.outOfRotation !== true;
 }
 
-function filterOutOfRotationItems(): (item: StrapiHit<CollectionItem>) => boolean {
-    return (item: StrapiHit<CollectionItem>) => item.attributes.outOfRotation !== true;
-}
-
-function filterHiddenItems(store: Store): (item: StrapiHit<CollectionItem>) => boolean {
-    return (item: StrapiHit<CollectionItem>) => !store.isHidden(item.id);
+function filterHiddenItems(store: Store): (dci: DadCollectionItem) => boolean {
+    return (dci: DadCollectionItem) => !store.isHidden(dci.strapiId);
 }
 
 function aggregateItemTypes(config: Configuration): string[] {
@@ -118,32 +100,31 @@ function aggregateItemTypes(config: Configuration): string[] {
         .concat(config.showBody ? itemGroups.get(ItemGroup.BODY) ?? [] : []);
 }
 
-function selectItemOrDefault(collectionItems: StrapiHit<CollectionItem>[], selectedItemId: number): StrapiHit<CollectionItem> | undefined {
-    return collectionItems.filter(i => i.id === selectedItemId).pop() ?? collectionItems.at(0);
+function selectItemOrDefault(dci: DadCollectionItem[], selectedItemId: number): DadCollectionItem {
+    return dci.filter(ci => ci.strapiId === selectedItemId).pop() ?? dci.at(0) ?? DEFAULT_COLLECTION_ITEM;
 }
 
-function filterDb(collection: StrapiResultSet<Collection>, store: Store, config: Configuration): StrapiResultSet<Collection> {
-    let c = filterCollectionItems(collection, filterItemsByType(aggregateItemTypes(config)));
+function filterDb(dadDb: DadDb, store: Store, config: Configuration): DadDb {
+    let db = filterCollectionItems(dadDb, filterItemsByType(aggregateItemTypes(config)));
 
     if (!config.showPremium) {
-        c = filterCollectionItems(c, filterPremiumItems());
+        db = filterCollectionItems(db, filterPremiumItems());
     }
 
     if (!config.showOutOfRotation) {
-        c = filterCollectionItems(c, filterOutOfRotationItems());
+        db = filterCollectionItems(db, filterOutOfRotationItems());
     }
 
     if (!config.showPromotional) {
-        c = filterCollectionItems(c, filterPromotionalItems());
+        db = filterCollectionItems(db, filterPromotionalItems());
     }
 
     if (!config.showHiddenItems) {
-        c = filterCollectionItems(c, filterHiddenItems(store));
+        db = filterCollectionItems(db, filterHiddenItems(store));
     }
 
-    return c;
+    return db;
 }
-
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
     return (
@@ -173,7 +154,7 @@ function DiscordInvite(): ReactElement<HTMLDivElement> {
 function Application(): ReactElement<HTMLDivElement> {
     const store = useStore();
     const [user, setUser] = useState<User | null>(null);
-    const [db, setDb] = useState(createEmptyResultSet<Collection>());
+    const [db, setDb] = useState(createEmptyDb());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [content, setContent] = useState(ContentType.LEDGER);
     const history = useRef([ContentType.LEDGER]);
@@ -187,18 +168,18 @@ function Application(): ReactElement<HTMLDivElement> {
         setSideBar(sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG);
     }
 
-    function onClickItem(collection: StrapiHit<Collection>, collectionItem: StrapiHit<CollectionItem>) {
-        setSelectedCollectionItemId(collectionItem.id);
+    function onClickItem(collection: DadCollection, collectionItem: DadCollectionItem) {
+        setSelectedCollectionItemId(collectionItem.strapiId);
         setSideBar(SideBarType.ITEM);
-        store.setLastSelectedItem(collection.id, collectionItem.id);
+        store.setLastSelectedItem(collection.strapiId, collectionItem.strapiId);
     }
 
-    function onDoubleClickItem(_: StrapiHit<Collection>, collectionItem: StrapiHit<CollectionItem>) {
-        collectionItem.attributes.items?.data.forEach(item => store.toggle(item.id));
+    function onDoubleClickItem(_: DadCollection, collectionItem: DadCollectionItem) {
+        store.toggle(collectionItem.strapiId);
     }
 
-    function onSelectAll(collection: StrapiHit<Collection>, selectAll: boolean) {
-        collection.attributes.collectionItems?.data.map(collectionItem => collectionItem.attributes.items?.data.map(i => i.id).forEach(i => store.toggle(i, ItemFlag.COLLECTED, selectAll)));
+    function onSelectAll(collection: DadCollection, selectAll: boolean) {
+        collection.collectionItems.map(i => i.strapiId).forEach(i => store.toggle(i, ItemFlag.COLLECTED, selectAll));
     }
 
     function onConfigChange(config: Configuration) {
@@ -264,7 +245,7 @@ function Application(): ReactElement<HTMLDivElement> {
         fetchDb()
             .then(data => {
                 if (Array.isArray(data.data)) {
-                    setDb(data);
+                    setDb(strapiToDad(data));
                 }
             });
 
@@ -309,7 +290,7 @@ function Application(): ReactElement<HTMLDivElement> {
                         <div className={styles.HeaderRightContent}>
                             {store.loadConfig().enableProgressBar &&
                                 <Progress
-                                    totalCollected={collectionItems.filter(collectionItem => collectionItem.attributes.items?.data.some(i => store.isCollected(i.id))).length}
+                                    totalCollected={collectionItems.filter(collectionItem => store.isCollected(collectionItem.strapiId)).length}
                                     collectionSize={collectionItems.length}
                                 />
                             }
@@ -337,8 +318,8 @@ function Application(): ReactElement<HTMLDivElement> {
                                         <ItemSidebar
                                             collectionItem={selectedCollectionItem}
                                             hidden={store.isHidden(selectedCollectionItemId)}
-                                            collected={selectedCollectionItem.attributes.items?.data.some(i => store.isCollected(i.id)) ?? false}
-                                            onClickCollected={(collected) => selectedCollectionItem.attributes.items?.data.forEach(i => store.toggle(i.id, ItemFlag.COLLECTED, collected))}
+                                            collected={store.isCollected(selectedCollectionItemId)}
+                                            onClickCollected={(collected) => store.toggle(selectedCollectionItemId, ItemFlag.COLLECTED, collected)}
                                             onClickHidden={(hidden) => store.toggle(selectedCollectionItemId, ItemFlag.HIDDEN, hidden)}
                                         />
                                     }
@@ -393,7 +374,7 @@ function Application(): ReactElement<HTMLDivElement> {
             {store.loadConfig().enableProgressBar && content === ContentType.LEDGER &&
                 <div className={styles.ProgressMobile}>
                     <Progress
-                        totalCollected={collectionItems.filter(i => store.isCollected(i.id)).length}
+                        totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
                         collectionSize={collectionItems.length}
                     />
                 </div>

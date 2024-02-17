@@ -61,7 +61,6 @@ type Store = {
 type StoreData = {
   default: boolean,
   config: Configuration,
-  hiddenCollectionItems: number[],
   collectionLog: CollectionLog,
   view: ViewState,
   version?: {
@@ -99,24 +98,23 @@ function initStore(): StoreData {
     collectionLog: {
       entries: [],
     },
-    hiddenCollectionItems: [],
   };
 }
 
-function isPatchNeeded(data: StoreData, major: number, minor: number, revision: number) {
+function isPatchNeeded(data: StoreData) {
   if (data.version === undefined) {
     return true;
   }
 
-  if (data.version.major < major) {
+  if (data.version.major < VERSION.major) {
     return true;
   }
 
-  if (data.version.minor < minor) {
+  if (data.version.minor < VERSION.minor) {
     return true;
   }
 
-  if (data.version.revision < revision) {
+  if (data.version.revision < VERSION.revision) {
     return true;
   }
 
@@ -136,13 +134,13 @@ function useStore(): Store {
   const userId = useRef<string>();
 
   const commitToFirebase = useCallback(
-    debounce((uid: string, data: StoreData) => {
-      const docRef = doc(firestore, "collections", uid);
-      setDoc(docRef, data.collectionLog).then(() => {
-        console.log("Wrote Collection to Firestore.")
-      });
-    }, 800)
-  , []);
+      debounce((uid: string, data: StoreData) => {
+        const docRef = doc(firestore, "collections", uid);
+        setDoc(docRef, data.collectionLog).then(() => {
+          console.log("Wrote Collection to Firestore.")
+        });
+      }, 800)
+      , []);
 
   const persistData = useCallback((context: StoreData, uid?: string) => {
     if (!context.default) {
@@ -166,7 +164,7 @@ function useStore(): Store {
       console.log("Collection loaded from HTML5 Storage.");
 
       // patch <1.2.0 collections
-      if (isPatchNeeded(parsedData, 1, 2, 0)) {
+      if (isPatchNeeded(parsedData)) {
         console.log("Migrating collection to 1.2.0...");
 
         // convert flags to booleans
@@ -185,21 +183,6 @@ function useStore(): Store {
         parsedData.version = {
           major: 1,
           minor: 2,
-          revision: 0,
-        };
-
-        // save changes
-        persistData(parsedData);
-      }
-
-      if (isPatchNeeded(parsedData, 1, 3, 0)) {
-        // append hidden collection items array
-        parsedData.hiddenCollectionItems = [];
-
-        // bump schema
-        parsedData.version = {
-          major: 1,
-          minor: 3,
           revision: 0,
         };
 
@@ -254,36 +237,16 @@ function useStore(): Store {
 
   function getLogEntry(artifactId: number): ArtifactMeta {
     const logEntry = data
-      .collectionLog
-      .entries
-      .filter(l => l.id === artifactId)
-      .pop();
+        .collectionLog
+        .entries
+        .filter(l => l.id === artifactId)
+        .pop();
 
     return logEntry ?? initArtifactMeta(artifactId);
   }
 
   function toggle(artifactId: number, flag: ItemFlag = ItemFlag.COLLECTED, enabled?: boolean) {
     function updateData(data: StoreData) {
-      if (flag === ItemFlag.HIDDEN) {
-        if (data.hiddenCollectionItems.includes(artifactId) && (enabled === false)) {
-          const hiddenCollectionItems = data.hiddenCollectionItems.splice(data.hiddenCollectionItems.indexOf(artifactId), 1);
-          return {
-            ...data,
-            hiddenCollectionItems,
-          }
-        }
-
-        if (!data.hiddenCollectionItems.includes(artifactId) && (enabled || enabled === undefined)) {
-          const hiddenCollectionItems = [...data.hiddenCollectionItems, artifactId];
-          return {
-            ...data,
-            hiddenCollectionItems,
-          }
-        }
-
-        return data;
-      }
-
       const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
       if (!doesExist) {
         const logEntry = initArtifactMeta(artifactId);
@@ -291,6 +254,9 @@ function useStore(): Store {
         switch (flag) {
           case ItemFlag.COLLECTED:
             logEntry.collected = enabled ?? true;
+            break;
+          case ItemFlag.HIDDEN:
+            logEntry.hidden = enabled ?? true;
             break;
         }
 
@@ -317,6 +283,9 @@ function useStore(): Store {
                 case ItemFlag.COLLECTED:
                   e.collected = enabled ?? !e.collected;
                   break;
+                case ItemFlag.HIDDEN:
+                  e.hidden = enabled ?? !e.hidden;
+                  break;
               }
 
               return e;
@@ -334,7 +303,7 @@ function useStore(): Store {
   }
 
   function isHidden(artifactId: number): boolean {
-    return data.hiddenCollectionItems.includes(artifactId);
+    return getLogEntry(artifactId).hidden;
   }
 
   function saveConfig(configuration: Configuration) {
@@ -395,10 +364,6 @@ function useStore(): Store {
 
     const current = currentData.lastSelected;
     if (current?.collectionId !== collectionId || current?.itemId !== itemId) {
-      console.log("Updating last selected item...", {
-        collectionId,
-        itemId
-      })
       saveView(updatedData);
     }
   }
