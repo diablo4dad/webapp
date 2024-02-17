@@ -1,4 +1,5 @@
 import {getCollectionUri} from "./config";
+import {MasterGroup} from "./common";
 
 type Item<IconType> = {
   createdAt: string,
@@ -181,8 +182,8 @@ function getDefaultItemIdForCollection(dadDb: DadDb): number {
   return dadDb.collections[0]?.collectionItems[0]?.strapiId ?? -1;
 }
 
-async function fetchDb(): Promise<StrapiResultSet<StrapiCollection>> {
-  return (await fetch(getCollectionUri())).json();
+async function fetchDb(masterGroup: MasterGroup): Promise<StrapiResultSet<StrapiCollection>> {
+  return (await fetch(getCollectionUri(masterGroup))).json();
 }
 
 export default fetchDb;

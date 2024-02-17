@@ -1,4 +1,5 @@
 import {DadCollectionItem, DadItem, DEFAULT_ITEM} from "./db";
+import {MasterGroup} from "./common";
 
 const SERVER_ADDR = 'http://localhost:1337'
 const D4_BUILD = '1.2.3.47954'
@@ -11,11 +12,11 @@ function isScreenSmall(window: Window): boolean {
     return window.innerWidth <= 1200;
 }
 
-function getCollectionUri(): string {
+function getCollectionUri(masterGroup: MasterGroup): string {
     if (process.env.NODE_ENV === 'production') {
         return '/collection.json';
     } else {
-        return SERVER_ADDR + '/api/collections?populate[collectionItems][populate][items][populate][0]=icon&sort[0]=order&pagination[pageSize]=50';
+        return SERVER_ADDR + '/api/collections?populate[collectionItems][populate][items][populate][0]=icon&sort[0]=order&pagination[pageSize]=50&filters[category][$eq]=' + encodeURIComponent(masterGroup);
     }
 }
 

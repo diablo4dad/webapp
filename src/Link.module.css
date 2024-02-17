@@ -10,3 +10,8 @@
 .Link:hover {
     color: #cc8500;
 }
+
+.Link:disabled {
+    color: #6F7D8C;
+    cursor: auto;
+}

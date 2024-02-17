@@ -29,6 +29,7 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
 import Link from "./Link";
+import {MasterGroup} from "./common";
 
 
 enum SideBarType {
@@ -158,6 +159,7 @@ function Application(): ReactElement<HTMLDivElement> {
     const [db, setDb] = useState(createEmptyDb());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [content, setContent] = useState(ContentType.LEDGER);
+    const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
     const history = useRef([ContentType.LEDGER]);
     const filteredDb = filterDb(db, store, store.loadConfig());
     const collectionItems = reduceItems(filteredDb);
@@ -228,7 +230,7 @@ function Application(): ReactElement<HTMLDivElement> {
     }
 
     useEffect(() => {
-        console.log("Bootstrapping...");
+        console.log("Authenticating...");
 
         // load html5 storage
         store.init();
@@ -242,19 +244,22 @@ function Application(): ReactElement<HTMLDivElement> {
             store.init(user?.uid);
         });
 
-        // load database
-        fetchDb()
+        return () => {
+            console.log("Tearing Down application...");
+            unsubscribe();
+        };
+    }, []);
+
+    useEffect(() => {
+        console.log("Loading Database...");
+
+        fetchDb(masterGroup)
             .then(data => {
                 if (Array.isArray(data.data)) {
                     setDb(strapiToDad(data));
                 }
             });
-
-        return () => {
-            console.log("Tearing Down application...");
-            unsubscribe();
-        };
-    }, [setDb]);
+    }, [masterGroup]);
 
     return (
         <div className={styles.Page}>
@@ -291,13 +296,13 @@ function Application(): ReactElement<HTMLDivElement> {
                         <div className={styles.HeaderRightContent}>
                             <nav className={styles.HeaderNav}>
                                 <div className={styles.HeaderNavItem}>
-                                    <Link>General</Link>
+                                    <Link disabled={masterGroup === MasterGroup.GENERAL} onClick={() => setMasterGroup(MasterGroup.GENERAL)}>General</Link>
                                 </div>
                                 <div className={styles.HeaderNavItem}>
-                                    <Link>Tejals Wares</Link>
+                                    <Link disabled={masterGroup === MasterGroup.SHOP_ITEMS} onClick={() => setMasterGroup(MasterGroup.SHOP_ITEMS)}>Tejals Wares</Link>
                                 </div>
                                 <div className={styles.HeaderNavItem}>
-                                    <Link>Base Items</Link>
+                                    <Link disabled={masterGroup === MasterGroup.BASE_ITEMS} onClick={() => setMasterGroup(MasterGroup.BASE_ITEMS)}>Base Items</Link>
                                 </div>
                             </nav>
                             <div className={styles.HeaderAccountWidgets}>
