@@ -28,6 +28,7 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
+import Link from "./Link";
 
 
 enum SideBarType {
@@ -288,6 +289,18 @@ function Application(): ReactElement<HTMLDivElement> {
                     </div>
                     <div className={styles.HeaderRight}>
                         <div className={styles.HeaderRightContent}>
+                            <nav className={styles.HeaderNav}>
+                                <div className={styles.HeaderNavItem}>
+                                    <Link>General</Link>
+                                </div>
+                                <div className={styles.HeaderNavItem}>
+                                    <Link>Tejals Wares</Link>
+                                </div>
+                                <div className={styles.HeaderNavItem}>
+                                    <Link>Base Items</Link>
+                                </div>
+                            </nav>
+                            <div className={styles.HeaderAccountWidgets}>
                             {store.loadConfig().enableProgressBar &&
                                 <Progress
                                     totalCollected={collectionItems.filter(collectionItem => store.isCollected(collectionItem.strapiId)).length}
@@ -303,6 +316,7 @@ function Application(): ReactElement<HTMLDivElement> {
                             {user !== null &&
                                 <Account currentUser={user} onLogout={signOut} direction={Direction.ROW}/>
                             }
+                            </div>
                         </div>
                     </div>
                 </header>
