@@ -1,3 +1,5 @@
+@value ProgressBar, Progress from "./Progress.module.css";
+
 .Page {
   min-height: 100vh;
   background-color: #282c34;
@@ -47,6 +49,29 @@
 .HeaderRightContent {
   display: flex;
   flex-direction: column;
+}
+
+.HeaderAccountWidgets {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.HeaderNav {
+  display: flex;
+  flex-direction: row;
+  padding: 0 2rem;
+  gap: 1rem;
+}
+
+.HeaderNavItem {
+  flex-shrink: 0;
+}
+
+.HeaderNavItem button {
+  font-size: 0.875rem;
 }
 
 .Shell {
@@ -203,6 +228,12 @@
   margin-bottom: 0.25rem;
 }
 
+@media screen and (min-width: 1200px) and (max-width: 1400px) {
+  .PageHeader .ProgressBar {
+    opacity: 0;
+  }
+}
+
 @media screen and (min-width: 1200px) {
   .Shell {
     flex-direction: row;
@@ -214,6 +245,10 @@
   }
 
   .PageHeader {
+  }
+
+  .PageHeader .Progress {
+    max-width: 30rem;
   }
 
   .PageContent {
