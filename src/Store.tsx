@@ -262,6 +262,7 @@ function useStore(): Store {
 
         return {
           ...data,
+          default: false,
           collectionLog: {
             ...data.collectionLog,
             entries: [
@@ -274,6 +275,7 @@ function useStore(): Store {
 
       return {
         ...data,
+        default: false,
         collectionLog: {
           entries: data.collectionLog.entries.map(e => {
             if (e.id !== artifactId) {
@@ -309,6 +311,7 @@ function useStore(): Store {
   function saveConfig(configuration: Configuration) {
     setData(data => ({
       ...data,
+      default: false,
       config: configuration,
     }));
   }
@@ -327,6 +330,7 @@ function useStore(): Store {
   function saveView(view: ViewState) {
     setData(data => ({
       ...data,
+      default: false,
       view,
     }));
   }
