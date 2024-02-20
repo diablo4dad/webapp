@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const IMG_SRC_MISSING = 'C:\\Users\\Sam\\Documents\\d4log\\missing_icons';
 const IMG_SRC = 'C:\\Users\\Sam\\Documents\\d4-texture-extractor\\webp';
 const IMG_DEST = 'C:\\Users\\Sam\\Documents\\d4log\\public\\icons';
 
@@ -27,6 +28,7 @@ fetch("http://localhost:1337/api/collections?populate[collectionItems][populate]
                 });
             });
         });
+
+        fs.cpSync(IMG_SRC_MISSING, IMG_DEST, {recursive: true});
     });
 });
-
