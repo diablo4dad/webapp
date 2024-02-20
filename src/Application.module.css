@@ -63,11 +63,45 @@
   display: flex;
   flex-direction: row;
   padding: 0 2rem;
-  gap: 1rem;
 }
 
 .HeaderNavItem {
   flex-shrink: 0;
+  background-color: #303640;
+  border-top: 1px solid #39404d;
+  border-bottom: 1px solid #39404d;
+  border-left: 1px solid #39404d;
+  border-right: 1px solid #1d2026;
+  box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+}
+
+.HeaderNavItem button {
+  padding: 1rem;
+}
+
+.HeaderNavItem:first-child {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
+.HeaderNavItem:last-child {
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.HeaderNavItemSelected {
+  border: 1px solid #1d2026;
+
+  background-color: #282c34;
+  box-shadow: none;
+}
+
+.HeaderNavItemSelected button:disabled {
+  color: #ccc;
+}
+
+.HeaderNavItemSelected {
+  border-left: 1px solid transparent;
 }
 
 .HeaderNavItem button {
