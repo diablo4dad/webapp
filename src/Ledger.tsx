@@ -4,6 +4,7 @@ import {Store} from "./Store";
 import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
 import React from "react";
 import {Currency, Tick} from "./Icons";
+import Link from "./Link";
 
 function countItemsInCollection(collection: DadCollection): number {
     return collection.collectionItems.length;
@@ -107,9 +108,9 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, onSelectAllToggle, v
                                                                           rel="noreferrer">Edit</a></span>
                             }
                             <span className={styles.LedgerSelectControls}>
-                                <button className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, true)}>Select All</button>
+                                <Link className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, true)}>Select All</Link>
                                 <span> | </span>
-                                <button className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, false)}>None</button>
+                                <Link className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, false)}>None</Link>
                             </span>
                         </h1>
                         <div className={styles.LedgerDescription}>{collection.description}</div>
