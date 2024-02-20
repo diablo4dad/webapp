@@ -1,7 +1,7 @@
 import {DadCollectionItem, DadItem, DEFAULT_ITEM} from "./db";
 import {MasterGroup} from "./common";
 
-const SERVER_ADDR = 'http://localhost:1337'
+const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
 const D4_BUILD = '1.2.3.47954'
 const SITE_VERSION = '1.2.1'
 const VERSION = {major: 1, minor: 2, revision: 0}
@@ -13,11 +13,7 @@ function isScreenSmall(window: Window): boolean {
 }
 
 function getCollectionUri(masterGroup: MasterGroup): string {
-    if (process.env.NODE_ENV === 'production') {
-        return '/collection.json';
-    } else {
-        return SERVER_ADDR + '/api/collections?populate[collectionItems][populate][items][populate][0]=icon&sort[0]=order&pagination[pageSize]=50&filters[category][$eq]=' + encodeURIComponent(masterGroup);
-    }
+    return SERVER_ADDR + '/api/collections?populate[collectionItems][populate][items][populate][0]=icon&sort[0]=order&pagination[pageSize]=50&filters[category][$eq]=' + encodeURIComponent(masterGroup);
 }
 
 function getImageUri(item: DadItem): string {
