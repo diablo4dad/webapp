@@ -144,7 +144,7 @@
 .ArtifactImage {
     width: 4rem;
     filter: brightness(50%);
-
+    z-index: 1;
 }
 
 .ArtifactInfo {
@@ -189,7 +189,7 @@
 
 .ArtifactIcon svg {
     opacity: 0;
-    fill: #ccc;
+    fill: #303640;
 }
 
 .ArtifactHidden .ArtifactName {
@@ -272,13 +272,13 @@
 
 .LedgerCardView .ArtifactIcons {
     position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    right: 0.5rem;
+    top: 0.425rem;
+    left: 0.425rem;
+    right: 0.425rem;
 }
 
 .LedgerCardView .ArtifactIcons svg {
-    width: 15%;
+    width: 1rem;
     margin-left: 0.125rem;
 }
 
@@ -292,7 +292,7 @@
 }
 
 .LedgerCardView .ArtifactIconPremium svg {
-    display: block;
+    display: none;
     opacity: 0;
     position: absolute;
     left: 0;
@@ -302,6 +302,20 @@
     border: 1px solid #1d2026;
     background-color: #303640;
     box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+}
+
+.LedgerCardView .ArtifactIconCollection svg {
+    fill: #20472f;
+}
+
+.LedgerCardView .ArtifactCollected:before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    border-top: 3rem solid #3e885b;
+    border-left: 3rem solid transparent;
+    border-top-right-radius: 0.5rem;
+    width: 0;
 }
 
 .LedgerCardView .ArtifactPremium .ArtifactIconPremium svg {
