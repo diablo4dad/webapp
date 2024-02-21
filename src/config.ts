@@ -17,11 +17,11 @@ function getCollectionUri(masterGroup: MasterGroup): string {
 }
 
 function getImageUri(item: DadItem): string {
-    if (process.env.NODE_ENV === 'production') {
-        return '/icons/' + item.iconId + '.webp';
-    } else {
-        return SERVER_ADDR + item.icon?.url ?? 'missing.webp';
-    }
+    // if (process.env.NODE_ENV === 'production') {
+    //     return '/icons/' + item.iconId + '.webp';
+    // } else {
+    return SERVER_ADDR + item.icon?.url ?? 'missing.webp';
+    // }
 }
 
 function getDefaultItemFromCollectionItems(collectionItems: DadCollectionItem): DadItem {
