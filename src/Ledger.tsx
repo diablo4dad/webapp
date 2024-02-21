@@ -3,7 +3,7 @@ import styles from "./Ledger.module.css";
 import {Store} from "./Store";
 import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
 import React from "react";
-import {Currency, Tick} from "./Icons";
+import {Currency, TickCircle} from "./Icons";
 import Link from "./Link";
 
 function countItemsInCollection(collection: DadCollection): number {
@@ -145,7 +145,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, onSelectAllToggle, v
                                                     <Currency></Currency>
                                                 </span>
                                                 <span className={styles.ArtifactIcon + ' ' + styles.ArtifactIconCollection}>
-                                                    <Tick></Tick>
+                                                    <TickCircle></TickCircle>
                                                 </span>
                                             </div>
                                         </div>
