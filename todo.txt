@@ -3,7 +3,7 @@ Requests from the Reddit publication:
 - [x] Add the missing "Sturdy Saddle" horse armor.
 - [ ] Add items dropped by "super rares".
 - [x] Add option to inverse opacity of collected items.
-- [ ] Add account log in to save progress.
+- [x] Add account log in to save progress.
 - [x] Add collapsable groups.
 - [ ] Add all store Transmogs.
 - [ ] Correct mount names;
@@ -15,7 +15,7 @@ Requests from the Reddit publication:
 - [x] Update the trophies "Crest of Rathma" and "Assassin's Satchel", to
       indicate they seem to be from the Dry Steppes and Kehjistan PvP zones,
       respectively.
-- [ ] Add a "collection mode" so you can quickly click collected items without
+- [x] Add a "collection mode" so you can quickly click collected items without
       having to double-click or use the toggle.
 - [x] Add total count/progress bar.
 - [x] Add the Mountain Dew and Coco Fresh Tea promotions.
