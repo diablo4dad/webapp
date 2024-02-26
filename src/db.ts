@@ -1,20 +1,31 @@
 import {getCollectionUri} from "./config";
 import {MasterGroup} from "./common";
 
-type Item<IconType> = {
-  createdAt: string,
-  publishedAt: string,
-  updatedAt: string,
+type Base<IconType> = {
   itemId: string,
-  itemType: string,
-  magicType: string,
   icon?: IconType,
   iconId?: number,
   name: string,
   description: string,
-  transMog: boolean,
   usableByClass: string[],
+  itemType: string,
 }
+
+type StrapiResp = {
+  createdAt: string,
+  publishedAt: string,
+  updatedAt: string,
+}
+
+type Item<IconType> = Base<IconType> & {
+  itemType: string,
+  magicType: string,
+  transMog: boolean,
+}
+
+type Headstone<IconType> = Base<IconType>;
+type Emote<IconType> = Base<IconType>;
+type Portal<IconType> = Base<IconType>;
 
 type CollectionItem<ItemsType> = {
   outOfRotation?: boolean,
@@ -26,6 +37,12 @@ type CollectionItem<ItemsType> = {
   claimMonster?: string,
   claimZone?: string,
   items: ItemsType,
+}
+
+type StrapiCollectionItem = CollectionItem<StrapiResultSet<StrapiItem>> & {
+  emote?: StrapiResult<StrapiEmote> | null,
+  headstone?: StrapiResult<StrapiHeadstone> | null,
+  portal?: StrapiResult<StrapiPortal> | null,
 }
 
 type Collection<CollectionItemsType> = {
@@ -92,14 +109,26 @@ type StrapiHit<T> = {
 }
 
 type StrapiItem = Item<StrapiResult<StrapiMedia>>;
-type StrapiCollectionItem = CollectionItem<StrapiResultSet<StrapiItem> | undefined>;
+type StrapiEmote = Emote<StrapiResult<StrapiMedia>>;
+type StrapiHeadstone = Headstone<StrapiResult<StrapiMedia>>;
+type StrapiPortal = Portal<StrapiResult<StrapiMedia>>;
 type StrapiCollection = Collection<StrapiResultSet<StrapiCollectionItem> | undefined>;
 
+type DadBase = Base<StrapiMedia> & WithStrapiId;
 type DadItem = Item<StrapiMedia> & WithStrapiId;
-type DadCollectionItem = CollectionItem<DadItem[]> & WithStrapiId;
+type DadEmote = Emote<StrapiMedia> & WithStrapiId;
+type DadHeadstone = Headstone<StrapiMedia> & WithStrapiId;
+type DadPortal = Portal<StrapiMedia> & WithStrapiId;
+type DadCollectionItem = CollectionItem<Array<DadItem | DadEmote | DadHeadstone | DadPortal>> & WithStrapiId;
 type DadCollection = Collection<DadCollectionItem[]> & WithStrapiId;
-type DadDb = {
-  collections: DadCollection[],
+type DadDb = { collections: DadCollection[] }
+
+function strapiBaseToDadBase(hit: StrapiHit<Base<StrapiResult<StrapiMedia>>>): Base<StrapiMedia> & WithStrapiId {
+  return {
+    ...hit.attributes,
+    strapiId: hit.id,
+    icon: hit.attributes.icon?.data?.attributes,
+  };
 }
 
 function strapiItemToDadItem(hit: StrapiHit<StrapiItem>): DadItem {
@@ -111,10 +140,17 @@ function strapiItemToDadItem(hit: StrapiHit<StrapiItem>): DadItem {
 }
 
 function strapiCollectionItemToDadCollectionItem(hit: StrapiHit<StrapiCollectionItem>): DadCollectionItem {
+  const attributes = hit.attributes;
+  const items = [];
+
+  if (attributes.items) {
+    items.push(...attributes.items.data.map(strapiItemToDadItem));
+  }
+
   return {
     ...hit.attributes,
     strapiId: hit.id,
-    items: hit.attributes.items?.data.map(strapiItemToDadItem) ?? [],
+    items: items,
   };
 }
 
@@ -134,9 +170,6 @@ function strapiToDad(strapiCollection: StrapiResultSet<StrapiCollection>): DadDb
 
 const DEFAULT_ITEM: DadItem = {
   strapiId: -1,
-  createdAt: '2023-12-01T10:00:00.000Z',
-  publishedAt: '2023-12-01T10:00:00.000Z',
-  updatedAt: '2023-12-01T10:00:00.000Z',
   itemId: "missing",
   itemType: 'missing',
   magicType: "missing",
@@ -190,6 +223,9 @@ export default fetchDb;
 export { fetchDb, createEmptyDb, getDefaultItemIdForCollection, strapiToDad, DEFAULT_ITEM, DEFAULT_COLLECTION_ITEM, DEFAULT_COLLECTION };
 export type {
   Item,
+  Headstone,
+  Portal,
+  Emote,
   Collection,
   CollectionItem,
   StrapiHit,
@@ -201,6 +237,7 @@ export type {
   DadCollectionItem,
   DadCollection,
   DadDb,
+  DadBase,
 };
 
 export function composeDescription(item: DadCollectionItem): string {
