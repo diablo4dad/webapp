@@ -41,8 +41,8 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
                     <img className={styles.ItemClassIcon} src={necromancer} alt="Necromancer"/>}
                 {usableBy("Rogue", collectionItem) &&
                     <img className={styles.ItemClassIcon} src={rogue} alt="Rogue"/>}
-                {usableBy("Sorceress", collectionItem) &&
-                    <img className={styles.ItemClassIcon} src={sorceress} alt="Sorceress"/>}
+                {usableBy("Sorcerer", collectionItem) &&
+                    <img className={styles.ItemClassIcon} src={sorceress} alt="Sorcerer"/>}
             </div>
             <div className={styles.ItemDescription} hidden={!item.description || true}>{item.description}</div>
             <div className={styles.ItemActions}>

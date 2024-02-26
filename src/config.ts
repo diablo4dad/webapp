@@ -1,4 +1,4 @@
-import {DadCollectionItem, DadItem, DEFAULT_ITEM} from "./db";
+import {DadBase, DadCollectionItem, DEFAULT_ITEM} from "./db";
 import {MasterGroup} from "./common";
 
 const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
@@ -13,18 +13,30 @@ function isScreenSmall(window: Window): boolean {
 }
 
 function getCollectionUri(masterGroup: MasterGroup): string {
-    return SERVER_ADDR + '/api/collections?populate[collectionItems][populate][items][populate][0]=icon&sort[0]=order&pagination[pageSize]=50&filters[category][$eq]=' + encodeURIComponent(masterGroup);
+    if (process.env.NODE_ENV === 'production') {
+        return '/collection.json';
+    } else {
+        const url = new URL('/api/collections', SERVER_ADDR);
+        url.searchParams.append('populate[collectionItems][populate][items][populate][0]', 'icon');
+        url.searchParams.append('populate[collectionItems][populate][emote][populate][0]', 'icon');
+        url.searchParams.append('populate[collectionItems][populate][portal][populate][0]', 'icon');
+        url.searchParams.append('populate[collectionItems][populate][headstone][populate][0]', 'icon');
+        url.searchParams.append('sort[0]', 'order');
+        url.searchParams.append('pagination[pageSize]', '50');
+        url.searchParams.append('filters[category][$eq]', encodeURIComponent(masterGroup));
+        return url.href;
+    }
 }
 
-function getImageUri(item: DadItem): string {
-    // if (process.env.NODE_ENV === 'production') {
-    //     return '/icons/' + item.iconId + '.webp';
-    // } else {
-    return SERVER_ADDR + item.icon?.url ?? 'missing.webp';
-    // }
+function getImageUri(item: DadBase): string {
+    if (process.env.NODE_ENV === 'production') {
+        return '/icons/' + item.iconId + '.webp';
+    } else {
+        return SERVER_ADDR + item.icon?.url ?? 'missing.webp';
+    }
 }
 
-function getDefaultItemFromCollectionItems(collectionItems: DadCollectionItem): DadItem {
+function getDefaultItemFromCollectionItems(collectionItems: DadCollectionItem): DadBase {
     return collectionItems.items[0] ?? DEFAULT_ITEM;
 }
 
