@@ -27,9 +27,9 @@ function getCollectionUri(masterGroup: MasterGroup): string {
 
 function getImageUri(item: DadBase): string {
     if (process.env.NODE_ENV === 'production') {
-        return '/icons/' + item.iconId + '.webp';
+        return item.icon?.url ?? 'missing.webp';
     } else {
-        return SERVER_ADDR + item.icon?.url ?? 'missing.webp';
+        return '/icons/' + item.iconId + '.webp';
     }
 }
 
