@@ -295,15 +295,15 @@ function Application(): ReactElement<HTMLDivElement> {
                     <div className={styles.HeaderRight}>
                         <div className={styles.HeaderRightContent}>
                             <nav className={styles.HeaderNav}>
-                                <div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.GENERAL ? styles.HeaderNavItemSelected : '')}>
-                                    <Link disabled={masterGroup === MasterGroup.GENERAL} onClick={() => setMasterGroup(MasterGroup.GENERAL)}>General</Link>
-                                </div>
-                                <div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.SHOP_ITEMS ?  styles.HeaderNavItemSelected : '')}>
-                                    <Link disabled={masterGroup === MasterGroup.SHOP_ITEMS} onClick={() => setMasterGroup(MasterGroup.SHOP_ITEMS)}>Shop Items</Link>
-                                </div>
-                                <div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.BASE_ITEMS ?  styles.HeaderNavItemSelected : '')}>
-                                    <Link disabled={masterGroup === MasterGroup.BASE_ITEMS} onClick={() => setMasterGroup(MasterGroup.BASE_ITEMS)}>Base Items</Link>
-                                </div>
+                                {/*<div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.GENERAL ? styles.HeaderNavItemSelected : '')}>*/}
+                                {/*    <Link disabled={masterGroup === MasterGroup.GENERAL} onClick={() => setMasterGroup(MasterGroup.GENERAL)}>General</Link>*/}
+                                {/*</div>*/}
+                                {/*<div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.SHOP_ITEMS ?  styles.HeaderNavItemSelected : '')}>*/}
+                                {/*    <Link disabled={masterGroup === MasterGroup.SHOP_ITEMS} onClick={() => setMasterGroup(MasterGroup.SHOP_ITEMS)}>Shop Items</Link>*/}
+                                {/*</div>*/}
+                                {/*<div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.BASE_ITEMS ?  styles.HeaderNavItemSelected : '')}>*/}
+                                {/*    <Link disabled={masterGroup === MasterGroup.BASE_ITEMS} onClick={() => setMasterGroup(MasterGroup.BASE_ITEMS)}>Base Items</Link>*/}
+                                {/*</div>*/}
                             </nav>
                             <div className={styles.HeaderAccountWidgets}>
                             {store.loadConfig().enableProgressBar &&
