@@ -128,6 +128,7 @@ function Ledger({db, store, onClickItem, onDoubleClickItem, onSelectAllToggle, v
                                              onTouchStart={onTouchStart(() => onDoubleClickItem(collection, collectionItem))}
                                              key={collectionItem.strapiId}>
                                             <img className={styles.ArtifactImage} src={getImageUri(item)}
+                                                 loading="lazy"
                                                  alt={item.name}/>
                                             <div className={styles.ArtifactInfo}>
                                                 <div className={styles.ArtifactName}>{item.name}</div>
