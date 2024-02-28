@@ -8,6 +8,11 @@ type Configuration = {
     showArmor: boolean,
     showWeapons: boolean,
     showBody: boolean,
+    showEmotes: boolean,
+    showTownPortals: boolean,
+    showHeadstones: boolean,
+    showEmblems: boolean,
+    showPlayerTitles: boolean,
     showPremium: boolean,
     showPromotional: boolean,
     showOutOfRotation: boolean,
@@ -26,6 +31,11 @@ const DEFAULT_CONFIG: Configuration = {
     showArmor: true,
     showWeapons: true,
     showBody: true,
+    showEmotes: true,
+    showTownPortals: true,
+    showHeadstones: true,
+    showEmblems: true,
+    showPlayerTitles: true,
     showPremium: false,
     showPromotional: false,
     showOutOfRotation: false,
@@ -53,6 +63,11 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="armor" checked={config.showArmor} flip={true} onChange={e => onChange({ ...config, showArmor: e.target.checked })}>Armor</Toggle>
                 <Toggle name="weapons" checked={config.showWeapons} flip={true} onChange={e => onChange({ ...config, showWeapons: e.target.checked })}>Weapons</Toggle>
                 <Toggle name="body" checked={config.showBody} flip={true} onChange={e => onChange({ ...config, showBody: e.target.checked })}>Body Markings</Toggle>
+                <Toggle name="emotes" checked={config.showEmotes} flip={true} onChange={e => onChange({ ...config, showEmotes: e.target.checked })}>Emotes</Toggle>
+                <Toggle name="townPortals" checked={config.showTownPortals} flip={true} onChange={e => onChange({ ...config, showTownPortals: e.target.checked })}>Town Portals</Toggle>
+                <Toggle name="headstones" checked={config.showHeadstones} flip={true} onChange={e => onChange({ ...config, showHeadstones: e.target.checked })}>Headstones</Toggle>
+                <Toggle name="emblem" checked={config.showEmblems} flip={true} onChange={e => onChange({ ...config, showEmblems: e.target.checked })}>Emblems</Toggle>
+                <Toggle name="playerTitles" checked={config.showPlayerTitles} flip={true} onChange={e => onChange({ ...config, showPlayerTitles: e.target.checked })}>Player Titles</Toggle>
             </fieldset>
             <fieldset className={styles.Fieldset}>
                 <legend>Filters</legend>

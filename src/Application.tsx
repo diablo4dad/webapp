@@ -42,7 +42,12 @@ enum ItemGroup {
     TROPHIES = "trophies",
     ARMOR = "armor",
     WEAPONS = "weapons",
-    BODY = "body"
+    BODY = "body",
+    EMOTES = "emotes",
+    TOWN_PORTALS = "town_portals",
+    HEADSTONES = "headstones",
+    EMBLEMS = "emblems",
+    PLAYER_TITLES = "player_titles",
 }
 
 const itemGroups = new Map([
@@ -51,7 +56,12 @@ const itemGroups = new Map([
     [ItemGroup.TROPHIES, ["Trophy", "Back Trophy"]],
     [ItemGroup.WEAPONS, ["Axe", "Dagger", "Focus", "Mace", "Scythe", "Shield", "Sword", "Totem", "Wand", "Two-Handed Axe", "Bow", "Crossbow", "Two-Handed Mace", "Polearm", "Two-Handed Scythe", "Staff", "Two-Handed Sword"]],
     [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]],
-    [ItemGroup.BODY, ["Body Marking", "Emote", "Town Portal", "Headstone", "Emblem", "Player Title (Prefix)", "Player Title (Suffix)"]],
+    [ItemGroup.BODY, ["Body Marking"]],
+    [ItemGroup.EMOTES, ["Emote"]],
+    [ItemGroup.TOWN_PORTALS, ["Town Portal"]],
+    [ItemGroup.HEADSTONES, ["Headstone"]],
+    [ItemGroup.EMBLEMS, ["Emblem"]],
+    [ItemGroup.PLAYER_TITLES, ["Player Title (Prefix)", "Player Title (Suffix)"]],
 ]);
 
 function reduceItems(db: DadDb): DadCollectionItem[] {
@@ -98,7 +108,12 @@ function aggregateItemTypes(config: Configuration): string[] {
         .concat(config.showTrophies ? itemGroups.get(ItemGroup.TROPHIES) ?? [] : [])
         .concat(config.showArmor ? itemGroups.get(ItemGroup.ARMOR) ?? [] : [])
         .concat(config.showWeapons ? itemGroups.get(ItemGroup.WEAPONS) ?? [] : [])
-        .concat(config.showBody ? itemGroups.get(ItemGroup.BODY) ?? [] : []);
+        .concat(config.showBody ? itemGroups.get(ItemGroup.BODY) ?? [] : [])
+        .concat(config.showEmotes ? itemGroups.get(ItemGroup.EMOTES) ?? [] : [])
+        .concat(config.showTownPortals ? itemGroups.get(ItemGroup.TOWN_PORTALS) ?? [] : [])
+        .concat(config.showHeadstones ? itemGroups.get(ItemGroup.HEADSTONES) ?? [] : [])
+        .concat(config.showEmblems ? itemGroups.get(ItemGroup.EMBLEMS) ?? [] : [])
+        .concat(config.showPlayerTitles ? itemGroups.get(ItemGroup.PLAYER_TITLES) ?? [] : []);
 }
 
 function selectItemOrDefault(dci: DadCollectionItem[], selectedItemId: number): DadCollectionItem {
