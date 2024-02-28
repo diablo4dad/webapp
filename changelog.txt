@@ -5,6 +5,36 @@ collections.
 
 ## [Unreleased]
 
+## [1.3.0]
+
+### Added
+
+- Moved production from static site to CMS driven backend.
+- Town Portals, Headstones, Emotes, Emblems and Player Titles.
+- Additional filters for the new item types.
+- Prime Gaming collection for November 2023.
+- Burger King (South Korea) promotional collection.
+- Description to the "Zone Drop" collectables to include which chests the
+  transmogs specifically drop from. Thanks @skSam
+
+### Changed
+
+- Removed 5 transmogs from the "Open World" collection that do not drop.
+- Removed the "premium" icon from the card view.
+- Updated the "collected" icon on the corner of the card.
+- Moved the progress bar to the right hand side of the screen to make room
+  for additional navigation/filters.
+
+### Fixed
+
+- Mounts to display correct names.
+
+## [1.2.1a] - 2023-02-27
+
+### Fixed
+
+- Collections and settings not saving without logging in.
+
 ## [1.2.1] - 2023-02-09
 
 ### Added
