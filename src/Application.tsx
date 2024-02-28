@@ -28,7 +28,6 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
-import Link from "./Link";
 import {MasterGroup} from "./common";
 
 
@@ -52,7 +51,7 @@ const itemGroups = new Map([
     [ItemGroup.TROPHIES, ["Trophy", "Back Trophy"]],
     [ItemGroup.WEAPONS, ["Axe", "Dagger", "Focus", "Mace", "Scythe", "Shield", "Sword", "Totem", "Wand", "Two-Handed Axe", "Bow", "Crossbow", "Two-Handed Mace", "Polearm", "Two-Handed Scythe", "Staff", "Two-Handed Sword"]],
     [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]],
-    [ItemGroup.BODY, ["Body Marking", "Emote", "Town Portal", "Headstone", "Emblem"]],
+    [ItemGroup.BODY, ["Body Marking", "Emote", "Town Portal", "Headstone", "Emblem", "Player Title (Prefix)", "Player Title (Suffix)"]],
 ]);
 
 function reduceItems(db: DadDb): DadCollectionItem[] {
