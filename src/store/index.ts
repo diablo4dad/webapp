@@ -1,8 +1,10 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {Configuration, DEFAULT_CONFIG} from "./ConfigSidebar";
-import {isScreenSmall, VERSION} from "./config";
+import {Configuration, DEFAULT_CONFIG} from "../ConfigSidebar";
+import {isScreenSmall, VERSION} from "../config";
 import {doc, getDoc, setDoc} from "firebase/firestore";
-import {firestore} from "./firebase";
+import {firestore} from "../firebase";
+import {runFirestoreMigrations, runStoreMigrations} from "./migrations";
+
 
 const DEFAULT_VIEW: ViewState = {
   ledger: {
@@ -41,6 +43,12 @@ type CollectionState = {
   isOpen: boolean,
 }
 
+type VersionInfo = {
+  major: number,
+  minor: number,
+  revision: number,
+}
+
 type Store = {
   data: StoreData,
   init: (uid?: string) => void,
@@ -63,6 +71,15 @@ type StoreData = {
   config: Configuration,
   collectionLog: CollectionLog,
   view: ViewState,
+  version?: {
+    major: number,
+    minor: number,
+    revision: number,
+  },
+}
+
+type FirebaseData = {
+  collectionLog: CollectionLog,
   version?: {
     major: number,
     minor: number,
@@ -101,26 +118,6 @@ function initStore(): StoreData {
   };
 }
 
-function isPatchNeeded(data: StoreData) {
-  if (data.version === undefined) {
-    return true;
-  }
-
-  if (data.version.major < VERSION.major) {
-    return true;
-  }
-
-  if (data.version.minor < VERSION.minor) {
-    return true;
-  }
-
-  if (data.version.revision < VERSION.revision) {
-    return true;
-  }
-
-  return false;
-}
-
 const debounce = (fn: Function, ms = 300) => {
   let timeoutId: ReturnType<typeof setTimeout>;
   return function (this: any, ...args: any[]) {
@@ -135,8 +132,13 @@ function useStore(): Store {
 
   const commitToFirebase = useCallback(
       debounce((uid: string, data: StoreData) => {
+        const firebaseData: FirebaseData = {
+          version: data.version,
+          collectionLog: data.collectionLog,
+        }
+
         const docRef = doc(firestore, "collections", uid);
-        setDoc(docRef, data.collectionLog).then(() => {
+        setDoc(docRef, firebaseData).then(() => {
           console.log("Wrote Collection to Firestore.")
         });
       }, 800)
@@ -161,34 +163,8 @@ function useStore(): Store {
     const localData = localStorage.getItem("d4log");
     if (localData) {
       const parsedData: StoreData = JSON.parse(localData);
+
       console.log("Collection loaded from HTML5 Storage.");
-
-      // patch <1.2.0 collections
-      if (isPatchNeeded(parsedData)) {
-        console.log("Migrating collection to 1.2.0...");
-
-        // convert flags to booleans
-        parsedData.collectionLog.entries = parsedData.collectionLog.entries.map(i => {
-          // this the preferred format for firestore queries
-          if (i.flags) {
-            i.collected = i.flags.includes(ItemFlag.COLLECTED);
-            i.hidden = i.flags.includes(ItemFlag.HIDDEN);
-            delete i.flags;
-          }
-
-          return i;
-        });
-
-        // bump schema
-        parsedData.version = {
-          major: 1,
-          minor: 2,
-          revision: 0,
-        };
-
-        // save changes
-        persistData(parsedData);
-      }
 
       return {
         ...parsedData,
@@ -211,31 +187,45 @@ function useStore(): Store {
           if (!snapshot.exists()) {
             console.log("Collection is empty.");
             const newData = loadFromLocalStorage();
-            persistData(newData, uid);
-            setData(newData);
-            resolve(newData);
+            const newDataPatched = runStoreMigrations(newData);
+            persistData(newDataPatched, uid);
+            setData(newDataPatched);
+            resolve(newDataPatched);
             return;
           }
 
           // sync with firestore
-          console.log("Got Collection Snapshot.", snapshot.data());
-          const newData = {
-            ...loadFromLocalStorage(),
-            collectionLog: snapshot.data() as CollectionLog
-          }
-          setData(newData);
-          resolve(newData);
+          const firestoreData = snapshot.data() as FirebaseData;
+          const firestoreDataSanitised = runFirestoreMigrations(firestoreData);
+
+          const localStorageData = loadFromLocalStorage();
+          const localStorageDataMerged = {
+            ...localStorageData,
+            ...firestoreDataSanitised,
+          };
+
+          const storeDataPatched = runStoreMigrations(localStorageDataMerged);
+
+          console.log("Got Collection Snapshot.", firestoreData);
+
+          setData(storeDataPatched);
+          resolve(storeDataPatched);
         });
       } else {
         // offline
         const newData = loadFromLocalStorage();
-        setData(newData);
-        resolve(newData);
+        const newDataPatched = runStoreMigrations(newData);
+        setData(newDataPatched);
+        resolve(newDataPatched);
       }
     });
   }
 
   function getLogEntry(artifactId: number): ArtifactMeta {
+    if (data.collectionLog.entries === undefined) {
+      console.log("Is undefined!!!!", data);
+    }
+
     const logEntry = data
         .collectionLog
         .entries
@@ -395,5 +385,5 @@ function useStore(): Store {
 }
 
 export default useStore;
-export type { Store, StoreData };
+export type { Store, StoreData, ArtifactMeta, CollectionLog, ViewState, VersionInfo, FirebaseData };
 export { ItemFlag };
