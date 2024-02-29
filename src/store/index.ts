@@ -12,6 +12,10 @@ const DEFAULT_VIEW: ViewState = {
   }
 }
 
+const DEFAULT_LOG: CollectionLog = {
+  entries: [],
+}
+
 enum ItemFlag {
   COLLECTED,
   HIDDEN,
@@ -50,7 +54,6 @@ type VersionInfo = {
 }
 
 type Store = {
-  data: StoreData,
   init: (uid?: string) => void,
   getLogEntry: (artifactId: number) => ArtifactMeta,
   isCollected: (artifactId: number) => boolean,
@@ -67,7 +70,7 @@ type Store = {
 }
 
 type StoreData = {
-  default: boolean,
+  default?: boolean,
   config: Configuration,
   collectionLog: CollectionLog,
   view: ViewState,
@@ -101,7 +104,6 @@ function initArtifactMeta(artifactId: number): ArtifactMeta {
 
 function initStore(): StoreData {
   return {
-    default: true,
     version: VERSION,
     config: {
       ...DEFAULT_CONFIG,
@@ -127,37 +129,44 @@ const debounce = (fn: Function, ms = 300) => {
 };
 
 function useStore(): Store {
-  const [data, setData] = useState(initStore());
+  const [data, setData] = useState(DEFAULT_LOG);
+  const [view, setView] = useState(DEFAULT_VIEW);
+  const [config, setConfig] = useState(DEFAULT_CONFIG);
+
   const userId = useRef<string>();
 
-  const commitToFirebase = useCallback(
-      debounce((uid: string, data: StoreData) => {
+  useEffect(() => {
+    console.log("Saving to local storage...");
+
+    const store: StoreData = {
+      view: view,
+      config: config,
+      collectionLog: data,
+      version: VERSION,
+    }
+
+    localStorage.setItem("d4log", JSON.stringify(store));
+  }, [view, config, data]);
+
+  useEffect(() => {
+    if (userId.current) {
+      saveToFirestore(userId.current, data);
+    }
+  }, [data]);
+
+  const saveToFirestore = useCallback(
+      debounce((uid: string, data: CollectionLog) => {
         const firebaseData: FirebaseData = {
-          version: data.version,
-          collectionLog: data.collectionLog,
+          version: VERSION,
+          collectionLog: data,
         }
 
         const docRef = doc(firestore, "collections", uid);
         setDoc(docRef, firebaseData).then(() => {
-          console.log("Wrote Collection to Firestore.")
+          console.log("Firestore commit.")
         });
       }, 800)
       , []);
-
-  const persistData = useCallback((context: StoreData, uid?: string) => {
-    if (!context.default) {
-      console.log("Saving...");
-      localStorage.setItem("d4log", JSON.stringify(context));
-
-      if (uid) {
-        commitToFirebase(uid, context);
-      }
-    }
-  }, [commitToFirebase]);
-
-  useEffect(() => {
-    persistData(data, userId.current);
-  }, [persistData, data]);
 
   function loadFromLocalStorage(): StoreData {
     const localData = localStorage.getItem("d4log");
@@ -168,7 +177,6 @@ function useStore(): Store {
 
       return {
         ...parsedData,
-        default: false,
       };
     } else {
       console.log("Initialising New Collection...");
@@ -188,8 +196,9 @@ function useStore(): Store {
             console.log("Collection is empty.");
             const newData = loadFromLocalStorage();
             const newDataPatched = runStoreMigrations(newData);
-            persistData(newDataPatched, uid);
-            setData(newDataPatched);
+            setData(newDataPatched.collectionLog);
+            setView(newDataPatched.view);
+            setConfig(newDataPatched.config);
             resolve(newDataPatched);
             return;
           }
@@ -208,26 +217,25 @@ function useStore(): Store {
 
           console.log("Got Collection Snapshot.", firestoreData);
 
-          setData(storeDataPatched);
+          setData(storeDataPatched.collectionLog);
+          setView(storeDataPatched.view);
+          setConfig(storeDataPatched.config);
           resolve(storeDataPatched);
         });
       } else {
         // offline
         const newData = loadFromLocalStorage();
         const newDataPatched = runStoreMigrations(newData);
-        setData(newDataPatched);
+        setData(newDataPatched.collectionLog);
+        setView(newDataPatched.view);
+        setConfig(newDataPatched.config);
         resolve(newDataPatched);
       }
     });
   }
 
   function getLogEntry(artifactId: number): ArtifactMeta {
-    if (data.collectionLog.entries === undefined) {
-      console.log("Is undefined!!!!", data);
-    }
-
     const logEntry = data
-        .collectionLog
         .entries
         .filter(l => l.id === artifactId)
         .pop();
@@ -236,8 +244,8 @@ function useStore(): Store {
   }
 
   function toggle(artifactId: number, flag: ItemFlag = ItemFlag.COLLECTED, enabled?: boolean) {
-    function updateData(data: StoreData) {
-      const doesExist = data.collectionLog.entries.find(e => e.id === artifactId);
+    function updateData(data: CollectionLog): CollectionLog {
+      const doesExist = data.entries.find(e => e.id === artifactId);
       if (!doesExist) {
         const logEntry = initArtifactMeta(artifactId);
 
@@ -252,38 +260,30 @@ function useStore(): Store {
 
         return {
           ...data,
-          default: false,
-          collectionLog: {
-            ...data.collectionLog,
-            entries: [
-              ...data.collectionLog.entries,
-              logEntry,
-            ],
-          }
+          entries: [
+            ...data.entries,
+            logEntry,
+          ],
         };
       }
 
       return {
-        ...data,
-        default: false,
-        collectionLog: {
-          entries: data.collectionLog.entries.map(e => {
-            if (e.id !== artifactId) {
-              return e;
-            } else {
-              switch (flag) {
-                case ItemFlag.COLLECTED:
-                  e.collected = enabled ?? !e.collected;
-                  break;
-                case ItemFlag.HIDDEN:
-                  e.hidden = enabled ?? !e.hidden;
-                  break;
-              }
-
-              return e;
+        entries: data.entries.map(e => {
+          if (e.id !== artifactId) {
+            return e;
+          } else {
+            switch (flag) {
+              case ItemFlag.COLLECTED:
+                e.collected = enabled ?? !e.collected;
+                break;
+              case ItemFlag.HIDDEN:
+                e.hidden = enabled ?? !e.hidden;
+                break;
             }
-          }),
-        }
+
+            return e;
+          }
+        }),
       };
     }
 
@@ -298,31 +298,23 @@ function useStore(): Store {
     return getLogEntry(artifactId).hidden;
   }
 
-  function saveConfig(configuration: Configuration) {
-    setData(data => ({
-      ...data,
-      default: false,
-      config: configuration,
-    }));
+  function saveConfig(config: Configuration) {
+    setConfig(previousConfig => ({ ...previousConfig, config }));
   }
 
   function loadConfig(): Configuration {
-    return { ...DEFAULT_CONFIG, ...data.config };
+    return { ...DEFAULT_CONFIG, ...config };
   }
 
   function loadView(): ViewState {
     return {
       ...DEFAULT_VIEW,
-      ...data.view,
+      ...view,
     };
   }
 
   function saveView(view: ViewState) {
-    setData(data => ({
-      ...data,
-      default: false,
-      view,
-    }));
+    setView(previousView => ({ ...previousView, view }));
   }
 
   function toggleCollectionOpen(collectionId: number, isOpen: boolean) {
@@ -367,7 +359,6 @@ function useStore(): Store {
   }
 
   return {
-    data,
     init,
     getLogEntry,
     toggle,
