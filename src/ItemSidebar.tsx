@@ -1,10 +1,10 @@
 import {composeDescription, DadCollectionItem} from "./db"
 import styles from "./ItemSidebar.module.css"
-import necromancer from "./ gfx/necromancer.webp"
-import druid from "./ gfx/druid.webp"
-import rogue from "./ gfx/rogue.webp"
-import barbarian from "./ gfx/barbarian.webp"
-import sorceress from "./ gfx/sorceress.webp"
+import necromancer from "./image/necromancer.webp"
+import druid from "./image/druid.webp"
+import rogue from "./image/rogue.webp"
+import barbarian from "./image/barbarian.webp"
+import sorceress from "./image/sorceress.webp"
 import Toggle from "./Toggle";
 import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
 
