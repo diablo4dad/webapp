@@ -88,7 +88,10 @@ export function runStoreMigrations(store: StoreData): StoreData {
     if (isPatchNeeded(store, 1, 3, 0)) {
         console.log("Running v1.3.0 migration...");
 
-        // remove junk
+        // don't use default field anymore
+        delete store.default;
+
+        // remove junk entries
         store.collectionLog.entries = store.collectionLog.entries.filter(i => migration130.filter(m => m.iid == i.id).length);
 
         // remap collection items
