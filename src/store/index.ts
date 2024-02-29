@@ -299,7 +299,7 @@ function useStore(): Store {
   }
 
   function saveConfig(config: Configuration) {
-    setConfig(previousConfig => ({ ...previousConfig, config }));
+    setConfig(previousConfig => ({ ...previousConfig, ...config }));
   }
 
   function loadConfig(): Configuration {
@@ -314,7 +314,7 @@ function useStore(): Store {
   }
 
   function saveView(view: ViewState) {
-    setView(previousView => ({ ...previousView, view }));
+    setView(previousView => ({ ...previousView, ...view }));
   }
 
   function toggleCollectionOpen(collectionId: number, isOpen: boolean) {
