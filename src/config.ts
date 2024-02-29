@@ -3,9 +3,9 @@ import {MasterGroup} from "./common";
 
 const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
 const D4_BUILD = '1.2.3.47954'
-const SITE_VERSION = '1.2.1'
-const VERSION = {major: 1, minor: 2, revision: 0}
-const LAST_UPDATED = 'February 9th, 2024'
+const SITE_VERSION = '1.3.0'
+const VERSION = {major: 1, minor: 3, revision: 0}
+const LAST_UPDATED = 'February 29th, 2024'
 const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
 
 function isScreenSmall(window: Window): boolean {
@@ -13,16 +13,12 @@ function isScreenSmall(window: Window): boolean {
 }
 
 function getCollectionUri(masterGroup: MasterGroup): string {
-    if (process.env.NODE_ENV === 'production') {
-        return '/collection.json';
-    } else {
-        const url = new URL('/api/collections', SERVER_ADDR);
-        url.searchParams.append('populate[collectionItems][populate][items][populate][0]', 'icon');
-        url.searchParams.append('sort[0]', 'order');
-        url.searchParams.append('pagination[pageSize]', '50');
-        url.searchParams.append('filters[category][$eq]', encodeURIComponent(masterGroup));
-        return url.href;
-    }
+    const url = new URL('/api/collections', SERVER_ADDR);
+    url.searchParams.append('populate[collectionItems][populate][items][populate][0]', 'icon');
+    url.searchParams.append('sort[0]', 'order');
+    url.searchParams.append('pagination[pageSize]', '50');
+    url.searchParams.append('filters[category][$eq]', encodeURIComponent(masterGroup));
+    return url.href;
 }
 
 function getImageUri(item: DadBase): string {

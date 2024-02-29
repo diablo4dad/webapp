@@ -1,6 +1,6 @@
 import {composeDescription, DadCollection, DadCollectionItem, DadDb,} from "./db";
 import styles from "./Ledger.module.css";
-import {Store} from "./Store";
+import {Store} from "./store";
 import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
 import React from "react";
 import {Currency, TickCircle} from "./Icons";

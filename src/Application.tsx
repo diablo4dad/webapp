@@ -12,7 +12,7 @@ import logo from "./ gfx/d4ico.png"
 
 import styles from './Application.module.css';
 import Ledger from "./Ledger";
-import useStore, {ItemFlag, Store} from "./Store";
+import useStore, {ItemFlag, Store} from "./store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration} from "./ConfigSidebar";
 import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
