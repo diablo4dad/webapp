@@ -9,13 +9,14 @@ collections.
 
 ### Added
 
-- Moved production from static site to CMS driven backend.
 - Town Portals, Headstones, Emotes, Emblems and Player Titles.
 - Additional filters for the new item types.
 - Prime Gaming collection for November 2023.
 - Burger King (South Korea) promotional collection.
 - Description to the "Zone Drop" collectables to include which chests the
   transmogs specifically drop from. Thanks @skSam
+- Moved from static site to CMS driven backend.
+- Moved icon assets to CDN service.
 
 ### Changed
 
@@ -24,10 +25,13 @@ collections.
 - Updated the "collected" icon on the corner of the card.
 - Moved the progress bar to the right hand side of the screen to make room
   for additional navigation/filters.
+- Removed footer from configuration sidebar.
+- Changed the "Select All / None" links to orange.
+- Set icon load strategy from "eager" to "lazy".
 
 ### Fixed
 
-- Mounts to display correct names.
+- Mounts et al. to display correct names.
 
 ## [1.2.1a] - 2023-02-27
 
