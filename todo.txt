@@ -6,11 +6,11 @@ Requests from the Reddit publication:
 - [x] Add account log in to save progress.
 - [x] Add collapsable groups.
 - [ ] Add all store Transmogs.
-- [ ] Correct mount names;
-    - [ ] Ghastly Reins -> Spectral Charger mount.
-    - [ ][PH] Blizzcon Horse mount -> Lapisvein, from Shop "Symposium Steed".
+- [x] Correct mount names;
+    - [x] Ghastly Reins -> Spectral Charger mount.
+    - [x][PH] Blizzcon Horse mount -> Lapisvein, from Shop "Symposium Steed".
 - [x] Add "Hide Collected" filter.
-- [ ] Add Headstone, Portals and Emotes.
+- [x] Add Headstone, Portals and Emotes.
 - [ ] Add all standard/base transmogs for weapons and armor.
 - [x] Update the trophies "Crest of Rathma" and "Assassin's Satchel", to
       indicate they seem to be from the Dry Steppes and Kehjistan PvP zones,
