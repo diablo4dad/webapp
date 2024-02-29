@@ -348,13 +348,19 @@ function Application(): ReactElement<HTMLDivElement> {
                             <div className={styles.SidebarLayoutBottom}>
                                 <section className={styles.SidebarContent}>
                                     {sideBar === SideBarType.ITEM && selectedCollectionItem &&
-                                        <ItemSidebar
-                                            collectionItem={selectedCollectionItem}
-                                            hidden={store.isHidden(selectedCollectionItemId)}
-                                            collected={store.isCollected(selectedCollectionItemId)}
-                                            onClickCollected={(collected) => store.toggle(selectedCollectionItemId, ItemFlag.COLLECTED, collected)}
-                                            onClickHidden={(hidden) => store.toggle(selectedCollectionItemId, ItemFlag.HIDDEN, hidden)}
-                                        />
+                                        <>
+                                            <ItemSidebar
+                                                collectionItem={selectedCollectionItem}
+                                                hidden={store.isHidden(selectedCollectionItemId)}
+                                                collected={store.isCollected(selectedCollectionItemId)}
+                                                onClickCollected={(collected) => store.toggle(selectedCollectionItemId, ItemFlag.COLLECTED, collected)}
+                                                onClickHidden={(hidden) => store.toggle(selectedCollectionItemId, ItemFlag.HIDDEN, hidden)}
+                                            />
+                                            <footer className={styles.SidebarFooter}>
+                                                <DiscordInvite/>
+                                                <VersionInfo/>
+                                            </footer>
+                                        </>
                                     }
                                     {sideBar === SideBarType.CONFIG &&
                                         <ConfigSidebar
@@ -363,10 +369,6 @@ function Application(): ReactElement<HTMLDivElement> {
                                         />
                                     }
                                 </section>
-                                <footer className={styles.SidebarFooter}>
-                                    <DiscordInvite/>
-                                    <VersionInfo/>
-                                </footer>
                             </div>
                         </div>
                     </aside>
