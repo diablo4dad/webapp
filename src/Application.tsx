@@ -8,7 +8,7 @@ import fetchDb, {
     getDefaultItemIdForCollection,
     strapiToDad,
 } from "./db"
-import logo from "./ gfx/d4ico.png"
+import logo from "./image/d4ico.png"
 
 import styles from './Application.module.css';
 import Ledger from "./Ledger";
