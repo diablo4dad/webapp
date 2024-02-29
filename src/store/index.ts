@@ -136,7 +136,11 @@ function useStore(): Store {
   const userId = useRef<string>();
 
   useEffect(() => {
-    console.log("Saving to local storage...");
+    // don't save until initialised
+    // this prevents overriding storage with defaults
+    if (view === DEFAULT_VIEW && config === DEFAULT_CONFIG && data === DEFAULT_LOG) {
+      return;
+    }
 
     const store: StoreData = {
       view: view,
@@ -144,6 +148,8 @@ function useStore(): Store {
       collectionLog: data,
       version: VERSION,
     }
+
+    console.log("Saving to local storage...", store);
 
     localStorage.setItem("d4log", JSON.stringify(store));
   }, [view, config, data]);
@@ -173,11 +179,9 @@ function useStore(): Store {
     if (localData) {
       const parsedData: StoreData = JSON.parse(localData);
 
-      console.log("Collection loaded from HTML5 Storage.");
+      console.log("Loaded local storage...", parsedData);
 
-      return {
-        ...parsedData,
-      };
+      return parsedData;
     } else {
       console.log("Initialising New Collection...");
       return initStore();
@@ -215,7 +219,7 @@ function useStore(): Store {
 
           const storeDataPatched = runStoreMigrations(localStorageDataMerged);
 
-          console.log("Got Collection Snapshot.", firestoreData);
+          console.log("Got Firestore Snapshot...", storeDataPatched);
 
           setData(storeDataPatched.collectionLog);
           setView(storeDataPatched.view);
