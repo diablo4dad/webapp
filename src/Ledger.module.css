@@ -29,6 +29,29 @@
     font-size: 1.5rem;
 }
 
+.LedgerHeadingPlaceholder {
+    width: 15rem;
+    background-color: #ccc;
+    color: transparent;
+}
+
+.LedgerDescriptionPlaceholder {
+    width: 25rem;
+    background-color: #ccc;
+    color: transparent;
+}
+
+.ArtifactImagePlaceholder {
+
+}
+
+.ArtifactNamePlaceholder {
+    width: 4rem;
+    background-color: #ccc;
+    color: transparent !important;
+    margin: 0 auto;
+}
+
 .LedgerDescription {
     font-size: 0.875rem;
     color: #ccc;

@@ -29,6 +29,8 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
 import {MasterGroup} from "./common";
+import LedgerSkeleton from "./LedgerSkeleton";
+import Link from "./Link";
 
 
 enum SideBarType {
@@ -173,7 +175,7 @@ function Application(): ReactElement<HTMLDivElement> {
     const [db, setDb] = useState(createEmptyDb());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [content, setContent] = useState(ContentType.LEDGER);
-    const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
+    const [masterGroup, setMasterGroup] = useState(MasterGroup.SHOP_ITEMS);
     const history = useRef([ContentType.LEDGER]);
     const filteredDb = filterDb(db, store, store.loadConfig());
     const collectionItems = reduceItems(filteredDb);
@@ -309,15 +311,15 @@ function Application(): ReactElement<HTMLDivElement> {
                     <div className={styles.HeaderRight}>
                         <div className={styles.HeaderRightContent}>
                             <nav className={styles.HeaderNav}>
-                                {/*<div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.GENERAL ? styles.HeaderNavItemSelected : '')}>*/}
-                                {/*    <Link disabled={masterGroup === MasterGroup.GENERAL} onClick={() => setMasterGroup(MasterGroup.GENERAL)}>General</Link>*/}
-                                {/*</div>*/}
-                                {/*<div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.SHOP_ITEMS ?  styles.HeaderNavItemSelected : '')}>*/}
-                                {/*    <Link disabled={masterGroup === MasterGroup.SHOP_ITEMS} onClick={() => setMasterGroup(MasterGroup.SHOP_ITEMS)}>Shop Items</Link>*/}
-                                {/*</div>*/}
-                                {/*<div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.BASE_ITEMS ?  styles.HeaderNavItemSelected : '')}>*/}
-                                {/*    <Link disabled={masterGroup === MasterGroup.BASE_ITEMS} onClick={() => setMasterGroup(MasterGroup.BASE_ITEMS)}>Base Items</Link>*/}
-                                {/*</div>*/}
+                                <div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.GENERAL ? styles.HeaderNavItemSelected : '')}>
+                                    <Link disabled={masterGroup === MasterGroup.GENERAL} onClick={() => setMasterGroup(MasterGroup.GENERAL)}>General</Link>
+                                </div>
+                                <div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.SHOP_ITEMS ?  styles.HeaderNavItemSelected : '')}>
+                                    <Link disabled={masterGroup === MasterGroup.SHOP_ITEMS} onClick={() => setMasterGroup(MasterGroup.SHOP_ITEMS)}>Shop Items</Link>
+                                </div>
+                                <div className={styles.HeaderNavItem + ' ' + (masterGroup === MasterGroup.BASE_ITEMS ?  styles.HeaderNavItemSelected : '')}>
+                                    <Link disabled={masterGroup === MasterGroup.BASE_ITEMS} onClick={() => setMasterGroup(MasterGroup.BASE_ITEMS)}>Base Items</Link>
+                                </div>
                             </nav>
                             <div className={styles.HeaderAccountWidgets}>
                             {store.loadConfig().enableProgressBar &&
@@ -374,17 +376,28 @@ function Application(): ReactElement<HTMLDivElement> {
                     </aside>
                     <main className={styles.Content}>
                         {content === ContentType.LEDGER &&
-                            <Ledger
-                                db={filteredDb}
-                                store={store}
-                                onClickItem={onClickItem}
-                                onDoubleClickItem={onDoubleClickItem}
-                                onSelectAllToggle={onSelectAll}
-                                view={store.loadConfig().view}
-                                hideCollectedItems={store.loadConfig().hideCollectedItems}
-                                hideCompleteCollections={store.loadConfig().hideCompleteCollections}
-                                inverseCardLayout={store.loadConfig().inverseCardLayout}
-                            />
+                            <>
+                                {filteredDb.collections.length === 0 &&
+                                    <>
+                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
+                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
+                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
+                                    </>
+                                }
+                                {filteredDb.collections.length !== 0 &&
+                                    <Ledger
+                                        db={filteredDb}
+                                        store={store}
+                                        onClickItem={onClickItem}
+                                        onDoubleClickItem={onDoubleClickItem}
+                                        onSelectAllToggle={onSelectAll}
+                                        view={store.loadConfig().view}
+                                        hideCollectedItems={store.loadConfig().hideCollectedItems}
+                                        hideCompleteCollections={store.loadConfig().hideCompleteCollections}
+                                        inverseCardLayout={store.loadConfig().inverseCardLayout}
+                                    />
+                                }
+                            </>
                         }
                         {content === ContentType.MOBILE_MENU &&
                             <>
