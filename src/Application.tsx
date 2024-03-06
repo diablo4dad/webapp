@@ -28,7 +28,7 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
-import {MasterGroup} from "./common";
+import {locale, MasterGroup} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import Link from "./Link";
 
@@ -320,7 +320,7 @@ function Application(): ReactElement<HTMLDivElement> {
                                     return <>
                                         <div className={styles.HeaderNavItem + ' ' + (masterGroup === value ? styles.HeaderNavItemSelected : '')}>
                                             <Link disabled={masterGroup === value}
-                                                  onClick={() => setMasterGroup(value)}>{value}
+                                                  onClick={() => setMasterGroup(value)}>{locale[value]}
                                             </Link>
                                         </div>
                                     </>
