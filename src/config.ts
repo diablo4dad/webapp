@@ -16,7 +16,7 @@ function getCollectionUri(masterGroup: MasterGroup): string {
     const url = new URL('/api/collections', SERVER_ADDR);
     url.searchParams.append('populate[collectionItems][populate][items][populate][0]', 'icon');
     url.searchParams.append('sort[0]', 'order');
-    url.searchParams.append('pagination[pageSize]', '50');
+    url.searchParams.append('pagination[pageSize]', '10');
     url.searchParams.append('filters[category][$eq]', encodeURIComponent(masterGroup));
     return url.href;
 }
