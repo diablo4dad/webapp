@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect, useRef, useState} from 'react';
+import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
 import fetchDb, {
     createEmptyDb,
     DadCollection,
@@ -6,6 +6,8 @@ import fetchDb, {
     DadDb,
     DEFAULT_COLLECTION_ITEM,
     getDefaultItemIdForCollection,
+    StrapiCollection,
+    StrapiResultSet,
     strapiToDad,
 } from "./db"
 import logo from "./image/d4ico.png"
@@ -179,13 +181,108 @@ function Application(): ReactElement<HTMLDivElement> {
     const [db, setDb] = useState(createEmptyDb());
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [content, setContent] = useState(ContentType.LEDGER);
-    const [masterGroup, setMasterGroup] = useState(MasterGroup.SHOP_ITEMS);
+    const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
     const history = useRef([ContentType.LEDGER]);
     const filteredDb = filterDb(db, store, store.loadConfig());
     const collectionItems = reduceItems(filteredDb);
     const lastSelected = store.getLastSelectedItem();
     const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(lastSelected?.itemId ?? getDefaultItemIdForCollection(filteredDb));
     const selectedCollectionItem = selectItemOrDefault(collectionItems, selectedCollectionItemId);
+
+    // references for "load on scroll" paging
+    const contentRef = useRef<HTMLDivElement>(document.createElement('div'));
+    const observers = useRef<IntersectionObserver[]>([]);
+
+    // paging
+    const pageRef = useRef(0);
+    const loadingPromise = useRef<Promise<StrapiResultSet<StrapiCollection>> | null>(null);
+
+    const fetchDbCallback = useCallback(async (collection: MasterGroup, page: number)  => {
+        // pre-condition
+        if (loadingPromise.current) {
+            console.log("[fetchDb] Request dropped; fetch in progress.");
+            return;
+        }
+
+        // pre-condition
+        if (page === -1) {
+            console.log("[fetchDb] Request dropped; pagination exhausted.");
+            return;
+        }
+
+        console.log("[fetchDb] Loading...", { collection, page });
+        loadingPromise.current = fetchDb(collection, page);
+
+        try {
+            // merge page into base
+            const resp = await loadingPromise.current;
+            const nextPage = strapiToDad(resp);
+            setDb(existing => ({
+                collections: [...existing.collections, ...nextPage.collections]
+            }));
+
+            // bump page count
+            if (resp.meta.pagination.page === resp.meta.pagination.pageCount) {
+                pageRef.current = -1;
+            } else {
+                pageRef.current = resp.meta.pagination.page + 1;
+            }
+        } catch (e) {
+            console.log("[fetchDb] Error occurred...", e);
+        } finally {
+            loadingPromise.current = null;
+        }
+    }, []);
+
+    const attachObserver = useCallback(async (el: HTMLDetailsElement | null, index: number) => {
+        // pre-condition
+        if (el === null) {
+            return;
+        }
+
+        // pre-condition
+        if (index !== filteredDb.collections.length - 1) {
+            return;
+        }
+
+        // pre-condition
+        if (index in observers.current) {
+            return;
+        }
+
+        console.log("[Observe] Attaching fetchDb callback to ledger.", {
+            ledgerIndex: index,
+            dbLength: filteredDb.collections.length,
+        });
+
+        const onInteraction = (obs: IntersectionObserverEntry[]) => {
+            // pre-condition
+            if (obs.length === 0) {
+                console.log("[Observe] Empty.", { index });
+                return;
+            }
+
+            // sanity check
+            if (obs.length > 1) {
+                console.log("[Observe] Multiple entries observed.", { index });
+            }
+
+            const first = obs[0];
+            console.log("[Observe] Intersecting.", { index, isIntersecting: first.isIntersecting });
+
+            // on enter screen, fetch the next page
+            if (first.isIntersecting) {
+                fetchDbCallback(masterGroup, pageRef.current).then(() => {
+                    console.log("[Observe] Disconnecting.", { index });
+                    observers.current[index]?.disconnect();
+                });
+            }
+        }
+
+        observers.current[index] =
+            new IntersectionObserver(onInteraction, { root: contentRef.current });
+        observers.current[index].observe(el);
+    }, [filteredDb]);
 
     function onToggleConfig() {
         setSideBar(sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG);
@@ -234,30 +331,31 @@ function Application(): ReactElement<HTMLDivElement> {
                 const credential = GoogleAuthProvider.credentialFromResult(result);
                 if (credential) {
                     const user = result.user;
-                    console.log("Logged in.", { ...user });
+                    console.log("[Auth] Logged in.", { ...user });
                 } else {
-                    console.error("Signed in but Credential was null.");
+                    console.error("[Auth] Signed in but Credential was null.");
                 }
             }).catch((error) => {
-                console.log("Error signing in.", error);
+                console.log("[Auth] Error signing in.", error);
             });
     }
 
     function signOut() {
         auth.signOut().then(() => {
-            console.log("Signed out.");
+            console.log("[Auth] Signed out.");
         })
     }
 
+    // auth effect
     useEffect(() => {
-        console.log("Authenticating...");
+        console.log("[Auth] Authenticating...");
 
         // load html5 storage
         store.init();
 
         // add user state listener
         const unsubscribe = auth.onAuthStateChanged((user) => {
-            console.log("Auth state changed.", { ...user });
+            console.log("[Auth] State changed.", { ...user });
             setUser(user);
 
             // init firebase storage
@@ -265,21 +363,18 @@ function Application(): ReactElement<HTMLDivElement> {
         });
 
         return () => {
-            console.log("Tearing Down application...");
+            console.log("[Auth] Unsubscribing...");
             unsubscribe();
-        };
+        }
     }, []);
 
+    // initial page load
     useEffect(() => {
-        console.log("Loading Database...");
-
-        fetchDb(masterGroup)
-            .then(data => {
-                if (Array.isArray(data.data)) {
-                    setDb(strapiToDad(data));
-                }
-            });
-    }, [masterGroup]);
+        console.log("[Bootstrap] Initialing DB...");
+        fetchDbCallback(masterGroup, pageRef.current).then(() => {
+            console.log("[Bootstrap] Complete.");
+        });
+    }, []);
 
     return (
         <div className={styles.Page}>
@@ -318,7 +413,7 @@ function Application(): ReactElement<HTMLDivElement> {
                                 {enumKeys(MasterGroup).map((key) => {
                                     const value = MasterGroup[key];
                                     return <>
-                                        <div className={styles.HeaderNavItem + ' ' + (masterGroup === value ? styles.HeaderNavItemSelected : '')}>
+                                        <div key={key} className={styles.HeaderNavItem + ' ' + (masterGroup === value ? styles.HeaderNavItemSelected : '')}>
                                             <Link disabled={masterGroup === value}
                                                   onClick={() => setMasterGroup(value)}>{locale[value]}
                                             </Link>
@@ -347,7 +442,7 @@ function Application(): ReactElement<HTMLDivElement> {
                     </div>
                 </header>
             </div>
-            <div className={styles.PageContent}>
+            <div className={styles.PageContent} ref={contentRef}>
                 <div className={styles.Shell}>
                     <aside className={styles.Sidebar}>
                         <div className={styles.SidebarLayout}>
@@ -382,16 +477,11 @@ function Application(): ReactElement<HTMLDivElement> {
                     <main className={styles.Content}>
                         {content === ContentType.LEDGER &&
                             <>
-                                {filteredDb.collections.length === 0 &&
-                                    <>
-                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
-                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
-                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
-                                    </>
-                                }
-                                {filteredDb.collections.length !== 0 &&
+                                {filteredDb.collections.map((collection, index) => (
                                     <Ledger
-                                        db={filteredDb}
+                                        key={collection.strapiId}
+                                        ref={ref => attachObserver(ref, index)}
+                                        collection={collection}
                                         store={store}
                                         onClickItem={onClickItem}
                                         onDoubleClickItem={onDoubleClickItem}
@@ -401,6 +491,13 @@ function Application(): ReactElement<HTMLDivElement> {
                                         hideCompleteCollections={store.loadConfig().hideCompleteCollections}
                                         inverseCardLayout={store.loadConfig().inverseCardLayout}
                                     />
+                                ))}
+                                {(filteredDb.collections.length === 0 || loadingPromise.current !== null) &&
+                                    <>
+                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
+                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
+                                        <LedgerSkeleton view={store.loadConfig().view} numItems={6} />
+                                    </>
                                 }
                             </>
                         }

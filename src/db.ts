@@ -98,9 +98,20 @@ type StrapiResult<T> = {
   data: StrapiHit<T>,
 }
 
+type StrapiSearchMeta = {
+  pagination: StrapiPagination,
+}
+
+type StrapiPagination = {
+  page: number,
+  pageSize: number,
+  pageCount: number,
+  total: number,
+}
+
 type StrapiResultSet<T> = {
   data: StrapiHit<T>[],
-  meta?: {},
+  meta: StrapiSearchMeta,
 }
 
 type StrapiHit<T> = {
@@ -112,7 +123,7 @@ type StrapiItem = Item<StrapiResult<StrapiMedia>>;
 type StrapiEmote = Emote<StrapiResult<StrapiMedia>>;
 type StrapiHeadstone = Headstone<StrapiResult<StrapiMedia>>;
 type StrapiPortal = Portal<StrapiResult<StrapiMedia>>;
-type StrapiCollection = Collection<StrapiResultSet<StrapiCollectionItem> | undefined>;
+export type StrapiCollection = Collection<StrapiResultSet<StrapiCollectionItem> | undefined>;
 
 type DadBase = Base<StrapiMedia> & WithStrapiId;
 type DadItem = Item<StrapiMedia> & WithStrapiId;
@@ -215,8 +226,8 @@ function getDefaultItemIdForCollection(dadDb: DadDb): number {
   return dadDb.collections[0]?.collectionItems[0]?.strapiId ?? -1;
 }
 
-async function fetchDb(masterGroup: MasterGroup): Promise<StrapiResultSet<StrapiCollection>> {
-  return (await fetch(getCollectionUri(masterGroup))).json();
+async function fetchDb(masterGroup: MasterGroup, page: number = 0): Promise<StrapiResultSet<StrapiCollection>> {
+  return (await fetch(getCollectionUri(masterGroup, page))).json();
 }
 
 export default fetchDb;
