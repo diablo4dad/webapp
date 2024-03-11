@@ -279,8 +279,8 @@ function Application(): ReactElement<HTMLDivElement> {
             }
         }
 
-        observers.current[index] =
-            new IntersectionObserver(onInteraction, { root: contentRef.current });
+        // attach observer
+        observers.current[index] = new IntersectionObserver(onInteraction);
         observers.current[index].observe(el);
     }, [filteredDb]);
 
