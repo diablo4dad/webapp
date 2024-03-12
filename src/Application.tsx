@@ -355,6 +355,13 @@ function Application(): ReactElement<HTMLDivElement> {
         store.saveConfig(config);
     }
 
+    function onNavigate(content: ContentType, group?: MasterGroup) {
+        setContent(pushHistory(content));
+        if (group) {
+            onChangeCategory(group);
+        }
+    }
+
     function pushHistory(content: ContentType) {
         if ([ContentType.CONFIG, ContentType.MOBILE_MENU].includes(content)) {
             return content;
@@ -563,7 +570,7 @@ function Application(): ReactElement<HTMLDivElement> {
                         {content === ContentType.MOBILE_MENU &&
                             <>
                                 <MobileHeader>Menu</MobileHeader>
-                                <MobileMenu currentUser={user} onNavigate={(place) => setContent(pushHistory(place))} onAuth={signIn} onLogout={signOut} />
+                                <MobileMenu currentUser={user} onNavigate={onNavigate} onAuth={signIn} onLogout={signOut} />
                                 <MobileCloseButton onClick={() => setContent(popHistory())} />
                             </>
                         }
