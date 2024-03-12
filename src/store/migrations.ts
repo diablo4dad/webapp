@@ -1,6 +1,8 @@
 import {ArtifactMeta, FirebaseData, ItemFlag, StoreData} from "./index";
 import migration130 from "./migrate1d3d0.json";
+import migration140 from "./migrate1d4d0.json";
 import {VERSION} from "../config";
+import {MasterGroup} from "../common";
 
 type FirestoreData1d2d0 = {
     entries: ArtifactMeta[],
@@ -115,6 +117,36 @@ export function runStoreMigrations(store: StoreData): StoreData {
         store.version = {
             major: 1,
             minor: 3,
+            revision: 0,
+        };
+    }
+
+    if (isPatchNeeded(store, 1, 4, 0)) {
+        console.log("Running v1.4.0 migration...");
+
+        // append "group" to every collection item
+        store.collectionLog.entries = store.collectionLog.entries
+            .map(cl => {
+                const updatedCl = { ...cl };
+
+                if (migration140.general.includes(cl.id)) {
+                    updatedCl.group = MasterGroup.GENERAL;
+                }
+                else if (migration140.promotional.includes(cl.id)) {
+                    updatedCl.group = MasterGroup.PROMOTIONAL;
+                }
+                else {
+                    console.warn("Collection item not present in migration path. This will be deleted.", cl);
+                }
+
+                return updatedCl;
+            })
+            .filter(cl => cl.group !== undefined);
+
+        // bump schema
+        store.version = {
+            major: 1,
+            minor: 4,
             revision: 0,
         };
     }

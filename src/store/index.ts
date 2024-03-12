@@ -4,6 +4,7 @@ import {isScreenSmall, VERSION} from "../config";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import {firestore} from "../firebase";
 import {runFirestoreMigrations, runStoreMigrations} from "./migrations";
+import {MasterGroup} from "../common";
 
 
 const DEFAULT_VIEW: ViewState = {
@@ -25,6 +26,7 @@ type ArtifactMeta = {
   id: number,
   collected: boolean,
   hidden: boolean,
+  group: MasterGroup,
   // deprecated:
   flags?: ItemFlag[],
 }
@@ -55,10 +57,9 @@ type VersionInfo = {
 
 type Store = {
   init: (uid?: string) => void,
-  getLogEntry: (artifactId: number) => ArtifactMeta,
   isCollected: (artifactId: number) => boolean,
   isHidden: (artifactId: number) => boolean,
-  toggle: (artifactId: number, flag?: ItemFlag, enabled?: boolean) => void,
+  toggle: (artifactId: number, group: MasterGroup, flag?: ItemFlag, enabled?: boolean) => void,
   saveConfig: (config: Configuration) => void,
   loadConfig: () => Configuration,
   saveView: (view: ViewState) => void,
@@ -67,6 +68,7 @@ type Store = {
   isCollectionOpen: (collectionId: number) => boolean,
   setLastSelectedItem: (collectionId: number, itemId: number) => void,
   getLastSelectedItem: () => Selection | undefined,
+  countCollected: (group: MasterGroup) => number,
 }
 
 type StoreData = {
@@ -94,11 +96,12 @@ type CollectionLog = {
   entries: ArtifactMeta[]
 }
 
-function initArtifactMeta(artifactId: number): ArtifactMeta {
+function initArtifactMeta(artifactId: number, group: MasterGroup): ArtifactMeta {
   return {
     id: artifactId,
     collected: false,
     hidden: false,
+    group: group,
   }
 }
 
@@ -244,14 +247,14 @@ function useStore(): Store {
         .filter(l => l.id === artifactId)
         .pop();
 
-    return logEntry ?? initArtifactMeta(artifactId);
+    return logEntry ?? initArtifactMeta(artifactId, MasterGroup.GENERAL);
   }
 
-  function toggle(artifactId: number, flag: ItemFlag = ItemFlag.COLLECTED, enabled?: boolean) {
+  function toggle(artifactId: number, group: MasterGroup, flag: ItemFlag = ItemFlag.COLLECTED, enabled?: boolean) {
     function updateData(data: CollectionLog): CollectionLog {
       const doesExist = data.entries.find(e => e.id === artifactId);
       if (!doesExist) {
-        const logEntry = initArtifactMeta(artifactId);
+        const logEntry = initArtifactMeta(artifactId, group);
 
         switch (flag) {
           case ItemFlag.COLLECTED:
@@ -362,9 +365,12 @@ function useStore(): Store {
     return loadView().lastSelected;
   }
 
+  function countCollected(group: MasterGroup): number {
+    return data.entries.filter(cl => cl.group === group && cl.collected).length;
+  }
+
   return {
     init,
-    getLogEntry,
     toggle,
     isCollected,
     isHidden,
@@ -376,6 +382,7 @@ function useStore(): Store {
     isCollectionOpen,
     setLastSelectedItem,
     getLastSelectedItem,
+    countCollected,
   };
 }
 

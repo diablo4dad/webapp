@@ -344,11 +344,11 @@ function Application(): ReactElement<HTMLDivElement> {
     }
 
     function onDoubleClickItem(_: DadCollection, collectionItem: DadCollectionItem) {
-        store.toggle(collectionItem.strapiId);
+        store.toggle(collectionItem.strapiId, masterGroup);
     }
 
     function onSelectAll(collection: DadCollection, selectAll: boolean) {
-        collection.collectionItems.map(i => i.strapiId).forEach(i => store.toggle(i, ItemFlag.COLLECTED, selectAll));
+        collection.collectionItems.map(i => i.strapiId).forEach(i => store.toggle(i, masterGroup, ItemFlag.COLLECTED, selectAll));
     }
 
     function onConfigChange(config: Configuration) {
@@ -483,7 +483,7 @@ function Application(): ReactElement<HTMLDivElement> {
                             <div className={styles.HeaderAccountWidgets}>
                             {store.loadConfig().enableProgressBar &&
                                 <Progress
-                                    totalCollected={collectionItems.filter(collectionItem => store.isCollected(collectionItem.strapiId)).length}
+                                    totalCollected={store.countCollected(masterGroup)}
                                     collectionSize={dbCount}
                                 />
                             }
@@ -514,8 +514,8 @@ function Application(): ReactElement<HTMLDivElement> {
                                                 collectionItem={selectedCollectionItem}
                                                 hidden={store.isHidden(selectedCollectionItemId)}
                                                 collected={store.isCollected(selectedCollectionItemId)}
-                                                onClickCollected={(collected) => store.toggle(selectedCollectionItemId, ItemFlag.COLLECTED, collected)}
-                                                onClickHidden={(hidden) => store.toggle(selectedCollectionItemId, ItemFlag.HIDDEN, hidden)}
+                                                onClickCollected={(collected) => store.toggle(selectedCollectionItemId, masterGroup, ItemFlag.COLLECTED, collected)}
+                                                onClickHidden={(hidden) => store.toggle(selectedCollectionItemId, masterGroup, ItemFlag.HIDDEN, hidden)}
                                             />
                                             <footer className={styles.SidebarFooter}>
                                                 <DiscordInvite/>
@@ -583,8 +583,8 @@ function Application(): ReactElement<HTMLDivElement> {
             {store.loadConfig().enableProgressBar && content === ContentType.LEDGER &&
                 <div className={styles.ProgressMobile}>
                     <Progress
-                        totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
-                        collectionSize={collectionItems.length}
+                        totalCollected={store.countCollected(masterGroup)}
+                        collectionSize={dbCount}
                     />
                 </div>
             }
