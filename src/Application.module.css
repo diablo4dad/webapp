@@ -62,7 +62,7 @@
 .HeaderNav {
   display: flex;
   flex-direction: row;
-  padding: 0 2rem;
+  padding: 0 1rem;
 }
 
 .HeaderNavItem {

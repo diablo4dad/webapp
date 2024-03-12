@@ -12,6 +12,14 @@ function isScreenSmall(window: Window): boolean {
     return window.innerWidth <= 1200;
 }
 
+function countTotalInCollectionUri(masterGroup: MasterGroup) {
+    const url = new URL('/api/collection-items', SERVER_ADDR);
+    url.searchParams.append('filters[collection][category][$eq]', masterGroup);
+    url.searchParams.append('filters[collection][publishedAt][$notNull]', String(true));
+    url.searchParams.append('pagination[page]', String(1));
+    return url.href;
+}
+
 function getCollectionUri(masterGroup: MasterGroup, page: number = 0, pageSize: number = 10): string {
     const url = new URL('/api/collections', SERVER_ADDR);
     url.searchParams.append('populate[collectionItems][populate][items][populate][0]', 'icon');
@@ -45,6 +53,7 @@ export {
     getImageUri,
     isScreenSmall,
     getDefaultItemFromCollectionItems,
+    countTotalInCollectionUri,
 }
 
 export enum ContentType {
