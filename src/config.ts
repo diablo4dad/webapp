@@ -3,8 +3,8 @@ import {MasterGroup} from "./common";
 
 const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
 const D4_BUILD = '1.2.3.47954'
-const SITE_VERSION = '1.3.0'
-const VERSION = {major: 1, minor: 3, revision: 0}
+const SITE_VERSION = '1.4.0'
+const VERSION = {major: 1, minor: 4, revision: 0}
 const LAST_UPDATED = 'February 29th, 2024'
 const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
 
