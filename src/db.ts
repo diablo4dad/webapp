@@ -39,11 +39,7 @@ type CollectionItem<ItemsType> = {
   items: ItemsType,
 }
 
-type StrapiCollectionItem = CollectionItem<StrapiResultSet<StrapiItem>> & {
-  emote?: StrapiResult<StrapiEmote> | null,
-  headstone?: StrapiResult<StrapiHeadstone> | null,
-  portal?: StrapiResult<StrapiPortal> | null,
-}
+export type StrapiCollectionItem = CollectionItem<StrapiResultSet<StrapiItem>>;
 
 type Collection<CollectionItemsType> = {
   name: string,
@@ -52,6 +48,7 @@ type Collection<CollectionItemsType> = {
   createdAt: string,
   publishedAt: string,
   updatedAt: string,
+  category: string,
   collectionItems: CollectionItemsType,
 }
 
@@ -210,6 +207,7 @@ const DEFAULT_COLLECTION: DadCollection = {
   name: "missing",
   order: 0,
   description: "missing",
+  category: "missing",
   createdAt: '2023-12-01T10:00:00.000Z',
   publishedAt: '2023-12-01T10:00:00.000Z',
   updatedAt: '2023-12-01T10:00:00.000Z',

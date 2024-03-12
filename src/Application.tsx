@@ -7,6 +7,7 @@ import fetchDb, {
     DEFAULT_COLLECTION_ITEM,
     getDefaultItemIdForCollection,
     StrapiCollection,
+    StrapiCollectionItem,
     StrapiResultSet,
     strapiToDad,
 } from "./db"
@@ -17,7 +18,7 @@ import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration} from "./ConfigSidebar";
-import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
+import {ContentType, countTotalInCollectionUri, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
 import Progress from "./Progress";
 import {Discord, Gear, Hamburger} from "./Icons";
 import Button from "./Button";
@@ -175,10 +176,17 @@ function DiscordInvite(): ReactElement<HTMLDivElement> {
     );
 }
 
+type ViewModel = {
+    db: DadDb,
+    page: number,
+    dbCount: number,
+}
+
 function Application(): ReactElement<HTMLDivElement> {
     const store = useStore();
     const [user, setUser] = useState<User | null>(null);
     const [db, setDb] = useState(createEmptyDb());
+    const [dbCount, setDbCount] = useState(0);
     const [sideBar, setSideBar] = useState(SideBarType.ITEM);
     const [content, setContent] = useState(ContentType.LEDGER);
     const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
@@ -189,6 +197,9 @@ function Application(): ReactElement<HTMLDivElement> {
     const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(lastSelected?.itemId ?? getDefaultItemIdForCollection(filteredDb));
     const selectedCollectionItem = selectItemOrDefault(collectionItems, selectedCollectionItemId);
 
+    // maintains a group aggregated cache
+    const groups = useRef(new Map<MasterGroup, ViewModel>());
+
     // references for "load on scroll" paging
     const contentRef = useRef<HTMLDivElement>(document.createElement('div'));
     const observers = useRef<IntersectionObserver[]>([]);
@@ -196,6 +207,44 @@ function Application(): ReactElement<HTMLDivElement> {
     // paging
     const pageRef = useRef(0);
     const loadingPromise = useRef<Promise<StrapiResultSet<StrapiCollection>> | null>(null);
+
+    const onChangeCategory = (group: MasterGroup) => {
+        observers.current.forEach(o => o.disconnect());
+        observers.current = [];
+
+        groups.current.set(masterGroup, {
+            page: pageRef.current,
+            db: db,
+            dbCount: dbCount,
+        });
+
+        const vm = groups.current.get(group) ?? {
+            db: createEmptyDb(),
+            page: 0,
+            dbCount: 0,
+        };
+
+        pageRef.current = vm.page;
+        setMasterGroup(group);
+        setDb(vm.db);
+        setDbCount(vm.dbCount);
+    }
+
+    const fetchCollectionCount = useCallback(async (): Promise<number> => {
+        // pre-condition; only count once
+        if (dbCount !== 0) {
+            return dbCount;
+        }
+
+        // fetch count from remote
+        const resp = await fetch(countTotalInCollectionUri(masterGroup));
+        const json = await resp.json() as StrapiResultSet<StrapiCollectionItem>;
+        const remoteCount = json.meta.pagination.total;
+
+        setDbCount(remoteCount);
+
+        return remoteCount;
+    }, [masterGroup]);
 
     const fetchDbCallback = useCallback(async (collection: MasterGroup, page: number)  => {
         // pre-condition
@@ -370,11 +419,21 @@ function Application(): ReactElement<HTMLDivElement> {
 
     // initial page load
     useEffect(() => {
-        console.log("[Bootstrap] Initialing DB...");
-        fetchDbCallback(masterGroup, pageRef.current).then(() => {
-            console.log("[Bootstrap] Complete.");
+        // pre-condition; only auto-fetch the initial page
+        if (pageRef.current !== 0) {
+            return;
+        }
+
+        console.log("[Bootstrap] Initialing...", masterGroup);
+
+        fetchCollectionCount().then((count) => {
+            console.log("[Bootstrap] Fetched count.", count);
         });
-    }, []);
+
+        fetchDbCallback(masterGroup, pageRef.current).then(() => {
+            console.log("[Bootstrap] Fetched DB.");
+        });
+    }, [masterGroup]);
 
     return (
         <div className={styles.Page}>
@@ -415,7 +474,7 @@ function Application(): ReactElement<HTMLDivElement> {
                                     return <>
                                         <div key={key} className={styles.HeaderNavItem + ' ' + (masterGroup === value ? styles.HeaderNavItemSelected : '')}>
                                             <Link disabled={masterGroup === value}
-                                                  onClick={() => setMasterGroup(value)}>{locale[value]}
+                                                  onClick={() => onChangeCategory(value)}>{locale[value]}
                                             </Link>
                                         </div>
                                     </>
@@ -425,7 +484,7 @@ function Application(): ReactElement<HTMLDivElement> {
                             {store.loadConfig().enableProgressBar &&
                                 <Progress
                                     totalCollected={collectionItems.filter(collectionItem => store.isCollected(collectionItem.strapiId)).length}
-                                    collectionSize={collectionItems.length}
+                                    collectionSize={dbCount}
                                 />
                             }
                             {!store.loadConfig().enableProgressBar &&
