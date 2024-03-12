@@ -478,13 +478,11 @@ function Application(): ReactElement<HTMLDivElement> {
                             <nav className={styles.HeaderNav}>
                                 {enumKeys(MasterGroup).map((key) => {
                                     const value = MasterGroup[key];
-                                    return <>
-                                        <div key={key} className={styles.HeaderNavItem + ' ' + (masterGroup === value ? styles.HeaderNavItemSelected : '')}>
-                                            <Link disabled={masterGroup === value}
-                                                  onClick={() => onChangeCategory(value)}>{locale[value]}
-                                            </Link>
-                                        </div>
-                                    </>
+                                    return <div key={key} className={styles.HeaderNavItem + ' ' + (masterGroup === value ? styles.HeaderNavItemSelected : '')}>
+                                        <Link disabled={masterGroup === value}
+                                              onClick={() => onChangeCategory(value)}>{locale[value]}
+                                        </Link>
+                                    </div>
                                 })}
                             </nav>
                             <div className={styles.HeaderAccountWidgets}>
