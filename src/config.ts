@@ -1,5 +1,6 @@
 import {DadBase, DadCollectionItem, DEFAULT_ITEM} from "./db";
 import {MasterGroup} from "./common";
+import missing from "./image/imgfill.png"
 
 const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
 const D4_BUILD = '1.2.3.47954'
@@ -32,7 +33,7 @@ function getCollectionUri(masterGroup: MasterGroup, page: number = 0, pageSize: 
 
 function getImageUri(item: DadBase): string {
     if (process.env.NODE_ENV === 'production') {
-        return item.icon?.url ?? 'missing.webp';
+        return item.icon?.url ?? missing;
     } else {
         return '/icons/' + item.iconId + '.webp';
     }
