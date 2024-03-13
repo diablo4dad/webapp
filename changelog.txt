@@ -5,6 +5,27 @@ collections.
 
 ## [Unreleased]
 
+## [1.4.0]
+
+### Added
+
+- The majority of shop collections.
+- Navigation menu to switch between General/Cash Shop/Promotion groups.
+- Dynamic "load-on-scroll" paging to support the enormous cash shop group.
+- Gauntlet collection.
+- Season 1,2,3 hidden titles and accelerated battle pass emotes.
+- Rewards for Season 3 season journey.
+- Stele of Velkhova headstone to Season of Malignant.
+- Lunar Awakening and Midwinter Blight hidden titles.
+
+### Updated
+
+- Moved promotional collections to the "Promotion" group.
+
+### Fixed
+
+- Drop locations of the Dry Steep steeds.
+
 ## [1.3.0]
 
 ### Added

@@ -6,7 +6,7 @@ const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.
 const D4_BUILD = '1.2.3.47954'
 const SITE_VERSION = '1.4.0'
 const VERSION = {major: 1, minor: 4, revision: 0}
-const LAST_UPDATED = 'February 29th, 2024'
+const LAST_UPDATED = 'March 13th, 2024'
 const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
 
 function isScreenSmall(window: Window): boolean {
@@ -21,7 +21,7 @@ function countTotalInCollectionUri(masterGroup: MasterGroup) {
     return url.href;
 }
 
-function getCollectionUri(masterGroup: MasterGroup, page: number = 0, pageSize: number = 10): string {
+function getCollectionUri(masterGroup: MasterGroup, page: number = 0, pageSize: number = 15): string {
     const url = new URL('/api/collections', SERVER_ADDR);
     url.searchParams.append('populate[collectionItems][populate][items][populate][0]', 'icon');
     url.searchParams.append('sort[0]', 'order');
