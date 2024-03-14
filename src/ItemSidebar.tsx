@@ -1,4 +1,4 @@
-import {composeDescription, DadCollectionItem} from "./db"
+import {composeDescription, DadCollectionItem, getAggregatedItemName, getAggregatedItemType} from "./db"
 import styles from "./ItemSidebar.module.css"
 import necromancer from "./image/necromancer.webp"
 import druid from "./image/druid.webp"
@@ -30,8 +30,8 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
     return (
         <div className={styles.Panel}>
             <img src={getImageUri(item)} className={styles.ItemImage} alt={item.name}/>
-            <div className={styles.ItemTitle}>{item.name}</div>
-            <div className={styles.ItemType}>{item.itemType}</div>
+            <div className={styles.ItemTitle}>{getAggregatedItemName(collectionItem)}</div>
+            <div className={styles.ItemType}>{getAggregatedItemType(collectionItem)}</div>
             <div className={styles.ItemClasses}>
                 {usableBy("Barbarian", collectionItem) &&
                     <img className={styles.ItemClassIcon} src={barbarian} alt="Barbarian"/>}
@@ -64,7 +64,7 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
             </div>
             <div className={styles.ItemMeta}>
                 <div>
-                    Item ID: {item.itemId}
+                    Item ID: {collectionItem.items.map(i => i.itemId).join(' | ')}
                     {process.env.NODE_ENV === "development" && <span> | <a href={generateEditUrl(collectionItem)} target="_blank">Edit</a></span>}
                 </div>
                 {process.env.NODE_ENV === "development" && <div>Image ID: {item.iconId}</div>}
