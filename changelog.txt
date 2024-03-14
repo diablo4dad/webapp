@@ -5,7 +5,13 @@ collections.
 
 ## [Unreleased]
 
-## [1.4.0]
+## [1.4.1] - 2024-03-14
+
+### Updated
+
+- Aggregated player titles where awarded in pairs.
+
+## [1.4.0] - 2024-03-13
 
 ### Added
 
@@ -26,7 +32,7 @@ collections.
 
 - Drop locations of the Dry Steep steeds.
 
-## [1.3.0]
+## [1.3.0] - 2024-02-29
 
 ### Added
 
@@ -60,7 +66,7 @@ collections.
 
 - Collections and settings not saving without logging in.
 
-## [1.2.1] - 2023-02-09
+## [1.2.1] - 2024-02-09
 
 ### Added
 
@@ -75,7 +81,7 @@ collections.
 - Settings/configuration was not saving
 - Restored KFC and Beta Wolf Pack icon fixes
 
-## [1.2.0] - 2023-02-08
+## [1.2.0] - 2024-02-08
 
 ### Added
 
@@ -97,7 +103,7 @@ collections.
 
 - Settings clipping on small screens (mobile).
 
-## [1.1.4] - 2023-01-25
+## [1.1.4] - 2024-01-25
 
 ### Added
 
@@ -107,7 +113,7 @@ collections.
 
 - Renamed filter and display settings to make their purpose clearer.
 
-## [1.1.3] - 2023-01-24
+## [1.1.3] - 2024-01-24
 
 ### Added
 
@@ -119,7 +125,7 @@ collections.
 
 - Marked Season of Blood collection as out of rotation.
 
-## [1.1.2] - 2023-01-23
+## [1.1.2] - 2024-01-23
 
 ### Added
 
@@ -137,7 +143,7 @@ collections.
 - Overall percentage text squashed on small screens.
 - Sidebar to overflow correctly.
 
-## [1.1.1] - 2023-01-22
+## [1.1.1] - 2024-01-22
 
 ### Added
 
@@ -152,7 +158,7 @@ collections.
 
 - Expired discord invite, replaced with permalink.
 
-## [1.1.0] - 2023-01-21
+## [1.1.0] - 2024-01-21
 
 ### Added
 
@@ -168,7 +174,7 @@ collections.
 - Updated the descriptions of the "Assassin's Satchel" and "Crest of Rathma"
   trophies to indicate which respective zones they drop from.
 
-## [1.0.0] - 2023-01-18
+## [1.0.0] - 2024-01-18
 
 ### Added
 

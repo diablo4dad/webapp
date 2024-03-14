@@ -1,6 +1,7 @@
 import {ArtifactMeta, FirebaseData, ItemFlag, StoreData} from "./index";
 import migration130 from "./migrate1d3d0.json";
 import migration140 from "./migrate1d4d0.json";
+import migration141 from "./migrate1d4d1.json";
 import {VERSION} from "../config";
 import {MasterGroup} from "../common";
 
@@ -148,6 +149,21 @@ export function runStoreMigrations(store: StoreData): StoreData {
             major: 1,
             minor: 4,
             revision: 0,
+        };
+    }
+
+    if (isPatchNeeded(store, 1, 4, 1)) {
+        console.log("Running v1.4.1 migration...");
+
+        // delete merged player titles
+        store.collectionLog.entries =
+            store.collectionLog.entries.filter(cl => !migration141.titles.includes(cl.id));
+
+        // bump schema
+        store.version = {
+            major: 1,
+            minor: 4,
+            revision: 1,
         };
     }
 

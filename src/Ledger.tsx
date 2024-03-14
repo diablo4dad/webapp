@@ -1,4 +1,4 @@
-import {composeDescription, DadCollection, DadCollectionItem} from "./db";
+import {composeDescription, DadCollection, DadCollectionItem, getAggregatedItemName, getAggregatedItemType} from "./db";
 import styles from "./Ledger.module.css";
 import {Store} from "./store";
 import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
@@ -131,9 +131,9 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function Ledger({collection
                                          loading="lazy"
                                          alt={item.name}/>
                                     <div className={styles.ArtifactInfo}>
-                                        <div className={styles.ArtifactName}>{item.name}</div>
+                                        <div className={styles.ArtifactName}>{getAggregatedItemName(collectionItem)}</div>
                                         <div className={styles.ArtifactItemType}>
-                                            <span>{item.itemType} | {collectionItem.claim}</span>
+                                            <span>{getAggregatedItemType(collectionItem)} | {collectionItem.claim}</span>
                                             <span className={styles.ArtifactIconPremiumTitle}
                                                   hidden={!collectionItem.premium}>
                                                 <Currency />

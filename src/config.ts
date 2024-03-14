@@ -3,10 +3,9 @@ import {MasterGroup} from "./common";
 import missing from "./image/imgfill.png"
 
 const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
-const D4_BUILD = '1.2.3.47954'
-const SITE_VERSION = '1.4.0'
-const VERSION = {major: 1, minor: 4, revision: 0}
-const LAST_UPDATED = 'March 13th, 2024'
+const SITE_VERSION = '1.4.1'
+const VERSION = {major: 1, minor: 4, revision: 1}
+const LAST_UPDATED = 'March 14th, 2024'
 const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
 
 function isScreenSmall(window: Window): boolean {
@@ -32,11 +31,11 @@ function getCollectionUri(masterGroup: MasterGroup, page: number = 0, pageSize: 
 }
 
 function getImageUri(item: DadBase): string {
-    if (process.env.NODE_ENV === 'production') {
+    // if (process.env.NODE_ENV === 'production') {
         return item.icon?.url ?? missing;
-    } else {
-        return '/icons/' + item.iconId + '.webp';
-    }
+    // } else {
+    //     return '/icons/' + item.iconId + '.webp';
+    // }
 }
 
 function getDefaultItemFromCollectionItems(collectionItems: DadCollectionItem): DadBase {
@@ -44,7 +43,6 @@ function getDefaultItemFromCollectionItems(collectionItems: DadCollectionItem): 
 }
 
 export {
-    D4_BUILD,
     VERSION,
     SITE_VERSION,
     SERVER_ADDR,

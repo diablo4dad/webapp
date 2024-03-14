@@ -283,3 +283,41 @@ export function composeDescription(item: DadCollectionItem): string {
       return "Description unavailable.";
   }
 }
+
+export function getAggregatedItemType(ci: DadCollectionItem): string {
+  if (ci.items.length === 0) {
+    return "empty";
+  }
+
+  if (ci.items.length === 1) {
+    return ci.items[0].itemType;
+  }
+
+  const itemPeek = ci.items[0];
+  switch (itemPeek.itemType) {
+    case "Player Title (Prefix)":
+    case "Player Title (Suffix)":
+      return "Player Title";
+    default:
+      return itemPeek.itemType;
+  }
+}
+
+export function getAggregatedItemName(ci: DadCollectionItem): string {
+  if (ci.items.length === 0) {
+    return "empty";
+  }
+
+  if (ci.items.length === 1) {
+    return ci.items[0].name;
+  }
+
+  const itemPeek = ci.items[0];
+  switch (itemPeek.itemType) {
+    case "Player Title (Prefix)":
+    case "Player Title (Suffix)":
+      return ci.items.map(i => i.name).join(' ');
+    default:
+      return itemPeek.name;
+  }
+}
