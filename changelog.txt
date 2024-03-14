@@ -7,9 +7,14 @@ collections.
 
 ## [1.4.1] - 2024-03-14
 
+### Added
+
+- Added the "Hell Station" promotional collection.
+
 ### Updated
 
 - Aggregated player titles where awarded in pairs.
+- Moved "Conqueror's Crest" to the "Challenge" collection.
 
 ## [1.4.0] - 2024-03-13
 
