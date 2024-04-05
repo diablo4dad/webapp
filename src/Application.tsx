@@ -499,8 +499,8 @@ function Application(): ReactElement<HTMLDivElement> {
                             <div className={styles.HeaderAccountWidgets}>
                             {store.loadConfig().enableProgressBar &&
                                 <Progress
-                                    totalCollected={store.countCollected(masterGroup)}
-                                    collectionSize={dbCount}
+                                    totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
+                                    collectionSize={filteredDb.collections.reduce((a, c) => c.collectionItems.length + a, 0)}
                                 />
                             }
                             {!store.loadConfig().enableProgressBar &&
@@ -600,7 +600,7 @@ function Application(): ReactElement<HTMLDivElement> {
                 <div className={styles.ProgressMobile}>
                     <Progress
                         totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
-                        collectionSize={dbCount}
+                        collectionSize={filteredDb.collections.reduce((a, c) => c.collectionItems.length + a, 0)}
                     />
                 </div>
             }
