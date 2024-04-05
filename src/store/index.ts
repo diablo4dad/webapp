@@ -1,10 +1,11 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 import {Configuration, DEFAULT_CONFIG} from "../ConfigSidebar";
-import {isScreenSmall, VERSION} from "../config";
+import {VERSION} from "../config";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import {firestore} from "../firebase";
 import {runFirestoreMigrations, runStoreMigrations} from "./migrations";
 import {MasterGroup} from "../common";
+import {isScreenSmall} from "../environment";
 
 
 const DEFAULT_VIEW: ViewState = {

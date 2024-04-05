@@ -1,10 +1,11 @@
 import {composeDescription, DadCollection, DadCollectionItem, getAggregatedItemName, getAggregatedItemType} from "./db";
 import styles from "./Ledger.module.css";
 import {Store} from "./store";
-import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
+import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
 import React, {DetailsHTMLAttributes, forwardRef} from "react";
 import {Currency, TickCircle} from "./Icons";
 import Link from "./Link";
+import {getImageUri} from "./asset";
 
 function countItemsInCollection(collection: DadCollection): number {
     return collection.collectionItems.length;

@@ -6,7 +6,8 @@ import rogue from "./image/rogue.webp"
 import barbarian from "./image/barbarian.webp"
 import sorceress from "./image/sorceress.webp"
 import Toggle from "./Toggle";
-import {getDefaultItemFromCollectionItems, getImageUri, SERVER_ADDR} from "./config";
+import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
+import {getImageUri} from "./asset";
 
 function generateEditUrl(item: DadCollectionItem): string {
     return SERVER_ADDR + "/admin/content-manager/collectionType/api::collection-item.collection-item/" + item.strapiId;

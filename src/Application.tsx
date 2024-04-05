@@ -18,7 +18,7 @@ import Ledger from "./Ledger";
 import useStore, {ItemFlag, Store} from "./store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration} from "./ConfigSidebar";
-import {ContentType, countTotalInCollectionUri, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
+import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
 import Progress from "./Progress";
 import {Discord, Gear, Hamburger} from "./Icons";
 import Button from "./Button";
@@ -34,6 +34,7 @@ import {auth} from "./firebase";
 import {locale, MasterGroup} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import Link from "./Link";
+import {countTotalInCollectionUri} from "./server";
 
 
 enum SideBarType {
@@ -265,6 +266,16 @@ function Application(): ReactElement<HTMLDivElement> {
         try {
             // merge page into base
             const resp = await loadingPromise.current;
+
+            // user changed category before finished loading... drop
+            // if (collection !== masterGroup) {
+            //     console.log("Category changed, payload dropped.", {
+            //         'expected': collection,
+            //         'found': masterGroup,
+            //     });
+            //     return;
+            // }
+
             const nextPage = strapiToDad(resp);
             setDb(existing => ({
                 collections: [...existing.collections, ...nextPage.collections]
@@ -588,7 +599,7 @@ function Application(): ReactElement<HTMLDivElement> {
             {store.loadConfig().enableProgressBar && content === ContentType.LEDGER &&
                 <div className={styles.ProgressMobile}>
                     <Progress
-                        totalCollected={store.countCollected(masterGroup)}
+                        totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
                         collectionSize={dbCount}
                     />
                 </div>

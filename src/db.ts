@@ -1,5 +1,5 @@
-import {getCollectionUri} from "./config";
 import {MasterGroup} from "./common";
+import {getCollectionUri} from "./server";
 
 type Base<IconType> = {
   itemId: string,
@@ -11,13 +11,13 @@ type Base<IconType> = {
   itemType: string,
 }
 
-type StrapiResp = {
-  createdAt: string,
-  publishedAt: string,
-  updatedAt: string,
+export type StrapiResp = {
+  createdAt?: string,
+  publishedAt?: string,
+  updatedAt?: string,
 }
 
-type Item<IconType> = Base<IconType> & {
+type Item<IconType> = Base<IconType> & StrapiResp & {
   itemType: string,
   magicType: string,
   transMog: boolean,
@@ -27,7 +27,7 @@ type Headstone<IconType> = Base<IconType>;
 type Emote<IconType> = Base<IconType>;
 type Portal<IconType> = Base<IconType>;
 
-type CollectionItem<ItemsType> = {
+type CollectionItem<ItemsType> = StrapiResp & {
   outOfRotation?: boolean,
   premium?: boolean,
   promotional?: boolean,
@@ -41,7 +41,7 @@ type CollectionItem<ItemsType> = {
 
 export type StrapiCollectionItem = CollectionItem<StrapiResultSet<StrapiItem>>;
 
-type Collection<CollectionItemsType> = {
+type Collection<CollectionItemsType> = StrapiResp & {
   name: string,
   order: number,
   description: string,
@@ -122,11 +122,11 @@ type StrapiHeadstone = Headstone<StrapiResult<StrapiMedia>>;
 type StrapiPortal = Portal<StrapiResult<StrapiMedia>>;
 export type StrapiCollection = Collection<StrapiResultSet<StrapiCollectionItem> | undefined>;
 
-type DadBase = Base<StrapiMedia> & WithStrapiId;
-type DadItem = Item<StrapiMedia> & WithStrapiId;
-type DadEmote = Emote<StrapiMedia> & WithStrapiId;
-type DadHeadstone = Headstone<StrapiMedia> & WithStrapiId;
-type DadPortal = Portal<StrapiMedia> & WithStrapiId;
+type DadBase = Base<string> & WithStrapiId;
+type DadItem = Item<string> & WithStrapiId;
+type DadEmote = Emote<string> & WithStrapiId;
+type DadHeadstone = Headstone<string> & WithStrapiId;
+type DadPortal = Portal<string> & WithStrapiId;
 type DadCollectionItem = CollectionItem<Array<DadItem | DadEmote | DadHeadstone | DadPortal>> & WithStrapiId;
 type DadCollection = Collection<DadCollectionItem[]> & WithStrapiId;
 type DadDb = { collections: DadCollection[] }
@@ -143,7 +143,7 @@ function strapiItemToDadItem(hit: StrapiHit<StrapiItem>): DadItem {
   return {
     ...hit.attributes,
     strapiId: hit.id,
-    icon: hit.attributes.icon?.data?.attributes,
+    icon: hit.attributes.icon?.data?.attributes.url,
   };
 }
 
@@ -225,7 +225,7 @@ function getDefaultItemIdForCollection(dadDb: DadDb): number {
 }
 
 async function fetchDb(masterGroup: MasterGroup, page: number = 0): Promise<StrapiResultSet<StrapiCollection>> {
-  return (await fetch(getCollectionUri(masterGroup, page))).json();
+  return (await fetch(getCollectionUri(masterGroup, page))).json() as Promise<StrapiResultSet<StrapiCollection>>;
 }
 
 export default fetchDb;
