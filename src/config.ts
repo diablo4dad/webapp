@@ -1,6 +1,7 @@
 import {DadBase, DadCollectionItem, DEFAULT_ITEM} from "./db";
 
-const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
+// const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
+const SERVER_ADDR = 'https://db.diablo4.dad';
 const SITE_VERSION = '1.4.2'
 const VERSION = {major: 1, minor: 4, revision: 2}
 const LAST_UPDATED = 'April 5th, 2024'

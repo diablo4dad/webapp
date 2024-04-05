@@ -5,6 +5,15 @@ collections.
 
 ## [Unreleased]
 
+## [1.4.2] - 2024-04-05
+
+### Fixed
+
+- Collection progress count.
+- Total collection count reflective of filters.
+- Items not loading on scroll when filters are selected.
+- Items getting mixed up when switching categories quickly.
+
 ## [1.4.1] - 2024-03-14
 
 ### Added
