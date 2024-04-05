@@ -444,9 +444,10 @@ function Application(): ReactElement<HTMLDivElement> {
 
         console.log("[Bootstrap] Initialing...", masterGroup);
 
-        fetchCollectionCount().then((count) => {
-            console.log("[Bootstrap] Fetched count.", count);
-        });
+        // not used in static mode... needs rework to fix live mode
+        // fetchCollectionCount().then((count) => {
+        //     console.log("[Bootstrap] Fetched count.", count);
+        // });
 
         fetchDbCallback(masterGroup, pageRef.current).then(() => {
             console.log("[Bootstrap] Fetched DB.");
