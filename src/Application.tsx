@@ -1,11 +1,13 @@
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
 import fetchDb, {
+    countItemsInDb,
     createEmptyDb,
     DadCollection,
     DadCollectionItem,
     DadDb,
     DEFAULT_COLLECTION_ITEM,
     getDefaultItemIdForCollection,
+    reduceItemIdsFromCollection,
     StrapiCollection,
     StrapiCollectionItem,
     StrapiResultSet,
@@ -35,6 +37,7 @@ import {locale, MasterGroup} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import Link from "./Link";
 import {countTotalInCollectionUri} from "./server";
+import {toggleItem} from "./store/mutations";
 
 
 enum SideBarType {
@@ -359,7 +362,7 @@ function Application(): ReactElement<HTMLDivElement> {
     }
 
     function onSelectAll(collection: DadCollection, selectAll: boolean) {
-        collection.collectionItems.map(i => i.strapiId).forEach(i => store.toggle(i, masterGroup, ItemFlag.COLLECTED, selectAll));
+        return reduceItemIdsFromCollection(collection).map(toggleItem(store, masterGroup, selectAll));
     }
 
     function onConfigChange(config: Configuration) {
@@ -501,7 +504,7 @@ function Application(): ReactElement<HTMLDivElement> {
                             {store.loadConfig().enableProgressBar &&
                                 <Progress
                                     totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
-                                    collectionSize={filteredDb.collections.reduce((a, c) => c.collectionItems.length + a, 0)}
+                                    collectionSize={countItemsInDb(filteredDb)}
                                 />
                             }
                             {!store.loadConfig().enableProgressBar &&
@@ -601,7 +604,7 @@ function Application(): ReactElement<HTMLDivElement> {
                 <div className={styles.ProgressMobile}>
                     <Progress
                         totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
-                        collectionSize={filteredDb.collections.reduce((a, c) => c.collectionItems.length + a, 0)}
+                        collectionSize={countItemsInDb(filteredDb)}
                     />
                 </div>
             }
