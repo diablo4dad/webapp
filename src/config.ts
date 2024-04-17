@@ -6,7 +6,7 @@ const SITE_VERSION = '1.4.2'
 const VERSION = {major: 1, minor: 4, revision: 2}
 const LAST_UPDATED = 'April 5th, 2024'
 const DISCORD_INVITE_LINK = 'https://discord.gg/mPRBrU2kYT'
-const MODE = 'static'
+const MODE = 'live'
 
 function getDefaultItemFromCollectionItems(collectionItems: DadCollectionItem): DadBase {
     return collectionItems.items[0] ?? DEFAULT_ITEM;
