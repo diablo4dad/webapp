@@ -8,11 +8,13 @@ import Link from "./Link";
 import {getImageUri} from "./asset";
 
 function countItemsInCollection(collection: DadCollection): number {
-    return collection.collectionItems.length;
+    return collection.collectionItems.length
+        + collection.subcollections.reduce((a, c) => c.collectionItems.length + a, 0);
 }
 
 function countItemsInCollectionOwned(store: Store, collection: DadCollection): number {
-    return collection.collectionItems.map(dci => dci.strapiId).filter(store.isCollected).length;
+    return collection.collectionItems.map(dci => dci.strapiId).filter(store.isCollected).length
+        + collection.subcollections.reduce((a, c) => c.collectionItems.map(dci => dci.strapiId).filter(store.isCollected).length + a, 0);
 }
 
 function composeCollectionTag(store: Store, collection: DadCollection): string {
@@ -66,6 +68,7 @@ function onTouchStart(handler: () => void) {
 
 type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
     collection: DadCollection,
+    parentCollection?: DadCollection,
     store: Store,
     onClickItem: (collection: DadCollection, item: DadCollectionItem) => void,
     onDoubleClickItem: (collection: DadCollection, item: DadCollectionItem) => void,
@@ -76,7 +79,7 @@ type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
     view: 'list' | 'card',
 }
 
-const Ledger = forwardRef<HTMLDetailsElement, Props>(function Ledger({collection, store, onClickItem, onDoubleClickItem, onSelectAllToggle, view, hideCollectedItems, hideCompleteCollections, inverseCardLayout, ...props}: Props, ref) {
+const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({collection, parentCollection, store, onClickItem, onDoubleClickItem, onSelectAllToggle, view, hideCollectedItems, hideCompleteCollections, inverseCardLayout, ...props}: Props, ref) {
     function getClassNamesForItem(collectionItem: DadCollectionItem) {
         return [
             styles.Artifact,
@@ -96,7 +99,7 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function Ledger({collection
             ref={ref}
             className={getLedgerClasses(isComplete(store, collection), hideCompleteCollections, inverseCardLayout, view)}
             key={collection.strapiId}
-            hidden={collection.collectionItems.length === 0}
+            hidden={collection.collectionItems.length === 0 && collection.subcollections.length === 0}
             open={store.isCollectionOpen(collection.strapiId)}
             onToggle={e => store.toggleCollectionOpen(collection.strapiId, e.currentTarget.open)}
         >
@@ -114,11 +117,13 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function Ledger({collection
                         <Link className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, false)}>None</Link>
                     </span>
                 </h1>
-                <div className={styles.LedgerDescription}>{collection.description}</div>
+                <div className={styles.LedgerDescription}>
+                    {parentCollection ? parentCollection.name : collection.description}
+                </div>
             </summary>
             {
                 hideCollectedItems && isEveryItemCollected(collection) ? <div className={styles.LedgerNoMoreItems}>Complete!</div> :
-                    <div className={styles.LedgerRow}>
+                    <div className={collection.subcollections.length  ? styles.LedgerSubCollection : styles.LedgerRow}>
                         {collection.collectionItems.map(collectionItem => {
                             const item = getDefaultItemFromCollectionItems(collectionItem);
 
@@ -151,6 +156,21 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function Ledger({collection
                                         </span>
                                     </div>
                                 </div>
+                        })}
+                        {collection.subcollections.map(subcollection => {
+                            return <Ledger
+                                key={subcollection.strapiId}
+                                collection={subcollection}
+                                parentCollection={collection}
+                                store={store}
+                                onClickItem={onClickItem}
+                                onDoubleClickItem={onDoubleClickItem}
+                                onSelectAllToggle={onSelectAllToggle}
+                                hideCollectedItems={hideCollectedItems}
+                                hideCompleteCollections={hideCompleteCollections}
+                                inverseCardLayout={inverseCardLayout}
+                                view={view}
+                            ></Ledger>
                         })}
                     </div>
             }

@@ -128,6 +128,18 @@
     display: none;
 }
 
+.LedgerSubCollection .LedgerGroupHeading {
+    background-color: hsl(218 14% 20% / 1);
+    /*height: 4rem;*/
+    /*top: 11rem;*/
+    /*z-index: 3;*/
+}
+
+.LedgerSubCollection .LedgerHeading {
+    /*color: #ccc;*/
+    font-size: 1.125rem;
+}
+
 @media screen and (min-width: 1200px) {
     .LedgerGroupHeading {
         top: 0;
