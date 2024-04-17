@@ -71,7 +71,7 @@ const itemGroups = new Map([
 ]);
 
 function reduceItems(db: DadDb): DadCollectionItem[] {
-    return db.collections.flatMap(c => c.collectionItems);
+    return db.collections.flatMap(c => [...c.collectionItems, ...c.subcollections.flatMap(sc => sc.collectionItems)]);
 }
 
 function filterCollectionItems(db: DadDb, filter: (dci: DadCollectionItem) => boolean): DadDb {

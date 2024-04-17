@@ -1,5 +1,6 @@
 import {MasterGroup} from "./common";
 import {getCollectionUri} from "./server";
+import {MODE} from "./config";
 
 type Base<IconType> = {
   itemId: string,
@@ -41,7 +42,7 @@ type CollectionItem<ItemsType> = StrapiResp & {
 
 export type StrapiCollectionItem = CollectionItem<StrapiResultSet<StrapiItem>>;
 
-type Collection<CollectionItemsType> = StrapiResp & {
+type Collection<CollectionType, CollectionItemsType> = StrapiResp & {
   name: string,
   order: number,
   description: string,
@@ -49,6 +50,7 @@ type Collection<CollectionItemsType> = StrapiResp & {
   publishedAt: string,
   updatedAt: string,
   category: string,
+  subcollections: CollectionType,
   collectionItems: CollectionItemsType,
 }
 
@@ -120,7 +122,8 @@ type StrapiItem = Item<StrapiResult<StrapiMedia>>;
 type StrapiEmote = Emote<StrapiResult<StrapiMedia>>;
 type StrapiHeadstone = Headstone<StrapiResult<StrapiMedia>>;
 type StrapiPortal = Portal<StrapiResult<StrapiMedia>>;
-export type StrapiCollection = Collection<StrapiResultSet<StrapiCollectionItem> | undefined>;
+// @ts-ignore
+export type StrapiCollection = Collection<StrapiResultSet<StrapiCollection> | undefined, StrapiResultSet<StrapiCollectionItem> | undefined>;
 
 type DadBase = Base<string> & WithStrapiId;
 type DadItem = Item<string> & WithStrapiId;
@@ -128,7 +131,7 @@ type DadEmote = Emote<string> & WithStrapiId;
 type DadHeadstone = Headstone<string> & WithStrapiId;
 type DadPortal = Portal<string> & WithStrapiId;
 type DadCollectionItem = CollectionItem<Array<DadItem | DadEmote | DadHeadstone | DadPortal>> & WithStrapiId;
-type DadCollection = Collection<DadCollectionItem[]> & WithStrapiId;
+type DadCollection = Collection<DadCollection[], DadCollectionItem[]> & WithStrapiId;
 type DadDb = { collections: DadCollection[] }
 
 function strapiBaseToDadBase(hit: StrapiHit<Base<StrapiResult<StrapiMedia>>>): Base<StrapiMedia> & WithStrapiId {
@@ -167,6 +170,7 @@ function strapiCollectionToDadCollection(hit: StrapiHit<StrapiCollection>): DadC
     ...hit.attributes,
     strapiId: hit.id,
     collectionItems: hit.attributes.collectionItems?.data.map(strapiCollectionItemToDadCollectionItem) ?? [],
+    subcollections: hit.attributes.subcollections?.data.map(strapiCollectionToDadCollection) ?? [],
   };
 }
 
@@ -212,6 +216,7 @@ const DEFAULT_COLLECTION: DadCollection = {
   publishedAt: '2023-12-01T10:00:00.000Z',
   updatedAt: '2023-12-01T10:00:00.000Z',
   collectionItems: [],
+  subcollections: [],
 }
 
 function createEmptyDb(): DadDb {
@@ -225,7 +230,7 @@ function getDefaultItemIdForCollection(dadDb: DadDb): number {
 }
 
 async function fetchDb(masterGroup: MasterGroup, page: number = 0): Promise<StrapiResultSet<StrapiCollection>> {
-  return (await fetch(getCollectionUri(masterGroup, page))).json() as Promise<StrapiResultSet<StrapiCollection>>;
+  return (await fetch(getCollectionUri(masterGroup, page, 25, MODE))).json() as Promise<StrapiResultSet<StrapiCollection>>;
 }
 
 export default fetchDb;
