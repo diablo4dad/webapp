@@ -142,30 +142,6 @@
     font-size: 1.125rem;
 }
 
-@media screen and (min-width: 1200px) {
-    .LedgerGroupHeading {
-        top: 0;
-        padding: 2rem 2rem;
-        height: 6rem;
-    }
-
-    .LedgerRow {
-        /*box-shadow: 3px 3px 7px rgba(17, 17, 17, 0.125) inset;*/
-    }
-
-    .LedgerCardView .LedgerRow {
-        padding: 2rem;
-    }
-
-    .LedgerNoMoreItems {
-        padding: 1rem 2rem;
-    }
-
-    .LedgerCardView .LedgerRow {
-        --grid-item--min-width: 120px;
-    }
-}
-
 .Artifact {
     cursor: pointer;
     display: flex;
@@ -248,6 +224,7 @@
 
 .ArtifactIconCollection svg {
     fill: #3E885B;
+    margin: calc(0.5rem + 1px);
 }
 
 .ArtifactCollected .ArtifactIconCollection svg {
@@ -412,4 +389,33 @@
 
 .LedgerCardView.LedgerInverse .ArtifactCollected .ArtifactImage {
     filter: brightness(50%);
+}
+
+
+@media screen and (min-width: 1200px) {
+    .LedgerGroupHeading {
+        top: 0;
+        padding: 2rem 2rem;
+        height: 6rem;
+    }
+
+    .LedgerRow {
+        /*box-shadow: 3px 3px 7px rgba(17, 17, 17, 0.125) inset;*/
+    }
+
+    .LedgerCardView .LedgerRow {
+        padding: 2rem;
+    }
+
+    .LedgerNoMoreItems {
+        padding: 1rem 2rem;
+    }
+
+    .LedgerCardView .LedgerRow {
+        --grid-item--min-width: 120px;
+    }
+
+    .ArtifactIconCollection svg {
+        margin: 0;
+    }
 }
