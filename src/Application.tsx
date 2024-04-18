@@ -78,13 +78,16 @@ function reduceItems(db: DadDb): DadCollectionItem[] {
 }
 
 function filterCollectionItems(db: DadDb, filter: (dci: DadCollectionItem) => boolean): DadDb {
+    function applyFilter(dc: DadCollection): DadCollection {
+        return {
+            ...dc,
+            collectionItems: dc.collectionItems.filter(filter),
+            subcollections: dc.subcollections.map(applyFilter).filter(sc => sc.collectionItems.length),
+        };
+    }
+
     return {
-        collections: db.collections.map(dc => {
-            return {
-                ...dc,
-                collectionItems: dc.collectionItems.filter(filter),
-            };
-        }),
+        collections: db.collections.map(applyFilter),
     };
 }
 
