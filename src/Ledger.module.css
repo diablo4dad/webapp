@@ -4,8 +4,9 @@
 
 .LedgerGroupHeading {
     display: flex;
-    justify-content: center;
-    flex-direction: column;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
     box-sizing: border-box;
 
     position: sticky;
@@ -74,7 +75,8 @@
 }
 
 .LedgerSelectControls {
-    float: right;
+    display: flex;
+    gap: 0.5rem;
     font-size: 0.875rem;
     color: #ccc;
 }

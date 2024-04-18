@@ -6,6 +6,8 @@ enum BtnColours {
     Grey,
     Discord,
     BattleNet,
+    Green,
+    Red,
 }
 
 
@@ -23,6 +25,10 @@ function Button({ pressed = false, colour = BtnColours.Grey, showOnly, children,
                 return styles.BtnDiscord;
             case BtnColours.BattleNet:
                 return styles.BtnBattleNet;
+            case BtnColours.Green:
+                return styles.BtnGreen;
+            case BtnColours.Red:
+                return styles.BtnRed;
             default:
                 return styles.BtnGrey;
         }
