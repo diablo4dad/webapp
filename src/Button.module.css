@@ -65,3 +65,12 @@
 .BtnBattleNet:active svg {
     fill: #00adfc;
 }
+
+.BtnGreen svg {
+    fill: #3e885b;
+}
+
+.BtnGreen:hover svg,
+.BtnGreen:active svg {
+    fill: #4aa16d;
+}

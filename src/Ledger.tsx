@@ -3,9 +3,9 @@ import styles from "./Ledger.module.css";
 import {Store} from "./store";
 import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
 import React, {DetailsHTMLAttributes, forwardRef} from "react";
-import {Currency, TickCircle} from "./Icons";
-import Link from "./Link";
+import {Currency, Tick, TickCircle} from "./Icons";
 import {getImageUri} from "./asset";
+import Button, {BtnColours} from "./Button";
 
 function countItemsInCollection(collection: DadCollection): number {
     return collection.collectionItems.length
@@ -89,9 +89,12 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
         ].filter(cn => cn !== null).join(' ');
     }
 
-    function isEveryItemCollected(collection: DadCollection) {
-        return collection.collectionItems.every(item => store.isCollected(item.strapiId));
+    function isEveryItem(collection: DadCollection, collected: boolean): boolean {
+        return collection.collectionItems.every(item => store.isCollected(item.strapiId) === collected)
+            && collection.subcollections.every(sc => isEveryItem(sc, collected));
     }
+
+    const everyItemCollected = isEveryItem(collection, true);
 
     return (
         <details
@@ -104,26 +107,32 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
             onToggle={e => store.toggleCollectionOpen(collection.strapiId, e.currentTarget.open)}
         >
             <summary className={styles.LedgerGroupHeading}>
-                <h1 className={styles.LedgerHeading}>{collection.name}
-                    <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
-                    {process.env.NODE_ENV === 'development' &&
-                        <span className={styles.LedgerEdit}> | <a target="_blank"
-                                                                  href={generateEditCategoryUrl(collection)}
-                                                                  rel="noreferrer">Edit</a></span>
-                    }
-                    <span className={styles.LedgerSelectControls}>
-                        <Link className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, true)}>Select All</Link>
-                        <span> | </span>
-                        <Link className={styles.LedgerSelectBtn} onClick={() => onSelectAllToggle(collection, false)}>None</Link>
-                    </span>
-                </h1>
-                <div className={styles.LedgerDescription}>
-                    {parentCollection ? parentCollection.name : collection.description}
+                <div>
+                    <h1 className={styles.LedgerHeading}>{collection.name}
+                        <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
+                        {process.env.NODE_ENV === 'development' &&
+                            <span className={styles.LedgerEdit}> | <a target="_blank"
+                                                                      href={generateEditCategoryUrl(collection)}
+                                                                      rel="noreferrer">Edit</a></span>
+                        }
+                    </h1>
+                    <div className={styles.LedgerDescription}>
+                        {parentCollection && !collection.description ? parentCollection.name : collection.description}
+                    </div>
                 </div>
+                <span className={styles.LedgerSelectControls}>
+                        <Button colour={BtnColours.Green} onClick={() => onSelectAllToggle(collection, false)} hidden={!everyItemCollected}>
+                            <Tick></Tick>
+                        </Button>
+                        <Button colour={BtnColours.Grey} onClick={() => onSelectAllToggle(collection, true)} hidden={everyItemCollected}>
+                            <Tick></Tick>
+                        </Button>
+                    </span>
             </summary>
             {
-                hideCollectedItems && isEveryItemCollected(collection) ? <div className={styles.LedgerNoMoreItems}>Complete!</div> :
-                    <div className={collection.subcollections.length  ? styles.LedgerSubCollection : styles.LedgerRow}>
+                hideCollectedItems && everyItemCollected ?
+                    <div className={styles.LedgerNoMoreItems}>Complete!</div> :
+                    <div className={collection.subcollections.length ? styles.LedgerSubCollection : styles.LedgerRow}>
                         {collection.collectionItems.map(collectionItem => {
                             const item = getDefaultItemFromCollectionItems(collectionItem);
 
