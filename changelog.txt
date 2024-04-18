@@ -3,7 +3,20 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
-## [Unreleased]
+## [1.5.0] - 2024-04-18
+
+### Added
+
+- Sub-collection support.
+- Collection toggle button that replaces the "Select All / None" links.
+- Base Items collection that includes Helms, Chest Armor, Gloves, Pants
+  and Boots.
+
+### Updated
+
+- Split season collections into subcategories.
+- Moved Twitch collections into own category.
+- Moved Prime collections into own category.
 
 ## [1.4.2] - 2024-04-05
 
