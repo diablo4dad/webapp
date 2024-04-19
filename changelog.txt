@@ -14,7 +14,8 @@ collections.
 
 ### Updated
 
-- Organised shop category into sub-collections
+- Organised shop category into 8 sub-collections
+- Replaced the long shop collection descriptions with the "series" text
 
 ### Fixed
 
