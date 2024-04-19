@@ -3,6 +3,23 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.5.1] - 2024-04-19
+
+### Added
+
+- Hell and Back portal collection (Shop)
+- Shards of Vulcan weapons collection (Shop)
+- The Storm Courser mount collection (Shop)
+- Vitreous Scourge mount collection (Shop)
+
+### Updated
+
+- Organised shop category into sub-collections
+
+### Fixed
+
+- Tick icon of card when using small screen
+
 ## [1.5.0] - 2024-04-18
 
 ### Added
