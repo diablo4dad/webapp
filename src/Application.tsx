@@ -33,11 +33,11 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
-import {locale, MasterGroup} from "./common";
+import {MasterGroup} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
-import Link from "./Link";
 import {countTotalInCollectionUri} from "./server";
 import {toggleItem} from "./store/mutations";
+import NavMenu from "./NavMenu";
 
 
 enum SideBarType {
@@ -494,14 +494,7 @@ function Application(): ReactElement<HTMLDivElement> {
                     <div className={styles.HeaderRight}>
                         <div className={styles.HeaderRightContent}>
                             <nav className={styles.HeaderNav}>
-                                {enumKeys(MasterGroup).map((key) => {
-                                    const value = MasterGroup[key];
-                                    return <div key={key} className={styles.HeaderNavItem + ' ' + (masterGroup === value ? styles.HeaderNavItemSelected : '')}>
-                                        <Link disabled={masterGroup === value}
-                                              onClick={() => onChangeCategory(value)}>{locale[value]}
-                                        </Link>
-                                    </div>
-                                })}
+                                <NavMenu activeGroup={masterGroup} onChange={onChangeCategory} />
                             </nav>
                             <div className={styles.HeaderAccountWidgets}>
                             {store.loadConfig().enableProgressBar &&
