@@ -1,0 +1,117 @@
+.Nav {
+    display: flex;
+    /*flex-shrink: 0;*/
+}
+
+.Nav:hover,
+.Nav:focus-within {
+    position: absolute;
+    z-index: 100;
+
+    border-radius: 0.5rem;
+    box-shadow: 1px 2px 5px #111;
+}
+
+.Nav:hover .Menu,
+.Nav:focus-within .Menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.Nav:hover .NavBtn,
+.Nav:focus-within .NavBtn {
+    border: 0;
+    box-shadow: none;
+}
+
+.Nav:hover .NavActive,
+.Nav:focus-within .NavActive {
+    display: block;
+    background-color: #23272e;
+    border-top: 1px solid #2D3239;
+    border-left: 1px solid #2D3239;
+    border-bottom: 1px solid #2D3239;
+}
+
+.Nav:hover .NavActiveDesc,
+.Nav:focus-within .NavActiveDesc {
+    display: block;
+}
+
+.NavActive {
+    width: 20rem;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.NavActiveDesc {
+    display: none;
+    padding: 0 1rem;
+    color: #ccc;
+}
+
+.NavBtn {
+    padding: 0;
+    background-color: #23272e;
+
+    border: 1px solid #2D3239;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    font-family: inherit;
+
+    /*box-shadow: 3px 3px 5px rgba(9, 9, 12, 0.25) inset;*/
+    /*font-size: 1rem;*/
+}
+
+.NavBtnIcon img {
+    max-width: 3rem;
+    height: auto;
+}
+
+.NavBtnText {
+    color: #fff;
+    font-size: 1rem;
+    padding-right: 1rem;
+}
+
+.Menu {
+    display: none;
+    /*position: absolute;*/
+    /*border-top: 0.25rem solid transparent;*/
+    /*width: 100%;*/
+}
+
+.MenuItem {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    cursor: pointer;
+    background-color: #2D3239;
+    border-right: 1px solid #2D3239;
+}
+
+.MenuItem:first-child {
+    border-top: 1px solid #2D3239;
+    border-top-right-radius: 0.5rem;
+}
+
+.MenuItem:last-child {
+    border-bottom: 1px solid #2D3239;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.MenuItem:hover {
+    background-color: #23272e;
+}
+
+.MenuItemIcon img {
+    width: 3rem;
+    height: auto;
+}
+
+.MenuItemText {
+    padding: 1rem 1rem 1rem 0;
+    color: #f9a620;
+}

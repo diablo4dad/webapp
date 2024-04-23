@@ -10,6 +10,8 @@ type Base<IconType> = {
   description: string,
   usableByClass: string[],
   itemType: string,
+  series: string,
+  transmogName: string,
 }
 
 export type StrapiResp = {
@@ -191,6 +193,8 @@ const DEFAULT_ITEM: DadItem = {
   description: "missing",
   transMog: false,
   usableByClass: [],
+  series: "missing",
+  transmogName: "missing",
 }
 
 const DEFAULT_COLLECTION_ITEM: DadCollectionItem = {
@@ -260,6 +264,14 @@ export function composeDescription(item: DadCollectionItem): string {
     return item.claimDescription;
   }
 
+  // unique items
+  if (item.items.length) {
+    const baseItem = item.items[0];
+    if (baseItem.transmogName) {
+      return `Salvaged from ${baseItem.name}.`;
+    }
+  }
+
   switch (item.claim) {
     case "Cash Shop":
       return "Purchased from the cash shop.";
@@ -314,7 +326,14 @@ export function getAggregatedItemName(ci: DadCollectionItem): string {
   }
 
   if (ci.items.length === 1) {
-    return ci.items[0].name;
+    const baseItem = ci.items[0];
+
+    // transmog name overrides base
+    if (baseItem.transmogName) {
+      return baseItem.transmogName;
+    }
+
+    return baseItem.name;
   }
 
   const itemPeek = ci.items[0];
