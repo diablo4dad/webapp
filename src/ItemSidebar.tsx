@@ -8,8 +8,8 @@ import sorceress from "./image/sorceress.webp"
 import wt1 from "./image/wt1.webp"
 import wt3 from "./image/wt3.webp"
 import wt4 from "./image/wt4.webp"
-import series from "./image/series.png"
-import season from "./image/season.png"
+import series from "./image/seriesclip.webp"
+import season from "./image/seasonclip.webp"
 import Toggle from "./Toggle";
 import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
 import {getImageUri} from "./asset";
@@ -104,7 +104,7 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
             <div className={styles.ItemMeta}>
                 <div>
                     <div>
-                        Item ID: {collectionItem.items.map(i => i.itemId).join(' | ')}
+                        Item ID: {collectionItem.items[0]?.itemId ?? -1}
                         {process.env.NODE_ENV === "development" &&
                             <span> | <a href={generateEditUrl(collectionItem)} target="_blank">Edit</a></span>}
                     </div>

@@ -28,7 +28,7 @@ const NAV_ITEM_META: Map<MasterGroup, NavItemMeta> = new Map([
     }],
     [MasterGroup.SEASONS, {
         name: "Seasons",
-        desc: "Transmogs acquired through completing the Battle Pass and Season Journey.",
+        desc: "Transmogs acquired through completing the Battle Pass and Seasons Journey.",
         icon: SeasonIcon,
         order: 2,
     }],
