@@ -94,6 +94,40 @@
 
 }
 
+.ItemDropRequirements {
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ItemSeries {
+    display: flex;
+    align-items: center;
+    border-radius: 2rem;
+    background-color: #2d3239;
+    padding: 0.5rem 1rem;
+}
+
+.ItemWorldTier {
+    font-size: 0.875rem;
+    color: #ccc;
+}
+
+.ItemWorldTierIcon {
+    max-width: 2rem;
+    height: auto;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.ItemLevelRequirements {
+    font-size: 0.875rem;
+    color: #ccc;
+}
+
 .ItemDescription {
     font-style: italic;
     font-size: 0.8rem;
@@ -119,11 +153,13 @@
 }
 
 .ItemMeta {
+    display: flex;
     padding-left: 2rem;
     padding-right: 2rem;
     font-size: 0.875rem;
     color: #ccc;
     margin-bottom: 1rem;
+    justify-content: space-between;
 }
 
 .ItemMeta > div {
@@ -133,9 +169,15 @@
 .ItemTag {
     display: inline-block;
     background-color: #3E885B;
-    border-radius: 1rem;
+    border-radius: 2rem;
     font-size: 0.875rem;
     padding: 0.25rem 0.75rem;
+}
+
+.ItemTagIcon {
+    max-width: 1rem;
+    height: auto;
+    margin-right: 0.5rem;
 }
 
 .ItemTag:not(:last-child) {

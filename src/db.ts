@@ -12,6 +12,11 @@ type Base<IconType> = {
   itemType: string,
   series: string,
   transmogName: string,
+  magicType: string,
+  transMog: boolean,
+  dropMinWorldTier: number,
+  dropMinLevel: number,
+  dropMaxLevel: number,
 }
 
 export type StrapiResp = {
@@ -20,15 +25,10 @@ export type StrapiResp = {
   updatedAt?: string,
 }
 
-type Item<IconType> = Base<IconType> & StrapiResp & {
-  itemType: string,
-  magicType: string,
-  transMog: boolean,
-}
-
-type Headstone<IconType> = Base<IconType>;
-type Emote<IconType> = Base<IconType>;
-type Portal<IconType> = Base<IconType>;
+type Item<IconType> = Base<IconType> & StrapiResp;
+type Headstone<IconType> = Base<IconType> & StrapiResp;
+type Emote<IconType> = Base<IconType> & StrapiResp;
+type Portal<IconType> = Base<IconType> & StrapiResp;
 
 type CollectionItem<ItemsType> = StrapiResp & {
   outOfRotation?: boolean,
@@ -195,6 +195,9 @@ const DEFAULT_ITEM: DadItem = {
   usableByClass: [],
   series: "missing",
   transmogName: "missing",
+  dropMinWorldTier: 0,
+  dropMinLevel: 1,
+  dropMaxLevel: 100,
 }
 
 const DEFAULT_COLLECTION_ITEM: DadCollectionItem = {
@@ -296,6 +299,8 @@ export function composeDescription(item: DadCollectionItem): string {
       return "Purchased from a vendor.";
     case "PvP Drop":
       return "Dropped by killing players and looting Baleful Chests."
+    case "World Drop":
+      return "Dropped throughout sanctuary."
     default:
       return "Description unavailable.";
   }
