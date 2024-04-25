@@ -86,6 +86,8 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
             store.isCollected(collectionItem.strapiId) ? styles.ArtifactCollected : null,
             store.isHidden(collectionItem.strapiId) ? styles.ArtifactHidden : null,
             collectionItem.premium ? styles.ArtifactPremium : null,
+            collectionItem.items[0]?.magicType === 'Unique' ? styles.ArtifactUnique : null,
+            // collectionItem.items[0]?.magicType === 'Rare' ? styles.ArtifactRare : null,
         ].filter(cn => cn !== null).join(' ');
     }
 

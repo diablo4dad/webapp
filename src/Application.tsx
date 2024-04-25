@@ -33,7 +33,7 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
-import {MasterGroup} from "./common";
+import {ItemGroup, itemGroups, MasterGroup} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import {countTotalInCollectionUri} from "./server";
 import {toggleItem} from "./store/mutations";
@@ -44,34 +44,6 @@ enum SideBarType {
     ITEM = 'item',
     CONFIG = 'config'
 }
-
-enum ItemGroup {
-    MOUNTS = "mounts",
-    HORSE_ARMOR = "horse_armor",
-    TROPHIES = "trophies",
-    ARMOR = "armor",
-    WEAPONS = "weapons",
-    BODY = "body",
-    EMOTES = "emotes",
-    TOWN_PORTALS = "town_portals",
-    HEADSTONES = "headstones",
-    EMBLEMS = "emblems",
-    PLAYER_TITLES = "player_titles",
-}
-
-const itemGroups = new Map([
-    [ItemGroup.MOUNTS, ["Mount"]],
-    [ItemGroup.HORSE_ARMOR, ["Horse Armor"]],
-    [ItemGroup.TROPHIES, ["Trophy", "Back Trophy"]],
-    [ItemGroup.WEAPONS, ["Axe", "Dagger", "Focus", "Mace", "Scythe", "Shield", "Sword", "Totem", "Wand", "Two-Handed Axe", "Bow", "Crossbow", "Two-Handed Mace", "Polearm", "Two-Handed Scythe", "Staff", "Two-Handed Sword"]],
-    [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]],
-    [ItemGroup.BODY, ["Body Marking"]],
-    [ItemGroup.EMOTES, ["Emote"]],
-    [ItemGroup.TOWN_PORTALS, ["Town Portal"]],
-    [ItemGroup.HEADSTONES, ["Headstone"]],
-    [ItemGroup.EMBLEMS, ["Emblem"]],
-    [ItemGroup.PLAYER_TITLES, ["Player Title (Prefix)", "Player Title (Suffix)"]],
-]);
 
 function reduceItems(db: DadDb): DadCollectionItem[] {
     return db.collections.flatMap(c => [...c.collectionItems, ...c.subcollections.flatMap(sc => sc.collectionItems)]);

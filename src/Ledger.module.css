@@ -222,6 +222,14 @@
     opacity: 1;
 }
 
+.ArtifactUnique .ArtifactName {
+    color: #dca779 !important;
+}
+
+.ArtifactRare .ArtifactName {
+    color: #ff0 !important;
+}
+
 .ArtifactIconCollection svg {
     fill: #3E885B;
     margin: calc(0.5rem + 1px);

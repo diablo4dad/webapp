@@ -1,13 +1,19 @@
-import {composeDescription, DadCollectionItem, getAggregatedItemName, getAggregatedItemType} from "./db"
+import {composeDescription, DadCollectionItem, DadItem, getAggregatedItemName, getAggregatedItemType} from "./db"
 import styles from "./ItemSidebar.module.css"
 import necromancer from "./image/necromancer.webp"
 import druid from "./image/druid.webp"
 import rogue from "./image/rogue.webp"
 import barbarian from "./image/barbarian.webp"
 import sorceress from "./image/sorceress.webp"
+import wt1 from "./image/wt1.webp"
+import wt3 from "./image/wt3.webp"
+import wt4 from "./image/wt4.webp"
+import series from "./image/series.png"
+import season from "./image/season.png"
 import Toggle from "./Toggle";
 import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
 import {getImageUri} from "./asset";
+import {ItemGroup, itemGroups} from "./common";
 
 function generateEditUrl(item: DadCollectionItem): string {
     return SERVER_ADDR + "/admin/content-manager/collectionType/api::collection-item.collection-item/" + item.strapiId;
@@ -15,6 +21,31 @@ function generateEditUrl(item: DadCollectionItem): string {
 
 function usableBy(clazz: string, dci: DadCollectionItem): boolean {
     return dci.items.some(di => di.usableByClass.includes(clazz));
+}
+
+function getItemGroup(itemType: string): ItemGroup {
+    for (const [group, itemTypes] of itemGroups.entries()) {
+        if (itemTypes.includes(itemType)) {
+            return group;
+        }
+    }
+
+    throw new Error("Unhandled item type: " + itemType);
+}
+
+function doDisplayDropInfo(collectionItem: DadCollectionItem, item: DadItem) {
+    if (!["Monster Drop", "World Boss Drop", "World Drop"].includes(collectionItem.claim ?? "")) {
+        return false;
+    }
+
+    const itemGroup = getItemGroup(item.itemType);
+    if (![ItemGroup.ARMOR, ItemGroup.WEAPONS].includes(itemGroup)) {
+        return false;
+    }
+
+
+
+    return !(item.dropMinLevel == 0 && item.dropMaxLevel == 0);
 }
 
 type ItemProps = {
@@ -47,28 +78,50 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
             </div>
             <div className={styles.ItemDescription} hidden={!item.description || true}>{item.description}</div>
             <div className={styles.ItemActions}>
-                <Toggle name="collected" checked={collected} onChange={e => onClickCollected(e.target.checked)}>Collected</Toggle>
+                <Toggle name="collected" checked={collected}
+                        onChange={e => onClickCollected(e.target.checked)}>Collected</Toggle>
                 <Toggle name="hidden" checked={hidden} onChange={e => onClickHidden(e.target.checked)}>Hidden</Toggle>
             </div>
             <div className={styles.ItemLocations}>
                 <div className={styles.ItemLocation}>
                     <div className={styles.ItemLocationInfo}>
                         <div className={styles.ItemLocationDescription}>{composeDescription(collectionItem)}</div>
-                        <div className={styles.ItemLocationCategory}>{collectionItem.claim}</div>
+                        <div className={styles.ItemLocationCategory}>
+                            <span>{collectionItem.claim}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div className={styles.ItemTags}>
-                {collectionItem.season != null && <span className={styles.ItemTag}>Season {collectionItem.season}</span>}
-                {collectionItem.premium && <span className={styles.ItemTag}>Premium</span>}
-                {collectionItem.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
-            </div>
+            {doDisplayDropInfo(collectionItem, item) &&
+                <div className={styles.ItemDropRequirements}>
+                    <div className={styles.ItemWorldTier}>Minimum World Tier</div>
+                    <img src={wt1} className={styles.ItemWorldTierIcon} hidden={item.dropMinWorldTier !== 0}/>
+                    <img src={wt3} className={styles.ItemWorldTierIcon} hidden={item.dropMinWorldTier !== 2}/>
+                    <img src={wt4} className={styles.ItemWorldTierIcon} hidden={item.dropMinWorldTier !== 3}/>
+                    <div className={styles.ItemLevelRequirements}>Monster Level {Math.max(item.dropMinLevel, 1)}+</div>
+                </div>
+            }
             <div className={styles.ItemMeta}>
                 <div>
-                    Item ID: {collectionItem.items.map(i => i.itemId).join(' | ')}
-                    {process.env.NODE_ENV === "development" && <span> | <a href={generateEditUrl(collectionItem)} target="_blank">Edit</a></span>}
+                    <div>
+                        Item ID: {collectionItem.items.map(i => i.itemId).join(' | ')}
+                        {process.env.NODE_ENV === "development" &&
+                            <span> | <a href={generateEditUrl(collectionItem)} target="_blank">Edit</a></span>}
+                    </div>
+                    {process.env.NODE_ENV === "development" && <div>Image ID: {item.iconId}</div>}
                 </div>
-                {process.env.NODE_ENV === "development" && <div>Image ID: {item.iconId}</div>}
+                <div>
+                    {item.series &&
+                        <div className={styles.ItemSeries}>
+                            <img className={styles.ItemTagIcon} src={collectionItem.season ? season : series}/>
+                            <span>{item.series.replaceAll("\"", "")}</span>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div className={styles.ItemTags}>
+                {collectionItem.premium && <span className={styles.ItemTag}>Premium</span>}
+                {collectionItem.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
             </div>
         </div>
     );
