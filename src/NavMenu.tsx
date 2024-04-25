@@ -22,25 +22,25 @@ type NavItemMeta = {
 const NAV_ITEM_META: Map<MasterGroup, NavItemMeta> = new Map([
     [MasterGroup.GENERAL, {
         name: "Essential Collection",
-        desc: "Transmogs acquired through gameplay or promotions essential to the seasoned collector.",
+        desc: "Transmogs acquired through gameplay and are generally part of the core game.",
         icon: GeneralIcon,
         order: 1,
     }],
     [MasterGroup.SEASONS, {
         name: "Seasons",
-        desc: "Transmogs acquired through completing the Battle Pass or Season Journey.",
+        desc: "Transmogs acquired through completing the Battle Pass and Season Journey.",
         icon: SeasonIcon,
         order: 2,
     }],
     [MasterGroup.SHOP_ITEMS, {
         name: "Tejal's Shop",
-        desc: "Transmogs purchased through the cash shop for real life money.",
+        desc: "Transmogs purchased through the cash shop for real life money, hello whales!",
         icon: CashShopIcon,
         order: 3,
     }],
     [MasterGroup.PROMOTIONAL, {
         name: "Promotional",
-        desc: "Transmogs acquired through channel partner and Blizzard promotions.",
+        desc: "Transmogs acquired through channel partner promotions like Twitch Drops.",
         icon: PromoIcon,
         order: 4,
     }],
