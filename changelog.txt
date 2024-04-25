@@ -7,8 +7,8 @@ collections.
 
 ### Added
 
-- New drop menu to switch between categories, replaces pill navigation
 - All standard item transmogs! 300+ new items including uniques
+- New drop menu to switch between categories
 - World Tier + Monster level requirement to the sidebar
 - Series label to the sidebar
 - New "Seasons" category
