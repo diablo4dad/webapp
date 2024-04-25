@@ -3,6 +3,36 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.6.0] - 2024-04-25
+
+### Added
+
+- New drop menu to switch between categories, replaces pill navigation
+- All standard item transmogs! 300+ new items including uniques
+- World Tier + Monster level requirement to the sidebar
+- Series label to the sidebar
+- New "Seasons" category
+- New "Lucky Coin" collection
+- "Paladin Lord's Bulwark" shield transmog to the quest collection
+- "Broodmother's Stinger" and "Mace of Blazing Furor" item transmogs to the
+  Rare Monster collection
+- "Heimal Offerings" / "Tributes of Rime" Mount bundle to the shop category
+
+### Updated
+
+- Moved "Limited Events" into own category
+- Moved fast food franchise promos into own category
+- Moved Base Game, Open Beta categories from Promotional to General
+- Split Base Game category into "Deluxe Edition" and "Preorder"
+- Renamed categories to "Essential Collection", "Tejal's Shop", "Promotional"
+- Split PvP into two subcategories: "Odds and Ends" and "Fields of Hatred"
+- Moved season collections from Essential Collection to Seasons
+
+### Fixed
+
+- 6 missing icons from the shop category
+- Side bar label for "World Drop" item claims
+
 ## [1.5.1] - 2024-04-19
 
 ### Added
