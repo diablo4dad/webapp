@@ -1,4 +1,6 @@
 import {DadBase, DadCollectionItem, DEFAULT_ITEM} from "./db";
+import {Configuration} from "./ConfigSidebar";
+import {ItemGroup, itemGroups} from "./common";
 
 const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
 // const SERVER_ADDR = 'https://db.diablo4.dad';
@@ -26,4 +28,19 @@ export enum ContentType {
     MOBILE_MENU = 'menu',
     LEDGER = 'ledger',
     CONFIG = 'config'
+}
+
+export function aggregateItemTypes(config: Configuration): string[] {
+    return Array<string>()
+        .concat(config.showMounts ? itemGroups.get(ItemGroup.MOUNTS) ?? [] : [])
+        .concat(config.showHorseArmor ? itemGroups.get(ItemGroup.HORSE_ARMOR) ?? [] : [])
+        .concat(config.showTrophies ? itemGroups.get(ItemGroup.TROPHIES) ?? [] : [])
+        .concat(config.showArmor ? itemGroups.get(ItemGroup.ARMOR) ?? [] : [])
+        .concat(config.showWeapons ? itemGroups.get(ItemGroup.WEAPONS) ?? [] : [])
+        .concat(config.showBody ? itemGroups.get(ItemGroup.BODY) ?? [] : [])
+        .concat(config.showEmotes ? itemGroups.get(ItemGroup.EMOTES) ?? [] : [])
+        .concat(config.showTownPortals ? itemGroups.get(ItemGroup.TOWN_PORTALS) ?? [] : [])
+        .concat(config.showHeadstones ? itemGroups.get(ItemGroup.HEADSTONES) ?? [] : [])
+        .concat(config.showEmblems ? itemGroups.get(ItemGroup.EMBLEMS) ?? [] : [])
+        .concat(config.showPlayerTitles ? itemGroups.get(ItemGroup.PLAYER_TITLES) ?? [] : []);
 }

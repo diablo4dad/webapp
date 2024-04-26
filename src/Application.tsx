@@ -5,7 +5,6 @@ import fetchDb, {
     DadCollection,
     DadCollectionItem,
     DadDb,
-    DEFAULT_COLLECTION_ITEM,
     getDefaultItemIdForCollection,
     reduceItemIdsFromCollection,
     StrapiCollection,
@@ -17,7 +16,7 @@ import logo from "./image/d4ico.png"
 
 import styles from './Application.module.css';
 import Ledger from "./Ledger";
-import useStore, {ItemFlag, Store} from "./store";
+import useStore, {ItemFlag} from "./store";
 import ItemSidebar from './ItemSidebar';
 import ConfigSidebar, {Configuration} from "./ConfigSidebar";
 import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
@@ -33,102 +32,15 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
-import {ItemGroup, itemGroups, MasterGroup} from "./common";
+import {MasterGroup, SideBarType} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import {countTotalInCollectionUri} from "./server";
 import {toggleItem} from "./store/mutations";
 import NavMenu from "./NavMenu";
+import {selectItemOrDefault} from "./db/reducers";
+import {filterDb} from "./db/filters";
+import {flattenDadDb} from "./db/transforms";
 
-
-enum SideBarType {
-    ITEM = 'item',
-    CONFIG = 'config'
-}
-
-function reduceItems(db: DadDb): DadCollectionItem[] {
-    return db.collections.flatMap(c => [...c.collectionItems, ...c.subcollections.flatMap(sc => sc.collectionItems)]);
-}
-
-function filterCollectionItems(db: DadDb, filter: (dci: DadCollectionItem) => boolean): DadDb {
-    function applyFilter(dc: DadCollection): DadCollection {
-        return {
-            ...dc,
-            collectionItems: dc.collectionItems.filter(filter),
-            subcollections: dc.subcollections.map(applyFilter).filter(sc => sc.collectionItems.length),
-        };
-    }
-
-    return {
-        collections: db.collections.map(applyFilter),
-    };
-}
-
-function filterItemsByType(itemTypes: string[]): (dci: DadCollectionItem) => boolean {
-    return function (dci: DadCollectionItem) {
-        return itemTypes.flatMap(it => dci.items.filter(di => di.itemType === it)).length !== 0;
-    }
-}
-
-function filterPremiumItems(): (dci: DadCollectionItem) => boolean {
-    return (dci: DadCollectionItem) => dci.premium !== true;
-}
-
-function filterPromotionalItems(): (dci: DadCollectionItem) => boolean {
-    return (dci: DadCollectionItem) => dci.promotional !== true;
-}
-
-function filterOutOfRotationItems(): (dci: DadCollectionItem) => boolean {
-    return (dci: DadCollectionItem) => dci.outOfRotation !== true;
-}
-
-function filterHiddenItems(store: Store): (dci: DadCollectionItem) => boolean {
-    return (dci: DadCollectionItem) => !store.isHidden(dci.strapiId);
-}
-
-function aggregateItemTypes(config: Configuration): string[] {
-    return Array<string>()
-        .concat(config.showMounts ? itemGroups.get(ItemGroup.MOUNTS) ?? [] : [])
-        .concat(config.showHorseArmor ? itemGroups.get(ItemGroup.HORSE_ARMOR) ?? [] : [])
-        .concat(config.showTrophies ? itemGroups.get(ItemGroup.TROPHIES) ?? [] : [])
-        .concat(config.showArmor ? itemGroups.get(ItemGroup.ARMOR) ?? [] : [])
-        .concat(config.showWeapons ? itemGroups.get(ItemGroup.WEAPONS) ?? [] : [])
-        .concat(config.showBody ? itemGroups.get(ItemGroup.BODY) ?? [] : [])
-        .concat(config.showEmotes ? itemGroups.get(ItemGroup.EMOTES) ?? [] : [])
-        .concat(config.showTownPortals ? itemGroups.get(ItemGroup.TOWN_PORTALS) ?? [] : [])
-        .concat(config.showHeadstones ? itemGroups.get(ItemGroup.HEADSTONES) ?? [] : [])
-        .concat(config.showEmblems ? itemGroups.get(ItemGroup.EMBLEMS) ?? [] : [])
-        .concat(config.showPlayerTitles ? itemGroups.get(ItemGroup.PLAYER_TITLES) ?? [] : []);
-}
-
-function selectItemOrDefault(dci: DadCollectionItem[], selectedItemId: number): DadCollectionItem {
-    return dci.filter(ci => ci.strapiId === selectedItemId).pop() ?? dci.at(0) ?? DEFAULT_COLLECTION_ITEM;
-}
-
-function filterDb(dadDb: DadDb, store: Store, config: Configuration): DadDb {
-    let db = filterCollectionItems(dadDb, filterItemsByType(aggregateItemTypes(config)));
-
-    if (!config.showPremium) {
-        db = filterCollectionItems(db, filterPremiumItems());
-    }
-
-    if (!config.showOutOfRotation) {
-        db = filterCollectionItems(db, filterOutOfRotationItems());
-    }
-
-    if (!config.showPromotional) {
-        db = filterCollectionItems(db, filterPromotionalItems());
-    }
-
-    if (!config.showHiddenItems) {
-        db = filterCollectionItems(db, filterHiddenItems(store));
-    }
-
-    return db;
-}
-
-function enumKeys<O extends object, K extends keyof O = keyof O>(obj: O): K[] {
-    return Object.keys(obj).filter(k => !Number.isNaN(k)) as K[]
-}
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
     return (
@@ -171,7 +83,7 @@ function Application(): ReactElement<HTMLDivElement> {
     const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
     const history = useRef([ContentType.LEDGER]);
     const filteredDb = filterDb(db, store, store.loadConfig());
-    const collectionItems = reduceItems(filteredDb);
+    const collectionItems = flattenDadDb(filteredDb);
     const lastSelected = store.getLastSelectedItem();
     const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(lastSelected?.itemId ?? getDefaultItemIdForCollection(filteredDb));
     const selectedCollectionItem = selectItemOrDefault(collectionItems, selectedCollectionItemId);
