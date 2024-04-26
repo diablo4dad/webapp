@@ -1,5 +1,5 @@
 import {MasterGroup} from "./src/common";
-import {StrapiCollection, StrapiResp, StrapiResultSet} from "./src/db";
+import {StrapiCollection, StrapiResp, StrapiResultSet} from "./src/data";
 
 import {getCollectionUri} from "./src/server";
 
