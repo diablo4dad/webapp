@@ -1,17 +1,17 @@
 Requests from the Reddit publication:
 
 - [x] Add the missing "Sturdy Saddle" horse armor.
-- [ ] Add items dropped by "super rares".
+- [x] Add items dropped by "super rares".
 - [x] Add option to inverse opacity of collected items.
 - [x] Add account log in to save progress.
 - [x] Add collapsable groups.
-- [ ] Add all store Transmogs.
+- [x] Add all store Transmogs.
 - [x] Correct mount names;
     - [x] Ghastly Reins -> Spectral Charger mount.
     - [x][PH] Blizzcon Horse mount -> Lapisvein, from Shop "Symposium Steed".
 - [x] Add "Hide Collected" filter.
 - [x] Add Headstone, Portals and Emotes.
-- [ ] Add all standard/base transmogs for weapons and armor.
+- [x] Add all standard/base transmogs for weapons and armor.
 - [x] Update the trophies "Crest of Rathma" and "Assassin's Satchel", to
       indicate they seem to be from the Dry Steppes and Kehjistan PvP zones,
       respectively.
