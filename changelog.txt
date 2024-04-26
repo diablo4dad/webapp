@@ -3,6 +3,20 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.6.1] - 2024-04-26
+
+### Updated
+
+- Tagged "Midwinter Blight" bundles Out of Rotation
+- Tagged "Lunar Awakening" bundles Out of Rotation
+- Tagged "Crypt Hunter" bundle Out of Rotation
+- Tagged "Father's" bundles Out of Rotation
+- Tagged "Mother's" bundles Out of Rotation
+
+### Removed
+
+- Duplicate "Hiemal Offerings" collection
+
 ## [1.6.0] - 2024-04-25
 
 ### Added
