@@ -73,7 +73,7 @@ function Application(): ReactElement<HTMLDivElement> {
     const [content, setContent] = useState(ContentType.LEDGER);
     const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
     const history = useRef([ContentType.LEDGER]);
-    const filteredDb = filterDb(db, store, store.loadConfig());
+    const filteredDb = filterDb(db, store.loadConfig(), store.isHidden);
     const collectionItems = flattenDadDb(filteredDb);
     const lastSelected = store.getLastSelectedItem();
     const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(lastSelected?.itemId ?? getDefaultItemId(filteredDb));
