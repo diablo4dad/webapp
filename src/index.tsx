@@ -24,4 +24,3 @@ if (process.env.NODE_ENV !== 'development') {
         return;
     };
 }
-export {fetchDb} from "./server";
