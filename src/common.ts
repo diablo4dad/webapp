@@ -41,3 +41,8 @@ export const itemGroups = new Map([
     [ItemGroup.EMBLEMS, ["Emblem"]],
     [ItemGroup.PLAYER_TITLES, ["Player Title (Prefix)", "Player Title (Suffix)"]],
 ]);
+
+export enum SideBarType {
+    ITEM = 'item',
+    CONFIG = 'config'
+}
