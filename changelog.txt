@@ -5,6 +5,10 @@ collections.
 
 ## [Unreleased]
 
+### Added
+
+- OG tags to improve link sharing
+
 ### Fixed
 
 - Removed duplicate "Lunar Scepter" from wand collection
