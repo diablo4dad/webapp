@@ -108,7 +108,7 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
                         {process.env.NODE_ENV === "development" &&
                             <span> | <a href={generateEditUrl(collectionItem)} target="_blank">Edit</a></span>}
                     </div>
-                    {process.env.NODE_ENV === "development" && <div>Image ID: {item.iconId}</div>}
+                    <div>Image ID: {item.iconId}</div>
                 </div>
                 <div>
                     {item.series &&
