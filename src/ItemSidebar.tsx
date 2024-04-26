@@ -1,4 +1,4 @@
-import {composeDescription, DadCollectionItem, DadItem, getAggregatedItemName, getAggregatedItemType} from "./db"
+import {DadCollectionItem, DadItem} from "./data"
 import styles from "./ItemSidebar.module.css"
 import necromancer from "./image/necromancer.webp"
 import druid from "./image/druid.webp"
@@ -14,6 +14,7 @@ import Toggle from "./Toggle";
 import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
 import {getImageUri} from "./asset";
 import {ItemGroup, itemGroups} from "./common";
+import {getItemDescription, getItemName, getItemType} from "./data/getters";
 
 function generateEditUrl(item: DadCollectionItem): string {
     return SERVER_ADDR + "/admin/content-manager/collectionType/api::collection-item.collection-item/" + item.strapiId;
@@ -62,8 +63,8 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
     return (
         <div className={styles.Panel}>
             <img src={getImageUri(item)} className={styles.ItemImage} alt={item.name}/>
-            <div className={styles.ItemTitle}>{getAggregatedItemName(collectionItem)}</div>
-            <div className={styles.ItemType}>{getAggregatedItemType(collectionItem)}</div>
+            <div className={styles.ItemTitle}>{getItemName(collectionItem)}</div>
+            <div className={styles.ItemType}>{getItemType(collectionItem)}</div>
             <div className={styles.ItemClasses}>
                 {usableBy("Barbarian", collectionItem) &&
                     <img className={styles.ItemClassIcon} src={barbarian} alt="Barbarian"/>}
@@ -85,7 +86,7 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
             <div className={styles.ItemLocations}>
                 <div className={styles.ItemLocation}>
                     <div className={styles.ItemLocationInfo}>
-                        <div className={styles.ItemLocationDescription}>{composeDescription(collectionItem)}</div>
+                        <div className={styles.ItemLocationDescription}>{getItemDescription(collectionItem)}</div>
                         <div className={styles.ItemLocationCategory}>
                             <span>{collectionItem.claim}</span>
                         </div>

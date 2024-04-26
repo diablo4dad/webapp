@@ -1,17 +1,5 @@
 import React, {ReactElement, useCallback, useEffect, useRef, useState} from 'react';
-import fetchDb, {
-    countItemsInDb,
-    createEmptyDb,
-    DadCollection,
-    DadCollectionItem,
-    DadDb,
-    getDefaultItemIdForCollection,
-    reduceItemIdsFromCollection,
-    StrapiCollection,
-    StrapiCollectionItem,
-    StrapiResultSet,
-    strapiToDad,
-} from "./db"
+import {DadCollection, DadCollectionItem, DadDb, StrapiCollection, StrapiCollectionItem, StrapiResultSet,} from "./data"
 import logo from "./image/d4ico.png"
 
 import styles from './Application.module.css';
@@ -34,12 +22,15 @@ import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
 import {Configuration, MasterGroup, SideBarType} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
-import {countTotalInCollectionUri} from "./server";
+import {countTotalInCollectionUri, fetchDb} from "./server";
 import {toggleItem} from "./store/mutations";
 import NavMenu from "./NavMenu";
-import {selectItemOrDefault} from "./db/reducers";
-import {filterDb} from "./db/filters";
-import {flattenDadDb} from "./db/transforms";
+import {selectItemOrDefault} from "./data/reducers";
+import {filterDb} from "./data/filters";
+import {flattenDadDb, strapiToDad} from "./data/transforms";
+import {countItemsInDb} from "./data/aggregate";
+import {getAllItemIds, getDefaultItemId} from "./data/getters";
+import {createEmptyDb} from "./data/factory";
 
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
@@ -85,7 +76,7 @@ function Application(): ReactElement<HTMLDivElement> {
     const filteredDb = filterDb(db, store, store.loadConfig());
     const collectionItems = flattenDadDb(filteredDb);
     const lastSelected = store.getLastSelectedItem();
-    const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(lastSelected?.itemId ?? getDefaultItemIdForCollection(filteredDb));
+    const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(lastSelected?.itemId ?? getDefaultItemId(filteredDb));
     const selectedCollectionItem = selectItemOrDefault(collectionItems, selectedCollectionItemId);
 
     // maintains a group aggregated cache
@@ -249,7 +240,7 @@ function Application(): ReactElement<HTMLDivElement> {
     }
 
     function onSelectAll(collection: DadCollection, selectAll: boolean) {
-        return reduceItemIdsFromCollection(collection).map(toggleItem(store, masterGroup, selectAll));
+        return getAllItemIds(collection).map(toggleItem(store, masterGroup, selectAll));
     }
 
     function onConfigChange(config: Configuration) {

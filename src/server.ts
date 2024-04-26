@@ -1,5 +1,6 @@
 import {MasterGroup} from "./common";
-import {SERVER_ADDR} from "./config";
+import {MODE, SERVER_ADDR} from "./config";
+import {StrapiCollection, StrapiResultSet} from "./data";
 
 function countTotalInCollectionUri(masterGroup: MasterGroup, mode: 'live' | 'static' = 'static') {
     switch (mode) {
@@ -31,6 +32,11 @@ function getCollectionUri(masterGroup: MasterGroup, page: number = 0, pageSize: 
             return masterGroup.toLowerCase() + '.json';
     }
 }
+ 
+async function fetchDb(masterGroup: MasterGroup, page: number = 0): Promise<StrapiResultSet<StrapiCollection>> {
+    return await (await fetch(getCollectionUri(masterGroup, page, 25, MODE))).json() as Promise<StrapiResultSet<StrapiCollection>>;
+}
 
 export {getCollectionUri};
 export {countTotalInCollectionUri};
+export {fetchDb};
