@@ -28,7 +28,7 @@ import NavMenu from "./NavMenu";
 import {selectItemOrDefault} from "./data/reducers";
 import {filterDb} from "./data/filters";
 import {flattenDadDb, strapiToDad} from "./data/transforms";
-import {countItemsInDb} from "./data/aggregate";
+import {countAllItemsDabDb} from "./data/aggregate";
 import {getAllItemIds, getDefaultItemId} from "./data/getters";
 import {createEmptyDb} from "./data/factory";
 
@@ -375,7 +375,7 @@ function Application(): ReactElement<HTMLDivElement> {
                             {store.loadConfig().enableProgressBar &&
                                 <Progress
                                     totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
-                                    collectionSize={countItemsInDb(filteredDb)}
+                                    collectionSize={countAllItemsDabDb(filteredDb)}
                                 />
                             }
                             {!store.loadConfig().enableProgressBar &&
@@ -475,7 +475,7 @@ function Application(): ReactElement<HTMLDivElement> {
                 <div className={styles.ProgressMobile}>
                     <Progress
                         totalCollected={collectionItems.filter(i => store.isCollected(i.strapiId)).length}
-                        collectionSize={countItemsInDb(filteredDb)}
+                        collectionSize={countAllItemsDabDb(filteredDb)}
                     />
                 </div>
             }
