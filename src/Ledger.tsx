@@ -1,4 +1,4 @@
-import {composeDescription, DadCollection, DadCollectionItem, getAggregatedItemName, getAggregatedItemType} from "./db";
+import {DadCollection, DadCollectionItem} from "./data";
 import styles from "./Ledger.module.css";
 import {Store} from "./store";
 import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
@@ -6,6 +6,7 @@ import React, {DetailsHTMLAttributes, forwardRef} from "react";
 import {Currency, Tick, TickCircle} from "./Icons";
 import {getImageUri} from "./asset";
 import Button, {BtnColours} from "./Button";
+import {getItemDescription, getItemName, getItemType} from "./data/getters";
 
 function countItemsInCollection(collection: DadCollection): number {
     return collection.collectionItems.length
@@ -148,15 +149,15 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
                                          loading="lazy"
                                          alt={item.name}/>
                                     <div className={styles.ArtifactInfo}>
-                                        <div className={styles.ArtifactName}>{getAggregatedItemName(collectionItem)}</div>
+                                        <div className={styles.ArtifactName}>{getItemName(collectionItem)}</div>
                                         <div className={styles.ArtifactItemType}>
-                                            <span>{getAggregatedItemType(collectionItem)} | {collectionItem.claim}</span>
+                                            <span>{getItemType(collectionItem)} | {collectionItem.claim}</span>
                                             <span className={styles.ArtifactIconPremiumTitle}
                                                   hidden={!collectionItem.premium}>
                                                 <Currency />
                                             </span>
                                         </div>
-                                        <div className={styles.ArtifactClaimDescription}>{composeDescription(collectionItem)}</div>
+                                        <div className={styles.ArtifactClaimDescription}>{getItemDescription(collectionItem)}</div>
                                     </div>
                                     <div className={styles.ArtifactIcons}>
                                         <span className={styles.ArtifactIcon + ' ' + styles.ArtifactIconPremium}>

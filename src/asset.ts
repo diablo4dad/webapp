@@ -1,4 +1,4 @@
-import {DadBase} from "./db";
+import {DadBase} from "./data";
 import missing from "./image/imgfill.png";
 
 function getImageUri(item: DadBase): string {
