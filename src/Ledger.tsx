@@ -14,21 +14,21 @@ import {onTouchStart} from "./common/dom";
 
 function computeLedgerClassName(isComplete: boolean, hideComplete: boolean, inverse: boolean, view: 'list' | 'card'): string {
     return [
-        styles.LedgerGroup,
+        styles.Ledger,
         isComplete ? styles.LedgerComplete : null,
-        view === 'card' ? styles.LedgerCardView : null,
-        inverse ? styles.LedgerInverse : null,
+        view === 'card' ? styles.LedgerCards : null,
+        view === 'card' && inverse ? styles.LedgerCardsInverse : null,
         hideComplete && isComplete ? styles.LedgerHidden : null,
     ].filter(i => i !== null).join(' ');
 }
 
 function computeLedgerItemClassName(store: Store, collectionItem: DadCollectionItem) {
     return [
-        styles.Artifact,
-        store.isCollected(collectionItem.strapiId) ? styles.ArtifactCollected : null,
-        store.isHidden(collectionItem.strapiId) ? styles.ArtifactHidden : null,
-        collectionItem.premium ? styles.ArtifactPremium : null,
-        collectionItem.items[0]?.magicType === 'Unique' ? styles.ArtifactUnique : null,
+        styles.Item,
+        store.isCollected(collectionItem.strapiId) ? styles.ItemCollected : null,
+        store.isHidden(collectionItem.strapiId) ? styles.ItemHidden : null,
+        collectionItem.premium ? styles.ItemPremium : null,
+        collectionItem.items[0]?.magicType === 'Unique' ? styles.ItemUnique : null,
     ].filter(cn => cn !== null).join(' ');
 }
 
@@ -65,9 +65,9 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
             open={ledgerIsOpen}
             onToggle={e => store.toggleCollectionOpen(collection.strapiId, e.currentTarget.open)}
         >
-            <summary className={styles.LedgerGroupHeading}>
+            <summary className={styles.LedgerHeader}>
                 <div>
-                    <h1 className={styles.LedgerHeading}>{collection.name}
+                    <h1 className={styles.LedgerTitle}>{collection.name}
                         <span className={styles.LedgerCounter}>{`[${collected}/${total}]`}</span>
                         {process.env.NODE_ENV === 'development' &&
                             <span className={styles.LedgerEdit}> | <a target="_blank"
@@ -77,7 +77,7 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
                     </h1>
                     <div className={styles.LedgerDescription}>{ledgerHeading}</div>
                 </div>
-                <span className={styles.LedgerSelectControls}>
+                <span className={styles.LedgerActions}>
                     <Button colour={BtnColours.Green} onClick={() => onSelectAllToggle(collection, false)} hidden={!isComplete}>
                         <Tick></Tick>
                     </Button>
@@ -100,25 +100,25 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
                                      onDoubleClick={() => onDoubleClickItem(collection, collectionItem)}
                                      onTouchStart={onTouchStart(() => onDoubleClickItem(collection, collectionItem))}
                                      key={collectionItem.strapiId}>
-                                    <img className={styles.ArtifactImage} src={getImageUri(item)}
+                                    <img className={styles.ItemImage} src={getImageUri(item)}
                                          loading="lazy"
                                          alt={item.name}/>
-                                    <div className={styles.ArtifactInfo}>
-                                        <div className={styles.ArtifactName}>{getItemName(collectionItem)}</div>
-                                        <div className={styles.ArtifactItemType}>
+                                    <div className={styles.ItemInfo}>
+                                        <div className={styles.ItemName}>{getItemName(collectionItem)}</div>
+                                        <div className={styles.ItemType}>
                                             <span>{getItemType(collectionItem)} | {collectionItem.claim}</span>
-                                            <span className={styles.ArtifactIconPremiumTitle}
+                                            <span className={styles.ItemIconPremiumTitle}
                                                   hidden={!collectionItem.premium}>
                                                 <Currency />
                                             </span>
                                         </div>
-                                        <div className={styles.ArtifactClaimDescription}>{getItemDescription(collectionItem)}</div>
+                                        <div className={styles.ItemClaimDescription}>{getItemDescription(collectionItem)}</div>
                                     </div>
-                                    <div className={styles.ArtifactIcons}>
-                                        <span className={styles.ArtifactIcon + ' ' + styles.ArtifactIconPremium}>
+                                    <div className={styles.ItemIcons}>
+                                        <span className={styles.ItemIcon + ' ' + styles.ItemIconPremium}>
                                             <Currency></Currency>
                                         </span>
-                                        <span className={styles.ArtifactIcon + ' ' + styles.ArtifactIconCollection}>
+                                        <span className={styles.ItemIcon + ' ' + styles.ItemIconCollection}>
                                             <TickCircle></TickCircle>
                                         </span>
                                     </div>

@@ -1,8 +1,8 @@
-.LedgerGroup {
+.Ledger {
     width: 100%;
 }
 
-.LedgerGroupHeading {
+.LedgerHeader {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
@@ -23,7 +23,7 @@
     cursor: pointer;
 }
 
-.LedgerHeading {
+.LedgerTitle {
     display: inline-block;
     margin: 0 0.5rem 0.25rem 0;
     /*text-shadow: 3px 3px 3px #111;*/
@@ -42,11 +42,11 @@
     color: transparent;
 }
 
-.ArtifactImagePlaceholder {
+.ItemImagePlaceholder {
 
 }
 
-.ArtifactNamePlaceholder {
+.ItemNamePlaceholder {
     width: 4rem;
     background-color: #ccc;
     color: transparent !important;
@@ -74,7 +74,7 @@
     color: #ccc;
 }
 
-.LedgerSelectControls {
+.LedgerActions {
     display: flex;
     gap: 0.5rem;
     font-size: 0.875rem;
@@ -103,7 +103,7 @@
     padding: 1rem;
 }
 
-.LedgerCardView .LedgerRow {
+.LedgerCards .LedgerRow {
     --grid-layout-gap: 10px;
     --grid-column-count: 16;
     --grid-item--min-width: 96px;
@@ -122,7 +122,7 @@
     flex-direction: row;
 }
 
-.LedgerCardView .LedgerGroupHeading {
+.LedgerCards .LedgerHeader {
     position: inherit;
 }
 
@@ -130,19 +130,19 @@
     display: none;
 }
 
-.LedgerSubCollection .LedgerGroupHeading {
+.LedgerSubCollection .LedgerHeader {
     background-color: hsl(218 14% 20% / 1);
     /*height: 4rem;*/
     /*top: 11rem;*/
     /*z-index: 3;*/
 }
 
-.LedgerSubCollection .LedgerHeading {
+.LedgerSubCollection .LedgerTitle {
     /*color: #ccc;*/
     font-size: 1.125rem;
 }
 
-.Artifact {
+.Item {
     cursor: pointer;
     display: flex;
     flex-direction: row;
@@ -150,29 +150,29 @@
     align-items: center;
 }
 
-.Artifact:hover {
+.Item:hover {
     opacity: 1;
 }
 
-.ArtifactImage {
+.ItemImage {
     width: 4rem;
     filter: brightness(50%);
     z-index: 1;
 }
 
-.ArtifactInfo {
+.ItemInfo {
     flex: 1;
     padding: 0 1rem;
     opacity: 0.5;
 }
 
-.ArtifactName {
+.ItemName {
     color: orange;
     margin-bottom: 0.125rem;
     font-size: 1rem;
 }
 
-.ArtifactItemType {
+.ItemType {
     display: block;
     text-transform: uppercase;
     margin-bottom: 0.75rem;
@@ -180,80 +180,80 @@
     color: #ccc;
 }
 
-.ArtifactClaim {
+.Claim {
     text-transform: uppercase;
 }
 
-.ArtifactClaimDescription {
+.ItemClaimDescription {
     margin-bottom: 0.25rem;
 }
 
-.ArtifactIcons {
+.ItemIcons {
 
 }
 
-.ArtifactIcon:not(:last-child) {
+.ItemIcon:not(:last-child) {
     margin-right: 0.5rem;
 }
 
-.ArtifactIcons svg {
+.ItemIcons svg {
     width: 2rem;
 }
 
-.ArtifactIcon svg {
+.ItemIcon svg {
     opacity: 0;
     fill: #303640;
 }
 
-.ArtifactHidden .ArtifactName {
+.ItemHidden .ItemName {
     text-decoration: line-through;
     color: #999 !important;
 }
 
-.Artifact:hover .ArtifactImage {
+.Item:hover .ItemImage {
     filter: brightness(125%) !important;
 }
 
-.Artifact:hover .ArtifactInfo {
+.Item:hover .ItemInfo {
     opacity: 1;
 }
 
-.ArtifactCollected .ArtifactInfo {
+.ItemCollected .ItemInfo {
     opacity: 1;
 }
 
-.ArtifactUnique .ArtifactName {
+.ItemUnique .ItemName {
     color: #dca779 !important;
 }
 
-.ArtifactRare .ArtifactName {
+.ItemRare .ItemName {
     color: #ff0 !important;
 }
 
-.ArtifactIconCollection svg {
+.ItemIconCollection svg {
     fill: #3E885B;
     margin: calc(0.5rem + 1px);
 }
 
-.ArtifactCollected .ArtifactIconCollection svg {
+.ItemCollected .ItemIconCollection svg {
     opacity: 1;
 }
 
-.ArtifactIconPremium svg {
+.ItemIconPremium svg {
     display: none;
 }
 
-.ArtifactIconPremiumTitle svg {
+.ItemIconPremiumTitle svg {
     display: inline-block;
     width: 0.875rem;
     margin-left: 0.25rem;
 }
 
-.Artifact:nth-child(even) {
+.Item:nth-child(even) {
     background-color: #23272e;
 }
 
-.LedgerCardView .Artifact {
+.LedgerCards .Item {
     position: relative;
     border-radius: 0.5rem;
     flex-direction: column;
@@ -265,72 +265,72 @@
     opacity: 1;
 }
 
-.LedgerCardView .ArtifactImage {
+.LedgerCards .ItemImage {
     width: auto;
     padding: 0.5rem 0.5rem 0;
 }
 
-.LedgerCardView .ArtifactInfo {
+.LedgerCards .ItemInfo {
     text-align: center;
     padding: 0.5rem;
 }
 
-.LedgerCardView .ArtifactName {
+.LedgerCards .ItemName {
     color: #aaa;
     font-size: 0.875rem;
 }
 
-.LedgerCardView .ArtifactItemType {
+.LedgerCards .ItemType {
     display: none;
 }
 
-.LedgerCardView .ArtifactClaim {
+.LedgerCards .Claim {
     display: none;
 }
 
-.LedgerCardView .ArtifactClaimDescription {
+.LedgerCards .ItemClaimDescription {
     display: none;
 }
 
-.LedgerCardView .ArtifactIcons {
+.LedgerCards .ItemIcons {
     position: absolute;
     top: 0.425rem;
     left: 0.425rem;
     right: 0.425rem;
 }
 
-.LedgerCardView .ArtifactIcons svg {
+.LedgerCards .ItemIcons svg {
     width: 1rem;
     margin-left: 0.125rem;
 }
 
-.LedgerCardView .ArtifactIcon:not(:last-child) {
+.LedgerCards .ItemIcon:not(:last-child) {
     margin-right: 0;
 }
 
-.LedgerCardView .ArtifactIconCollection svg {
+.LedgerCards .ItemIconCollection svg {
     position: absolute;
     right: 0;
 }
 
-.LedgerCardView .ArtifactIconPremium svg {
+.LedgerCards .ItemIconPremium svg {
     display: none;
     opacity: 0;
     position: absolute;
     left: 0;
 }
 
-.LedgerCardView .ArtifactCollected {
+.LedgerCards .ItemCollected {
     border: 1px solid #1d2026;
     background-color: #303640;
     box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
 }
 
-.LedgerCardView .ArtifactIconCollection svg {
+.LedgerCards .ItemIconCollection svg {
     fill: #20472f;
 }
 
-.LedgerCardView .ArtifactCollected:before {
+.LedgerCards .ItemCollected:before {
     content: '';
     position: absolute;
     top: 0; right: 0;
@@ -340,72 +340,71 @@
     width: 0;
 }
 
-.LedgerCardView .ArtifactPremium .ArtifactIconPremium svg {
+.LedgerCards .ItemPremium .ItemIconPremium svg {
     opacity: 1;
 }
 
-.ArtifactCard:hover .ArtifactName,
-.LedgerCardView .ArtifactCollected .ArtifactName {
+.LedgerCards .ItemCollected .ItemName {
     color: #fff;
 }
 
 @media screen and (min-width: 1200px) {
-    .Artifact {
+    .Item {
         padding: 0.5rem 2rem;
     }
 
-    .ArtifactIcons svg {
+    .ItemIcons svg {
         width: 3rem;
     }
 }
 
-.ArtifactCollected .ArtifactImage {
+.ItemCollected .ItemImage {
     filter: none;
 }
 
 /* modifiers */
 
-.LedgerCardView.LedgerInverse .Artifact {
+.LedgerCardsInverse .Item {
     border: 1px solid #1d2026;
     background-color: #303640;
     box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
 
 }
 
-.LedgerCardView.LedgerInverse .ArtifactImage {
+.LedgerCardsInverse .ItemImage {
     filter: none;
 }
 
-.LedgerCardView.LedgerInverse .ArtifactName {
+.LedgerCardsInverse .ItemName {
     color: #fff;
 }
 
-.LedgerCardView.LedgerInverse .ArtifactInfo {
+.LedgerCardsInverse .ItemInfo {
     opacity: 1;
 }
 
-.LedgerCardView.LedgerInverse .ArtifactCollected {
+.LedgerCardsInverse .ItemCollected {
     background-color: #23272e;
     border: 1px solid transparent;
     box-shadow: none;
     color: #ccc;
 }
 
-.LedgerCardView.LedgerInverse .ArtifactCollected .ArtifactInfo {
+.LedgerCardsInverse .ItemCollected .ItemInfo {
     opacity: 0.5;
 }
 
-.LedgerCardView.LedgerInverse .ArtifactCollected .ArtifactImage {
+.LedgerCardsInverse .ItemCollected .ItemImage {
     filter: brightness(50%);
 }
 
 
-.LedgerCardView .ArtifactIconCollection svg {
+.LedgerCards .ItemIconCollection svg {
     margin: 0;
 }
 
 @media screen and (min-width: 1200px) {
-    .LedgerGroupHeading {
+    .LedgerHeader {
         top: 0;
         padding: 2rem 2rem;
         height: 6rem;
@@ -415,7 +414,7 @@
         /*box-shadow: 3px 3px 7px rgba(17, 17, 17, 0.125) inset;*/
     }
 
-    .LedgerCardView .LedgerRow {
+    .LedgerCards .LedgerRow {
         padding: 2rem;
     }
 
@@ -423,11 +422,11 @@
         padding: 1rem 2rem;
     }
 
-    .LedgerCardView .LedgerRow {
+    .LedgerCards .LedgerRow {
         --grid-item--min-width: 120px;
     }
 
-    .ArtifactIconCollection svg {
+    .ItemIconCollection svg {
         margin: 0;
     }
 }
