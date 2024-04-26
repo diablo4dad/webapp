@@ -1,5 +1,4 @@
 import {DadCollection, DadCollectionItem, DadDb} from "./index";
-import {Store} from "../store";
 import {aggregateItemTypes} from "../config";
 import {Configuration} from "../common";
 
@@ -35,11 +34,11 @@ function filterOutOfRotationItems(): (dci: DadCollectionItem) => boolean {
     return (dci: DadCollectionItem) => dci.outOfRotation !== true;
 }
 
-function filterHiddenItems(store: Store): (dci: DadCollectionItem) => boolean {
-    return (dci: DadCollectionItem) => !store.isHidden(dci.strapiId);
+function filterHiddenItems(isHidden: (strapiId: number) => boolean): (dci: DadCollectionItem) => boolean {
+    return (dci: DadCollectionItem) => !isHidden(dci.strapiId);
 }
 
-export function filterDb(dadDb: DadDb, store: Store, config: Configuration): DadDb {
+export function filterDb(dadDb: DadDb, config: Configuration, isHidden: (strapiId: number) => boolean): DadDb {
     let db = filterCollectionItems(dadDb, filterItemsByType(aggregateItemTypes(config)));
 
     if (!config.showPremium) {
@@ -55,7 +54,7 @@ export function filterDb(dadDb: DadDb, store: Store, config: Configuration): Dad
     }
 
     if (!config.showHiddenItems) {
-        db = filterCollectionItems(db, filterHiddenItems(store));
+        db = filterCollectionItems(db, filterHiddenItems(isHidden));
     }
 
     return db;
