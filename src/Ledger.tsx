@@ -1,70 +1,35 @@
 import {DadCollection, DadCollectionItem} from "./data";
 import styles from "./Ledger.module.css";
 import {Store} from "./store";
-import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
+import {getDefaultItemFromCollectionItems} from "./config";
 import React, {DetailsHTMLAttributes, forwardRef} from "react";
 import {Currency, Tick, TickCircle} from "./Icons";
 import {getImageUri} from "./asset";
 import Button, {BtnColours} from "./Button";
 import {getItemDescription, getItemName, getItemType} from "./data/getters";
-
-function countItemsInCollection(collection: DadCollection): number {
-    return collection.collectionItems.length
-        + collection.subcollections.reduce((a, c) => c.collectionItems.length + a, 0);
-}
-
-function countItemsInCollectionOwned(store: Store, collection: DadCollection): number {
-    return collection.collectionItems.map(dci => dci.strapiId).filter(store.isCollected).length
-        + collection.subcollections.reduce((a, c) => c.collectionItems.map(dci => dci.strapiId).filter(store.isCollected).length + a, 0);
-}
-
-function composeCollectionTag(store: Store, collection: DadCollection): string {
-    const collected = countItemsInCollectionOwned(store, collection);
-    const total = countItemsInCollection(collection);
-    return `[${collected}/${total}]`;
-}
-
-function isComplete(store: Store, collection: DadCollection): boolean {
-    return countItemsInCollection(collection) === countItemsInCollectionOwned(store, collection)
-}
+import {countAllItemsInCollection} from "./data/aggregate";
+import {countItemsInCollectionOwned} from "./store/aggregate";
+import {generateEditCategoryUrl} from "./server";
+import {onTouchStart} from "./common/dom";
 
 function getLedgerClasses(isComplete: boolean, hideComplete: boolean, inverse: boolean, view: 'list' | 'card'): string {
-    const classes = [
+    return [
         styles.LedgerGroup,
-        isComplete ? styles.LedgerComplete : '',
-        view === 'card' ? styles.LedgerCardView : '',
-        inverse ? styles.LedgerInverse : '',
-        hideComplete && isComplete ? styles.LedgerHidden : '',
-    ];
-
-    return classes.filter(i => i !== '').join(' ');
+        isComplete ? styles.LedgerComplete : null,
+        view === 'card' ? styles.LedgerCardView : null,
+        inverse ? styles.LedgerInverse : null,
+        hideComplete && isComplete ? styles.LedgerHidden : null,
+    ].filter(i => i !== null).join(' ');
 }
 
-function generateEditCategoryUrl(collection: DadCollection): string {
-    return SERVER_ADDR + "/admin/content-manager/collectionType/api::collection.collection/" + collection.strapiId;
-}
-
-function onTouchStart(handler: () => void) {
-    return (e: React.TouchEvent) => {
-        const touch = e.touches[0] ?? e.changedTouches[0];
-        const x1 = touch.pageX;
-        const y1 = touch.pageY;
-
-        const onTouchEnd = (evt: Event) => {
-            const touchEvent = evt as TouchEvent;
-            const touch = touchEvent.touches[0] ?? touchEvent.changedTouches[0];
-            const x2 = touch.pageX;
-            const y2 = touch.pageY;
-
-            e.target?.removeEventListener('touchend', onTouchEnd);
-
-            if (x1 === x2 && y1 === y2) {
-                handler();
-            }
-        }
-
-        e.target?.addEventListener('touchend', onTouchEnd);
-    }
+function getLedgerItemClasses(store: Store, collectionItem: DadCollectionItem) {
+    return [
+        styles.Artifact,
+        store.isCollected(collectionItem.strapiId) ? styles.ArtifactCollected : null,
+        store.isHidden(collectionItem.strapiId) ? styles.ArtifactHidden : null,
+        collectionItem.premium ? styles.ArtifactPremium : null,
+        collectionItem.items[0]?.magicType === 'Unique' ? styles.ArtifactUnique : null,
+    ].filter(cn => cn !== null).join(' ');
 }
 
 type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
@@ -81,29 +46,15 @@ type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
 }
 
 const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({collection, parentCollection, store, onClickItem, onDoubleClickItem, onSelectAllToggle, view, hideCollectedItems, hideCompleteCollections, inverseCardLayout, ...props}: Props, ref) {
-    function getClassNamesForItem(collectionItem: DadCollectionItem) {
-        return [
-            styles.Artifact,
-            store.isCollected(collectionItem.strapiId) ? styles.ArtifactCollected : null,
-            store.isHidden(collectionItem.strapiId) ? styles.ArtifactHidden : null,
-            collectionItem.premium ? styles.ArtifactPremium : null,
-            collectionItem.items[0]?.magicType === 'Unique' ? styles.ArtifactUnique : null,
-            // collectionItem.items[0]?.magicType === 'Rare' ? styles.ArtifactRare : null,
-        ].filter(cn => cn !== null).join(' ');
-    }
-
-    function isEveryItem(collection: DadCollection, collected: boolean): boolean {
-        return collection.collectionItems.every(item => store.isCollected(item.strapiId) === collected)
-            && collection.subcollections.every(sc => isEveryItem(sc, collected));
-    }
-
-    const everyItemCollected = isEveryItem(collection, true);
+    const collected = countItemsInCollectionOwned(store, collection);
+    const total = countAllItemsInCollection(collection);
+    const isComplete = collected === total;
 
     return (
         <details
             {...props}
             ref={ref}
-            className={getLedgerClasses(isComplete(store, collection), hideCompleteCollections, inverseCardLayout, view)}
+            className={getLedgerClasses(isComplete, hideCompleteCollections, inverseCardLayout, view)}
             key={collection.strapiId}
             hidden={collection.collectionItems.length === 0 && collection.subcollections.length === 0}
             open={store.isCollectionOpen(collection.strapiId)}
@@ -112,7 +63,7 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
             <summary className={styles.LedgerGroupHeading}>
                 <div>
                     <h1 className={styles.LedgerHeading}>{collection.name}
-                        <span className={styles.LedgerCounter}>{composeCollectionTag(store, collection)}</span>
+                        <span className={styles.LedgerCounter}>{`[${collected}/${total}]`}</span>
                         {process.env.NODE_ENV === 'development' &&
                             <span className={styles.LedgerEdit}> | <a target="_blank"
                                                                       href={generateEditCategoryUrl(collection)}
@@ -124,23 +75,23 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
                     </div>
                 </div>
                 <span className={styles.LedgerSelectControls}>
-                        <Button colour={BtnColours.Green} onClick={() => onSelectAllToggle(collection, false)} hidden={!everyItemCollected}>
+                        <Button colour={BtnColours.Green} onClick={() => onSelectAllToggle(collection, false)} hidden={!isComplete}>
                             <Tick></Tick>
                         </Button>
-                        <Button colour={BtnColours.Grey} onClick={() => onSelectAllToggle(collection, true)} hidden={everyItemCollected}>
+                        <Button colour={BtnColours.Grey} onClick={() => onSelectAllToggle(collection, true)} hidden={isComplete}>
                             <Tick></Tick>
                         </Button>
                     </span>
             </summary>
             {
-                hideCollectedItems && everyItemCollected ?
+                hideCollectedItems && isComplete ?
                     <div className={styles.LedgerNoMoreItems}>Complete!</div> :
                     <div className={collection.subcollections.length ? styles.LedgerSubCollection : styles.LedgerRow}>
                         {collection.collectionItems.map(collectionItem => {
                             const item = getDefaultItemFromCollectionItems(collectionItem);
 
                             return hideCollectedItems && collectionItem.items.some(item => store.isCollected(item.strapiId)) ? null :
-                                <div className={getClassNamesForItem(collectionItem)}
+                                <div className={getLedgerItemClasses(store, collectionItem)}
                                      onClick={() => onClickItem(collection, collectionItem)}
                                      onDoubleClick={() => onDoubleClickItem(collection, collectionItem)}
                                      onTouchStart={onTouchStart(() => onDoubleClickItem(collection, collectionItem))}
