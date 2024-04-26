@@ -1,4 +1,5 @@
-import {DadCollection, DadCollectionItem, DadDb} from "./index";
+import {DadBase, DadCollection, DadCollectionItem, DadDb} from "./index";
+import missing from "../image/imgfill.png";
 
 export function getItemName(ci: DadCollectionItem): string {
     if (ci.items.length === 0) {
@@ -99,4 +100,8 @@ export function getAllItemIds(collection: DadCollection): number[] {
         ...collection.collectionItems.map(ci => ci.strapiId),
         ...collection.subcollections.flatMap(getAllItemIds),
     ];
+}
+
+export function getImageUri(item: DadBase): string {
+    return item.icon ?? missing;
 }
