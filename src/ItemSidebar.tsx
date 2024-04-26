@@ -12,9 +12,8 @@ import series from "./image/seriesclip.webp"
 import season from "./image/seasonclip.webp"
 import Toggle from "./Toggle";
 import {getDefaultItemFromCollectionItems, SERVER_ADDR} from "./config";
-import {getImageUri} from "./asset";
 import {ItemGroup, itemGroups} from "./common";
-import {getItemDescription, getItemName, getItemType} from "./data/getters";
+import {getImageUri, getItemDescription, getItemName, getItemType} from "./data/getters";
 
 function generateEditUrl(item: DadCollectionItem): string {
     return SERVER_ADDR + "/admin/content-manager/collectionType/api::collection-item.collection-item/" + item.strapiId;
