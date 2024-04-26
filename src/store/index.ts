@@ -4,7 +4,8 @@ import {doc, getDoc, setDoc} from "firebase/firestore";
 import {firestore} from "../firebase";
 import {runFirestoreMigrations, runStoreMigrations} from "./migrations";
 import {Configuration, DEFAULT_CONFIG, MasterGroup} from "../common";
-import {isScreenSmall} from "../environment";
+
+import {isScreenSmall} from "../common/dom";
 
 
 const DEFAULT_VIEW: ViewState = {
@@ -110,7 +111,7 @@ function initStore(): StoreData {
     version: VERSION,
     config: {
       ...DEFAULT_CONFIG,
-      view: isScreenSmall(window) ? 'list' : 'card',
+      view: isScreenSmall() ? 'list' : 'card',
     },
     view: {
       ledger: {

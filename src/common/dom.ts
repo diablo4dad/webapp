@@ -22,3 +22,7 @@ export function onTouchStart(handler: () => void) {
         e.target?.addEventListener('touchend', onTouchEnd);
     }
 }
+
+export function isScreenSmall(): boolean {
+    return window.innerWidth <= 1200;
+}
