@@ -1,6 +1,5 @@
 import {DadBase, DadCollectionItem, DEFAULT_ITEM} from "./db";
-import {Configuration} from "./ConfigSidebar";
-import {ItemGroup, itemGroups} from "./common";
+import {Configuration, ItemGroup, itemGroups} from "./common";
 
 const SERVER_ADDR = process.env.NODE_ENV === 'production' ? 'https://db.diablo4.dad' : 'http://localhost:1337';
 // const SERVER_ADDR = 'https://db.diablo4.dad';

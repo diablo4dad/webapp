@@ -18,7 +18,7 @@ import styles from './Application.module.css';
 import Ledger from "./Ledger";
 import useStore, {ItemFlag} from "./store";
 import ItemSidebar from './ItemSidebar';
-import ConfigSidebar, {Configuration} from "./ConfigSidebar";
+import ConfigSidebar from "./ConfigSidebar";
 import {ContentType, DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION} from "./config";
 import Progress from "./Progress";
 import {Discord, Gear, Hamburger} from "./Icons";
@@ -32,7 +32,7 @@ import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
 import Account, {Direction} from "./Account";
 import {auth} from "./firebase";
-import {MasterGroup, SideBarType} from "./common";
+import {Configuration, MasterGroup, SideBarType} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import {countTotalInCollectionUri} from "./server";
 import {toggleItem} from "./store/mutations";

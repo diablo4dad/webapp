@@ -1,51 +1,6 @@
 import styles from "./ConfigSidebar.module.css"
 import Toggle from "./Toggle";
-
-type Configuration = {
-    showMounts: boolean,
-    showHorseArmor: boolean,
-    showTrophies: boolean,
-    showArmor: boolean,
-    showWeapons: boolean,
-    showBody: boolean,
-    showEmotes: boolean,
-    showTownPortals: boolean,
-    showHeadstones: boolean,
-    showEmblems: boolean,
-    showPlayerTitles: boolean,
-    showPremium: boolean,
-    showPromotional: boolean,
-    showOutOfRotation: boolean,
-    showHiddenItems: boolean,
-    hideCollectedItems: boolean,
-    hideCompleteCollections: boolean,
-    view: 'card' | 'list',
-    inverseCardLayout: boolean,
-    enableProgressBar: boolean,
-}
-
-const DEFAULT_CONFIG: Configuration = {
-    showMounts: true,
-    showHorseArmor: true,
-    showTrophies: true,
-    showArmor: true,
-    showWeapons: true,
-    showBody: true,
-    showEmotes: true,
-    showTownPortals: true,
-    showHeadstones: true,
-    showEmblems: true,
-    showPlayerTitles: true,
-    showPremium: false,
-    showPromotional: false,
-    showOutOfRotation: false,
-    showHiddenItems: false,
-    hideCollectedItems: false,
-    hideCompleteCollections: false,
-    view: 'card',
-    enableProgressBar: true,
-    inverseCardLayout: false,
-}
+import {Configuration, DEFAULT_CONFIG} from "./common";
 
 type ConfigSidebarProps = {
     config: Configuration,
@@ -89,5 +44,3 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
 }
 
 export default ConfigSidebar;
-export { DEFAULT_CONFIG };
-export type { Configuration };

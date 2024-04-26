@@ -1,6 +1,6 @@
-import {MasterGroup} from "./common";
-import {getCollectionUri} from "./server";
-import {MODE} from "./config";
+import {MasterGroup} from "../common";
+import {getCollectionUri} from "../server";
+import {MODE} from "../config";
 
 type Base<IconType> = {
   itemId: string,

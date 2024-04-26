@@ -1,4 +1,4 @@
-import {DadCollectionItem, DadDb} from "../db";
+import {DadCollectionItem, DadDb} from "./index";
 
 export function flattenDadDb(db: DadDb): DadCollectionItem[] {
     return db.collections.flatMap(c => [
