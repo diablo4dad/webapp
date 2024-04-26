@@ -12,7 +12,7 @@ import {countItemsInCollectionOwned} from "./store/aggregate";
 import {generateEditCategoryUrl} from "./server";
 import {onTouchStart} from "./common/dom";
 
-function getLedgerClasses(isComplete: boolean, hideComplete: boolean, inverse: boolean, view: 'list' | 'card'): string {
+function computeLedgerClassName(isComplete: boolean, hideComplete: boolean, inverse: boolean, view: 'list' | 'card'): string {
     return [
         styles.LedgerGroup,
         isComplete ? styles.LedgerComplete : null,
@@ -22,7 +22,7 @@ function getLedgerClasses(isComplete: boolean, hideComplete: boolean, inverse: b
     ].filter(i => i !== null).join(' ');
 }
 
-function getLedgerItemClasses(store: Store, collectionItem: DadCollectionItem) {
+function computeLedgerItemClassName(store: Store, collectionItem: DadCollectionItem) {
     return [
         styles.Artifact,
         store.isCollected(collectionItem.strapiId) ? styles.ArtifactCollected : null,
@@ -50,14 +50,19 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
     const total = countAllItemsInCollection(collection);
     const isComplete = collected === total;
 
+    const ledgerClassName = computeLedgerClassName(isComplete, hideCompleteCollections, inverseCardLayout, view);
+    const ledgerIsOpen = store.isCollectionOpen(collection.strapiId);
+    const ledgerIsHidden = collection.collectionItems.length === 0 && collection.subcollections.length === 0;
+    const ledgerHeading = parentCollection && !collection.description ? parentCollection.name : collection.description;
+
     return (
         <details
             {...props}
             ref={ref}
-            className={getLedgerClasses(isComplete, hideCompleteCollections, inverseCardLayout, view)}
+            className={ledgerClassName}
             key={collection.strapiId}
-            hidden={collection.collectionItems.length === 0 && collection.subcollections.length === 0}
-            open={store.isCollectionOpen(collection.strapiId)}
+            hidden={ledgerIsHidden}
+            open={ledgerIsOpen}
             onToggle={e => store.toggleCollectionOpen(collection.strapiId, e.currentTarget.open)}
         >
             <summary className={styles.LedgerGroupHeading}>
@@ -70,18 +75,16 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
                                                                       rel="noreferrer">Edit</a></span>
                         }
                     </h1>
-                    <div className={styles.LedgerDescription}>
-                        {parentCollection && !collection.description ? parentCollection.name : collection.description}
-                    </div>
+                    <div className={styles.LedgerDescription}>{ledgerHeading}</div>
                 </div>
                 <span className={styles.LedgerSelectControls}>
-                        <Button colour={BtnColours.Green} onClick={() => onSelectAllToggle(collection, false)} hidden={!isComplete}>
-                            <Tick></Tick>
-                        </Button>
-                        <Button colour={BtnColours.Grey} onClick={() => onSelectAllToggle(collection, true)} hidden={isComplete}>
-                            <Tick></Tick>
-                        </Button>
-                    </span>
+                    <Button colour={BtnColours.Green} onClick={() => onSelectAllToggle(collection, false)} hidden={!isComplete}>
+                        <Tick></Tick>
+                    </Button>
+                    <Button colour={BtnColours.Grey} onClick={() => onSelectAllToggle(collection, true)} hidden={isComplete}>
+                        <Tick></Tick>
+                    </Button>
+                </span>
             </summary>
             {
                 hideCollectedItems && isComplete ?
@@ -89,9 +92,10 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner({colle
                     <div className={collection.subcollections.length ? styles.LedgerSubCollection : styles.LedgerRow}>
                         {collection.collectionItems.map(collectionItem => {
                             const item = getDefaultItemFromCollectionItems(collectionItem);
+                            const ledgerItemClassName = computeLedgerItemClassName(store, collectionItem);
 
                             return hideCollectedItems && collectionItem.items.some(item => store.isCollected(item.strapiId)) ? null :
-                                <div className={getLedgerItemClasses(store, collectionItem)}
+                                <div className={ledgerItemClassName}
                                      onClick={() => onClickItem(collection, collectionItem)}
                                      onDoubleClick={() => onDoubleClickItem(collection, collectionItem)}
                                      onTouchStart={onTouchStart(() => onDoubleClickItem(collection, collectionItem))}
