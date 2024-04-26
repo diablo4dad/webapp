@@ -1,7 +1,7 @@
-import {DadCollection, DadCollectionItem, DadDb} from "../db";
+import {DadCollection, DadCollectionItem, DadDb} from "./index";
 import {Store} from "../store";
-import {Configuration} from "../ConfigSidebar";
 import {aggregateItemTypes} from "../config";
+import {Configuration} from "../common";
 
 function filterCollectionItems(db: DadDb, filter: (dci: DadCollectionItem) => boolean): DadDb {
     function applyFilter(dc: DadCollection): DadCollection {
