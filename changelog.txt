@@ -3,16 +3,59 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
-## [Unreleased]
+## [1.6.2] - 2024-05-03
 
 ### Added
 
-- OG tags to improve link sharing
+- Open Graph tags
 
 ### Fixed
 
-- Removed duplicate "Lunar Scepter" from wand collection
 - Moved 2 handed "Great Axe" to the correct collection
+
+### Updated
+
+- Split "Odd and Ends" PvP collection between "Unconventional Mount Armor"
+- Description of items to include salvage strategy/workaround:
+  - Prophetic Urn (Focus)
+  - Sinner's Skull (Focus)
+  - Kard (Dagger)
+  - Tecpatl (Dagger)
+  - Morningstar (Mace)
+
+### Removed
+
+- Duplicate "Lunar Scepter" from wand collection
+- Items that currently cannot drop or be salvaged into transmogs:
+  - Vile of Power (Focus)
+  - Tome (Focus)
+  - Scorning Mask (Focus)
+  - Death Charm (Focus)
+  - Decorated Skull (Focus)
+  - Grisly Trophy (Wand)
+  - Shamanistic Staff (Staff)
+  - Runic Staff (Staff)
+  - Corruption (Staff)
+  - Doom Harbinger (Staff)
+  - Death's Dirk (Dagger)
+  - Rebirth Edge (Dagger)
+  - Thief's Shank (Dagger)
+  - Swift Death (Bow)
+  - Silver Filigree Bow (Bow)
+  - Obsidian Totem (Totem)
+  - Swift Death (Crossbow)
+  - Skeletal Protector (Shield)
+  - Punisher (Mace)
+  - Leaden Mace (Mace)
+  - Flanged Mace (Mace)
+  - Hammer (Mace)
+  - Combat Hatchet (Axe)
+  - Axe (Axe)
+  - Snake Axe (Axe)
+  - Ravager (Axe)
+  - Dread Glaive (Polearm)
+  - Death's Reach (Two-handed Scythe)
+  - Hell's Fang (Two-handed Scythe)
 
 ## [1.6.1] - 2024-04-26
 
