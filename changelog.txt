@@ -3,6 +3,22 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.6.3] - 2024-05-04
+
+### Added
+
+- Filter to toggle display of unobtainable items
+
+### Updated
+
+- Marked the following additional items as unobtainable:
+  - Doom Hammer
+  - Bone Scythe
+  - Battle Axe
+  - Broad Axe
+  - Orichalcum Defender
+  - Swift Death
+
 ## [1.6.2] - 2024-05-03
 
 ### Added
