@@ -122,6 +122,7 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
             <div className={styles.ItemTags}>
                 {collectionItem.premium && <span className={styles.ItemTag}>Premium</span>}
                 {collectionItem.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
+                {collectionItem.unobtainable && <span className={styles.ItemTag}>Unobtainable</span>}
             </div>
         </div>
     );

@@ -34,6 +34,10 @@ function filterOutOfRotationItems(): (dci: DadCollectionItem) => boolean {
     return (dci: DadCollectionItem) => dci.outOfRotation !== true;
 }
 
+function filterUnobtainableItems(): (dci: DadCollectionItem) => boolean {
+    return (dci: DadCollectionItem) => dci.unobtainable !== true;
+}
+
 function filterHiddenItems(isHidden: (strapiId: number) => boolean): (dci: DadCollectionItem) => boolean {
     return (dci: DadCollectionItem) => !isHidden(dci.strapiId);
 }
@@ -55,6 +59,10 @@ export function filterDb(dadDb: DadDb, config: Configuration, isHidden: (strapiI
 
     if (!config.showHiddenItems) {
         db = filterCollectionItems(db, filterHiddenItems(isHidden));
+    }
+
+    if (!config.showUnobtainable) {
+        db = filterCollectionItems(db, filterUnobtainableItems());
     }
 
     return db;

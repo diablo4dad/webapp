@@ -30,6 +30,7 @@ type CollectionItem<ItemsType> = StrapiResp & {
   outOfRotation?: boolean,
   premium?: boolean,
   promotional?: boolean,
+  unobtainable?: boolean,
   season?: number,
   claim?: string,
   claimDescription?: string,

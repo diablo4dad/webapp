@@ -29,6 +29,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="showPremium" checked={config.showPremium} flip={true} onChange={e => onChange({ ...config, showPremium: e.target.checked })}>Show Premium</Toggle>
                 <Toggle name="showPromotional" checked={config.showPromotional} flip={true} onChange={e => onChange({ ...config, showPromotional: e.target.checked })}>Show Promotional</Toggle>
                 <Toggle name="showOutOfRotation" checked={config.showOutOfRotation} flip={true} onChange={e => onChange({ ...config, showOutOfRotation: e.target.checked })}>Show Out of Rotation</Toggle>
+                <Toggle name="showUnobtainable" checked={config.showUnobtainable} flip={true} onChange={e => onChange({ ...config, showUnobtainable: e.target.checked })}>Show Unobtainable</Toggle>
                 <Toggle name="showExcludedItems" checked={config.showHiddenItems} flip={true} onChange={e => onChange({ ...config, showHiddenItems: e.target.checked })}>Show Hidden Items</Toggle>
                 <Toggle name="hideCollectedItems" checked={config.hideCollectedItems} flip={true} onChange={e => onChange({ ...config, hideCollectedItems: e.target.checked })}>Hide Collected Items</Toggle>
                 <Toggle name="hideCompleteCollections" checked={config.hideCompleteCollections} flip={true} onChange={e => onChange({ ...config, hideCompleteCollections: e.target.checked })}>Hide Complete Collections</Toggle>
