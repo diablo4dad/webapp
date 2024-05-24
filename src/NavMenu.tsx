@@ -5,6 +5,7 @@ import GeneralIcon from "./image/goblin.webp"
 import CashShopIcon from "./image/money.webp"
 import PromoIcon from "./image/chest.webp"
 import SeasonIcon from "./image/season.webp"
+// import ChallengeIcon from "./image/challenge.webp"
 import {ChevronRight} from "./Icons";
 
 type Props = {
@@ -44,6 +45,12 @@ const NAV_ITEM_META: Map<MasterGroup, NavItemMeta> = new Map([
         icon: PromoIcon,
         order: 4,
     }],
+    // [MasterGroup.CHALLENGE, {
+    //     name: "Challenge",
+    //     desc: "Transmogs earned through completing challenges and feats of strength.",
+    //     icon: ChallengeIcon,
+    //     order: 5,
+    // }]
 ]);
 
 const DEFAULT_META: NavItemMeta = {
@@ -81,7 +88,7 @@ function NavMenu({ activeGroup, onChange }: Props) {
                 {otherNavItems.map(menuItem => {
                     const innerMeta = NAV_ITEM_META.get(menuItem) ?? DEFAULT_META;
                     return (
-                        <div className={styles.MenuItem} onClick={() => onChange(menuItem)}>
+                        <div key={menuItem} className={styles.MenuItem} onClick={() => onChange(menuItem)}>
                             <span className={styles.MenuItemIcon}>
                                 <img src={innerMeta.icon}></img>
                             </span>

@@ -3,6 +3,24 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.6.4] - 2024-05-24
+
+### Added
+
+- Season of Loot Reborn Battle Pass + Season Journey Collections
+- Missing "Eternal Bloodhunter" title from Season 2
+
+### Updated
+
+- Mark all Season 3 collection items as "out of rotation"
+- Removed "unobtainable" flag from Decorated Skull (focus item)
+- Description of the Season 3 collection (wrong year)
+- Enabled "Show Premium", "Show Promotional", "Show Out of Rotation" by default
+
+### Fixed
+
+- Hide collected items filter
+
 ## [1.6.3] - 2024-05-04
 
 ### Added
