@@ -3,6 +3,22 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.6.5] - 2024-05-24
+
+### Added
+
+- Wings of Hell's Legion emote under Season 4 Battle Pass rewards
+- Captain of the Wolves emblem Season Journey #4 reward
+- Mark of the Artificer emblem Season Journey #4 reward
+- "Wrathful Heart" title Season Journey #1 reward
+- "Shadow Vampire" title Season Journey #2 reward
+- "Demon's Whisper" title Season Journey #3 reward
+
+### Removed
+
+- Erroneous collections that should not have been added under Shop
+- Duplicate "Hunter's Dagger"
+
 ## [1.6.4] - 2024-05-24
 
 ### Added
