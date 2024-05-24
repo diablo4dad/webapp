@@ -3,6 +3,7 @@ enum MasterGroup {
     SHOP_ITEMS = "Shop",
     PROMOTIONAL = "Promotional",
     SEASONS = "Season",
+    CHALLENGE = "Challenge",
 }
 
 export const locale = {
@@ -10,6 +11,7 @@ export const locale = {
     [MasterGroup.GENERAL]: "General",
     [MasterGroup.PROMOTIONAL]: "Promotion",
     [MasterGroup.SEASONS]: "Seasons",
+    [MasterGroup.CHALLENGE]: "Challenge",
 }
 
 export { MasterGroup }
@@ -83,9 +85,9 @@ const DEFAULT_CONFIG: Configuration = {
     showHeadstones: true,
     showEmblems: true,
     showPlayerTitles: true,
-    showPremium: false,
-    showPromotional: false,
-    showOutOfRotation: false,
+    showPremium: true,
+    showPromotional: true,
+    showOutOfRotation: true,
     showHiddenItems: false,
     showUnobtainable: false,
     hideCollectedItems: false,

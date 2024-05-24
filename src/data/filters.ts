@@ -38,11 +38,15 @@ function filterUnobtainableItems(): (dci: DadCollectionItem) => boolean {
     return (dci: DadCollectionItem) => dci.unobtainable !== true;
 }
 
+function filterCollectedItems(isCollected: (strapiId: number) => boolean): (dci: DadCollectionItem) => boolean {
+    return (dci: DadCollectionItem) => !isCollected(dci.strapiId);
+}
+
 function filterHiddenItems(isHidden: (strapiId: number) => boolean): (dci: DadCollectionItem) => boolean {
     return (dci: DadCollectionItem) => !isHidden(dci.strapiId);
 }
 
-export function filterDb(dadDb: DadDb, config: Configuration, isHidden: (strapiId: number) => boolean): DadDb {
+export function filterDb(dadDb: DadDb, config: Configuration, isHidden: (strapiId: number) => boolean, isCollected: (strapiId: number) => boolean): DadDb {
     let db = filterCollectionItems(dadDb, filterItemsByType(aggregateItemTypes(config)));
 
     if (!config.showPremium) {
@@ -63,6 +67,10 @@ export function filterDb(dadDb: DadDb, config: Configuration, isHidden: (strapiI
 
     if (!config.showUnobtainable) {
         db = filterCollectionItems(db, filterUnobtainableItems());
+    }
+
+    if (config.hideCollectedItems) {
+        db = filterCollectionItems(db, filterCollectedItems(isCollected));
     }
 
     return db;
