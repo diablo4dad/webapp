@@ -3,6 +3,21 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.6.6] - 2024-05-25
+
+### Added
+
+- "Tyrael's Might" unique chest armor
+- "Twin Strikes" unique gloves
+- "Cruor's Embrace" unique gloves
+- "Arreat's Bearing" unique pants
+- "Yen's Blessing" unique boots
+
+### Fixed
+
+- Missing "Trade Consortium Tack" back to challenge collection
+- "Scowling" title from Season 3 not marked as out of rotation
+
 ## [1.6.5] - 2024-05-24
 
 ### Added

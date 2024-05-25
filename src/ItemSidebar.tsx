@@ -95,7 +95,7 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
             {doDisplayDropInfo(collectionItem, item) &&
                 <div className={styles.ItemDropRequirements}>
                     <div className={styles.ItemWorldTier}>Minimum World Tier</div>
-                    <img src={wt1} className={styles.ItemWorldTierIcon} hidden={item.dropMinWorldTier !== 0}/>
+                    <img src={wt1} className={styles.ItemWorldTierIcon} hidden={item.dropMinWorldTier !== null && item.dropMinWorldTier !== 0}/>
                     <img src={wt3} className={styles.ItemWorldTierIcon} hidden={item.dropMinWorldTier !== 2}/>
                     <img src={wt4} className={styles.ItemWorldTierIcon} hidden={item.dropMinWorldTier !== 3}/>
                     <div className={styles.ItemLevelRequirements}>Monster Level {Math.max(item.dropMinLevel, 1)}+</div>
