@@ -333,7 +333,8 @@
 .LedgerCards .ItemCollected:before {
     content: '';
     position: absolute;
-    top: 0; right: 0;
+    top: 0;
+    right: 0;
     border-top: 3rem solid #3e885b;
     border-left: 3rem solid transparent;
     border-top-right-radius: 0.5rem;

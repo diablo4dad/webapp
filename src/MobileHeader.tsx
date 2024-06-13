@@ -1,15 +1,10 @@
-import {PropsWithChildren} from "react";
-import styles from "./MobileHeader.module.css"
+import { PropsWithChildren } from "react";
+import styles from "./MobileHeader.module.css";
 
-type Props = PropsWithChildren & {
-}
+type Props = PropsWithChildren & {};
 
 function MobileHeader({ children }: Props) {
-    return (
-        <div className={styles.Block}>
-            {children}
-        </div>
-    )
+  return <div className={styles.Block}>{children}</div>;
 }
 
-export default MobileHeader
+export default MobileHeader;

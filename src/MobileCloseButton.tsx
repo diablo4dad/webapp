@@ -1,17 +1,15 @@
-import styles from "./MobileCloseButton.module.css"
-import {ButtonHTMLAttributes} from "react";
-import {Close} from "./Icons";
+import styles from "./MobileCloseButton.module.css";
+import { ButtonHTMLAttributes } from "react";
+import { Close } from "./Icons";
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-
-}
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {};
 
 function MobileCloseButton({ ...props }: Props) {
-    return (
-        <button {...props} className={styles.Button}>
-            <Close />
-        </button>
-    );
+  return (
+    <button {...props} className={styles.Button}>
+      <Close />
+    </button>
+  );
 }
 
 export default MobileCloseButton;

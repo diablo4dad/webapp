@@ -1,22 +1,21 @@
-import {useCallback, useEffect, useRef, useState} from "react";
-import {VERSION} from "../config";
-import {doc, getDoc, setDoc} from "firebase/firestore";
-import {firestore} from "../firebase";
-import {runFirestoreMigrations, runStoreMigrations} from "./migrations";
-import {Configuration, DEFAULT_CONFIG, MasterGroup} from "../common";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { VERSION } from "../config";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { firestore } from "../firebase";
+import { runFirestoreMigrations, runStoreMigrations } from "./migrations";
+import { Configuration, DEFAULT_CONFIG, MasterGroup } from "../common";
 
-import {isScreenSmall} from "../common/dom";
-
+import { isScreenSmall } from "../common/dom";
 
 const DEFAULT_VIEW: ViewState = {
   ledger: {
     // empty
-  }
-}
+  },
+};
 
 const DEFAULT_LOG: CollectionLog = {
   entries: [],
-}
+};
 
 enum ItemFlag {
   COLLECTED,
@@ -24,86 +23,94 @@ enum ItemFlag {
 }
 
 type ArtifactMeta = {
-  id: number,
-  collected: boolean,
-  hidden: boolean,
-  group: MasterGroup,
+  id: number;
+  collected: boolean;
+  hidden: boolean;
+  group: MasterGroup;
   // deprecated:
-  flags?: ItemFlag[],
-}
+  flags?: ItemFlag[];
+};
 
 type ViewState = {
-  ledger: LedgerState,
-  lastSelected?: Selection,
-}
+  ledger: LedgerState;
+  lastSelected?: Selection;
+};
 
 type Selection = {
-  collectionId: number,
-  itemId: number,
-}
+  collectionId: number;
+  itemId: number;
+};
 
 type LedgerState = {
-  [key: string]: CollectionState,
-}
+  [key: string]: CollectionState;
+};
 
 type CollectionState = {
-  isOpen: boolean,
-}
+  isOpen: boolean;
+};
 
 type VersionInfo = {
-  major: number,
-  minor: number,
-  revision: number,
-}
+  major: number;
+  minor: number;
+  revision: number;
+};
 
 type Store = {
-  init: (uid?: string) => void,
-  isCollected: (artifactId: number) => boolean,
-  isHidden: (artifactId: number) => boolean,
-  toggle: (artifactId: number, group: MasterGroup, flag?: ItemFlag, enabled?: boolean) => void,
-  saveConfig: (config: Configuration) => void,
-  loadConfig: () => Configuration,
-  saveView: (view: ViewState) => void,
-  loadView: () => ViewState,
-  toggleCollectionOpen: (collectionId: number, isOpen: boolean) => void,
-  isCollectionOpen: (collectionId: number) => boolean,
-  setLastSelectedItem: (collectionId: number, itemId: number) => void,
-  getLastSelectedItem: () => Selection | undefined,
-  countCollected: (group: MasterGroup) => number,
-}
+  init: (uid?: string) => void;
+  isCollected: (artifactId: number) => boolean;
+  isHidden: (artifactId: number) => boolean;
+  toggle: (
+    artifactId: number,
+    group: MasterGroup,
+    flag?: ItemFlag,
+    enabled?: boolean,
+  ) => void;
+  saveConfig: (config: Configuration) => void;
+  loadConfig: () => Configuration;
+  saveView: (view: ViewState) => void;
+  loadView: () => ViewState;
+  toggleCollectionOpen: (collectionId: number, isOpen: boolean) => void;
+  isCollectionOpen: (collectionId: number) => boolean;
+  setLastSelectedItem: (collectionId: number, itemId: number) => void;
+  getLastSelectedItem: () => Selection | undefined;
+  countCollected: (group: MasterGroup) => number;
+};
 
 type StoreData = {
-  default?: boolean,
-  config: Configuration,
-  collectionLog: CollectionLog,
-  view: ViewState,
+  default?: boolean;
+  config: Configuration;
+  collectionLog: CollectionLog;
+  view: ViewState;
   version?: {
-    major: number,
-    minor: number,
-    revision: number,
-  },
-}
+    major: number;
+    minor: number;
+    revision: number;
+  };
+};
 
 type FirebaseData = {
-  collectionLog: CollectionLog,
+  collectionLog: CollectionLog;
   version?: {
-    major: number,
-    minor: number,
-    revision: number,
-  },
-}
+    major: number;
+    minor: number;
+    revision: number;
+  };
+};
 
 type CollectionLog = {
-  entries: ArtifactMeta[]
-}
+  entries: ArtifactMeta[];
+};
 
-function initArtifactMeta(artifactId: number, group: MasterGroup): ArtifactMeta {
+function initArtifactMeta(
+  artifactId: number,
+  group: MasterGroup,
+): ArtifactMeta {
   return {
     id: artifactId,
     collected: false,
     hidden: false,
     group: group,
-  }
+  };
 }
 
 function initStore(): StoreData {
@@ -111,12 +118,12 @@ function initStore(): StoreData {
     version: VERSION,
     config: {
       ...DEFAULT_CONFIG,
-      view: isScreenSmall() ? 'list' : 'card',
+      view: isScreenSmall() ? "list" : "card",
     },
     view: {
       ledger: {
         // empty
-      }
+      },
     },
     collectionLog: {
       entries: [],
@@ -142,7 +149,11 @@ function useStore(): Store {
   useEffect(() => {
     // don't save until initialised
     // this prevents overriding storage with defaults
-    if (view === DEFAULT_VIEW && config === DEFAULT_CONFIG && data === DEFAULT_LOG) {
+    if (
+      view === DEFAULT_VIEW &&
+      config === DEFAULT_CONFIG &&
+      data === DEFAULT_LOG
+    ) {
       return;
     }
 
@@ -151,7 +162,7 @@ function useStore(): Store {
       config: config,
       collectionLog: data,
       version: VERSION,
-    }
+    };
 
     console.log("Saving to local storage...", store);
 
@@ -165,18 +176,19 @@ function useStore(): Store {
   }, [data]);
 
   const saveToFirestore = useCallback(
-      debounce((uid: string, data: CollectionLog) => {
-        const firebaseData: FirebaseData = {
-          version: VERSION,
-          collectionLog: data,
-        }
+    debounce((uid: string, data: CollectionLog) => {
+      const firebaseData: FirebaseData = {
+        version: VERSION,
+        collectionLog: data,
+      };
 
-        const docRef = doc(firestore, "collections", uid);
-        setDoc(docRef, firebaseData).then(() => {
-          console.log("Firestore commit.")
-        });
-      }, 800)
-      , []);
+      const docRef = doc(firestore, "collections", uid);
+      setDoc(docRef, firebaseData).then(() => {
+        console.log("Firestore commit.");
+      });
+    }, 800),
+    [],
+  );
 
   function loadFromLocalStorage(): StoreData {
     const localData = localStorage.getItem("d4log");
@@ -243,17 +255,19 @@ function useStore(): Store {
   }
 
   function getLogEntry(artifactId: number): ArtifactMeta {
-    const logEntry = data
-        .entries
-        .filter(l => l.id === artifactId)
-        .pop();
+    const logEntry = data.entries.filter((l) => l.id === artifactId).pop();
 
     return logEntry ?? initArtifactMeta(artifactId, MasterGroup.GENERAL);
   }
 
-  function toggle(artifactId: number, group: MasterGroup, flag: ItemFlag = ItemFlag.COLLECTED, enabled?: boolean) {
+  function toggle(
+    artifactId: number,
+    group: MasterGroup,
+    flag: ItemFlag = ItemFlag.COLLECTED,
+    enabled?: boolean,
+  ) {
     function updateData(data: CollectionLog): CollectionLog {
-      const doesExist = data.entries.find(e => e.id === artifactId);
+      const doesExist = data.entries.find((e) => e.id === artifactId);
       if (!doesExist) {
         const logEntry = initArtifactMeta(artifactId, group);
 
@@ -268,15 +282,12 @@ function useStore(): Store {
 
         return {
           ...data,
-          entries: [
-            ...data.entries,
-            logEntry,
-          ],
+          entries: [...data.entries, logEntry],
         };
       }
 
       return {
-        entries: data.entries.map(e => {
+        entries: data.entries.map((e) => {
           if (e.id !== artifactId) {
             return e;
           } else {
@@ -307,7 +318,7 @@ function useStore(): Store {
   }
 
   function saveConfig(config: Configuration) {
-    setConfig(previousConfig => ({ ...previousConfig, ...config }));
+    setConfig((previousConfig) => ({ ...previousConfig, ...config }));
   }
 
   function loadConfig(): Configuration {
@@ -322,7 +333,7 @@ function useStore(): Store {
   }
 
   function saveView(view: ViewState) {
-    setView(previousView => ({ ...previousView, ...view }));
+    setView((previousView) => ({ ...previousView, ...view }));
   }
 
   function toggleCollectionOpen(collectionId: number, isOpen: boolean) {
@@ -332,10 +343,10 @@ function useStore(): Store {
       ledger: {
         ...currentData.ledger,
         [collectionId]: {
-          isOpen
-        }
-      }
-    }
+          isOpen,
+        },
+      },
+    };
 
     if (isCollectionOpen(collectionId) !== isOpen) {
       saveView(updatedData);
@@ -353,8 +364,8 @@ function useStore(): Store {
       lastSelected: {
         collectionId,
         itemId,
-      }
-    }
+      },
+    };
 
     const current = currentData.lastSelected;
     if (current?.collectionId !== collectionId || current?.itemId !== itemId) {
@@ -367,7 +378,8 @@ function useStore(): Store {
   }
 
   function countCollected(group: MasterGroup): number {
-    return data.entries.filter(cl => cl.group === group && cl.collected).length;
+    return data.entries.filter((cl) => cl.group === group && cl.collected)
+      .length;
   }
 
   return {
@@ -388,5 +400,13 @@ function useStore(): Store {
 }
 
 export default useStore;
-export type { Store, StoreData, ArtifactMeta, CollectionLog, ViewState, VersionInfo, FirebaseData };
+export type {
+  Store,
+  StoreData,
+  ArtifactMeta,
+  CollectionLog,
+  ViewState,
+  VersionInfo,
+  FirebaseData,
+};
 export { ItemFlag };
