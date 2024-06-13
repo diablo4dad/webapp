@@ -1,16 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import Application from './Application';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import Application from "./Application";
+import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement,
 );
 root.render(
   <React.StrictMode>
     <Application />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function
@@ -19,8 +19,8 @@ root.render(
 reportWebVitals();
 
 // Disables console logging in production
-if (process.env.NODE_ENV !== 'development') {
-    console.log = function () {
-        return;
-    };
+if (process.env.NODE_ENV !== "development") {
+  console.log = function () {
+    return;
+  };
 }

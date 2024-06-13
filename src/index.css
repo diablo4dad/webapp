@@ -1,88 +1,90 @@
 @import-normalize;
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 :root {
-  --card-border-color: #333;
+    --card-border-color: #333;
 }
 
 /* defaults */
 :root {
-  /* theme */
-  --primary-color: #5c749d;
-  --secondary-color: #F9A620;
-  --link-color: #748CAB;
-  --font-color: #111;
-  --bg-color: #fafafa;
-  --heading-color: #292922;
-  --card-border-color: #ccc;
-  --card-bg-color: #f7f7f7;
-  --header-bg-color: #5c749d;
-  --header-border-color: #5c749d;
-  --footer-bg-color: #5c749d;
-  --toggle-bg-color-on: #3E885B;
-  --toggle-bg-color-off: #2D3239;
+    /* theme */
+    --primary-color: #5c749d;
+    --secondary-color: #F9A620;
+    --link-color: #748CAB;
+    --font-color: #111;
+    --bg-color: #fafafa;
+    --heading-color: #292922;
+    --card-border-color: #ccc;
+    --card-bg-color: #f7f7f7;
+    --header-bg-color: #5c749d;
+    --header-border-color: #5c749d;
+    --footer-bg-color: #5c749d;
+    --toggle-bg-color-on: #3E885B;
+    --toggle-bg-color-off: #2D3239;
 
-  /* breakpoints */
-  --xs-breakpoint: 960px;
-  --viewport-max: 960px;
+    /* breakpoints */
+    --xs-breakpoint: 960px;
+    --viewport-max: 960px;
 }
 
 /* dark mode */
 [data-theme="dark-mode"] {
-  /* theme */
-  --primary-color: #23272E;
-  --secondary-color: #F9A620;
-  --font-color: #e1e1ff;
-  --bg-color: #282c34;
-  --heading-color: #818cab;
-  --card-bg-color: #282c34;
-  --card-border-color: #2C313A;
-  --header-bg-color: #23272E;
-  --header-border-color: #2C313A;
-  --footer-bg-color: #23272E;
+    /* theme */
+    --primary-color: #23272E;
+    --secondary-color: #F9A620;
+    --font-color: #e1e1ff;
+    --bg-color: #282c34;
+    --heading-color: #818cab;
+    --card-bg-color: #282c34;
+    --card-border-color: #2C313A;
+    --header-bg-color: #23272E;
+    --header-border-color: #2C313A;
+    --footer-bg-color: #23272E;
 }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
 a {
-  color: orange;
+    color: orange;
 }
 
 a:hover {
-  color: #cc8500;
+    color: #cc8500;
 }
 
 fieldset {
-  border: 1px solid #303640;
-  background-color: #1d2026;
-  border-radius: 0.5rem;
+    border: 1px solid #303640;
+    background-color: #1d2026;
+    border-radius: 0.5rem;
 }
 
 html {
-  font-size: 13px;
+    font-size: 13px;
 }
+
 @media screen and (min-width: 320px) {
-  html {
-    font-size: calc(12px + 3 * ((100vw - 320px) / 680));
-  }
+    html {
+        font-size: calc(12px + 3 * ((100vw - 320px) / 680));
+    }
 }
+
 @media screen and (min-width: 1200px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }

@@ -1,9 +1,9 @@
-import {DadDb} from "./index";
+import { DadDb } from "./index";
 
 function createEmptyDb(): DadDb {
-    return {
-        collections: [],
-    }
+  return {
+    collections: [],
+  };
 }
 
-export {createEmptyDb};
+export { createEmptyDb };

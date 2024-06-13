@@ -1,12 +1,7 @@
 function ShellHeader() {
-  return (
-    <div></div>
-  )
+  return <div></div>;
 }
 
 function ShellContent() {
-  return (
-    <div></div>
-  )
+  return <div></div>;
 }
-
