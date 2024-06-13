@@ -1,29 +1,33 @@
 import styles from "./Account.module.css"
 import {User} from "firebase/auth";
 import {Google} from "../Icons";
+import classNames from "classnames";
 
 enum Direction {
     COLUMN,
     ROW
 }
+
 type Props = {
     currentUser: User,
     onLogout: () => void,
     direction?: Direction,
 }
 
+function getBlockCssClasses(direction: Direction): string {
+    return classNames(
+        styles.Block,
+        {
+            [styles.Row]: direction === Direction.ROW
+        }
+    )
+}
+
 function Account({ currentUser, onLogout, direction = Direction.COLUMN }: Props) {
     const activeDate = new Date(currentUser.metadata.creationTime ?? '').toLocaleDateString();
 
-    function getClasses() {
-        return [
-            styles.Block,
-            direction === Direction.ROW ? styles.Row : null,
-        ].filter(c => c !== null).join(' ');
-    }
-
     return (
-        <div className={getClasses()}>
+        <div className={getBlockCssClasses(direction)}>
             <div className={styles.Text}>
                 <div className={styles.TextLine1}>{currentUser.email}</div>
                 <div className={styles.TextLine2}>
