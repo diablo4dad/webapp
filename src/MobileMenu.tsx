@@ -2,7 +2,7 @@ import Authenticate, {AuthGiant} from "./Authenticate";
 import styles from "./MobileMenu.module.css"
 import {ContentType} from "./config";
 import {User} from "firebase/auth";
-import Account from "./Account";
+import Account from "./components/Account";
 import React from "react";
 import {MasterGroup} from "./common";
 
