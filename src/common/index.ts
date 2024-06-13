@@ -20,6 +20,7 @@ export enum ItemGroup {
     MOUNTS = "mounts",
     HORSE_ARMOR = "horse_armor",
     TROPHIES = "trophies",
+    BACK_TROPHIES = "back_trophies",
     ARMOR = "armor",
     WEAPONS = "weapons",
     BODY = "body",
@@ -28,12 +29,14 @@ export enum ItemGroup {
     HEADSTONES = "headstones",
     EMBLEMS = "emblems",
     PLAYER_TITLES = "player_titles",
+    PETS = "pets",
 }
 
 export const itemGroups = new Map([
     [ItemGroup.MOUNTS, ["Mount"]],
-    [ItemGroup.HORSE_ARMOR, ["Horse Armor"]],
-    [ItemGroup.TROPHIES, ["Trophy", "Back Trophy"]],
+    [ItemGroup.HORSE_ARMOR, ["Horse Armor", "Cat Armor"]],
+    [ItemGroup.TROPHIES, ["Trophy"]],
+    [ItemGroup.BACK_TROPHIES, ["Back Trophy"]],
     [ItemGroup.WEAPONS, ["Axe", "Dagger", "Focus", "Mace", "Scythe", "Shield", "Sword", "Totem", "Wand", "Two-Handed Axe", "Bow", "Crossbow", "Two-Handed Mace", "Polearm", "Two-Handed Scythe", "Staff", "Two-Handed Sword"]],
     [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]],
     [ItemGroup.BODY, ["Body Marking"]],
@@ -42,6 +45,7 @@ export const itemGroups = new Map([
     [ItemGroup.HEADSTONES, ["Headstone"]],
     [ItemGroup.EMBLEMS, ["Emblem"]],
     [ItemGroup.PLAYER_TITLES, ["Player Title (Prefix)", "Player Title (Suffix)"]],
+    [ItemGroup.PETS, ["Pet"]],
 ]);
 
 export enum SideBarType {
@@ -53,6 +57,7 @@ type Configuration = {
     showMounts: boolean,
     showHorseArmor: boolean,
     showTrophies: boolean,
+    showBackTrophies: boolean,
     showArmor: boolean,
     showWeapons: boolean,
     showBody: boolean,
@@ -61,6 +66,7 @@ type Configuration = {
     showHeadstones: boolean,
     showEmblems: boolean,
     showPlayerTitles: boolean,
+    showPets: boolean,
     showPremium: boolean,
     showPromotional: boolean,
     showOutOfRotation: boolean,
@@ -77,6 +83,7 @@ const DEFAULT_CONFIG: Configuration = {
     showMounts: true,
     showHorseArmor: true,
     showTrophies: true,
+    showBackTrophies: true,
     showArmor: true,
     showWeapons: true,
     showBody: true,
@@ -85,6 +92,7 @@ const DEFAULT_CONFIG: Configuration = {
     showHeadstones: true,
     showEmblems: true,
     showPlayerTitles: true,
+    showPets: true,
     showPremium: true,
     showPromotional: true,
     showOutOfRotation: true,

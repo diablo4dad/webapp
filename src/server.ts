@@ -38,7 +38,7 @@ export function generateEditCategoryUrl(collection: DadCollection): string {
 }
 
 async function fetchDb(masterGroup: MasterGroup, page: number = 0): Promise<StrapiResultSet<StrapiCollection>> {
-    return await (await fetch(getCollectionUri(masterGroup, page, 25, MODE))).json() as Promise<StrapiResultSet<StrapiCollection>>;
+    return await (await fetch(getCollectionUri(masterGroup, page, 50, MODE))).json() as Promise<StrapiResultSet<StrapiCollection>>;
 }
 export {getCollectionUri};
 export {countTotalInCollectionUri};
