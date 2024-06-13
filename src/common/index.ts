@@ -1,3 +1,29 @@
+type Configuration = {
+  showMounts: boolean;
+  showHorseArmor: boolean;
+  showTrophies: boolean;
+  showBackTrophies: boolean;
+  showArmor: boolean;
+  showWeapons: boolean;
+  showBody: boolean;
+  showEmotes: boolean;
+  showTownPortals: boolean;
+  showHeadstones: boolean;
+  showEmblems: boolean;
+  showPlayerTitles: boolean;
+  showPets: boolean;
+  showPremium: boolean;
+  showPromotional: boolean;
+  showOutOfRotation: boolean;
+  showHiddenItems: boolean;
+  showUnobtainable: boolean;
+  hideCollectedItems: boolean;
+  hideCompleteCollections: boolean;
+  view: "card" | "list";
+  inverseCardLayout: boolean;
+  enableProgressBar: boolean;
+};
+
 enum MasterGroup {
   GENERAL = "General",
   SHOP_ITEMS = "Shop",
@@ -6,17 +32,7 @@ enum MasterGroup {
   CHALLENGE = "Challenge",
 }
 
-export const locale = {
-  [MasterGroup.SHOP_ITEMS]: "Cash Shop",
-  [MasterGroup.GENERAL]: "General",
-  [MasterGroup.PROMOTIONAL]: "Promotion",
-  [MasterGroup.SEASONS]: "Seasons",
-  [MasterGroup.CHALLENGE]: "Challenge",
-};
-
-export { MasterGroup };
-
-export enum ItemGroup {
+enum ItemGroup {
   MOUNTS = "mounts",
   HORSE_ARMOR = "horse_armor",
   TROPHIES = "trophies",
@@ -32,7 +48,20 @@ export enum ItemGroup {
   PETS = "pets",
 }
 
-export const itemGroups = new Map([
+enum SideBarType {
+  ITEM = "item",
+  CONFIG = "config",
+}
+
+const locale = {
+  [MasterGroup.SHOP_ITEMS]: "Cash Shop",
+  [MasterGroup.GENERAL]: "General",
+  [MasterGroup.PROMOTIONAL]: "Promotion",
+  [MasterGroup.SEASONS]: "Seasons",
+  [MasterGroup.CHALLENGE]: "Challenge",
+};
+
+const itemGroups = new Map([
   [ItemGroup.MOUNTS, ["Mount"]],
   [ItemGroup.HORSE_ARMOR, ["Horse Armor", "Cat Armor"]],
   [ItemGroup.TROPHIES, ["Trophy"]],
@@ -69,37 +98,6 @@ export const itemGroups = new Map([
   [ItemGroup.PETS, ["Pet"]],
 ]);
 
-export enum SideBarType {
-  ITEM = "item",
-  CONFIG = "config",
-}
-
-type Configuration = {
-  showMounts: boolean;
-  showHorseArmor: boolean;
-  showTrophies: boolean;
-  showBackTrophies: boolean;
-  showArmor: boolean;
-  showWeapons: boolean;
-  showBody: boolean;
-  showEmotes: boolean;
-  showTownPortals: boolean;
-  showHeadstones: boolean;
-  showEmblems: boolean;
-  showPlayerTitles: boolean;
-  showPets: boolean;
-  showPremium: boolean;
-  showPromotional: boolean;
-  showOutOfRotation: boolean;
-  showHiddenItems: boolean;
-  showUnobtainable: boolean;
-  hideCollectedItems: boolean;
-  hideCompleteCollections: boolean;
-  view: "card" | "list";
-  inverseCardLayout: boolean;
-  enableProgressBar: boolean;
-};
-
 const DEFAULT_CONFIG: Configuration = {
   showMounts: true,
   showHorseArmor: true,
@@ -126,5 +124,12 @@ const DEFAULT_CONFIG: Configuration = {
   inverseCardLayout: false,
 };
 
-export { DEFAULT_CONFIG };
+export {
+  DEFAULT_CONFIG,
+  SideBarType,
+  ItemGroup,
+  itemGroups,
+  MasterGroup,
+  locale,
+};
 export type { Configuration };
