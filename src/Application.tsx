@@ -18,7 +18,7 @@ import MobileHeader from "./MobileHeader";
 
 import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 
-import Account, {Direction} from "./Account";
+import Account, {Direction} from "./components/Account";
 import {auth} from "./firebase";
 import {Configuration, MasterGroup, SideBarType} from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";

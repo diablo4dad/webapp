@@ -1,6 +1,6 @@
 import styles from "./Account.module.css"
 import {User} from "firebase/auth";
-import {Google} from "./Icons";
+import {Google} from "../Icons";
 
 enum Direction {
     COLUMN,
