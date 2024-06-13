@@ -15,6 +15,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="mounts" checked={config.showMounts} flip={true} onChange={e => onChange({ ...config, showMounts: e.target.checked })}>Mounts</Toggle>
                 <Toggle name="horseArmor" checked={config.showHorseArmor} flip={true} onChange={e => onChange({ ...config, showHorseArmor: e.target.checked })}>Horse Armor</Toggle>
                 <Toggle name="trophies" checked={config.showTrophies} flip={true} onChange={e => onChange({ ...config, showTrophies: e.target.checked })}>Trophies</Toggle>
+                <Toggle name="backTrophies" checked={config.showBackTrophies} flip={true} onChange={e => onChange({ ...config, showBackTrophies: e.target.checked })}>Back Trophies</Toggle>
                 <Toggle name="armor" checked={config.showArmor} flip={true} onChange={e => onChange({ ...config, showArmor: e.target.checked })}>Armor</Toggle>
                 <Toggle name="weapons" checked={config.showWeapons} flip={true} onChange={e => onChange({ ...config, showWeapons: e.target.checked })}>Weapons</Toggle>
                 <Toggle name="body" checked={config.showBody} flip={true} onChange={e => onChange({ ...config, showBody: e.target.checked })}>Body Markings</Toggle>
@@ -23,6 +24,7 @@ function ConfigSidebar({ config = DEFAULT_CONFIG, onChange }: ConfigSidebarProps
                 <Toggle name="headstones" checked={config.showHeadstones} flip={true} onChange={e => onChange({ ...config, showHeadstones: e.target.checked })}>Headstones</Toggle>
                 <Toggle name="emblem" checked={config.showEmblems} flip={true} onChange={e => onChange({ ...config, showEmblems: e.target.checked })}>Emblems</Toggle>
                 <Toggle name="playerTitles" checked={config.showPlayerTitles} flip={true} onChange={e => onChange({ ...config, showPlayerTitles: e.target.checked })}>Player Titles</Toggle>
+                <Toggle name="pets" checked={config.showPets} flip={true} onChange={e => onChange({ ...config, showPets: e.target.checked })}>Pets</Toggle>
             </fieldset>
             <fieldset className={styles.Fieldset}>
                 <legend>Filters</legend>

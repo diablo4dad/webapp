@@ -120,6 +120,7 @@ function ItemSidebar({collectionItem, collected, hidden, onClickCollected, onCli
                 </div>
             </div>
             <div className={styles.ItemTags}>
+                {collectionItem.season && <span className={styles.ItemTag}>Season {collectionItem.season}</span>}
                 {collectionItem.premium && <span className={styles.ItemTag}>Premium</span>}
                 {collectionItem.outOfRotation && <span className={styles.ItemTag}>Out of Rotation</span>}
                 {collectionItem.unobtainable && <span className={styles.ItemTag}>Unobtainable</span>}

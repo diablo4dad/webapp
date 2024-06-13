@@ -3,6 +3,49 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+### Added
+
+#### Essential Collection
+
+- "March of the Goblins" collection
+- "Vessel of Hatred" collection
+- "Blazon of Victory" to Challenge collection
+- "Asheara" pet to Quest collection
+
+#### Tejal's Shop
+
+- "Path of the Hydra" accessories
+- "Path of the Ash Knight" accessories
+- "Path of the Deathspeaker" accessories
+- "Path of Ursa" accessories
+- "Path of Hell's Champion" accessories
+- "Sounds of War" barbarian bundle
+- "The Demon's Heart" barbarian bundle
+- "The Iron Martyr" barbarian bundle
+- "Brazen Bull" barbarian bundle
+- "Master Brewer" druid bundle
+- "Corruption Subjugate" druid bundle
+- "Chorus of Light" necromancer bundle
+- "Void Jackal" necromancer bundle
+- "Festival Macabre" necromancer bundle
+- "Shadow of the Reaper" necromancer bundle
+- "The Face Collector" necromancer bundle
+- "The Grave Dancer" rogue bundle
+- "Nocturne of Steel" rogue bundle
+- "Fellowship of the Sun" sorcerer bundle
+- "Golden Nymphaea" sorcerer bundle
+- "Caged Storm" sorcerer bundle
+- "Witch of the Woods" sorcerer bundle
+- "Corvid Duelist" sorcerer bundle
+- "Corruption Subjugate" mount bundle
+- "The Profaned Knight" mount bundle
+- "The Silver Stag" mount bundle
+
+## Updated
+
+- "Pet" and "Back Trophy" filters
+- "Taiga Roan Steed" marked as unobtainable
+
 ## [1.6.6] - 2024-05-25
 
 ### Added
