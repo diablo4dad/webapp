@@ -26,6 +26,7 @@ import {
   getItemName,
   getItemType,
 } from "./data/getters";
+import { doesHaveWardrobePlaceholder } from "./data/predicates";
 
 function generateEditUrl(item: DadCollectionItem): string {
   return (
@@ -73,6 +74,18 @@ type ItemProps = {
   onClickCollected: (collected: boolean) => void;
   onClickHidden: (hidden: boolean) => void;
 };
+
+function getWardrobeIconLabel(ci: DadCollectionItem): string {
+  if (ci.items.every(doesHaveWardrobePlaceholder)) {
+    return "Yes";
+  }
+
+  if (ci.items.some(doesHaveWardrobePlaceholder)) {
+    return "Some Classes";
+  }
+
+  return "No";
+}
 
 function ItemSidebar({
   collectionItem,
@@ -230,7 +243,10 @@ function ItemSidebar({
               </span>
             )}
           </div>
-          <div>Image ID: {item.iconId}</div>
+          {process.env.NODE_ENV === "development" && (
+            <div>Image ID: {item.iconId}</div>
+          )}
+          <div>Wardrobe Icon: {getWardrobeIconLabel(collectionItem)}</div>
         </div>
       </div>
     </div>

@@ -1,6 +1,8 @@
 import { DadCollection, DadCollectionItem, DadDb } from "./index";
 import { Configuration, getEnabledItemTypes } from "../common";
 
+import { doesHaveWardrobePlaceholder } from "./predicates";
+
 function filterCollectionItems(
   db: DadDb,
   filter: (dci: DadCollectionItem) => boolean,
@@ -45,6 +47,13 @@ function filterOutOfRotationItems(): (dci: DadCollectionItem) => boolean {
 
 function filterUnobtainableItems(): (dci: DadCollectionItem) => boolean {
   return (dci: DadCollectionItem) => dci.unobtainable !== true;
+}
+
+export function filterWardrobePlaceholderItems(): (
+  dci: DadCollectionItem,
+) => boolean {
+  return (dci: DadCollectionItem) =>
+    dci.items.filter(doesHaveWardrobePlaceholder).length !== 0;
 }
 
 function filterCollectedItems(
@@ -92,6 +101,10 @@ export function filterDb(
 
   if (config.hideCollectedItems) {
     db = filterCollectionItems(db, filterCollectedItems(isCollected));
+  }
+
+  if (config.showWardrobePlaceholdersOnly) {
+    db = filterCollectionItems(db, filterWardrobePlaceholderItems());
   }
 
   return db;
