@@ -193,8 +193,6 @@ function Application(): ReactElement<HTMLDivElement> {
           collections: [...existing.collections, ...nextPage.collections],
         }));
 
-        console.log("DBBB", nextPage);
-
         // bump page count
         if (resp.meta.pagination.page === resp.meta.pagination.pageCount) {
           pageRef.current = -1;
