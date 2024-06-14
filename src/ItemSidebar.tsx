@@ -181,7 +181,11 @@ function ItemSidebar({
               <span>
                 {" "}
                 |{" "}
-                <a href={generateEditUrl(collectionItem)} target="_blank">
+                <a
+                  href={generateEditUrl(collectionItem)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Edit
                 </a>
               </span>
