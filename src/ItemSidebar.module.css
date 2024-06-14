@@ -155,7 +155,8 @@
 }
 
 .ItemTags {
-    margin-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .ItemTag {
@@ -165,12 +166,16 @@
     background-color: #2d3239;
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
+    margin-bottom: 0.5rem;
 }
 
-.ItemTag:first-child {
-    margin-left: 1rem;
+.ItemTag:last-child {
+    margin-bottom: 1rem;
+}
+
+
+.ItemTag:not(:last-child) {
+    margin-right: 0.5rem;
 }
 
 .ItemTagIcon {
