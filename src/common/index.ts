@@ -17,6 +17,7 @@ type Configuration = {
   showOutOfRotation: boolean;
   showHiddenItems: boolean;
   showUnobtainable: boolean;
+  showWardrobePlaceholdersOnly: boolean;
   hideCollectedItems: boolean;
   hideCompleteCollections: boolean;
   view: "card" | "list";
@@ -104,6 +105,15 @@ const itemGroups = new Map([
   [ItemGroup.PETS, ["Pet"]],
 ]);
 
+const wardrobeIcons = [
+  ...(itemGroups.get(ItemGroup.ARMOR) ?? []),
+  ...(itemGroups.get(ItemGroup.WEAPONS) ?? []),
+  ...(itemGroups.get(ItemGroup.BACK_TROPHIES) ?? []),
+  ...(itemGroups.get(ItemGroup.TOWN_PORTALS) ?? []),
+  ...(itemGroups.get(ItemGroup.HEADSTONES) ?? []),
+  ...(itemGroups.get(ItemGroup.PETS) ?? []),
+];
+
 const DEFAULT_CONFIG: Configuration = {
   showMounts: true,
   showHorseArmor: true,
@@ -123,6 +133,7 @@ const DEFAULT_CONFIG: Configuration = {
   showOutOfRotation: true,
   showHiddenItems: false,
   showUnobtainable: false,
+  showWardrobePlaceholdersOnly: false,
   hideCollectedItems: false,
   hideCompleteCollections: false,
   view: "card",
@@ -157,6 +168,7 @@ export {
   ItemGroup,
   ContentType,
   itemGroups,
+  wardrobeIcons,
   MasterGroup,
   locale,
   getEnabledItemTypes,

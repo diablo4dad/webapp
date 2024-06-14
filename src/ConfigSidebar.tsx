@@ -183,6 +183,19 @@ function ConfigSidebar({
           Show Unobtainable
         </Toggle>
         <Toggle
+          name="showWardrobePlaceholdersOnly"
+          checked={config.showWardrobePlaceholdersOnly}
+          flip={true}
+          onChange={(e) =>
+            onChange({
+              ...config,
+              showWardrobePlaceholdersOnly: e.target.checked,
+            })
+          }
+        >
+          Show Wardrobe Icons Only
+        </Toggle>
+        <Toggle
           name="showExcludedItems"
           checked={config.showHiddenItems}
           flip={true}
