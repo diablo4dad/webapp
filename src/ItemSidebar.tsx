@@ -1,4 +1,8 @@
-import { DadCollectionItem, DadItem } from "./data";
+import {
+  DadCollectionItem,
+  DadItem,
+  getDefaultItemFromCollectionItems,
+} from "./data";
 import styles from "./ItemSidebar.module.css";
 import necromancer from "./image/necromancer.webp";
 import druid from "./image/druid.webp";
@@ -14,7 +18,7 @@ import premium from "./image/premiumclip.webp";
 import unobtainable from "./image/unobtainableclip.webp";
 import oor from "./image/oorclip.webp";
 import Toggle from "./Toggle";
-import { getDefaultItemFromCollectionItems, SERVER_ADDR } from "./config";
+import { SERVER_ADDR } from "./config";
 import { ItemGroup, itemGroups } from "./common";
 import {
   getImageUri,
