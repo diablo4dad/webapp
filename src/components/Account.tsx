@@ -14,12 +14,6 @@ type Props = {
   direction?: Direction;
 };
 
-function getBlockCssClasses(direction: Direction): string {
-  return classNames(styles.Block, {
-    [styles.Row]: direction === Direction.ROW,
-  });
-}
-
 function getActiveFromDate(currentUser: User): string {
   return new Date(currentUser.metadata.creationTime ?? "").toLocaleDateString();
 }
@@ -29,9 +23,14 @@ function Account({
   onLogout,
   direction = Direction.COLUMN,
 }: Props) {
+  const blockCssClass = classNames({
+    [styles.Block]: true,
+    [styles.Row]: direction === Direction.ROW,
+  });
+
   return (
-    <div className={getBlockCssClasses(direction)}>
-      <div className={styles.Text}>
+    <div className={blockCssClass}>
+      <div className={styles.Meta}>
         <div className={styles.TextLine1}>{currentUser.email}</div>
         <div className={styles.TextLine2}>
           <span className={styles.TextActive}>
