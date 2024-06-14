@@ -7,6 +7,7 @@ enum BtnColours {
   BattleNet,
   Green,
   Red,
+  Dark,
 }
 
 type Props = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> & {
@@ -32,6 +33,8 @@ function Button({
         return styles.BtnGreen;
       case BtnColours.Red:
         return styles.BtnRed;
+      case BtnColours.Dark:
+        return styles.BtnDark;
       default:
         return styles.BtnGrey;
     }

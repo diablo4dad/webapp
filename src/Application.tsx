@@ -28,7 +28,7 @@ import {
 } from "./config";
 import Progress from "./Progress";
 import { Discord, Gear, Hamburger } from "./Icons";
-import Button from "./Button";
+import Button, { BtnColours } from "./Button";
 import Authenticate, { AuthGiant, Orientation } from "./Authenticate";
 import MobileMenu from "./MobileMenu";
 import MobileCloseButton from "./MobileCloseButton";
@@ -411,6 +411,7 @@ function Application(): ReactElement<HTMLDivElement> {
                   onClick={onToggleConfig}
                   pressed={sideBar === SideBarType.CONFIG}
                   showOnly={"desktop"}
+                  colour={BtnColours.Dark}
                 >
                   <Gear />
                 </Button>

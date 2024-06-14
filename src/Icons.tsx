@@ -7,8 +7,6 @@ type Props = {
 function ChevronRight() {
   return (
     <svg
-      stroke="currentColor"
-      fill="currentColor"
       strokeWidth="0"
       viewBox="0 0 20 20"
       aria-hidden="true"
