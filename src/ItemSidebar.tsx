@@ -10,6 +10,9 @@ import wt3 from "./image/wt3.webp";
 import wt4 from "./image/wt4.webp";
 import series from "./image/seriesclip.webp";
 import season from "./image/seasonclip.webp";
+import premium from "./image/premiumclip.webp";
+import unobtainable from "./image/unobtainableclip.webp";
+import oor from "./image/oorclip.webp";
 import Toggle from "./Toggle";
 import { getDefaultItemFromCollectionItems, SERVER_ADDR } from "./config";
 import { ItemGroup, itemGroups } from "./common";
@@ -173,6 +176,38 @@ function ItemSidebar({
           </div>
         </div>
       )}
+      <div className={styles.ItemTags}>
+        {item.series && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={series} />
+            <span>{item.series.replaceAll('"', "")}</span>
+          </div>
+        )}
+        {collectionItem.season && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={season} />
+            <span>Season {collectionItem.season}</span>
+          </div>
+        )}
+        {collectionItem.premium && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={premium} />
+            <span>Premium</span>
+          </div>
+        )}
+        {collectionItem.outOfRotation && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={oor} />
+            <span>Out of Rotation</span>
+          </div>
+        )}
+        {collectionItem.unobtainable && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={unobtainable} />
+            <span>Unobtainable</span>
+          </div>
+        )}
+      </div>
       <div className={styles.ItemMeta}>
         <div>
           <div>
@@ -193,31 +228,6 @@ function ItemSidebar({
           </div>
           <div>Image ID: {item.iconId}</div>
         </div>
-        <div>
-          {item.series && (
-            <div className={styles.ItemSeries}>
-              <img
-                className={styles.ItemTagIcon}
-                src={collectionItem.season ? season : series}
-              />
-              <span>{item.series.replaceAll('"', "")}</span>
-            </div>
-          )}
-        </div>
-      </div>
-      <div className={styles.ItemTags}>
-        {collectionItem.season && (
-          <span className={styles.ItemTag}>Season {collectionItem.season}</span>
-        )}
-        {collectionItem.premium && (
-          <span className={styles.ItemTag}>Premium</span>
-        )}
-        {collectionItem.outOfRotation && (
-          <span className={styles.ItemTag}>Out of Rotation</span>
-        )}
-        {collectionItem.unobtainable && (
-          <span className={styles.ItemTag}>Unobtainable</span>
-        )}
       </div>
     </div>
   );
