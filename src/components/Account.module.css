@@ -4,7 +4,7 @@
     flex-direction: column-reverse;
 }
 
-.Text {
+.Meta {
 }
 
 .TextLine1 {
@@ -74,6 +74,6 @@
     margin-bottom: 0;
 }
 
-.Row .Text {
+.Row .Meta {
     text-align: right;
 }
