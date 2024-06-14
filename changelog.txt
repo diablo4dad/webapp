@@ -3,6 +3,12 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## Next
+
+### Fixed
+
+- Margins of tags when 4+ tags are shown
+
 ## [1.6.7] - 2024-06-14
 
 ### Added
@@ -11,7 +17,7 @@ collections.
 
 #### Essential Collection
 
-- "March of the Goblins" collection
+- "1st Year Anniversary" collection
 - "Vessel of Hatred" collection
 - "Blazon of Victory" to Challenge collection
 - "Asheara" pet to Quest collection
