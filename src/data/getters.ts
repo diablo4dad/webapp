@@ -1,4 +1,10 @@
-import { DadBase, DadCollection, DadCollectionItem, DadDb } from "./index";
+import {
+  DadBase,
+  DadCollection,
+  DadCollectionItem,
+  DadDb,
+  DEFAULT_ITEM,
+} from "./index";
 import missing from "../image/imgfill.png";
 
 export function getItemName(ci: DadCollectionItem): string {
@@ -104,4 +110,10 @@ export function getAllItemIds(collection: DadCollection): number[] {
 
 export function getImageUri(item: DadBase): string {
   return item.icon ?? missing;
+}
+
+export function getDefaultItemFromCollectionItems(
+  collectionItems: DadCollectionItem,
+): DadBase {
+  return collectionItems.items[0] ?? DEFAULT_ITEM;
 }

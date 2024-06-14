@@ -1,6 +1,5 @@
 import { DadCollection, DadCollectionItem, DadDb } from "./index";
-import { aggregateItemTypes } from "../config";
-import { Configuration } from "../common";
+import { Configuration, getEnabledItemTypes } from "../common";
 
 function filterCollectionItems(
   db: DadDb,
@@ -68,7 +67,7 @@ export function filterDb(
 ): DadDb {
   let db = filterCollectionItems(
     dadDb,
-    filterItemsByType(aggregateItemTypes(config)),
+    filterItemsByType(getEnabledItemTypes(config)),
   );
 
   if (!config.showPremium) {

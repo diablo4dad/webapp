@@ -53,6 +53,12 @@ enum SideBarType {
   CONFIG = "config",
 }
 
+enum ContentType {
+  MOBILE_MENU = "menu",
+  LEDGER = "ledger",
+  CONFIG = "config",
+}
+
 const locale = {
   [MasterGroup.SHOP_ITEMS]: "Cash Shop",
   [MasterGroup.GENERAL]: "General",
@@ -124,12 +130,35 @@ const DEFAULT_CONFIG: Configuration = {
   inverseCardLayout: false,
 };
 
+function getEnabledItemTypes(config: Configuration): string[] {
+  const safeGet = (flag: boolean, itemGroup: ItemGroup): string[] => {
+    return flag ? itemGroups.get(itemGroup) ?? [] : [];
+  };
+
+  return Array<string>()
+    .concat(safeGet(config.showMounts, ItemGroup.MOUNTS))
+    .concat(safeGet(config.showHorseArmor, ItemGroup.HORSE_ARMOR))
+    .concat(safeGet(config.showTrophies, ItemGroup.TROPHIES))
+    .concat(safeGet(config.showBackTrophies, ItemGroup.BACK_TROPHIES))
+    .concat(safeGet(config.showArmor, ItemGroup.ARMOR))
+    .concat(safeGet(config.showWeapons, ItemGroup.WEAPONS))
+    .concat(safeGet(config.showBody, ItemGroup.BODY))
+    .concat(safeGet(config.showEmotes, ItemGroup.EMOTES))
+    .concat(safeGet(config.showTownPortals, ItemGroup.TOWN_PORTALS))
+    .concat(safeGet(config.showHeadstones, ItemGroup.HEADSTONES))
+    .concat(safeGet(config.showEmblems, ItemGroup.EMBLEMS))
+    .concat(safeGet(config.showPlayerTitles, ItemGroup.PLAYER_TITLES))
+    .concat(safeGet(config.showPets, ItemGroup.PETS));
+}
+
 export {
   DEFAULT_CONFIG,
   SideBarType,
   ItemGroup,
+  ContentType,
   itemGroups,
   MasterGroup,
   locale,
+  getEnabledItemTypes,
 };
 export type { Configuration };

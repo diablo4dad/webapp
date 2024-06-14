@@ -20,12 +20,7 @@ import Ledger from "./Ledger";
 import useStore, { ItemFlag } from "./store";
 import ItemSidebar from "./ItemSidebar";
 import ConfigSidebar from "./ConfigSidebar";
-import {
-  ContentType,
-  DISCORD_INVITE_LINK,
-  LAST_UPDATED,
-  SITE_VERSION,
-} from "./config";
+import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "./config";
 import Progress from "./Progress";
 import { Discord, Gear, Hamburger } from "./Icons";
 import Button, { BtnColours } from "./Button";
@@ -38,7 +33,7 @@ import { GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
 
 import Account, { Direction } from "./components/Account";
 import { auth } from "./firebase";
-import { Configuration, MasterGroup, SideBarType } from "./common";
+import { Configuration, ContentType, MasterGroup, SideBarType } from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import { countTotalInCollectionUri, fetchDb } from "./server";
 import { toggleItem } from "./store/mutations";

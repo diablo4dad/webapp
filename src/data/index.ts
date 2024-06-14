@@ -203,3 +203,4 @@ export type {
   DadDb,
   DadBase,
 };
+export { getDefaultItemFromCollectionItems } from "./getters";

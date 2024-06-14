@@ -1,7 +1,10 @@
-import { DadCollection, DadCollectionItem } from "./data";
+import {
+  DadCollection,
+  DadCollectionItem,
+  getDefaultItemFromCollectionItems,
+} from "./data";
 import styles from "./Ledger.module.css";
 import { Store } from "./store";
-import { getDefaultItemFromCollectionItems } from "./config";
 import React, { DetailsHTMLAttributes, forwardRef } from "react";
 import { Currency, Tick, TickCircle } from "./Icons";
 import Button, { BtnColours } from "./Button";

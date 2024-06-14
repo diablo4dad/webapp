@@ -1,10 +1,9 @@
 import Authenticate, { AuthGiant } from "./Authenticate";
 import styles from "./MobileMenu.module.css";
-import { ContentType } from "./config";
 import { User } from "firebase/auth";
 import Account from "./components/Account";
 import React from "react";
-import { MasterGroup } from "./common";
+import { ContentType, MasterGroup } from "./common";
 
 type Props = {
   onNavigate: (place: ContentType, group?: MasterGroup) => void;
