@@ -105,6 +105,7 @@ export function runStoreMigrations(store: StoreData): StoreData {
 
     // remove junk entries
     store.collectionLog.entries = store.collectionLog.entries.filter(
+      // eslint-disable-next-line eqeqeq
       (i) => migration130.filter((m) => m.iid == i.id).length,
     );
 
