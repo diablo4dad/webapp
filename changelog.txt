@@ -5,6 +5,8 @@ collections.
 
 ### Added
 
+- "Pet" and "Back Trophy" filters
+
 #### Essential Collection
 
 - "March of the Goblins" collection
@@ -23,6 +25,7 @@ collections.
 - "The Demon's Heart" barbarian bundle
 - "The Iron Martyr" barbarian bundle
 - "Brazen Bull" barbarian bundle
+- "Might of the Sun" barbarian bundle
 - "Master Brewer" druid bundle
 - "Corruption Subjugate" druid bundle
 - "Chorus of Light" necromancer bundle
@@ -30,21 +33,29 @@ collections.
 - "Festival Macabre" necromancer bundle
 - "Shadow of the Reaper" necromancer bundle
 - "The Face Collector" necromancer bundle
+- "Priestess of Mohlon" necromancer bundle
 - "The Grave Dancer" rogue bundle
 - "Nocturne of Steel" rogue bundle
+- "Spirit of the Silver Fog" rogue bundle
 - "Fellowship of the Sun" sorcerer bundle
 - "Golden Nymphaea" sorcerer bundle
 - "Caged Storm" sorcerer bundle
 - "Witch of the Woods" sorcerer bundle
 - "Corvid Duelist" sorcerer bundle
+- "The Bitter Winter" sorcerer bundle
 - "Corruption Subjugate" mount bundle
 - "The Profaned Knight" mount bundle
 - "The Silver Stag" mount bundle
+- "Hydra's Tongue" mount bundle
+- "Winter's Vengeance" mount bundle
 
 ## Updated
 
-- "Pet" and "Back Trophy" filters
+- Appearance of the Collection Menu button
+- Improved the layout and appearance of item tags on the sidebar
+- Moved pre-purchase and deluxe transmogs into Software Purchase collection
 - "Taiga Roan Steed" marked as unobtainable
+- Moved "Well-Wisher" title to Quests collection
 
 ## [1.6.6] - 2024-05-25
 
