@@ -16,6 +16,7 @@ import series from "./image/seriesclip.webp";
 import season from "./image/seasonclip.webp";
 import premium from "./image/premiumclip.webp";
 import unobtainable from "./image/unobtainableclip.webp";
+import wardrobe from "./image/wardrobeclip.webp";
 import oor from "./image/oorclip.webp";
 import Toggle from "./Toggle";
 import { SERVER_ADDR } from "./config";
@@ -212,6 +213,12 @@ function ItemSidebar({
             <span>Premium</span>
           </div>
         )}
+        {collectionItem.items.some(doesHaveWardrobePlaceholder) && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={wardrobe} />
+            <span>Wardrobe Icon</span>
+          </div>
+        )}
         {collectionItem.outOfRotation && (
           <div className={styles.ItemTag}>
             <img className={styles.ItemTagIcon} src={oor} />
@@ -246,7 +253,6 @@ function ItemSidebar({
           {process.env.NODE_ENV === "development" && (
             <div>Image ID: {item.iconId}</div>
           )}
-          <div>Wardrobe Icon: {getWardrobeIconLabel(collectionItem)}</div>
         </div>
       </div>
     </div>

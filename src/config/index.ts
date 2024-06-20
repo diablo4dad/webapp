@@ -1,4 +1,4 @@
-const VERSION = { major: 1, minor: 6, revision: 8 };
+const VERSION = { major: 1, minor: 6, revision: 9 };
 const SITE_VERSION = `${VERSION.major}.${VERSION.minor}.${VERSION.revision}`;
 const LAST_UPDATED = "June 14th, 2024";
 const DISCORD_INVITE_LINK = "https://discord.gg/mPRBrU2kYT";
