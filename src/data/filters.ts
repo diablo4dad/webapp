@@ -59,13 +59,21 @@ export function filterWardrobePlaceholderItems(): (
 function filterCollectedItems(
   isCollected: (strapiId: number) => boolean,
 ): (dci: DadCollectionItem) => boolean {
-  return (dci: DadCollectionItem) => !isCollected(dci.strapiId);
+  return (dci: DadCollectionItem) =>
+    !dci.items
+      .map((i) => i.itemId)
+      .map(Number)
+      .some(isCollected);
 }
 
 function filterHiddenItems(
   isHidden: (strapiId: number) => boolean,
 ): (dci: DadCollectionItem) => boolean {
-  return (dci: DadCollectionItem) => !isHidden(dci.strapiId);
+  return (dci: DadCollectionItem) =>
+    !dci.items
+      .map((i) => i.itemId)
+      .map(Number)
+      .some(isHidden);
 }
 
 export function filterDb(

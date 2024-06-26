@@ -36,14 +36,15 @@ import { auth } from "./firebase";
 import { Configuration, ContentType, MasterGroup, SideBarType } from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import { countTotalInCollectionUri, fetchDb } from "./server";
-import { toggleItem } from "./store/mutations";
+import { toggleItemFlag } from "./store/mutations";
 import NavMenu from "./NavMenu";
 import { selectItemOrDefault } from "./data/reducers";
 import { filterDb } from "./data/filters";
 import { flattenDadDb, strapiToDad } from "./data/transforms";
 import { countAllItemsDabDb } from "./data/aggregate";
-import { getAllItemIds, getDefaultItemId } from "./data/getters";
+import { getAllCollectionItems, getDefaultItemId } from "./data/getters";
 import { createEmptyDb } from "./data/factory";
+import { isItemCollected, isItemHidden } from "./store/predicate";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -283,13 +284,13 @@ function Application(): ReactElement<HTMLDivElement> {
     _: DadCollection,
     collectionItem: DadCollectionItem,
   ) {
-    store.toggle(collectionItem.strapiId, masterGroup);
+    toggleItemFlag(store)(collectionItem, ItemFlag.COLLECTED);
   }
 
   function onSelectAll(collection: DadCollection, selectAll: boolean) {
-    return getAllItemIds(collection).map(
-      toggleItem(store, masterGroup, selectAll),
-    );
+    return getAllCollectionItems(collection).map((ci) => {
+      return toggleItemFlag(store)(ci, ItemFlag.COLLECTED, selectAll);
+    });
   }
 
   function onConfigChange(config: Configuration) {
@@ -438,9 +439,8 @@ function Application(): ReactElement<HTMLDivElement> {
                 {store.loadConfig().enableProgressBar && (
                   <Progress
                     totalCollected={
-                      collectionItems.filter((i) =>
-                        store.isCollected(i.strapiId),
-                      ).length
+                      collectionItems.filter((ci) => isItemCollected(store, ci))
+                        .length
                     }
                     collectionSize={countAllItemsDabDb(filteredDb)}
                   />
@@ -474,20 +474,21 @@ function Application(): ReactElement<HTMLDivElement> {
                     <>
                       <ItemSidebar
                         collectionItem={selectedCollectionItem}
-                        hidden={store.isHidden(selectedCollectionItemId)}
-                        collected={store.isCollected(selectedCollectionItemId)}
+                        hidden={isItemHidden(store, selectedCollectionItem)}
+                        collected={isItemCollected(
+                          store,
+                          selectedCollectionItem,
+                        )}
                         onClickCollected={(collected) =>
-                          store.toggle(
-                            selectedCollectionItemId,
-                            masterGroup,
+                          toggleItemFlag(store)(
+                            selectedCollectionItem,
                             ItemFlag.COLLECTED,
                             collected,
                           )
                         }
                         onClickHidden={(hidden) =>
-                          store.toggle(
-                            selectedCollectionItemId,
-                            masterGroup,
+                          toggleItemFlag(store)(
+                            selectedCollectionItem,
                             ItemFlag.HIDDEN,
                             hidden,
                           )
@@ -578,8 +579,7 @@ function Application(): ReactElement<HTMLDivElement> {
           <div className={styles.ProgressMobile}>
             <Progress
               totalCollected={
-                collectionItems.filter((i) => store.isCollected(i.strapiId))
-                  .length
+                collectionItems.filter((i) => isItemCollected(store, i)).length
               }
               collectionSize={countAllItemsDabDb(filteredDb)}
             />

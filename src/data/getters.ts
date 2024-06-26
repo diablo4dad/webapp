@@ -101,10 +101,12 @@ export function getDefaultItemId(dadDb: DadDb): number {
   return dadDb.collections[0]?.collectionItems[0]?.strapiId ?? -1;
 }
 
-export function getAllItemIds(collection: DadCollection): number[] {
+export function getAllCollectionItems(
+  collection: DadCollection,
+): DadCollectionItem[] {
   return [
-    ...collection.collectionItems.map((ci) => ci.strapiId),
-    ...collection.subcollections.flatMap(getAllItemIds),
+    ...collection.collectionItems,
+    ...collection.subcollections.flatMap(getAllCollectionItems),
   ];
 }
 
