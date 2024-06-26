@@ -19,6 +19,8 @@ import { countItemsInCollectionOwned } from "./store/aggregate";
 import { generateEditCategoryUrl } from "./server";
 import { onTouchStart } from "./common/dom";
 import { isItemCollected, isItemHidden } from "./store/predicate";
+import LazyImage from "./components/LazyImage";
+import placeholder from "./image/placeholder.webp";
 
 function computeLedgerClassName(
   isComplete: boolean,
@@ -185,10 +187,10 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
                 )}
                 key={collectionItem.strapiId}
               >
-                <img
+                <LazyImage
+                  placeholder={placeholder}
                   className={styles.ItemImage}
                   src={getImageUri(item)}
-                  loading="lazy"
                   alt={item.name}
                 />
                 <div className={styles.ItemInfo}>
