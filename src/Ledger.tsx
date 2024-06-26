@@ -18,6 +18,7 @@ import { countAllItemsInCollection } from "./data/aggregate";
 import { countItemsInCollectionOwned } from "./store/aggregate";
 import { generateEditCategoryUrl } from "./server";
 import { onTouchStart } from "./common/dom";
+import { isItemCollected, isItemHidden } from "./store/predicate";
 
 function computeLedgerClassName(
   isComplete: boolean,
@@ -42,8 +43,8 @@ function computeLedgerItemClassName(
 ) {
   return [
     styles.Item,
-    store.isCollected(collectionItem.strapiId) ? styles.ItemCollected : null,
-    store.isHidden(collectionItem.strapiId) ? styles.ItemHidden : null,
+    isItemCollected(store, collectionItem) ? styles.ItemCollected : null,
+    isItemHidden(store, collectionItem) ? styles.ItemHidden : null,
     collectionItem.premium ? styles.ItemPremium : null,
     collectionItem.items[0]?.magicType === "Unique" ? styles.ItemUnique : null,
   ]
@@ -172,9 +173,7 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
             );
 
             return hideCollectedItems &&
-              collectionItem.items.some((item) =>
-                store.isCollected(item.strapiId),
-              ) ? null : (
+              isItemCollected(store, collectionItem) ? null : (
               <div
                 className={ledgerItemClassName}
                 onClick={() => onClickItem(collection, collectionItem)}

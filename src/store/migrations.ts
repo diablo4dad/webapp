@@ -1,4 +1,10 @@
-import { ArtifactMeta, FirebaseData, ItemFlag, StoreData } from "./index";
+import {
+  ArtifactMeta,
+  FirebaseData,
+  ItemFlag,
+  StoreData,
+  VersionMeta,
+} from "./index";
 import migration130 from "./migrate1d3d0.json";
 import migration140 from "./migrate1d4d0.json";
 import migration141 from "./migrate1d4d1.json";
@@ -16,7 +22,7 @@ function isFirestoreData1d2d0(
 }
 
 function isPatchNeeded(
-  data: StoreData,
+  data: VersionMeta,
   major: number,
   minor: number,
   revision: number,
@@ -40,6 +46,8 @@ export function runFirestoreMigrations(
         version: VERSION,
         collectionLog: {
           entries: [],
+          collected: [],
+          hidden: [],
         },
       };
     }
@@ -48,7 +56,11 @@ export function runFirestoreMigrations(
     if (data.entries[0].flags !== undefined) {
       console.log("Running Firestore v1.0.0 migration...");
       return {
-        collectionLog: { entries: data.entries },
+        collectionLog: {
+          entries: data.entries,
+          collected: [],
+          hidden: [],
+        },
         version: {
           major: 1,
           minor: 0,
@@ -60,7 +72,11 @@ export function runFirestoreMigrations(
     // otherwise, it's v1.2.0
     console.log("Running Firestore v1.2.0 migration...");
     return {
-      collectionLog: { entries: data.entries ?? [] },
+      collectionLog: {
+        entries: data.entries ?? [],
+        collected: [],
+        hidden: [],
+      },
       version: {
         major: 1,
         minor: 2,
@@ -69,11 +85,24 @@ export function runFirestoreMigrations(
     };
   }
 
+  // adds collected and hidden arrays
+  if (isPatchNeeded(data, 1, 6, 10)) {
+    console.log("Running Firestore v1.6.10 migration...");
+    return {
+      ...data,
+      collectionLog: {
+        ...data.collectionLog,
+        collected: [],
+        hidden: [],
+      },
+    };
+  }
+
   // no migrations needed
   return data as FirebaseData;
 }
 
-export function runStoreMigrations(store: StoreData): StoreData {
+export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
   if (isPatchNeeded(store, 1, 2, 0)) {
     console.log("Running v1.2.0 migration...");
 
@@ -178,6 +207,44 @@ export function runStoreMigrations(store: StoreData): StoreData {
       major: 1,
       minor: 4,
       revision: 1,
+    };
+  }
+
+  if (isPatchNeeded(store, 1, 6, 10)) {
+    console.log("Running v1.6.10 migration...");
+
+    const migration169 = await import("./migrate1d6d9.json");
+    const collected = new Set<number>();
+    const hidden = new Set<number>();
+
+    store.collectionLog.entries.forEach((e) => {
+      // @ts-ignore
+      const lookup = migration169[String(e.id)];
+      if (!lookup) {
+        console.error("Could not map CMS item to item ID.", e);
+        return;
+      }
+
+      if (e.collected) {
+        lookup.map((v: String) => collected.add(Number(v)));
+      }
+
+      if (e.hidden) {
+        lookup.map((v: String) => hidden.add(Number(v)));
+      }
+    });
+
+    store.collectionLog = {
+      entries: [],
+      collected: Array.from(collected),
+      hidden: Array.from(hidden),
+    };
+
+    // bump schema
+    store.version = {
+      major: 1,
+      minor: 6,
+      revision: 9,
     };
   }
 

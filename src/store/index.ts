@@ -14,7 +14,11 @@ const DEFAULT_VIEW: ViewState = {
 };
 
 const DEFAULT_LOG: CollectionLog = {
+  // deprecated
   entries: [],
+  // current
+  collected: [],
+  hidden: [],
 };
 
 enum ItemFlag {
@@ -59,12 +63,7 @@ type Store = {
   init: (uid?: string) => void;
   isCollected: (artifactId: number) => boolean;
   isHidden: (artifactId: number) => boolean;
-  toggle: (
-    artifactId: number,
-    group: MasterGroup,
-    flag?: ItemFlag,
-    enabled?: boolean,
-  ) => void;
+  toggle: (artifactId: number, flag?: ItemFlag, enabled?: boolean) => void;
   saveConfig: (config: Configuration) => void;
   loadConfig: () => Configuration;
   saveView: (view: ViewState) => void;
@@ -76,29 +75,29 @@ type Store = {
   countCollected: (group: MasterGroup) => number;
 };
 
-type StoreData = {
+type VersionMeta = {
+  version?: {
+    major: number;
+    minor: number;
+    revision: number;
+  };
+};
+
+type StoreData = VersionMeta & {
   default?: boolean;
   config: Configuration;
   collectionLog: CollectionLog;
   view: ViewState;
-  version?: {
-    major: number;
-    minor: number;
-    revision: number;
-  };
 };
 
-type FirebaseData = {
+type FirebaseData = VersionMeta & {
   collectionLog: CollectionLog;
-  version?: {
-    major: number;
-    minor: number;
-    revision: number;
-  };
 };
 
 type CollectionLog = {
   entries: ArtifactMeta[];
+  collected: number[];
+  hidden: number[];
 };
 
 function initArtifactMeta(
@@ -127,6 +126,8 @@ function initStore(): StoreData {
     },
     collectionLog: {
       entries: [],
+      collected: [],
+      hidden: [],
     },
   };
 }
@@ -210,12 +211,12 @@ function useStore(): Store {
 
       if (uid) {
         const docRef = doc(firestore, "collections", uid);
-        getDoc(docRef).then((snapshot) => {
+        getDoc(docRef).then(async (snapshot) => {
           // instantiate new collection
           if (!snapshot.exists()) {
             console.log("Collection is empty.");
             const newData = loadFromLocalStorage();
-            const newDataPatched = runStoreMigrations(newData);
+            const newDataPatched = await runStoreMigrations(newData);
             setData(newDataPatched.collectionLog);
             setView(newDataPatched.view);
             setConfig(newDataPatched.config);
@@ -233,7 +234,9 @@ function useStore(): Store {
             ...firestoreDataSanitised,
           };
 
-          const storeDataPatched = runStoreMigrations(localStorageDataMerged);
+          const storeDataPatched = await runStoreMigrations(
+            localStorageDataMerged,
+          );
 
           console.log("Got Firestore Snapshot...", storeDataPatched);
 
@@ -245,11 +248,12 @@ function useStore(): Store {
       } else {
         // offline
         const newData = loadFromLocalStorage();
-        const newDataPatched = runStoreMigrations(newData);
-        setData(newDataPatched.collectionLog);
-        setView(newDataPatched.view);
-        setConfig(newDataPatched.config);
-        resolve(newDataPatched);
+        runStoreMigrations(newData).then((newDataPatched) => {
+          setData(newDataPatched.collectionLog);
+          setView(newDataPatched.view);
+          setConfig(newDataPatched.config);
+          resolve(newDataPatched);
+        });
       }
     });
   }
@@ -262,59 +266,52 @@ function useStore(): Store {
 
   function toggle(
     artifactId: number,
-    group: MasterGroup,
     flag: ItemFlag = ItemFlag.COLLECTED,
     enabled?: boolean,
   ) {
     function updateData(data: CollectionLog): CollectionLog {
-      const doesExist = data.entries.find((e) => e.id === artifactId);
-      if (!doesExist) {
-        const logEntry = initArtifactMeta(artifactId, group);
-
+      const workingSet = (() => {
         switch (flag) {
           case ItemFlag.COLLECTED:
-            logEntry.collected = enabled ?? true;
-            break;
+            return new Set(data.collected);
           case ItemFlag.HIDDEN:
-            logEntry.hidden = enabled ?? true;
-            break;
+            return new Set(data.hidden);
+          default:
+            return new Set<number>();
         }
+      })();
 
-        return {
-          ...data,
-          entries: [...data.entries, logEntry],
-        };
+      if (enabled ?? !workingSet.has(artifactId)) {
+        workingSet.add(artifactId);
+      } else {
+        workingSet.delete(artifactId);
       }
 
-      return {
-        entries: data.entries.map((e) => {
-          if (e.id !== artifactId) {
-            return e;
-          } else {
-            switch (flag) {
-              case ItemFlag.COLLECTED:
-                e.collected = enabled ?? !e.collected;
-                break;
-              case ItemFlag.HIDDEN:
-                e.hidden = enabled ?? !e.hidden;
-                break;
-            }
-
-            return e;
-          }
-        }),
-      };
+      switch (flag) {
+        case ItemFlag.COLLECTED:
+          return {
+            ...data,
+            collected: Array.from(workingSet),
+          };
+        case ItemFlag.HIDDEN:
+          return {
+            ...data,
+            hidden: Array.from(workingSet),
+          };
+        default:
+          return data;
+      }
     }
 
     setData(updateData);
   }
 
   function isCollected(artifactId: number): boolean {
-    return getLogEntry(artifactId).collected;
+    return data.collected.includes(artifactId);
   }
 
   function isHidden(artifactId: number): boolean {
-    return getLogEntry(artifactId).hidden;
+    return data.hidden.includes(artifactId);
   }
 
   function saveConfig(config: Configuration) {
@@ -408,5 +405,6 @@ export type {
   ViewState,
   VersionInfo,
   FirebaseData,
+  VersionMeta,
 };
 export { ItemFlag };

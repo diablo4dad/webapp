@@ -1,12 +1,13 @@
 import { ItemFlag, Store } from "./index";
-import { MasterGroup } from "../common";
+import { DadCollectionItem } from "../data";
 
-export function toggleItem(
+export function toggleItemFlag(
   store: Store,
-  masterGroup: MasterGroup,
-  collected: boolean,
-) {
-  return (itemId: number) => {
-    return store.toggle(itemId, masterGroup, ItemFlag.COLLECTED, collected);
+): (item: DadCollectionItem, flag: ItemFlag, enabled?: boolean) => void {
+  return (item: DadCollectionItem, flag: ItemFlag, enabled?: boolean) => {
+    item.items
+      .map((i) => i.itemId)
+      .map(Number)
+      .forEach((i) => store.toggle(i, flag, enabled));
   };
 }
