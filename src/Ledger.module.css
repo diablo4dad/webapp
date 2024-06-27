@@ -448,9 +448,22 @@
     animation: glow 1s infinite alternate;
 }
 
+.LedgerCardsInverse .ItemGlow {
+    animation: glow-inverse 1s infinite alternate;
+}
+
 @keyframes glow {
     from {
         box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+    }
+    to {
+        box-shadow: 0 0 0.5rem 0.25rem rgb(73, 159, 109, 0.75);
+    }
+}
+
+@keyframes glow-inverse {
+    from {
+        box-shadow: 0 0 0.5rem -0.25rem rgb(73, 159, 109, 0.25);
     }
     to {
         box-shadow: 0 0 0.5rem 0.25rem rgb(73, 159, 109, 0.75);
