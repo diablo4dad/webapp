@@ -3,22 +3,28 @@
 }
 
 .LedgerHeader {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+}
+
+.LedgerButton {
     display: flex;
-    justify-content: space-between;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
-
-    position: sticky;
-    top: 6rem;
-
-    z-index: 4;
-
-    padding: 1rem;
+    width: 100%;
 
     background-color: #303640;
     border-top: 1px solid #23272e;
     box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding: 1rem;
+
+    text-align: left;
 
     cursor: pointer;
 }
@@ -28,6 +34,8 @@
     margin: 0 0.5rem 0.25rem 0;
     /*text-shadow: 3px 3px 3px #111;*/
     font-size: 1.5rem;
+    text-align: left;
+    color: #fff;
 }
 
 .LedgerHeadingPlaceholder {
@@ -40,6 +48,10 @@
     width: 25rem;
     background-color: #ccc;
     color: transparent;
+}
+
+.LedgerContent {
+    transition: height 0.25s cubic-bezier(0, 0, 0, 1);
 }
 
 .ItemImagePlaceholder {
@@ -123,14 +135,14 @@
 }
 
 .LedgerCards .LedgerHeader {
-    position: inherit;
+    position: static;
 }
 
 .LedgerHidden {
     display: none;
 }
 
-.LedgerSubCollection .LedgerHeader {
+.LedgerSubCollection .LedgerButton {
     background-color: hsl(218 14% 20% / 1);
     /*height: 4rem;*/
     /*top: 11rem;*/
@@ -405,7 +417,7 @@
 }
 
 @media screen and (min-width: 1200px) {
-    .LedgerHeader {
+    .LedgerButton {
         top: 0;
         padding: 2rem 2rem;
         height: 6rem;

@@ -16,19 +16,26 @@ function LedgerSkeleton({ view, numItems = 3 }: Props) {
       }
     >
       <div className={styles.LedgerHeader}>
-        <div
-          className={styles.LedgerTitle + " " + styles.LedgerHeadingPlaceholder}
-        >
-          Loading...
-        </div>
-        <div
-          className={
-            styles.LedgerDescription + " " + styles.LedgerDescriptionPlaceholder
-          }
-        >
-          Loading Loading Loading...
+        <div className={styles.LedgerButton}>
+          <div
+            className={
+              styles.LedgerTitle + " " + styles.LedgerHeadingPlaceholder
+            }
+          >
+            Loading...
+          </div>
+          <div
+            className={
+              styles.LedgerDescription +
+              " " +
+              styles.LedgerDescriptionPlaceholder
+            }
+          >
+            Loading Loading Loading...
+          </div>
         </div>
       </div>
+
       <div className={styles.LedgerRow}>
         {new Array(numItems).fill(0).map((_, k) => (
           <div className={styles.Item} key={k}>
