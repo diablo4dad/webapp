@@ -44,12 +44,15 @@ function computeLedgerItemClassName(
   store: Store,
   collectionItem: DadCollectionItem,
 ) {
+  const isAshava = collectionItem.items[0]?.itemId === "1482434";
+
   return [
     styles.Item,
     isItemCollected(store, collectionItem) ? styles.ItemCollected : null,
     isItemHidden(store, collectionItem) ? styles.ItemHidden : null,
     collectionItem.premium ? styles.ItemPremium : null,
     collectionItem.items[0]?.magicType === "Unique" ? styles.ItemUnique : null,
+    isAshava && isItemCollected(store, collectionItem) ? styles.ItemGlow : null,
   ]
     .filter((cn) => cn !== null)
     .join(" ");
