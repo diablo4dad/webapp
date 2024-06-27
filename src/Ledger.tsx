@@ -5,7 +5,7 @@ import {
 } from "./data";
 import styles from "./Ledger.module.css";
 import { Store } from "./store";
-import React, { DetailsHTMLAttributes } from "react";
+import React, { DetailsHTMLAttributes, useEffect } from "react";
 import { Currency, Tick, TickCircle } from "./Icons";
 import Button, { BtnColours } from "./Button";
 import {
@@ -172,6 +172,11 @@ const Collection = ({
     parentCollection && !collection.description
       ? parentCollection.name
       : collection.description;
+
+  // preload the placeholder to prevent jank
+  useEffect(() => {
+    new Image().src = placeholder;
+  }, []);
 
   return (
     <AccordionItem
