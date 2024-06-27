@@ -5,7 +5,7 @@ import {
 } from "./data";
 import styles from "./Ledger.module.css";
 import { Store } from "./store";
-import React, { DetailsHTMLAttributes, forwardRef } from "react";
+import React, { DetailsHTMLAttributes } from "react";
 import { Currency, Tick, TickCircle } from "./Icons";
 import Button, { BtnColours } from "./Button";
 import {
@@ -54,6 +54,22 @@ function computeLedgerItemClassName(
     .filter((cn) => cn !== null)
     .join(" ");
 }
+
+type LedgerProps = {
+  collections: DadCollection[];
+  parentCollection?: DadCollection;
+  store: Store;
+  onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
+  onDoubleClickItem: (
+    collection: DadCollection,
+    item: DadCollectionItem,
+  ) => void;
+  onSelectAllToggle: (itemIds: DadCollection, selectAll: boolean) => void;
+  hideCollectedItems: boolean;
+  hideCompleteCollections: boolean;
+  inverseCardLayout: boolean;
+  view: "list" | "card";
+};
 
 type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
   collection: DadCollection;
@@ -120,22 +136,18 @@ const CollectionHeading = ({
   );
 };
 
-const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
-  {
-    collection,
-    parentCollection,
-    store,
-    onClickItem,
-    onDoubleClickItem,
-    onSelectAllToggle,
-    view,
-    hideCollectedItems,
-    hideCompleteCollections,
-    inverseCardLayout,
-    ...props
-  }: Props,
-  ref,
-) {
+const Collection = ({
+  collection,
+  parentCollection,
+  store,
+  onClickItem,
+  onDoubleClickItem,
+  onSelectAllToggle,
+  view,
+  hideCollectedItems,
+  hideCompleteCollections,
+  inverseCardLayout,
+}: Props) => {
   const collected = countItemsInCollectionOwned(store, collection);
   const total = countAllItemsInCollection(collection);
   const isComplete = collected === total;
@@ -159,138 +171,172 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
       : collection.description;
 
   return (
-    <Accordion
-      transition
-      transitionTimeout={250}
-      key={collection.strapiId}
+    <AccordionItem
       hidden={ledgerIsHidden}
       initialEntered={ledgerIsOpen}
-      onChange={() =>
-        store.toggleCollectionOpen(collection.strapiId, !ledgerIsOpen)
+      itemKey={collection.strapiId}
+      className={ledgerClassName}
+      headingProps={{
+        className: styles.LedgerHeader,
+      }}
+      buttonProps={{
+        className: styles.LedgerButton,
+      }}
+      contentProps={{
+        className: styles.LedgerContent,
+      }}
+      header={
+        <CollectionHeading
+          heading={heading}
+          description={description}
+          counter={counter}
+          editHref={generateEditCategoryUrl(collection.strapiId)}
+          isComplete={isComplete}
+          onSelectAllToggle={(selectAll: boolean) =>
+            onSelectAllToggle(collection, selectAll)
+          }
+        />
       }
     >
-      <AccordionItem
-        className={ledgerClassName}
-        headingProps={{
-          className: styles.LedgerHeader,
-        }}
-        buttonProps={{
-          className: styles.LedgerButton,
-        }}
-        contentProps={{
-          className: styles.LedgerContent,
-        }}
-        header={
-          <CollectionHeading
-            heading={heading}
-            description={description}
-            counter={counter}
-            editHref={generateEditCategoryUrl(collection.strapiId)}
-            isComplete={isComplete}
-            onSelectAllToggle={(selectAll: boolean) =>
-              onSelectAllToggle(collection, selectAll)
-            }
-          />
+      {({ state }) => {
+        // this is a heavy render; skip unless open
+        if (["exited", "unmounted"].includes(state.status)) {
+          return null;
         }
-      >
-        <div>
-          {hideCollectedItems && isComplete ? (
-            <div className={styles.LedgerNoMoreItems}>Complete!</div>
-          ) : (
-            <div
-              className={
-                collection.subcollections.length
-                  ? styles.LedgerSubCollection
-                  : styles.LedgerRow
-              }
-            >
-              {collection.collectionItems.map((collectionItem) => {
-                const item = getDefaultItemFromCollectionItems(collectionItem);
-                const ledgerItemClassName = computeLedgerItemClassName(
-                  store,
-                  collectionItem,
-                );
 
-                return hideCollectedItems &&
-                  isItemCollected(store, collectionItem) ? null : (
-                  <div
-                    className={ledgerItemClassName}
-                    onClick={() => onClickItem(collection, collectionItem)}
-                    onDoubleClick={() =>
-                      onDoubleClickItem(collection, collectionItem)
-                    }
-                    onTouchStart={onTouchStart(() =>
-                      onDoubleClickItem(collection, collectionItem),
-                    )}
-                    key={collectionItem.strapiId}
-                  >
-                    <LazyImage
-                      placeholder={placeholder}
-                      className={styles.ItemImage}
-                      src={getImageUri(item)}
-                      alt={item.name}
-                    />
-                    <div className={styles.ItemInfo}>
-                      <div className={styles.ItemName}>
-                        {getItemName(collectionItem)}
-                      </div>
-                      <div className={styles.ItemType}>
-                        <span>
-                          {getItemType(collectionItem)} | {collectionItem.claim}
-                        </span>
-                        <span
-                          className={styles.ItemIconPremiumTitle}
-                          hidden={!collectionItem.premium}
-                        >
-                          <Currency />
-                        </span>
-                      </div>
-                      <div className={styles.ItemClaimDescription}>
-                        {getItemDescription(collectionItem)}
-                      </div>
+        if (hideCollectedItems && isComplete) {
+          return <div className={styles.LedgerNoMoreItems}>Complete!</div>;
+        }
+
+        return (
+          <div
+            className={
+              collection.subcollections.length
+                ? styles.LedgerSubCollection
+                : styles.LedgerRow
+            }
+          >
+            {collection.collectionItems.map((collectionItem) => {
+              const item = getDefaultItemFromCollectionItems(collectionItem);
+              const ledgerItemClassName = computeLedgerItemClassName(
+                store,
+                collectionItem,
+              );
+
+              return hideCollectedItems &&
+                isItemCollected(store, collectionItem) ? null : (
+                <div
+                  className={ledgerItemClassName}
+                  onClick={() => onClickItem(collection, collectionItem)}
+                  onDoubleClick={() =>
+                    onDoubleClickItem(collection, collectionItem)
+                  }
+                  onTouchStart={onTouchStart(() =>
+                    onDoubleClickItem(collection, collectionItem),
+                  )}
+                  key={collectionItem.strapiId}
+                >
+                  <LazyImage
+                    placeholder={placeholder}
+                    className={styles.ItemImage}
+                    src={getImageUri(item)}
+                    alt={item.name}
+                  />
+                  <div className={styles.ItemInfo}>
+                    <div className={styles.ItemName}>
+                      {getItemName(collectionItem)}
                     </div>
-                    <div className={styles.ItemIcons}>
-                      <span
-                        className={
-                          styles.ItemIcon + " " + styles.ItemIconPremium
-                        }
-                      >
-                        <Currency></Currency>
+                    <div className={styles.ItemType}>
+                      <span>
+                        {getItemType(collectionItem)} | {collectionItem.claim}
                       </span>
                       <span
-                        className={
-                          styles.ItemIcon + " " + styles.ItemIconCollection
-                        }
+                        className={styles.ItemIconPremiumTitle}
+                        hidden={!collectionItem.premium}
                       >
-                        <TickCircle></TickCircle>
+                        <Currency />
                       </span>
+                    </div>
+                    <div className={styles.ItemClaimDescription}>
+                      {getItemDescription(collectionItem)}
                     </div>
                   </div>
-                );
-              })}
-              {collection.subcollections.map((subcollection) => {
-                return (
-                  <Ledger
-                    key={subcollection.strapiId}
-                    collection={subcollection}
-                    parentCollection={collection}
-                    store={store}
-                    onClickItem={onClickItem}
-                    onDoubleClickItem={onDoubleClickItem}
-                    onSelectAllToggle={onSelectAllToggle}
-                    hideCollectedItems={hideCollectedItems}
-                    hideCompleteCollections={hideCompleteCollections}
-                    inverseCardLayout={inverseCardLayout}
-                    view={view}
-                  ></Ledger>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </AccordionItem>
+                  <div className={styles.ItemIcons}>
+                    <span
+                      className={styles.ItemIcon + " " + styles.ItemIconPremium}
+                    >
+                      <Currency></Currency>
+                    </span>
+                    <span
+                      className={
+                        styles.ItemIcon + " " + styles.ItemIconCollection
+                      }
+                    >
+                      <TickCircle></TickCircle>
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+            <Ledger
+              collections={collection.subcollections}
+              parentCollection={collection}
+              store={store}
+              onClickItem={onClickItem}
+              onDoubleClickItem={onDoubleClickItem}
+              onSelectAllToggle={onSelectAllToggle}
+              view={store.loadConfig().view}
+              hideCollectedItems={store.loadConfig().hideCollectedItems}
+              hideCompleteCollections={
+                store.loadConfig().hideCompleteCollections
+              }
+              inverseCardLayout={store.loadConfig().inverseCardLayout}
+            ></Ledger>
+          </div>
+        );
+      }}
+    </AccordionItem>
+  );
+};
+
+const Ledger = ({
+  collections,
+  parentCollection,
+  store,
+  onClickItem,
+  onDoubleClickItem,
+  onSelectAllToggle,
+  view,
+  hideCollectedItems,
+  hideCompleteCollections,
+  inverseCardLayout,
+}: LedgerProps) => {
+  return (
+    <Accordion
+      allowMultiple
+      transition
+      transitionTimeout={250}
+      onStateChange={(e) => {
+        console.log("Status change...", e);
+        store.toggleCollectionOpen(Number(e.key), e.current.isEnter);
+      }}
+    >
+      {collections.map((collection) => (
+        <Collection
+          collection={collection}
+          parentCollection={parentCollection}
+          store={store}
+          onClickItem={onClickItem}
+          onDoubleClickItem={onDoubleClickItem}
+          onSelectAllToggle={onSelectAllToggle}
+          view={view}
+          hideCollectedItems={hideCollectedItems}
+          hideCompleteCollections={hideCompleteCollections}
+          inverseCardLayout={inverseCardLayout}
+        />
+      ))}
     </Accordion>
   );
-});
+};
 
 export default Ledger;

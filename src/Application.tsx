@@ -513,23 +513,19 @@ function Application(): ReactElement<HTMLDivElement> {
           <main className={styles.Content}>
             {content === ContentType.LEDGER && (
               <>
-                {filteredDb.collections.map((collection, index) => (
-                  <Ledger
-                    key={collection.strapiId}
-                    ref={(ref) => attachObserver(ref, index)}
-                    collection={collection}
-                    store={store}
-                    onClickItem={onClickItem}
-                    onDoubleClickItem={onDoubleClickItem}
-                    onSelectAllToggle={onSelectAll}
-                    view={store.loadConfig().view}
-                    hideCollectedItems={store.loadConfig().hideCollectedItems}
-                    hideCompleteCollections={
-                      store.loadConfig().hideCompleteCollections
-                    }
-                    inverseCardLayout={store.loadConfig().inverseCardLayout}
-                  />
-                ))}
+                <Ledger
+                  collections={filteredDb.collections}
+                  store={store}
+                  onClickItem={onClickItem}
+                  onDoubleClickItem={onDoubleClickItem}
+                  onSelectAllToggle={onSelectAll}
+                  view={store.loadConfig().view}
+                  hideCollectedItems={store.loadConfig().hideCollectedItems}
+                  hideCompleteCollections={
+                    store.loadConfig().hideCompleteCollections
+                  }
+                  inverseCardLayout={store.loadConfig().inverseCardLayout}
+                />
                 {(filteredDb.collections.length === 0 ||
                   loadingPromise.current !== null) && (
                   <>
