@@ -450,9 +450,9 @@
 
 @keyframes glow {
     from {
-        box-shadow: 0 0 0.5rem -0.25rem rgba(220, 167, 121, 0.75);
+        box-shadow: 0 0 0.25rem -0.25rem rgb(73, 159, 109, 0.25);
     }
     to {
-        box-shadow: 0 0 0.5rem 0.25rem rgba(220, 167, 121);
+        box-shadow: 0 0 0.5rem 0.25rem rgb(73, 159, 109, 0.75);
     }
 }
