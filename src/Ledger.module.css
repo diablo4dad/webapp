@@ -443,3 +443,16 @@
         margin: 0;
     }
 }
+
+.ItemGlow {
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 0.5rem -0.25rem rgb(73, 159, 109);
+    }
+    to {
+        box-shadow: 0 0 0.5rem 0.25rem rgb(73, 159, 109);
+    }
+}
