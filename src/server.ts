@@ -1,6 +1,6 @@
 import { MasterGroup } from "./common";
 import { MODE, SERVER_ADDR } from "./config";
-import { DadCollection, StrapiCollection, StrapiResultSet } from "./data";
+import { StrapiCollection, StrapiResultSet } from "./data";
 
 function countTotalInCollectionUri(
   masterGroup: MasterGroup,
@@ -56,12 +56,8 @@ function getCollectionUri(
   }
 }
 
-export function generateEditCategoryUrl(collection: DadCollection): string {
-  return (
-    SERVER_ADDR +
-    "/admin/content-manager/collectionType/api::collection.collection/" +
-    collection.strapiId
-  );
+export function generateEditCategoryUrl(strapiId: number): string {
+  return `${SERVER_ADDR}/admin/content-manager/collectionType/api::collection.collection/${strapiId}`;
 }
 
 async function fetchDb(

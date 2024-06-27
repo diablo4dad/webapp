@@ -11,3 +11,11 @@ export function toggleItemFlag(
       .forEach((i) => store.toggle(i, flag, enabled));
   };
 }
+
+export function toggleFlagForItemIds(
+  store: Store,
+): (itemIds: string[], flag: ItemFlag, enabled?: boolean) => void {
+  return (itemIds: string[], flag: ItemFlag, enabled?: boolean) => {
+    itemIds.map(Number).forEach((i) => store.toggle(i, flag, enabled));
+  };
+}

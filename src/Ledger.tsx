@@ -21,6 +21,7 @@ import { onTouchStart } from "./common/dom";
 import { isItemCollected, isItemHidden } from "./store/predicate";
 import LazyImage from "./components/LazyImage";
 import placeholder from "./image/placeholder.webp";
+import Accordion from "./components/Accordion";
 
 function computeLedgerClassName(
   isComplete: boolean,
@@ -63,11 +64,57 @@ type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
     collection: DadCollection,
     item: DadCollectionItem,
   ) => void;
-  onSelectAllToggle: (collection: DadCollection, selectAll: boolean) => void;
+  onSelectAllToggle: (itemIds: DadCollection, selectAll: boolean) => void;
   hideCollectedItems: boolean;
   hideCompleteCollections: boolean;
   inverseCardLayout: boolean;
   view: "list" | "card";
+};
+
+type CollectionHeadingProps = {
+  heading: string;
+  description: string;
+  counter: string;
+  editHref: string;
+  isComplete: boolean;
+  onSelectAllToggle: (selectAll: boolean) => void;
+};
+
+const CollectionHeading = ({
+  heading,
+  description,
+  counter,
+  editHref,
+  onSelectAllToggle,
+  isComplete,
+}: CollectionHeadingProps) => {
+  return (
+    <>
+      <div>
+        <h1 className={styles.LedgerTitle}>
+          {heading}
+          <span className={styles.LedgerCounter}>{counter}</span>
+          {process.env.NODE_ENV === "development" && (
+            <span className={styles.LedgerEdit}>
+              <span> | </span>
+              <a target="_blank" href={editHref} rel="noreferrer">
+                Edit
+              </a>
+            </span>
+          )}
+        </h1>
+        <div className={styles.LedgerDescription}>{description}</div>
+      </div>
+      <span className={styles.LedgerActions}>
+        <Button
+          colour={isComplete ? BtnColours.Green : BtnColours.Grey}
+          onClick={() => onSelectAllToggle(!isComplete)}
+        >
+          <Tick></Tick>
+        </Button>
+      </span>
+    </>
+  );
 };
 
 const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
@@ -89,6 +136,7 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
   const collected = countItemsInCollectionOwned(store, collection);
   const total = countAllItemsInCollection(collection);
   const isComplete = collected === total;
+  const counter = `[${collected}/${total}]`;
 
   const ledgerClassName = computeLedgerClassName(
     isComplete,
@@ -100,16 +148,31 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
   const ledgerIsHidden =
     collection.collectionItems.length === 0 &&
     collection.subcollections.length === 0;
-  const ledgerHeading =
+
+  const heading = collection.name;
+  const description =
     parentCollection && !collection.description
       ? parentCollection.name
       : collection.description;
 
   return (
-    <details
+    <Accordion
       {...props}
-      ref={ref}
+      // ref={ref}
       className={ledgerClassName}
+      summary={
+        <CollectionHeading
+          heading={heading}
+          description={description}
+          counter={counter}
+          editHref={generateEditCategoryUrl(collection.strapiId)}
+          isComplete={isComplete}
+          onSelectAllToggle={(selectAll: boolean) =>
+            onSelectAllToggle(collection, selectAll)
+          }
+        />
+      }
+      summaryClass={styles.LedgerHeader}
       key={collection.strapiId}
       hidden={ledgerIsHidden}
       open={ledgerIsOpen}
@@ -117,46 +180,6 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
         store.toggleCollectionOpen(collection.strapiId, e.currentTarget.open)
       }
     >
-      <summary className={styles.LedgerHeader}>
-        <div>
-          <h1 className={styles.LedgerTitle}>
-            {collection.name}
-            <span
-              className={styles.LedgerCounter}
-            >{`[${collected}/${total}]`}</span>
-            {process.env.NODE_ENV === "development" && (
-              <span className={styles.LedgerEdit}>
-                {" "}
-                |{" "}
-                <a
-                  target="_blank"
-                  href={generateEditCategoryUrl(collection)}
-                  rel="noreferrer"
-                >
-                  Edit
-                </a>
-              </span>
-            )}
-          </h1>
-          <div className={styles.LedgerDescription}>{ledgerHeading}</div>
-        </div>
-        <span className={styles.LedgerActions}>
-          <Button
-            colour={BtnColours.Green}
-            onClick={() => onSelectAllToggle(collection, false)}
-            hidden={!isComplete}
-          >
-            <Tick></Tick>
-          </Button>
-          <Button
-            colour={BtnColours.Grey}
-            onClick={() => onSelectAllToggle(collection, true)}
-            hidden={isComplete}
-          >
-            <Tick></Tick>
-          </Button>
-        </span>
-      </summary>
       {hideCollectedItems && isComplete ? (
         <div className={styles.LedgerNoMoreItems}>Complete!</div>
       ) : (
@@ -248,7 +271,7 @@ const Ledger = forwardRef<HTMLDetailsElement, Props>(function LedgerInner(
           })}
         </div>
       )}
-    </details>
+    </Accordion>
   );
 });
 
