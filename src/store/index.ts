@@ -6,6 +6,7 @@ import { runFirestoreMigrations, runStoreMigrations } from "./migrations";
 import { Configuration, DEFAULT_CONFIG, MasterGroup } from "../common";
 
 import { isScreenSmall } from "../common/dom";
+import { ArtifactMeta, CollectionLog, ItemFlag } from "../collection/type";
 
 const DEFAULT_VIEW: ViewState = {
   ledger: {
@@ -19,20 +20,6 @@ const DEFAULT_LOG: CollectionLog = {
   // current
   collected: [],
   hidden: [],
-};
-
-enum ItemFlag {
-  COLLECTED,
-  HIDDEN,
-}
-
-type ArtifactMeta = {
-  id: number;
-  collected: boolean;
-  hidden: boolean;
-  group: MasterGroup;
-  // deprecated:
-  flags?: ItemFlag[];
 };
 
 type ViewState = {
@@ -72,7 +59,6 @@ type Store = {
   isCollectionOpen: (collectionId: number) => boolean;
   setLastSelectedItem: (collectionId: number, itemId: number) => void;
   getLastSelectedItem: () => Selection | undefined;
-  countCollected: (group: MasterGroup) => number;
 };
 
 type VersionMeta = {
@@ -92,12 +78,6 @@ type StoreData = VersionMeta & {
 
 type FirebaseData = VersionMeta & {
   collectionLog: CollectionLog;
-};
-
-type CollectionLog = {
-  entries: ArtifactMeta[];
-  collected: number[];
-  hidden: number[];
 };
 
 function initArtifactMeta(
@@ -258,12 +238,6 @@ function useStore(): Store {
     });
   }
 
-  function getLogEntry(artifactId: number): ArtifactMeta {
-    const logEntry = data.entries.filter((l) => l.id === artifactId).pop();
-
-    return logEntry ?? initArtifactMeta(artifactId, MasterGroup.GENERAL);
-  }
-
   function toggle(
     artifactId: number,
     flag: ItemFlag = ItemFlag.COLLECTED,
@@ -374,11 +348,6 @@ function useStore(): Store {
     return loadView().lastSelected;
   }
 
-  function countCollected(group: MasterGroup): number {
-    return data.entries.filter((cl) => cl.group === group && cl.collected)
-      .length;
-  }
-
   return {
     init,
     toggle,
@@ -392,7 +361,6 @@ function useStore(): Store {
     isCollectionOpen,
     setLastSelectedItem,
     getLastSelectedItem,
-    countCollected,
   };
 }
 
@@ -400,11 +368,8 @@ export default useStore;
 export type {
   Store,
   StoreData,
-  ArtifactMeta,
-  CollectionLog,
   ViewState,
   VersionInfo,
   FirebaseData,
   VersionMeta,
 };
-export { ItemFlag };
