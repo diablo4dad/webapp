@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { CollectionLog } from "./type";
+import { toggleValueInArray } from "../common/arrays";
 
 const initialState: CollectionLog = {
   entries: [],
@@ -49,22 +50,6 @@ export function useCollection() {
 
 export function useCollectionDispatch() {
   return useContext(CollectionDispatchContext);
-}
-
-function toggleValueInArray<T>(array: T[], value: T, toggle: boolean): T[] {
-  if (toggle) {
-    if (array.includes(value)) {
-      return array;
-    } else {
-      return [...array, value];
-    }
-  } else {
-    if (array.includes(value)) {
-      return array.filter((e) => e !== value);
-    } else {
-      return array;
-    }
-  }
 }
 
 function collectionReducer(
