@@ -1,15 +1,10 @@
-import {
-  ArtifactMeta,
-  FirebaseData,
-  ItemFlag,
-  StoreData,
-  VersionMeta,
-} from "./index";
+import { FirebaseData, StoreData, VersionMeta } from "./index";
 import migration130 from "./migrate1d3d0.json";
 import migration140 from "./migrate1d4d0.json";
 import migration141 from "./migrate1d4d1.json";
 import { VERSION } from "../config";
 import { MasterGroup } from "../common";
+import { ArtifactMeta, ItemFlag } from "../collection/type";
 
 type FirestoreData1d2d0 = {
   entries: ArtifactMeta[];
@@ -107,7 +102,7 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
     console.log("Running v1.2.0 migration...");
 
     // convert flags to booleans
-    store.collectionLog.entries = store.collectionLog.entries.map((i) => {
+    store.collectionLog.entries = store.collectionLog.entries?.map((i) => {
       // this the preferred format for firestore queries
       if (i.flags) {
         i.collected = i.flags.includes(ItemFlag.COLLECTED);
@@ -133,13 +128,13 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
     delete store.default;
 
     // remove junk entries
-    store.collectionLog.entries = store.collectionLog.entries.filter(
+    store.collectionLog.entries = store.collectionLog.entries?.filter(
       // eslint-disable-next-line eqeqeq
       (i) => migration130.filter((m) => m.iid == i.id).length,
     );
 
     // remap collection items
-    store.collectionLog.entries = store.collectionLog.entries.map((i) => {
+    store.collectionLog.entries = store.collectionLog.entries?.map((i) => {
       // this the preferred format for firestore queries
       const migrationItem = migration130.filter((m) => m.iid == i.id);
       if (!migrationItem.length) {
@@ -168,7 +163,7 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
 
     // append "group" to every collection item
     store.collectionLog.entries = store.collectionLog.entries
-      .map((cl) => {
+      ?.map((cl) => {
         const updatedCl = { ...cl };
 
         if (migration140.general.includes(cl.id)) {
@@ -198,7 +193,7 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
     console.log("Running v1.4.1 migration...");
 
     // delete merged player titles
-    store.collectionLog.entries = store.collectionLog.entries.filter(
+    store.collectionLog.entries = store.collectionLog.entries?.filter(
       (cl) => !migration141.titles.includes(cl.id),
     );
 
@@ -217,7 +212,7 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
     const collected = new Set<number>();
     const hidden = new Set<number>();
 
-    store.collectionLog.entries.forEach((e) => {
+    store.collectionLog.entries?.forEach((e) => {
       // @ts-ignore
       const lookup = migration169[String(e.id)];
       if (!lookup) {

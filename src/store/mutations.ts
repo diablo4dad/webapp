@@ -1,5 +1,6 @@
-import { ItemFlag, Store } from "./index";
+import { Store } from "./index";
 import { DadCollectionItem } from "../data";
+import { ItemFlag } from "../collection/type";
 
 export function toggleItemFlag(
   store: Store,
