@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { VERSION } from "../config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { firestore } from "../firebase";
+import { firestore } from "../config/firebase";
 import { runFirestoreMigrations, runStoreMigrations } from "./migrations";
 
 import { isScreenSmall } from "../common/dom";

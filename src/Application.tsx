@@ -32,7 +32,7 @@ import MobileHeader from "./MobileHeader";
 import { GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
 
 import Account, { Direction } from "./components/Account";
-import { auth } from "./firebase";
+import { auth } from "./config/firebase";
 import { ContentType, MasterGroup, SideBarType } from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import { countTotalInCollectionUri, fetchDb } from "./server";
