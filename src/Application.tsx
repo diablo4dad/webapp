@@ -49,6 +49,7 @@ import { CollectionProvider } from "./collection/context";
 import { ItemFlag } from "./collection/type";
 import { useSettings } from "./settings/context";
 import { getLedgerViewSetting } from "./settings/accessor";
+import { saveSettings } from "./store/local";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -93,12 +94,8 @@ function Application(): ReactElement<HTMLDivElement> {
 
   // persist settings
   useEffect(() => {
-    console.log("Saving settings...");
-    store.saveConfig(settings);
-    // eslint-disable-next-line
+    saveSettings(settings);
   }, [settings]);
-
-  console.log("Settings updated..", settings);
 
   const [user, setUser] = useState<User | null>(null);
   const [db, setDb] = useState(createEmptyDb());

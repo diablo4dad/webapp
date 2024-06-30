@@ -5,6 +5,7 @@ import Application from "./Application";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SettingsProvider } from "./settings/context";
+import { getSettings } from "./store/local";
 
 const router = createBrowserRouter([
   {
@@ -13,12 +14,17 @@ const router = createBrowserRouter([
   },
 ]);
 
+// Loads settings from localStorage
+// If application has not been used before, these will be default
+const settings = getSettings();
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
+
 root.render(
   <React.StrictMode>
-    <SettingsProvider>
+    <SettingsProvider settings={settings}>
       <RouterProvider router={router} />
     </SettingsProvider>
   </React.StrictMode>,

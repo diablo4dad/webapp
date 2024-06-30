@@ -15,6 +15,7 @@ export type ArtifactMeta = {
   flags?: ItemFlag[];
 };
 
+// deprecated
 export type CollectionLog = {
   collected: number[];
   hidden: number[];

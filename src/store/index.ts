@@ -7,7 +7,7 @@ import { runFirestoreMigrations, runStoreMigrations } from "./migrations";
 import { isScreenSmall } from "../common/dom";
 import { CollectionLog, ItemFlag } from "../collection/type";
 import { LedgerView, Option, Settings } from "../settings/type";
-import { initialState } from "../settings/context";
+import { defaultSettings } from "../settings/context";
 
 const DEFAULT_VIEW: ViewState = {
   ledger: {
@@ -82,11 +82,11 @@ type FirebaseData = VersionMeta & {
   collectionLog: CollectionLog;
 };
 
-function initStore(): StoreData {
+export function initStore(): StoreData {
   return {
     version: VERSION,
     settings: {
-      ...initialState,
+      ...defaultSettings,
       [Option.LEDGER_VIEW]: isScreenSmall() ? LedgerView.LIST : LedgerView.CARD,
     },
     view: {
@@ -112,7 +112,7 @@ const debounce = (fn: Function, ms = 300) => {
 function useStore(): Store {
   const [data, setData] = useState(DEFAULT_LOG);
   const [view, setView] = useState(DEFAULT_VIEW);
-  const [config, setConfig] = useState<Settings>(initialState);
+  const [config, setConfig] = useState<Settings>(defaultSettings);
 
   const userId = useRef<string>();
 
@@ -121,7 +121,7 @@ function useStore(): Store {
     // this prevents overriding storage with defaults
     if (
       view === DEFAULT_VIEW &&
-      config === initialState &&
+      config === defaultSettings &&
       data === DEFAULT_LOG
     ) {
       return;
@@ -282,7 +282,7 @@ function useStore(): Store {
   }
 
   function loadConfig(): Settings {
-    return { ...initialState, ...config };
+    return { ...defaultSettings, ...config };
   }
 
   function loadView(): ViewState {
