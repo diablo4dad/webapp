@@ -1,5 +1,5 @@
 import styles from "./ConfigSidebar.module.css";
-import Toggle from "./Toggle";
+import Toggle from "./components/Toggle";
 import { useSettings, useSettingsDispatch } from "./settings/context";
 import { groups } from "./settings/menu";
 import { WidgetType } from "./common/widget";

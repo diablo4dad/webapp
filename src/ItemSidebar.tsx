@@ -18,7 +18,7 @@ import premium from "./image/premiumclip.webp";
 import unobtainable from "./image/unobtainableclip.webp";
 import wardrobe from "./image/wardrobeclip.webp";
 import oor from "./image/oorclip.webp";
-import Toggle from "./Toggle";
+import Toggle from "./components/Toggle";
 import { SERVER_ADDR } from "./config";
 import { ItemGroup, itemGroups } from "./common";
 import {
