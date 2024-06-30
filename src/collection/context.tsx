@@ -9,12 +9,12 @@ import {
 import { CollectionLog } from "./type";
 import { toggleValueInArray } from "../common/arrays";
 
-const initialState: CollectionLog = {
+export const defaultCollection: CollectionLog = {
   collected: [],
   hidden: [],
 };
 
-const defaultDispatch = () => initialState;
+const defaultDispatch = () => defaultCollection;
 
 export enum CollectionActionType {
   COLLECT = "collect",
@@ -27,12 +27,16 @@ export type CollectionAction = {
   toggle: boolean;
 };
 
-export const CollectionContext = createContext<CollectionLog>(initialState);
+export const CollectionContext =
+  createContext<CollectionLog>(defaultCollection);
 export const CollectionDispatchContext =
   createContext<Dispatch<CollectionAction>>(defaultDispatch);
 
 export function CollectionProvider({ children }: PropsWithChildren) {
-  const [collection, dispatch] = useReducer(collectionReducer, initialState);
+  const [collection, dispatch] = useReducer(
+    collectionReducer,
+    defaultCollection,
+  );
 
   return (
     <CollectionContext.Provider value={collection}>

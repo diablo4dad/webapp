@@ -14,9 +14,8 @@ import {
   Settings,
   StringOption,
 } from "./type";
-import { StoreData } from "../store";
 
-export const initialState: Settings = {
+export const defaultSettings: Settings = {
   // items
   [Option.SHOW_MOUNTS]: true,
   [Option.SHOW_HORSE_ARMOR]: true,
@@ -46,7 +45,7 @@ export const initialState: Settings = {
   [Option.PREFERRED_GENDER]: PreferredGender.MALE,
 };
 
-const defaultDispatch = () => initialState;
+const defaultDispatch = () => defaultSettings;
 
 export enum SettingsActionType {
   UPDATE = "update",
@@ -68,18 +67,22 @@ export type SettingsAction =
       value: boolean;
     };
 
-export const SettingsContext = createContext<Settings>(initialState);
+export const SettingsContext = createContext<Settings>(defaultSettings);
 export const SettingsDispatchContext =
   createContext<Dispatch<SettingsAction>>(defaultDispatch);
 
-export function SettingsProvider({ children }: PropsWithChildren) {
-  const [settings, dispatch] = useReducer(
+type Props = PropsWithChildren & {
+  settings?: Settings;
+};
+
+export function SettingsProvider({ children, settings }: Props) {
+  const [value, dispatch] = useReducer(
     settingsReducer,
-    loadSettingsFromStorage(initialState),
+    settings ?? defaultSettings,
   );
 
   return (
-    <SettingsContext.Provider value={settings}>
+    <SettingsContext.Provider value={value}>
       <SettingsDispatchContext.Provider value={dispatch}>
         {children}
       </SettingsDispatchContext.Provider>
@@ -103,21 +106,6 @@ function settingsReducer(settings: Settings, action: SettingsAction): Settings {
         [action.option]: action.value,
       };
     case SettingsActionType.RESET:
-      return initialState;
+      return defaultSettings;
   }
-}
-
-// this is a short term workaround
-function loadSettingsFromStorage(fallback: Settings): Settings {
-  const storeRaw = localStorage.getItem("d4log");
-  if (storeRaw === null) {
-    return fallback;
-  }
-
-  const storeData: StoreData = JSON.parse(storeRaw);
-  if (!storeData.settings) {
-    return fallback;
-  }
-
-  return storeData.settings;
 }
