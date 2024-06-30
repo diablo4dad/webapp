@@ -22,23 +22,11 @@ import { isItemCollected, isItemHidden } from "./store/predicate";
 import LazyImage from "./components/LazyImage";
 import placeholder from "./image/placeholder.webp";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
-
-function computeLedgerClassName(
-  isComplete: boolean,
-  hideComplete: boolean,
-  inverse: boolean,
-  view: "list" | "card",
-): string {
-  return [
-    styles.Ledger,
-    isComplete ? styles.LedgerComplete : null,
-    view === "card" ? styles.LedgerCards : null,
-    view === "card" && inverse ? styles.LedgerCardsInverse : null,
-    hideComplete && isComplete ? styles.LedgerHidden : null,
-  ]
-    .filter((i) => i !== null)
-    .join(" ");
-}
+import { useSettings } from "./settings/context";
+import { LedgerView, Option } from "./settings/type";
+import classNames from "classnames";
+import { isEnabled, isLedgerInverse, isLedgerView } from "./settings/predicate";
+import { isCollectionEmpty } from "./data/predicates";
 
 function computeLedgerItemClassName(
   store: Store,
@@ -68,10 +56,6 @@ type LedgerProps = {
     item: DadCollectionItem,
   ) => void;
   onSelectAllToggle: (itemIds: DadCollection, selectAll: boolean) => void;
-  hideCollectedItems: boolean;
-  hideCompleteCollections: boolean;
-  inverseCardLayout: boolean;
-  view: "list" | "card";
 };
 
 type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
@@ -84,10 +68,6 @@ type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
     item: DadCollectionItem,
   ) => void;
   onSelectAllToggle: (itemIds: DadCollection, selectAll: boolean) => void;
-  hideCollectedItems: boolean;
-  hideCompleteCollections: boolean;
-  inverseCardLayout: boolean;
-  view: "list" | "card";
 };
 
 type CollectionHeadingProps = {
@@ -146,32 +126,28 @@ const Collection = ({
   onClickItem,
   onDoubleClickItem,
   onSelectAllToggle,
-  view,
-  hideCollectedItems,
-  hideCompleteCollections,
-  inverseCardLayout,
 }: Props) => {
+  const settings = useSettings();
+
   const collected = countItemsInCollectionOwned(store, collection);
   const total = countAllItemsInCollection(collection);
   const isComplete = collected === total;
-  const counter = `[${collected}/${total}]`;
-
-  const ledgerClassName = computeLedgerClassName(
-    isComplete,
-    hideCompleteCollections,
-    inverseCardLayout,
-    view,
-  );
+  const hideCollected = isEnabled(settings, Option.HIDE_COLLECTED);
   const ledgerIsOpen = store.isCollectionOpen(collection.strapiId);
-  const ledgerIsHidden =
-    collection.collectionItems.length === 0 &&
-    collection.subcollections.length === 0;
 
-  const heading = collection.name;
-  const description =
+  const headingLabel = collection.name;
+  const counterLabel = `[${collected}/${total}]`;
+  const descriptionLabel =
     parentCollection && !collection.description
       ? parentCollection.name
       : collection.description;
+
+  const className = classNames({
+    [styles.Ledger]: true,
+    [styles.LedgerComplete]: isComplete,
+    [styles.LedgerCards]: isLedgerView(settings, LedgerView.CARD),
+    [styles.LedgerCardsInverse]: isLedgerInverse(settings),
+  });
 
   // preload the placeholder to prevent jank
   useEffect(() => {
@@ -180,10 +156,10 @@ const Collection = ({
 
   return (
     <AccordionItem
-      hidden={ledgerIsHidden}
+      hidden={isCollectionEmpty(collection)}
       initialEntered={ledgerIsOpen}
       itemKey={collection.strapiId}
-      className={ledgerClassName}
+      className={className}
       headingProps={{
         className: styles.LedgerHeader,
       }}
@@ -195,9 +171,9 @@ const Collection = ({
       }}
       header={
         <CollectionHeading
-          heading={heading}
-          description={description}
-          counter={counter}
+          heading={headingLabel}
+          description={descriptionLabel}
+          counter={counterLabel}
           editHref={generateEditCategoryUrl(collection.strapiId)}
           isComplete={isComplete}
           onSelectAllToggle={(selectAll: boolean) =>
@@ -212,10 +188,6 @@ const Collection = ({
           return null;
         }
 
-        if (hideCollectedItems && isComplete) {
-          return <div className={styles.LedgerNoMoreItems}>Complete!</div>;
-        }
-
         return (
           <div
             className={
@@ -226,15 +198,19 @@ const Collection = ({
           >
             {collection.collectionItems.map((collectionItem) => {
               const item = getDefaultItemFromCollectionItems(collectionItem);
-              const ledgerItemClassName = computeLedgerItemClassName(
+              const isCollected = isItemCollected(store, collectionItem);
+              const className = computeLedgerItemClassName(
                 store,
                 collectionItem,
               );
 
-              return hideCollectedItems &&
-                isItemCollected(store, collectionItem) ? null : (
+              if (hideCollected && isCollected) {
+                return null;
+              }
+
+              return (
                 <div
-                  className={ledgerItemClassName}
+                  className={className}
                   onClick={() => onClickItem(collection, collectionItem)}
                   onDoubleClick={() =>
                     onDoubleClickItem(collection, collectionItem)
@@ -293,13 +269,7 @@ const Collection = ({
               onClickItem={onClickItem}
               onDoubleClickItem={onDoubleClickItem}
               onSelectAllToggle={onSelectAllToggle}
-              view={store.loadConfig().view}
-              hideCollectedItems={store.loadConfig().hideCollectedItems}
-              hideCompleteCollections={
-                store.loadConfig().hideCompleteCollections
-              }
-              inverseCardLayout={store.loadConfig().inverseCardLayout}
-            ></Ledger>
+            />
           </div>
         );
       }}
@@ -314,10 +284,6 @@ const Ledger = ({
   onClickItem,
   onDoubleClickItem,
   onSelectAllToggle,
-  view,
-  hideCollectedItems,
-  hideCompleteCollections,
-  inverseCardLayout,
 }: LedgerProps) => {
   return (
     <Accordion
@@ -331,16 +297,13 @@ const Ledger = ({
     >
       {collections.map((collection) => (
         <Collection
+          key={collection.strapiId}
           collection={collection}
           parentCollection={parentCollection}
           store={store}
           onClickItem={onClickItem}
           onDoubleClickItem={onDoubleClickItem}
           onSelectAllToggle={onSelectAllToggle}
-          view={view}
-          hideCollectedItems={hideCollectedItems}
-          hideCompleteCollections={hideCompleteCollections}
-          inverseCardLayout={inverseCardLayout}
         />
       ))}
     </Accordion>

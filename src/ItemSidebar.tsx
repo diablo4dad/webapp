@@ -146,16 +146,14 @@ function ItemSidebar({
           name="collected"
           checked={collected}
           onChange={(e) => onClickCollected(e.target.checked)}
-        >
-          Collected
-        </Toggle>
+          label={"Collected"}
+        />
         <Toggle
           name="hidden"
           checked={hidden}
           onChange={(e) => onClickHidden(e.target.checked)}
-        >
-          Hidden
-        </Toggle>
+          label={"Hidden"}
+        />
       </div>
       <div className={styles.ItemLocations}>
         <div className={styles.ItemLocation}>

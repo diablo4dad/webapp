@@ -1,27 +1,29 @@
-import { ChangeEventHandler, PropsWithChildren, useId } from "react";
+import { ChangeEventHandler, useId } from "react";
 import styles from "./Toggle.module.css";
+import classNames from "classnames";
 
 type ToggleProps = {
   name: string;
   checked?: boolean;
   disabled?: boolean;
   flip?: boolean;
+  label?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
 function Toggle({
   name,
-  children,
   onChange,
   disabled,
   flip,
+  label,
   checked = false,
-}: PropsWithChildren<ToggleProps>) {
+}: ToggleProps) {
   const id = useId();
-
-  const classes = [styles.toggle, flip ? styles.flip : ""]
-    .filter((x) => x !== "")
-    .join(" ");
+  const classes = classNames({
+    [styles.toggle]: true,
+    [styles.flip]: flip,
+  });
 
   return (
     <div className={classes}>
@@ -33,7 +35,7 @@ function Toggle({
         disabled={disabled}
         onChange={onChange}
       />
-      <label htmlFor={id}>{children}</label>
+      {label && <label htmlFor={id}>{label}</label>}
     </div>
   );
 }

@@ -1,29 +1,5 @@
-type Configuration = {
-  showMounts: boolean;
-  showHorseArmor: boolean;
-  showTrophies: boolean;
-  showBackTrophies: boolean;
-  showArmor: boolean;
-  showWeapons: boolean;
-  showBody: boolean;
-  showEmotes: boolean;
-  showTownPortals: boolean;
-  showHeadstones: boolean;
-  showEmblems: boolean;
-  showPlayerTitles: boolean;
-  showPets: boolean;
-  showPremium: boolean;
-  showPromotional: boolean;
-  showOutOfRotation: boolean;
-  showHiddenItems: boolean;
-  showUnobtainable: boolean;
-  showWardrobePlaceholdersOnly: boolean;
-  hideCollectedItems: boolean;
-  hideCompleteCollections: boolean;
-  view: "card" | "list";
-  inverseCardLayout: boolean;
-  enableProgressBar: boolean;
-};
+import { BooleanOption, Option, Settings } from "../settings/type";
+import { isEnabled } from "../settings/predicate";
 
 enum MasterGroup {
   GENERAL = "General",
@@ -114,56 +90,28 @@ const wardrobeIcons = [
   ...(itemGroups.get(ItemGroup.PETS) ?? []),
 ];
 
-const DEFAULT_CONFIG: Configuration = {
-  showMounts: true,
-  showHorseArmor: true,
-  showTrophies: true,
-  showBackTrophies: true,
-  showArmor: true,
-  showWeapons: true,
-  showBody: true,
-  showEmotes: true,
-  showTownPortals: true,
-  showHeadstones: true,
-  showEmblems: true,
-  showPlayerTitles: true,
-  showPets: true,
-  showPremium: true,
-  showPromotional: true,
-  showOutOfRotation: true,
-  showHiddenItems: false,
-  showUnobtainable: false,
-  showWardrobePlaceholdersOnly: false,
-  hideCollectedItems: false,
-  hideCompleteCollections: false,
-  view: "card",
-  enableProgressBar: true,
-  inverseCardLayout: false,
-};
-
-function getEnabledItemTypes(config: Configuration): string[] {
-  const safeGet = (flag: boolean, itemGroup: ItemGroup): string[] => {
-    return flag ? itemGroups.get(itemGroup) ?? [] : [];
+function getEnabledItemTypes(settings: Settings): string[] {
+  const safeGet = (option: BooleanOption, itemGroup: ItemGroup): string[] => {
+    return isEnabled(settings, option) ? itemGroups.get(itemGroup) ?? [] : [];
   };
 
   return Array<string>()
-    .concat(safeGet(config.showMounts, ItemGroup.MOUNTS))
-    .concat(safeGet(config.showHorseArmor, ItemGroup.HORSE_ARMOR))
-    .concat(safeGet(config.showTrophies, ItemGroup.TROPHIES))
-    .concat(safeGet(config.showBackTrophies, ItemGroup.BACK_TROPHIES))
-    .concat(safeGet(config.showArmor, ItemGroup.ARMOR))
-    .concat(safeGet(config.showWeapons, ItemGroup.WEAPONS))
-    .concat(safeGet(config.showBody, ItemGroup.BODY))
-    .concat(safeGet(config.showEmotes, ItemGroup.EMOTES))
-    .concat(safeGet(config.showTownPortals, ItemGroup.TOWN_PORTALS))
-    .concat(safeGet(config.showHeadstones, ItemGroup.HEADSTONES))
-    .concat(safeGet(config.showEmblems, ItemGroup.EMBLEMS))
-    .concat(safeGet(config.showPlayerTitles, ItemGroup.PLAYER_TITLES))
-    .concat(safeGet(config.showPets, ItemGroup.PETS));
+    .concat(safeGet(Option.SHOW_MOUNTS, ItemGroup.MOUNTS))
+    .concat(safeGet(Option.SHOW_HORSE_ARMOR, ItemGroup.HORSE_ARMOR))
+    .concat(safeGet(Option.SHOW_TROPHIES, ItemGroup.TROPHIES))
+    .concat(safeGet(Option.SHOW_BACK_TROPHIES, ItemGroup.BACK_TROPHIES))
+    .concat(safeGet(Option.SHOW_ARMOR, ItemGroup.ARMOR))
+    .concat(safeGet(Option.SHOW_WEAPONS, ItemGroup.WEAPONS))
+    .concat(safeGet(Option.SHOW_MARKINGS, ItemGroup.BODY))
+    .concat(safeGet(Option.SHOW_EMOTES, ItemGroup.EMOTES))
+    .concat(safeGet(Option.SHOW_PORTALS, ItemGroup.TOWN_PORTALS))
+    .concat(safeGet(Option.SHOW_HEADSTONES, ItemGroup.HEADSTONES))
+    .concat(safeGet(Option.SHOW_EMBLEMS, ItemGroup.EMBLEMS))
+    .concat(safeGet(Option.SHOW_TITLES, ItemGroup.PLAYER_TITLES))
+    .concat(safeGet(Option.SHOW_PETS, ItemGroup.PETS));
 }
 
 export {
-  DEFAULT_CONFIG,
   SideBarType,
   ItemGroup,
   ContentType,
@@ -173,4 +121,3 @@ export {
   locale,
   getEnabledItemTypes,
 };
-export type { Configuration };
