@@ -33,7 +33,7 @@ import { GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
 
 import Account, { Direction } from "./components/Account";
 import { auth } from "./firebase";
-import { Configuration, ContentType, MasterGroup, SideBarType } from "./common";
+import { ContentType, MasterGroup, SideBarType } from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
 import { countTotalInCollectionUri, fetchDb } from "./server";
 import { toggleItemFlag } from "./store/mutations";
@@ -47,6 +47,8 @@ import { createEmptyDb } from "./data/factory";
 import { isItemCollected, isItemHidden } from "./store/predicate";
 import { CollectionProvider } from "./collection/context";
 import { ItemFlag } from "./collection/type";
+import { useSettings } from "./settings/context";
+import { getLedgerViewSetting } from "./settings/accessor";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -87,6 +89,17 @@ type ViewModel = {
 
 function Application(): ReactElement<HTMLDivElement> {
   const store = useStore();
+  const settings = useSettings();
+
+  // persist settings
+  useEffect(() => {
+    console.log("Saving settings...");
+    store.saveConfig(settings);
+    // eslint-disable-next-line
+  }, [settings]);
+
+  console.log("Settings updated..", settings);
+
   const [user, setUser] = useState<User | null>(null);
   const [db, setDb] = useState(createEmptyDb());
   const [dbCount, setDbCount] = useState(0);
@@ -94,12 +107,7 @@ function Application(): ReactElement<HTMLDivElement> {
   const [content, setContent] = useState(ContentType.LEDGER);
   const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
   const history = useRef([ContentType.LEDGER]);
-  const filteredDb = filterDb(
-    db,
-    store.loadConfig(),
-    store.isHidden,
-    store.isCollected,
-  );
+  const filteredDb = filterDb(db, settings, store.isHidden, store.isCollected);
   const collectionItems = flattenDadDb(filteredDb);
   const lastSelected = store.getLastSelectedItem();
   const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(
@@ -295,10 +303,6 @@ function Application(): ReactElement<HTMLDivElement> {
     });
   }
 
-  function onConfigChange(config: Configuration) {
-    store.saveConfig(config);
-  }
-
   function onNavigate(content: ContentType, group?: MasterGroup) {
     setContent(pushHistory(content));
     if (group) {
@@ -439,19 +443,13 @@ function Application(): ReactElement<HTMLDivElement> {
                   />
                 </nav>
                 <div className={styles.HeaderAccountWidgets}>
-                  {store.loadConfig().enableProgressBar && (
-                    <Progress
-                      totalCollected={
-                        collectionItems.filter((ci) =>
-                          isItemCollected(store, ci),
-                        ).length
-                      }
-                      collectionSize={countAllItemsDabDb(filteredDb)}
-                    />
-                  )}
-                  {!store.loadConfig().enableProgressBar && (
-                    <div>{/*Progress Bar Disabled*/}</div>
-                  )}
+                  <Progress
+                    totalCollected={
+                      collectionItems.filter((ci) => isItemCollected(store, ci))
+                        .length
+                    }
+                    collectionSize={countAllItemsDabDb(filteredDb)}
+                  />
                   {user === null && (
                     <Authenticate
                       orientation={Orientation.ROW}
@@ -507,12 +505,7 @@ function Application(): ReactElement<HTMLDivElement> {
                         </footer>
                       </>
                     )}
-                    {sideBar === SideBarType.CONFIG && (
-                      <ConfigSidebar
-                        config={store.loadConfig()}
-                        onChange={onConfigChange}
-                      />
-                    )}
+                    {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
                   </section>
                 </div>
               </div>
@@ -526,26 +519,20 @@ function Application(): ReactElement<HTMLDivElement> {
                     onClickItem={onClickItem}
                     onDoubleClickItem={onDoubleClickItem}
                     onSelectAllToggle={onSelectAll}
-                    view={store.loadConfig().view}
-                    hideCollectedItems={store.loadConfig().hideCollectedItems}
-                    hideCompleteCollections={
-                      store.loadConfig().hideCompleteCollections
-                    }
-                    inverseCardLayout={store.loadConfig().inverseCardLayout}
                   />
                   {(filteredDb.collections.length === 0 ||
                     loadingPromise.current !== null) && (
                     <>
                       <LedgerSkeleton
-                        view={store.loadConfig().view}
+                        view={getLedgerViewSetting(settings)}
                         numItems={6}
                       />
                       <LedgerSkeleton
-                        view={store.loadConfig().view}
+                        view={getLedgerViewSetting(settings)}
                         numItems={6}
                       />
                       <LedgerSkeleton
-                        view={store.loadConfig().view}
+                        view={getLedgerViewSetting(settings)}
                         numItems={6}
                       />
                     </>
@@ -567,28 +554,23 @@ function Application(): ReactElement<HTMLDivElement> {
               {content === ContentType.CONFIG && (
                 <>
                   <MobileHeader>Settings</MobileHeader>
-                  <ConfigSidebar
-                    config={store.loadConfig()}
-                    onChange={onConfigChange}
-                  />
+                  <ConfigSidebar />
                   <MobileCloseButton onClick={() => setContent(popHistory())} />
                 </>
               )}
             </main>
           </div>
         </div>
-        {store.loadConfig().enableProgressBar &&
-          content === ContentType.LEDGER && (
-            <div className={styles.ProgressMobile}>
-              <Progress
-                totalCollected={
-                  collectionItems.filter((i) => isItemCollected(store, i))
-                    .length
-                }
-                collectionSize={countAllItemsDabDb(filteredDb)}
-              />
-            </div>
-          )}
+        {content === ContentType.LEDGER && (
+          <div className={styles.ProgressMobile}>
+            <Progress
+              totalCollected={
+                collectionItems.filter((i) => isItemCollected(store, i)).length
+              }
+              collectionSize={countAllItemsDabDb(filteredDb)}
+            />
+          </div>
+        )}
         <footer className={styles.Footer}>
           <DiscordInvite />
           <VersionInfo />

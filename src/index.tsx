@@ -4,6 +4,7 @@ import "./index.css";
 import Application from "./Application";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { SettingsProvider } from "./settings/context";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <SettingsProvider>
+      <RouterProvider router={router} />
+    </SettingsProvider>
   </React.StrictMode>,
 );
 

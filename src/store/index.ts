@@ -3,10 +3,11 @@ import { VERSION } from "../config";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { runFirestoreMigrations, runStoreMigrations } from "./migrations";
-import { Configuration, DEFAULT_CONFIG, MasterGroup } from "../common";
 
 import { isScreenSmall } from "../common/dom";
-import { ArtifactMeta, CollectionLog, ItemFlag } from "../collection/type";
+import { CollectionLog, ItemFlag } from "../collection/type";
+import { LedgerView, Option, Settings } from "../settings/type";
+import { initialState } from "../settings/context";
 
 const DEFAULT_VIEW: ViewState = {
   ledger: {
@@ -51,8 +52,8 @@ type Store = {
   isCollected: (artifactId: number) => boolean;
   isHidden: (artifactId: number) => boolean;
   toggle: (artifactId: number, flag?: ItemFlag, enabled?: boolean) => void;
-  saveConfig: (config: Configuration) => void;
-  loadConfig: () => Configuration;
+  saveConfig: (config: Settings) => void;
+  loadConfig: () => Settings;
   saveView: (view: ViewState) => void;
   loadView: () => ViewState;
   toggleCollectionOpen: (collectionId: number, isOpen: boolean) => void;
@@ -70,34 +71,23 @@ type VersionMeta = {
 };
 
 type StoreData = VersionMeta & {
-  default?: boolean;
-  config: Configuration;
+  settings: Settings;
   collectionLog: CollectionLog;
   view: ViewState;
+  // deprecated
+  default?: boolean;
 };
 
 type FirebaseData = VersionMeta & {
   collectionLog: CollectionLog;
 };
 
-function initArtifactMeta(
-  artifactId: number,
-  group: MasterGroup,
-): ArtifactMeta {
-  return {
-    id: artifactId,
-    collected: false,
-    hidden: false,
-    group: group,
-  };
-}
-
 function initStore(): StoreData {
   return {
     version: VERSION,
-    config: {
-      ...DEFAULT_CONFIG,
-      view: isScreenSmall() ? "list" : "card",
+    settings: {
+      ...initialState,
+      [Option.LEDGER_VIEW]: isScreenSmall() ? LedgerView.LIST : LedgerView.CARD,
     },
     view: {
       ledger: {
@@ -105,7 +95,6 @@ function initStore(): StoreData {
       },
     },
     collectionLog: {
-      entries: [],
       collected: [],
       hidden: [],
     },
@@ -123,7 +112,7 @@ const debounce = (fn: Function, ms = 300) => {
 function useStore(): Store {
   const [data, setData] = useState(DEFAULT_LOG);
   const [view, setView] = useState(DEFAULT_VIEW);
-  const [config, setConfig] = useState(DEFAULT_CONFIG);
+  const [config, setConfig] = useState<Settings>(initialState);
 
   const userId = useRef<string>();
 
@@ -132,7 +121,7 @@ function useStore(): Store {
     // this prevents overriding storage with defaults
     if (
       view === DEFAULT_VIEW &&
-      config === DEFAULT_CONFIG &&
+      config === initialState &&
       data === DEFAULT_LOG
     ) {
       return;
@@ -140,7 +129,7 @@ function useStore(): Store {
 
     const store: StoreData = {
       view: view,
-      config: config,
+      settings: config,
       collectionLog: data,
       version: VERSION,
     };
@@ -199,7 +188,7 @@ function useStore(): Store {
             const newDataPatched = await runStoreMigrations(newData);
             setData(newDataPatched.collectionLog);
             setView(newDataPatched.view);
-            setConfig(newDataPatched.config);
+            setConfig(newDataPatched.settings);
             resolve(newDataPatched);
             return;
           }
@@ -222,7 +211,7 @@ function useStore(): Store {
 
           setData(storeDataPatched.collectionLog);
           setView(storeDataPatched.view);
-          setConfig(storeDataPatched.config);
+          setConfig(storeDataPatched.settings);
           resolve(storeDataPatched);
         });
       } else {
@@ -231,7 +220,7 @@ function useStore(): Store {
         runStoreMigrations(newData).then((newDataPatched) => {
           setData(newDataPatched.collectionLog);
           setView(newDataPatched.view);
-          setConfig(newDataPatched.config);
+          setConfig(newDataPatched.settings);
           resolve(newDataPatched);
         });
       }
@@ -288,12 +277,12 @@ function useStore(): Store {
     return data.hidden.includes(artifactId);
   }
 
-  function saveConfig(config: Configuration) {
+  function saveConfig(config: Settings) {
     setConfig((previousConfig) => ({ ...previousConfig, ...config }));
   }
 
-  function loadConfig(): Configuration {
-    return { ...DEFAULT_CONFIG, ...config };
+  function loadConfig(): Settings {
+    return { ...initialState, ...config };
   }
 
   function loadView(): ViewState {

@@ -1,7 +1,9 @@
 import { DadCollection, DadCollectionItem, DadDb } from "./index";
-import { Configuration, getEnabledItemTypes } from "../common";
+import { getEnabledItemTypes } from "../common";
 
 import { doesHaveWardrobePlaceholder } from "./predicates";
+import { Option, Settings } from "../settings/type";
+import { isEnabled } from "../settings/predicate";
 
 function filterCollectionItems(
   db: DadDb,
@@ -78,40 +80,40 @@ function filterHiddenItems(
 
 export function filterDb(
   dadDb: DadDb,
-  config: Configuration,
+  settings: Settings,
   isHidden: (strapiId: number) => boolean,
   isCollected: (strapiId: number) => boolean,
 ): DadDb {
   let db = filterCollectionItems(
     dadDb,
-    filterItemsByType(getEnabledItemTypes(config)),
+    filterItemsByType(getEnabledItemTypes(settings)),
   );
 
-  if (!config.showPremium) {
+  if (!isEnabled(settings, Option.SHOW_PREMIUM)) {
     db = filterCollectionItems(db, filterPremiumItems());
   }
 
-  if (!config.showOutOfRotation) {
+  if (!isEnabled(settings, Option.SHOW_OUT_OF_ROTATION)) {
     db = filterCollectionItems(db, filterOutOfRotationItems());
   }
 
-  if (!config.showPromotional) {
+  if (!isEnabled(settings, Option.SHOW_PROMOTIONAL)) {
     db = filterCollectionItems(db, filterPromotionalItems());
   }
 
-  if (!config.showHiddenItems) {
+  if (!isEnabled(settings, Option.SHOW_HIDDEN)) {
     db = filterCollectionItems(db, filterHiddenItems(isHidden));
   }
 
-  if (!config.showUnobtainable) {
+  if (!isEnabled(settings, Option.SHOW_UNOBTAINABLE)) {
     db = filterCollectionItems(db, filterUnobtainableItems());
   }
 
-  if (config.hideCollectedItems) {
+  if (isEnabled(settings, Option.HIDE_COLLECTED)) {
     db = filterCollectionItems(db, filterCollectedItems(isCollected));
   }
 
-  if (config.showWardrobePlaceholdersOnly) {
+  if (isEnabled(settings, Option.SHOW_WARDROBE_ONLY)) {
     db = filterCollectionItems(db, filterWardrobePlaceholderItems());
   }
 
