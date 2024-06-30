@@ -1,4 +1,4 @@
-@value ProgressBar, Progress from "./Progress.module.css";
+@value ProgressBar, Progress from "components/Progress.module.css";
 
 .Page {
     min-height: 100vh;

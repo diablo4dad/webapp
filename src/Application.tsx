@@ -21,7 +21,7 @@ import useStore from "./store";
 import ItemSidebar from "./ItemSidebar";
 import ConfigSidebar from "./ConfigSidebar";
 import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "./config";
-import Progress from "./Progress";
+import Progress from "./components/Progress";
 import { Discord, Gear, Hamburger } from "./Icons";
 import Button, { BtnColours } from "./Button";
 import Authenticate, { AuthGiant, Orientation } from "./Authenticate";
