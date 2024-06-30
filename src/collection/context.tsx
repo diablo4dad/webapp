@@ -10,7 +10,6 @@ import { CollectionLog } from "./type";
 import { toggleValueInArray } from "../common/arrays";
 
 const initialState: CollectionLog = {
-  entries: [],
   collected: [],
   hidden: [],
 };
