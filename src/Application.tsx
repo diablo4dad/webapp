@@ -10,7 +10,6 @@ import {
   DadCollectionItem,
   DadDb,
   StrapiCollection,
-  StrapiCollectionItem,
   StrapiResultSet,
 } from "./data";
 import logo from "./image/d4ico.png";
@@ -35,21 +34,19 @@ import Account, { Direction } from "./components/Account";
 import { auth } from "./config/firebase";
 import { ContentType, MasterGroup, SideBarType } from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
-import { countTotalInCollectionUri, fetchDb } from "./server";
-import { toggleItemFlag } from "./store/mutations";
+import { fetchDb } from "./server";
 import NavMenu from "./NavMenu";
 import { selectItemOrDefault } from "./data/reducers";
 import { filterDb } from "./data/filters";
 import { flattenDadDb, strapiToDad } from "./data/transforms";
 import { countAllItemsDabDb } from "./data/aggregate";
-import { getAllCollectionItems, getDefaultItemId } from "./data/getters";
+import { getDefaultItemId } from "./data/getters";
 import { createEmptyDb } from "./data/factory";
-import { isItemCollected, isItemHidden } from "./store/predicate";
-import { CollectionProvider } from "./collection/context";
-import { ItemFlag } from "./collection/type";
+import { useCollection } from "./collection/context";
 import { useSettings } from "./settings/context";
 import { getLedgerViewSetting } from "./settings/accessor";
-import { saveSettings } from "./store/local";
+import { saveCollection, saveSettings } from "./store/local";
+import { countItemInDbOwned } from "./collection/aggregate";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -89,13 +86,15 @@ type ViewModel = {
 };
 
 function Application(): ReactElement<HTMLDivElement> {
-  const store = useStore();
+  const log = useCollection();
   const settings = useSettings();
+  const store = useStore();
 
   // persist settings
   useEffect(() => {
+    saveCollection(log);
     saveSettings(settings);
-  }, [settings]);
+  }, [settings, log]);
 
   const [user, setUser] = useState<User | null>(null);
   const [db, setDb] = useState(createEmptyDb());
@@ -150,22 +149,6 @@ function Application(): ReactElement<HTMLDivElement> {
     setDbCount(vm.dbCount);
   };
 
-  const fetchCollectionCount = useCallback(async (): Promise<number> => {
-    // pre-condition; only count once
-    if (dbCount !== 0) {
-      return dbCount;
-    }
-
-    // fetch count from remote
-    const resp = await fetch(countTotalInCollectionUri(masterGroup));
-    const json = (await resp.json()) as StrapiResultSet<StrapiCollectionItem>;
-    const remoteCount = json.meta.pagination.total;
-
-    setDbCount(remoteCount);
-
-    return remoteCount;
-  }, [masterGroup]);
-
   const fetchDbCallback = useCallback(
     async (collection: MasterGroup, page: number) => {
       // pre-condition
@@ -216,62 +199,6 @@ function Application(): ReactElement<HTMLDivElement> {
     [],
   );
 
-  const attachObserver = useCallback(
-    async (el: HTMLDetailsElement | null, index: number) => {
-      // pre-condition
-      if (el === null) {
-        return;
-      }
-
-      // pre-condition
-      if (index !== filteredDb.collections.length - 1) {
-        return;
-      }
-
-      // pre-condition
-      if (index in observers.current) {
-        return;
-      }
-
-      console.log("[Observe] Attaching fetchDb callback to ledger.", {
-        ledgerIndex: index,
-        dbLength: filteredDb.collections.length,
-      });
-
-      const onInteraction = (obs: IntersectionObserverEntry[]) => {
-        // pre-condition
-        if (obs.length === 0) {
-          console.log("[Observe] Empty.", { index });
-          return;
-        }
-
-        // sanity check
-        if (obs.length > 1) {
-          console.log("[Observe] Multiple entries observed.", { index });
-        }
-
-        const first = obs[0];
-        console.log("[Observe] Intersecting.", {
-          index,
-          isIntersecting: first.isIntersecting,
-        });
-
-        // on enter screen, fetch the next page
-        if (first.isIntersecting) {
-          fetchDbCallback(masterGroup, pageRef.current).then(() => {
-            console.log("[Observe] Disconnecting.", { index });
-            observers.current[index]?.disconnect();
-          });
-        }
-      };
-
-      // attach observer
-      observers.current[index] = new IntersectionObserver(onInteraction);
-      observers.current[index].observe(el);
-    },
-    [filteredDb],
-  );
-
   function onToggleConfig() {
     setSideBar(
       sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG,
@@ -285,19 +212,6 @@ function Application(): ReactElement<HTMLDivElement> {
     setSelectedCollectionItemId(collectionItem.strapiId);
     setSideBar(SideBarType.ITEM);
     store.setLastSelectedItem(collection.strapiId, collectionItem.strapiId);
-  }
-
-  function onDoubleClickItem(
-    _: DadCollection,
-    collectionItem: DadCollectionItem,
-  ) {
-    toggleItemFlag(store)(collectionItem, ItemFlag.COLLECTED);
-  }
-
-  function onSelectAll(collection: DadCollection, selectAll: boolean) {
-    return getAllCollectionItems(collection).map((ci) => {
-      return toggleItemFlag(store)(ci, ItemFlag.COLLECTED, selectAll);
-    });
   }
 
   function onNavigate(content: ContentType, group?: MasterGroup) {
@@ -393,187 +307,154 @@ function Application(): ReactElement<HTMLDivElement> {
   }, [masterGroup]);
 
   return (
-    <CollectionProvider>
-      <div className={styles.Page}>
-        <div className={styles.PageHeader}>
-          <header className={styles.Header}>
-            <div className={styles.HeaderLeft}>
-              <div className={styles.HeaderLeftContent}>
-                <img className={styles.HeaderIcon} src={logo} alt="Diablo 4" />
-                <div className={styles.HeaderInfo}>
-                  <div className={styles.HeaderInfoName}>Diablo 4 Dad</div>
-                  <div className={styles.HeaderInfoTagLine}>
-                    Bringing closure to the completionist in you
-                  </div>
+    <div className={styles.Page}>
+      <div className={styles.PageHeader}>
+        <header className={styles.Header}>
+          <div className={styles.HeaderLeft}>
+            <div className={styles.HeaderLeftContent}>
+              <img className={styles.HeaderIcon} src={logo} alt="Diablo 4" />
+              <div className={styles.HeaderInfo}>
+                <div className={styles.HeaderInfoName}>Diablo 4 Dad</div>
+                <div className={styles.HeaderInfoTagLine}>
+                  Bringing closure to the completionist in you
                 </div>
-                <div className={styles.HeaderButtons}>
-                  <Button
-                    onClick={onToggleConfig}
-                    pressed={sideBar === SideBarType.CONFIG}
-                    showOnly={"desktop"}
-                    colour={BtnColours.Dark}
-                  >
-                    <Gear />
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      setContent(
-                        content === ContentType.MOBILE_MENU
-                          ? popHistory()
-                          : pushHistory(ContentType.MOBILE_MENU),
-                      )
-                    }
-                    pressed={content === ContentType.MOBILE_MENU}
-                    showOnly={"mobile"}
-                  >
-                    <Hamburger />
-                  </Button>
-                </div>
+              </div>
+              <div className={styles.HeaderButtons}>
+                <Button
+                  onClick={onToggleConfig}
+                  pressed={sideBar === SideBarType.CONFIG}
+                  showOnly={"desktop"}
+                  colour={BtnColours.Dark}
+                >
+                  <Gear />
+                </Button>
+                <Button
+                  onClick={() =>
+                    setContent(
+                      content === ContentType.MOBILE_MENU
+                        ? popHistory()
+                        : pushHistory(ContentType.MOBILE_MENU),
+                    )
+                  }
+                  pressed={content === ContentType.MOBILE_MENU}
+                  showOnly={"mobile"}
+                >
+                  <Hamburger />
+                </Button>
               </div>
             </div>
-            <div className={styles.HeaderRight}>
-              <div className={styles.HeaderRightContent}>
-                <nav className={styles.HeaderNav}>
-                  <NavMenu
-                    activeGroup={masterGroup}
-                    onChange={onChangeCategory}
+          </div>
+          <div className={styles.HeaderRight}>
+            <div className={styles.HeaderRightContent}>
+              <nav className={styles.HeaderNav}>
+                <NavMenu
+                  activeGroup={masterGroup}
+                  onChange={onChangeCategory}
+                />
+              </nav>
+              <div className={styles.HeaderAccountWidgets}>
+                <Progress
+                  totalCollected={countItemInDbOwned(log, filteredDb)}
+                  collectionSize={countAllItemsDabDb(filteredDb)}
+                />
+                {user === null && (
+                  <Authenticate orientation={Orientation.ROW} onAuth={signIn} />
+                )}
+                {user !== null && (
+                  <Account
+                    currentUser={user}
+                    onLogout={signOut}
+                    direction={Direction.ROW}
                   />
-                </nav>
-                <div className={styles.HeaderAccountWidgets}>
-                  <Progress
-                    totalCollected={
-                      collectionItems.filter((ci) => isItemCollected(store, ci))
-                        .length
-                    }
-                    collectionSize={countAllItemsDabDb(filteredDb)}
-                  />
-                  {user === null && (
-                    <Authenticate
-                      orientation={Orientation.ROW}
-                      onAuth={signIn}
-                    />
-                  )}
-                  {user !== null && (
-                    <Account
-                      currentUser={user}
-                      onLogout={signOut}
-                      direction={Direction.ROW}
-                    />
-                  )}
-                </div>
+                )}
               </div>
             </div>
-          </header>
-        </div>
-        <div className={styles.PageContent} ref={contentRef}>
-          <div className={styles.Shell}>
-            <aside className={styles.Sidebar}>
-              <div className={styles.SidebarLayout}>
-                <div className={styles.SidebarLayoutTop}></div>
-                <div className={styles.SidebarLayoutBottom}>
-                  <section className={styles.SidebarContent}>
-                    {sideBar === SideBarType.ITEM && selectedCollectionItem && (
-                      <>
-                        <ItemSidebar
-                          collectionItem={selectedCollectionItem}
-                          hidden={isItemHidden(store, selectedCollectionItem)}
-                          collected={isItemCollected(
-                            store,
-                            selectedCollectionItem,
-                          )}
-                          onClickCollected={(collected) =>
-                            toggleItemFlag(store)(
-                              selectedCollectionItem,
-                              ItemFlag.COLLECTED,
-                              collected,
-                            )
-                          }
-                          onClickHidden={(hidden) =>
-                            toggleItemFlag(store)(
-                              selectedCollectionItem,
-                              ItemFlag.HIDDEN,
-                              hidden,
-                            )
-                          }
-                        />
-                        <footer className={styles.SidebarFooter}>
-                          <DiscordInvite />
-                          <VersionInfo />
-                        </footer>
-                      </>
-                    )}
-                    {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
-                  </section>
-                </div>
-              </div>
-            </aside>
-            <main className={styles.Content}>
-              {content === ContentType.LEDGER && (
-                <>
-                  <Ledger
-                    collections={filteredDb.collections}
-                    store={store}
-                    onClickItem={onClickItem}
-                    onDoubleClickItem={onDoubleClickItem}
-                    onSelectAllToggle={onSelectAll}
-                  />
-                  {(filteredDb.collections.length === 0 ||
-                    loadingPromise.current !== null) && (
+          </div>
+        </header>
+      </div>
+      <div className={styles.PageContent} ref={contentRef}>
+        <div className={styles.Shell}>
+          <aside className={styles.Sidebar}>
+            <div className={styles.SidebarLayout}>
+              <div className={styles.SidebarLayoutTop}></div>
+              <div className={styles.SidebarLayoutBottom}>
+                <section className={styles.SidebarContent}>
+                  {sideBar === SideBarType.ITEM && selectedCollectionItem && (
                     <>
-                      <LedgerSkeleton
-                        view={getLedgerViewSetting(settings)}
-                        numItems={6}
-                      />
-                      <LedgerSkeleton
-                        view={getLedgerViewSetting(settings)}
-                        numItems={6}
-                      />
-                      <LedgerSkeleton
-                        view={getLedgerViewSetting(settings)}
-                        numItems={6}
-                      />
+                      <ItemSidebar collectionItem={selectedCollectionItem} />
+                      <footer className={styles.SidebarFooter}>
+                        <DiscordInvite />
+                        <VersionInfo />
+                      </footer>
                     </>
                   )}
-                </>
-              )}
-              {content === ContentType.MOBILE_MENU && (
-                <>
-                  <MobileHeader>Menu</MobileHeader>
-                  <MobileMenu
-                    currentUser={user}
-                    onNavigate={onNavigate}
-                    onAuth={signIn}
-                    onLogout={signOut}
-                  />
-                  <MobileCloseButton onClick={() => setContent(popHistory())} />
-                </>
-              )}
-              {content === ContentType.CONFIG && (
-                <>
-                  <MobileHeader>Settings</MobileHeader>
-                  <ConfigSidebar />
-                  <MobileCloseButton onClick={() => setContent(popHistory())} />
-                </>
-              )}
-            </main>
-          </div>
+                  {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
+                </section>
+              </div>
+            </div>
+          </aside>
+          <main className={styles.Content}>
+            {content === ContentType.LEDGER && (
+              <>
+                <Ledger
+                  collections={filteredDb.collections}
+                  store={store}
+                  onClickItem={onClickItem}
+                />
+                {(filteredDb.collections.length === 0 ||
+                  loadingPromise.current !== null) && (
+                  <>
+                    <LedgerSkeleton
+                      view={getLedgerViewSetting(settings)}
+                      numItems={6}
+                    />
+                    <LedgerSkeleton
+                      view={getLedgerViewSetting(settings)}
+                      numItems={6}
+                    />
+                    <LedgerSkeleton
+                      view={getLedgerViewSetting(settings)}
+                      numItems={6}
+                    />
+                  </>
+                )}
+              </>
+            )}
+            {content === ContentType.MOBILE_MENU && (
+              <>
+                <MobileHeader>Menu</MobileHeader>
+                <MobileMenu
+                  currentUser={user}
+                  onNavigate={onNavigate}
+                  onAuth={signIn}
+                  onLogout={signOut}
+                />
+                <MobileCloseButton onClick={() => setContent(popHistory())} />
+              </>
+            )}
+            {content === ContentType.CONFIG && (
+              <>
+                <MobileHeader>Settings</MobileHeader>
+                <ConfigSidebar />
+                <MobileCloseButton onClick={() => setContent(popHistory())} />
+              </>
+            )}
+          </main>
         </div>
-        {content === ContentType.LEDGER && (
-          <div className={styles.ProgressMobile}>
-            <Progress
-              totalCollected={
-                collectionItems.filter((i) => isItemCollected(store, i)).length
-              }
-              collectionSize={countAllItemsDabDb(filteredDb)}
-            />
-          </div>
-        )}
-        <footer className={styles.Footer}>
-          <DiscordInvite />
-          <VersionInfo />
-        </footer>
       </div>
-    </CollectionProvider>
+      {content === ContentType.LEDGER && (
+        <div className={styles.ProgressMobile}>
+          <Progress
+            totalCollected={countItemInDbOwned(log, filteredDb)}
+            collectionSize={countAllItemsDabDb(filteredDb)}
+          />
+        </div>
+      )}
+      <footer className={styles.Footer}>
+        <DiscordInvite />
+        <VersionInfo />
+      </footer>
+    </div>
   );
 }
 
