@@ -1,8 +1,9 @@
-import { initStore, StoreData, VersionMeta, ViewState } from "./index";
+import { initStore, StoreData, VersionMeta } from "./index";
 import { Settings } from "../settings/type";
 import { defaultSettings } from "../settings/context";
 import { CollectionLog } from "../collection/type";
 import { defaultCollection } from "../collection/context";
+import { ViewModel } from "../Ledger";
 
 const VM_KEY = "vm";
 const VERSION_KEY = "version";
@@ -28,15 +29,13 @@ export function saveSettings(settings: Settings) {
   setValueInStorage(SETTINGS_KEY, settings);
 }
 
-export function getViewModel(): ViewState {
+export function getViewModel(): ViewModel {
   return getValueFromStorage(VM_KEY, {
-    ledger: {
-      // empty
-    },
+    openCollections: [],
   });
 }
 
-export function saveViewModel(vm: ViewState) {
+export function saveViewModel(vm: ViewModel) {
   setValueInStorage(VM_KEY, vm);
 }
 

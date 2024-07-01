@@ -4,6 +4,8 @@ import { getEnabledItemTypes } from "../common";
 import { doesHaveWardrobePlaceholder } from "./predicates";
 import { Option, Settings } from "../settings/type";
 import { isEnabled } from "../settings/predicate";
+import { CollectionLog } from "../collection/type";
+import { isItemCollected, isItemHidden } from "../collection/predicate";
 
 function filterCollectionItems(
   db: DadDb,
@@ -59,30 +61,29 @@ export function filterWardrobePlaceholderItems(): (
 }
 
 function filterCollectedItems(
-  isCollected: (strapiId: number) => boolean,
+  collectionLog: CollectionLog,
 ): (dci: DadCollectionItem) => boolean {
   return (dci: DadCollectionItem) =>
     !dci.items
       .map((i) => i.itemId)
       .map(Number)
-      .some(isCollected);
+      .some((i) => isItemCollected(collectionLog, i));
 }
 
 function filterHiddenItems(
-  isHidden: (strapiId: number) => boolean,
+  collectionLog: CollectionLog,
 ): (dci: DadCollectionItem) => boolean {
   return (dci: DadCollectionItem) =>
     !dci.items
       .map((i) => i.itemId)
       .map(Number)
-      .some(isHidden);
+      .some((i) => isItemHidden(collectionLog, i));
 }
 
 export function filterDb(
   dadDb: DadDb,
   settings: Settings,
-  isHidden: (strapiId: number) => boolean,
-  isCollected: (strapiId: number) => boolean,
+  log: CollectionLog,
 ): DadDb {
   let db = filterCollectionItems(
     dadDb,
@@ -102,7 +103,7 @@ export function filterDb(
   }
 
   if (!isEnabled(settings, Option.SHOW_HIDDEN)) {
-    db = filterCollectionItems(db, filterHiddenItems(isHidden));
+    db = filterCollectionItems(db, filterHiddenItems(log));
   }
 
   if (!isEnabled(settings, Option.SHOW_UNOBTAINABLE)) {
@@ -110,7 +111,7 @@ export function filterDb(
   }
 
   if (isEnabled(settings, Option.HIDE_COLLECTED)) {
-    db = filterCollectionItems(db, filterCollectedItems(isCollected));
+    db = filterCollectionItems(db, filterCollectedItems(log));
   }
 
   if (isEnabled(settings, Option.SHOW_WARDROBE_ONLY)) {

@@ -16,7 +16,6 @@ import logo from "./image/d4ico.png";
 
 import styles from "./Application.module.css";
 import Ledger from "./Ledger";
-import useStore from "./store";
 import ItemSidebar from "./ItemSidebar";
 import ConfigSidebar from "./ConfigSidebar";
 import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "./config";
@@ -47,6 +46,7 @@ import { useSettings } from "./settings/context";
 import { getLedgerViewSetting } from "./settings/accessor";
 import { saveCollection, saveSettings } from "./store/local";
 import { countItemInDbOwned } from "./collection/aggregate";
+import placeholder from "./image/placeholder.webp";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -88,13 +88,17 @@ type ViewModel = {
 function Application(): ReactElement<HTMLDivElement> {
   const log = useCollection();
   const settings = useSettings();
-  const store = useStore();
 
   // persist settings
   useEffect(() => {
     saveCollection(log);
     saveSettings(settings);
   }, [settings, log]);
+
+  // preload to prevent jank
+  useEffect(() => {
+    new Image().src = placeholder;
+  }, []);
 
   const [user, setUser] = useState<User | null>(null);
   const [db, setDb] = useState(createEmptyDb());
@@ -103,11 +107,10 @@ function Application(): ReactElement<HTMLDivElement> {
   const [content, setContent] = useState(ContentType.LEDGER);
   const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
   const history = useRef([ContentType.LEDGER]);
-  const filteredDb = filterDb(db, settings, store.isHidden, store.isCollected);
+  const filteredDb = filterDb(db, settings, log);
   const collectionItems = flattenDadDb(filteredDb);
-  const lastSelected = store.getLastSelectedItem();
   const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(
-    lastSelected?.itemId ?? getDefaultItemId(filteredDb),
+    getDefaultItemId(filteredDb),
   );
   const selectedCollectionItem = selectItemOrDefault(
     collectionItems,
@@ -211,7 +214,6 @@ function Application(): ReactElement<HTMLDivElement> {
   ) {
     setSelectedCollectionItemId(collectionItem.strapiId);
     setSideBar(SideBarType.ITEM);
-    store.setLastSelectedItem(collection.strapiId, collectionItem.strapiId);
   }
 
   function onNavigate(content: ContentType, group?: MasterGroup) {
@@ -269,16 +271,10 @@ function Application(): ReactElement<HTMLDivElement> {
   useEffect(() => {
     console.log("[Auth] Authenticating...");
 
-    // load html5 storage
-    store.init();
-
     // add user state listener
     const unsubscribe = auth.onAuthStateChanged((user) => {
       console.log("[Auth] State changed.", { ...user });
       setUser(user);
-
-      // init firebase storage
-      store.init(user?.uid);
     });
 
     return () => {
@@ -398,7 +394,6 @@ function Application(): ReactElement<HTMLDivElement> {
               <>
                 <Ledger
                   collections={filteredDb.collections}
-                  store={store}
                   onClickItem={onClickItem}
                 />
                 {(filteredDb.collections.length === 0 ||
