@@ -4,8 +4,7 @@ import {
   getDefaultItemFromCollectionItems,
 } from "./data";
 import styles from "./Ledger.module.css";
-import { Store } from "./store";
-import React, { DetailsHTMLAttributes, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Currency, Tick, TickCircle } from "./Icons";
 import Button, { BtnColours } from "./Button";
 import {
@@ -23,9 +22,9 @@ import LazyImage from "./components/LazyImage";
 import placeholder from "./image/placeholder.webp";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { useSettings } from "./settings/context";
-import { LedgerView, Option } from "./settings/type";
+import { LedgerView } from "./settings/type";
 import classNames from "classnames";
-import { isEnabled, isLedgerInverse, isLedgerView } from "./settings/predicate";
+import { isLedgerInverse, isLedgerView } from "./settings/predicate";
 import { isCollectionEmpty } from "./data/predicates";
 import {
   CollectionActionType,
@@ -33,78 +32,33 @@ import {
   useCollectionDispatch,
 } from "./collection/context";
 import { isItemCollected, isItemHidden } from "./collection/predicate";
+import { toggleValueInArray } from "./common/arrays";
+import { getViewModel, saveViewModel } from "./store/local";
 
 type LedgerProps = {
   collections: DadCollection[];
   parentCollection?: DadCollection;
-  store: Store;
   onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
 };
 
-type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
+type Props = {
   collection: DadCollection;
   parentCollection?: DadCollection;
-  store: Store;
   onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
+  isOpen: boolean;
 };
 
-type CollectionHeadingProps = {
-  heading: string;
-  description: string;
-  counter: string;
-  editHref: string;
-  isComplete: boolean;
-  onSelectAllToggle: (selectAll: boolean) => void;
-};
-
-const CollectionHeading = ({
-  heading,
-  description,
-  counter,
-  editHref,
-  onSelectAllToggle,
-  isComplete,
-}: CollectionHeadingProps) => {
-  return (
-    <>
-      <div>
-        <h1 className={styles.LedgerTitle}>
-          {heading}
-          <span className={styles.LedgerCounter}>{counter}</span>
-          {process.env.NODE_ENV === "development" && (
-            <span className={styles.LedgerEdit}>
-              <span> | </span>
-              <a target="_blank" href={editHref} rel="noreferrer">
-                Edit
-              </a>
-            </span>
-          )}
-        </h1>
-        <div className={styles.LedgerDescription}>{description}</div>
-      </div>
-      <span className={styles.LedgerActions}>
-        <Button
-          colour={isComplete ? BtnColours.Green : BtnColours.Grey}
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelectAllToggle(!isComplete);
-          }}
-        >
-          <Tick></Tick>
-        </Button>
-      </span>
-    </>
-  );
+export type ViewModel = {
+  openCollections: number[];
 };
 
 const Collection = ({
   collection,
   parentCollection,
-  store,
+  isOpen,
   onClickItem,
 }: Props) => {
   const settings = useSettings();
-
   const log = useCollection();
   const dispatch = useCollectionDispatch();
 
@@ -138,8 +92,7 @@ const Collection = ({
   const collected = countItemsInCollectionOwned(log, collection);
   const total = countAllItemsInCollection(collection);
   const isComplete = collected === total;
-  const hideCollected = isEnabled(settings, Option.HIDE_COLLECTED);
-  const ledgerIsOpen = store.isCollectionOpen(collection.strapiId);
+  const ledgerIsOpen = isOpen;
 
   const headingLabel = collection.name;
   const counterLabel = `[${collected}/${total}]`;
@@ -154,11 +107,6 @@ const Collection = ({
     [styles.LedgerCards]: isLedgerView(settings, LedgerView.CARD),
     [styles.LedgerCardsInverse]: isLedgerInverse(settings),
   });
-
-  // preload the placeholder to prevent jank
-  useEffect(() => {
-    new Image().src = placeholder;
-  }, []);
 
   return (
     <AccordionItem
@@ -176,14 +124,38 @@ const Collection = ({
         className: styles.LedgerContent,
       }}
       header={
-        <CollectionHeading
-          heading={headingLabel}
-          description={descriptionLabel}
-          counter={counterLabel}
-          editHref={generateEditCategoryUrl(collection.strapiId)}
-          isComplete={isComplete}
-          onSelectAllToggle={toggleCollection(collection)}
-        />
+        <>
+          <div>
+            <h1 className={styles.LedgerTitle}>
+              {headingLabel}
+              <span className={styles.LedgerCounter}>{counterLabel}</span>
+              {process.env.NODE_ENV === "development" && (
+                <span className={styles.LedgerEdit}>
+                  <span> | </span>
+                  <a
+                    target="_blank"
+                    href={generateEditCategoryUrl(collection.strapiId)}
+                    rel="noreferrer"
+                  >
+                    Edit
+                  </a>
+                </span>
+              )}
+            </h1>
+            <div className={styles.LedgerDescription}>{descriptionLabel}</div>
+          </div>
+          <span className={styles.LedgerActions}>
+            <Button
+              colour={isComplete ? BtnColours.Green : BtnColours.Grey}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleCollection(collection)(!isComplete);
+              }}
+            >
+              <Tick></Tick>
+            </Button>
+          </span>
+        </>
       }
     >
       {({ state }) => {
@@ -216,10 +188,6 @@ const Collection = ({
                   collectionItem.items[0]?.magicType === "Unique",
                 [styles.ItemGlow]: isAshava && isCollected,
               });
-
-              if (hideCollected && isCollected) {
-                return null;
-              }
 
               return (
                 <div
@@ -276,7 +244,6 @@ const Collection = ({
             <Ledger
               collections={collection.subcollections}
               parentCollection={collection}
-              store={store}
               onClickItem={onClickItem}
             />
           </div>
@@ -289,17 +256,26 @@ const Collection = ({
 const Ledger = ({
   collections,
   parentCollection,
-  store,
   onClickItem,
 }: LedgerProps) => {
+  const [vm, setVm] = useState<ViewModel>(getViewModel());
+
+  useEffect(() => saveViewModel(vm), [vm]);
+
   return (
     <Accordion
       allowMultiple
       transition
       transitionTimeout={250}
       onStateChange={(e) => {
-        console.log("Status change...", e);
-        store.toggleCollectionOpen(Number(e.key), e.current.isEnter);
+        setVm((vm) => ({
+          ...vm,
+          openCollections: toggleValueInArray(
+            vm.openCollections,
+            Number(e.key),
+            e.current.isEnter,
+          ),
+        }));
       }}
     >
       {collections.map((collection) => (
@@ -307,7 +283,7 @@ const Ledger = ({
           key={collection.strapiId}
           collection={collection}
           parentCollection={parentCollection}
-          store={store}
+          isOpen={vm.openCollections.includes(collection.strapiId)}
           onClickItem={onClickItem}
         />
       ))}
