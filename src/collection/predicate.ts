@@ -1,12 +1,15 @@
 import { CollectionLog } from "./type";
 
-export function isCollected(
+export function isItemCollected(
   collection: CollectionLog,
   itemId: number,
 ): boolean {
   return collection.collected.includes(itemId);
 }
 
-export function isHidden(collection: CollectionLog, itemId: number): boolean {
+export function isItemHidden(
+  collection: CollectionLog,
+  itemId: number,
+): boolean {
   return collection.hidden.includes(itemId);
 }

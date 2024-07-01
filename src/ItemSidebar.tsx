@@ -28,6 +28,12 @@ import {
   getItemType,
 } from "./data/getters";
 import { doesHaveWardrobePlaceholder } from "./data/predicates";
+import {
+  CollectionActionType,
+  useCollection,
+  useCollectionDispatch,
+} from "./collection/context";
+import { isItemCollected, isItemHidden } from "./collection/predicate";
 
 function generateEditUrl(item: DadCollectionItem): string {
   return (
@@ -70,32 +76,14 @@ function doDisplayDropInfo(collectionItem: DadCollectionItem, item: DadItem) {
 
 type ItemProps = {
   collectionItem: DadCollectionItem;
-  collected: boolean;
-  hidden: boolean;
-  onClickCollected: (collected: boolean) => void;
-  onClickHidden: (hidden: boolean) => void;
 };
 
-function getWardrobeIconLabel(ci: DadCollectionItem): string {
-  if (ci.items.every(doesHaveWardrobePlaceholder)) {
-    return "Yes";
-  }
+function ItemSidebar({ collectionItem }: ItemProps) {
+  const log = useCollection();
+  const dispatcher = useCollectionDispatch();
 
-  if (ci.items.some(doesHaveWardrobePlaceholder)) {
-    return "Some Classes";
-  }
-
-  return "No";
-}
-
-function ItemSidebar({
-  collectionItem,
-  collected,
-  hidden,
-  onClickCollected,
-  onClickHidden,
-}: ItemProps) {
   const item = getDefaultItemFromCollectionItems(collectionItem);
+  const itemId = Number(item.itemId);
 
   return (
     <div className={styles.Panel}>
@@ -144,14 +132,26 @@ function ItemSidebar({
       <div className={styles.ItemActions}>
         <Toggle
           name="collected"
-          checked={collected}
-          onChange={(e) => onClickCollected(e.target.checked)}
+          checked={isItemCollected(log, itemId)}
+          onChange={(e) =>
+            dispatcher({
+              type: CollectionActionType.COLLECT,
+              itemId: itemId,
+              toggle: e.target.checked,
+            })
+          }
           label={"Collected"}
         />
         <Toggle
           name="hidden"
-          checked={hidden}
-          onChange={(e) => onClickHidden(e.target.checked)}
+          checked={isItemHidden(log, itemId)}
+          onChange={(e) =>
+            dispatcher({
+              type: CollectionActionType.HIDE,
+              itemId: itemId,
+              toggle: e.target.checked,
+            })
+          }
           label={"Hidden"}
         />
       </div>

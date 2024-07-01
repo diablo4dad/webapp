@@ -5,7 +5,8 @@ import Application from "./Application";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SettingsProvider } from "./settings/context";
-import { getSettings } from "./store/local";
+import { getCollection, getSettings } from "./store/local";
+import { CollectionProvider } from "./collection/context";
 
 const router = createBrowserRouter([
   {
@@ -14,9 +15,10 @@ const router = createBrowserRouter([
   },
 ]);
 
-// Loads settings from localStorage
+// Loads settings and collection from localStorage
 // If application has not been used before, these will be default
 const settings = getSettings();
+const collection = getCollection();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
@@ -25,7 +27,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <SettingsProvider settings={settings}>
-      <RouterProvider router={router} />
+      <CollectionProvider collection={collection}>
+        <RouterProvider router={router} />
+      </CollectionProvider>
     </SettingsProvider>
   </React.StrictMode>,
 );

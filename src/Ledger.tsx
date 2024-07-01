@@ -9,16 +9,16 @@ import React, { DetailsHTMLAttributes, useEffect } from "react";
 import { Currency, Tick, TickCircle } from "./Icons";
 import Button, { BtnColours } from "./Button";
 import {
+  getAllCollectionItems,
   getImageUri,
   getItemDescription,
   getItemName,
   getItemType,
 } from "./data/getters";
 import { countAllItemsInCollection } from "./data/aggregate";
-import { countItemsInCollectionOwned } from "./store/aggregate";
+import { countItemsInCollectionOwned } from "./collection/aggregate";
 import { generateEditCategoryUrl } from "./server";
 import { onTouchStart } from "./common/dom";
-import { isItemCollected, isItemHidden } from "./store/predicate";
 import LazyImage from "./components/LazyImage";
 import placeholder from "./image/placeholder.webp";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
@@ -27,35 +27,18 @@ import { LedgerView, Option } from "./settings/type";
 import classNames from "classnames";
 import { isEnabled, isLedgerInverse, isLedgerView } from "./settings/predicate";
 import { isCollectionEmpty } from "./data/predicates";
-
-function computeLedgerItemClassName(
-  store: Store,
-  collectionItem: DadCollectionItem,
-) {
-  const isAshava = collectionItem.items[0]?.itemId === "1482434";
-
-  return [
-    styles.Item,
-    isItemCollected(store, collectionItem) ? styles.ItemCollected : null,
-    isItemHidden(store, collectionItem) ? styles.ItemHidden : null,
-    collectionItem.premium ? styles.ItemPremium : null,
-    collectionItem.items[0]?.magicType === "Unique" ? styles.ItemUnique : null,
-    isAshava && isItemCollected(store, collectionItem) ? styles.ItemGlow : null,
-  ]
-    .filter((cn) => cn !== null)
-    .join(" ");
-}
+import {
+  CollectionActionType,
+  useCollection,
+  useCollectionDispatch,
+} from "./collection/context";
+import { isItemCollected, isItemHidden } from "./collection/predicate";
 
 type LedgerProps = {
   collections: DadCollection[];
   parentCollection?: DadCollection;
   store: Store;
   onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
-  onDoubleClickItem: (
-    collection: DadCollection,
-    item: DadCollectionItem,
-  ) => void;
-  onSelectAllToggle: (itemIds: DadCollection, selectAll: boolean) => void;
 };
 
 type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
@@ -63,11 +46,6 @@ type Props = DetailsHTMLAttributes<HTMLDetailsElement> & {
   parentCollection?: DadCollection;
   store: Store;
   onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
-  onDoubleClickItem: (
-    collection: DadCollection,
-    item: DadCollectionItem,
-  ) => void;
-  onSelectAllToggle: (itemIds: DadCollection, selectAll: boolean) => void;
 };
 
 type CollectionHeadingProps = {
@@ -124,12 +102,40 @@ const Collection = ({
   parentCollection,
   store,
   onClickItem,
-  onDoubleClickItem,
-  onSelectAllToggle,
 }: Props) => {
   const settings = useSettings();
 
-  const collected = countItemsInCollectionOwned(store, collection);
+  const log = useCollection();
+  const dispatch = useCollectionDispatch();
+
+  const toggleItem = (dci: DadCollectionItem) => (collected: boolean) => {
+    dci.items
+      .map((i) => i.itemId)
+      .map(Number)
+      .forEach((itemId) => {
+        dispatch({
+          type: CollectionActionType.COLLECT,
+          itemId: itemId,
+          toggle: collected,
+        });
+      });
+  };
+
+  const toggleCollection = (dc: DadCollection) => (collected: boolean) => {
+    getAllCollectionItems(dc)
+      .flatMap((ci) => ci.items)
+      .map((i) => i.itemId)
+      .map(Number)
+      .forEach((itemId) => {
+        dispatch({
+          type: CollectionActionType.COLLECT,
+          itemId: itemId,
+          toggle: collected,
+        });
+      });
+  };
+
+  const collected = countItemsInCollectionOwned(log, collection);
   const total = countAllItemsInCollection(collection);
   const isComplete = collected === total;
   const hideCollected = isEnabled(settings, Option.HIDE_COLLECTED);
@@ -176,9 +182,7 @@ const Collection = ({
           counter={counterLabel}
           editHref={generateEditCategoryUrl(collection.strapiId)}
           isComplete={isComplete}
-          onSelectAllToggle={(selectAll: boolean) =>
-            onSelectAllToggle(collection, selectAll)
-          }
+          onSelectAllToggle={toggleCollection(collection)}
         />
       }
     >
@@ -198,11 +202,20 @@ const Collection = ({
           >
             {collection.collectionItems.map((collectionItem) => {
               const item = getDefaultItemFromCollectionItems(collectionItem);
-              const isCollected = isItemCollected(store, collectionItem);
-              const className = computeLedgerItemClassName(
-                store,
-                collectionItem,
-              );
+              const itemId = Number(item.itemId);
+              const isCollected = isItemCollected(log, itemId);
+              const isHidden = isItemHidden(log, itemId);
+              const isAshava = itemId === 1482434;
+
+              const className = classNames({
+                [styles.Item]: true,
+                [styles.ItemCollected]: isCollected,
+                [styles.ItemHidden]: isHidden,
+                [styles.ItemPremium]: collectionItem.premium,
+                [styles.ItemUnique]:
+                  collectionItem.items[0]?.magicType === "Unique",
+                [styles.ItemGlow]: isAshava && isCollected,
+              });
 
               if (hideCollected && isCollected) {
                 return null;
@@ -212,11 +225,9 @@ const Collection = ({
                 <div
                   className={className}
                   onClick={() => onClickItem(collection, collectionItem)}
-                  onDoubleClick={() =>
-                    onDoubleClickItem(collection, collectionItem)
-                  }
+                  onDoubleClick={() => toggleItem(collectionItem)(!isCollected)}
                   onTouchStart={onTouchStart(() =>
-                    onDoubleClickItem(collection, collectionItem),
+                    toggleItem(collectionItem)(!isCollected),
                   )}
                   key={collectionItem.strapiId}
                 >
@@ -267,8 +278,6 @@ const Collection = ({
               parentCollection={collection}
               store={store}
               onClickItem={onClickItem}
-              onDoubleClickItem={onDoubleClickItem}
-              onSelectAllToggle={onSelectAllToggle}
             />
           </div>
         );
@@ -282,8 +291,6 @@ const Ledger = ({
   parentCollection,
   store,
   onClickItem,
-  onDoubleClickItem,
-  onSelectAllToggle,
 }: LedgerProps) => {
   return (
     <Accordion
@@ -302,8 +309,6 @@ const Ledger = ({
           parentCollection={parentCollection}
           store={store}
           onClickItem={onClickItem}
-          onDoubleClickItem={onDoubleClickItem}
-          onSelectAllToggle={onSelectAllToggle}
         />
       ))}
     </Accordion>

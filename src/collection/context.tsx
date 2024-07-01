@@ -27,19 +27,23 @@ export type CollectionAction = {
   toggle: boolean;
 };
 
+type Props = PropsWithChildren & {
+  collection?: CollectionLog;
+};
+
 export const CollectionContext =
   createContext<CollectionLog>(defaultCollection);
 export const CollectionDispatchContext =
   createContext<Dispatch<CollectionAction>>(defaultDispatch);
 
-export function CollectionProvider({ children }: PropsWithChildren) {
-  const [collection, dispatch] = useReducer(
+export function CollectionProvider({ children, collection }: Props) {
+  const [value, dispatch] = useReducer(
     collectionReducer,
-    defaultCollection,
+    collection ?? defaultCollection,
   );
 
   return (
-    <CollectionContext.Provider value={collection}>
+    <CollectionContext.Provider value={value}>
       <CollectionDispatchContext.Provider value={dispatch}>
         {children}
       </CollectionDispatchContext.Provider>
