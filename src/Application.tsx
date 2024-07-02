@@ -18,7 +18,12 @@ import styles from "./Application.module.css";
 import Ledger from "./Ledger";
 import ItemSidebar from "./ItemSidebar";
 import ConfigSidebar from "./ConfigSidebar";
-import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "./config";
+import {
+  DISCORD_INVITE_LINK,
+  LAST_UPDATED,
+  SITE_VERSION,
+  VERSION,
+} from "./config";
 import Progress from "./components/Progress";
 import { Discord, Gear, Hamburger } from "./Icons";
 import Button, { BtnColours } from "./Button";
@@ -44,9 +49,16 @@ import { createEmptyDb } from "./data/factory";
 import { useCollection } from "./collection/context";
 import { useSettings } from "./settings/context";
 import { getLedgerViewSetting } from "./settings/accessor";
-import { saveCollection, saveSettings } from "./store/local";
+import {
+  getViewModel,
+  saveCollection,
+  saveSettings,
+  saveVersion,
+  saveViewModel,
+} from "./store/local";
 import { countItemInDbOwned } from "./collection/aggregate";
 import placeholder from "./image/placeholder.webp";
+import { toggleValueInArray } from "./common/arrays";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -79,7 +91,11 @@ function DiscordInvite(): ReactElement<HTMLDivElement> {
   );
 }
 
-type ViewModel = {
+export type ViewModel = {
+  openCollections: number[];
+};
+
+type AppViewModel = {
   db: DadDb;
   page: number;
   dbCount: number;
@@ -89,11 +105,13 @@ function Application(): ReactElement<HTMLDivElement> {
   const log = useCollection();
   const settings = useSettings();
 
+  const [vm, setVm] = useState<ViewModel>(getViewModel());
+
   // persist settings
-  useEffect(() => {
-    saveCollection(log);
-    saveSettings(settings);
-  }, [settings, log]);
+  saveViewModel(vm);
+  saveCollection(log);
+  saveSettings(settings);
+  saveVersion({ version: VERSION });
 
   // preload to prevent jank
   useEffect(() => {
@@ -117,8 +135,17 @@ function Application(): ReactElement<HTMLDivElement> {
     selectedCollectionItemId,
   );
 
+  // // this can be replaced with useEffectEvent when its released
+  // // https://react.dev/learn/separating-events-from-effects#declaring-an-effect-event
+  // useEffect(() => {
+  //   if (user?.uid) {
+  //     void saveToFirestore(user.uid, log);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [log]);
+
   // maintains a group aggregated cache
-  const groups = useRef(new Map<MasterGroup, ViewModel>());
+  const groups = useRef(new Map<MasterGroup, AppViewModel>());
 
   // references for "load on scroll" paging
   const contentRef = useRef<HTMLDivElement>(document.createElement("div"));
@@ -275,6 +302,9 @@ function Application(): ReactElement<HTMLDivElement> {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       console.log("[Auth] State changed.", { ...user });
       setUser(user);
+      // if (user) {
+      //   const collectionLog = fetchFromFirestore(user.uid);
+      // }
     });
 
     return () => {
@@ -394,7 +424,18 @@ function Application(): ReactElement<HTMLDivElement> {
               <>
                 <Ledger
                   collections={filteredDb.collections}
+                  openCollections={vm.openCollections}
                   onClickItem={onClickItem}
+                  onCollectionChange={(collectionId, isOpen) => {
+                    setVm((vm) => ({
+                      ...vm,
+                      openCollections: toggleValueInArray(
+                        vm.openCollections,
+                        collectionId,
+                        isOpen,
+                      ),
+                    }));
+                  }}
                 />
                 {(filteredDb.collections.length === 0 ||
                   loadingPromise.current !== null) && (

@@ -4,7 +4,7 @@ import {
   getDefaultItemFromCollectionItems,
 } from "./data";
 import styles from "./Ledger.module.css";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Currency, Tick, TickCircle } from "./Icons";
 import Button, { BtnColours } from "./Button";
 import {
@@ -32,32 +32,59 @@ import {
   useCollectionDispatch,
 } from "./collection/context";
 import { isItemCollected, isItemHidden } from "./collection/predicate";
-import { toggleValueInArray } from "./common/arrays";
-import { getViewModel, saveViewModel } from "./store/local";
 
-type LedgerProps = {
+type Props = {
   collections: DadCollection[];
   parentCollection?: DadCollection;
   onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
-};
-
-type Props = {
-  collection: DadCollection;
-  parentCollection?: DadCollection;
-  onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
-  isOpen: boolean;
-};
-
-export type ViewModel = {
+  onCollectionChange: (collectionId: number, isOpen: boolean) => void;
   openCollections: number[];
 };
 
-const Collection = ({
+type PropsInner = Props & {
+  collection: DadCollection;
+};
+
+const Ledger = ({
+  collections,
+  parentCollection,
+  onClickItem,
+  onCollectionChange,
+  openCollections,
+}: Props) => {
+  return (
+    <Accordion
+      transition
+      transitionTimeout={250}
+      allowMultiple
+      onStateChange={(e) => {
+        if (e.current.isResolved) {
+          onCollectionChange(Number(e.key), e.current.isEnter);
+        }
+      }}
+    >
+      {collections.map((collection) => (
+        <LedgerInner
+          key={collection.strapiId}
+          collection={collection}
+          collections={collections}
+          parentCollection={parentCollection}
+          openCollections={openCollections}
+          onCollectionChange={onCollectionChange}
+          onClickItem={onClickItem}
+        />
+      ))}
+    </Accordion>
+  );
+};
+
+const LedgerInner = ({
   collection,
   parentCollection,
-  isOpen,
   onClickItem,
-}: Props) => {
+  onCollectionChange,
+  openCollections,
+}: PropsInner) => {
   const settings = useSettings();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
@@ -92,7 +119,7 @@ const Collection = ({
   const collected = countItemsInCollectionOwned(log, collection);
   const total = countAllItemsInCollection(collection);
   const isComplete = collected === total;
-  const ledgerIsOpen = isOpen;
+  const ledgerIsOpen = openCollections.includes(collection.strapiId);
 
   const headingLabel = collection.name;
   const counterLabel = `[${collected}/${total}]`;
@@ -245,49 +272,13 @@ const Collection = ({
               collections={collection.subcollections}
               parentCollection={collection}
               onClickItem={onClickItem}
+              onCollectionChange={onCollectionChange}
+              openCollections={openCollections}
             />
           </div>
         );
       }}
     </AccordionItem>
-  );
-};
-
-const Ledger = ({
-  collections,
-  parentCollection,
-  onClickItem,
-}: LedgerProps) => {
-  const [vm, setVm] = useState<ViewModel>(getViewModel());
-
-  useEffect(() => saveViewModel(vm), [vm]);
-
-  return (
-    <Accordion
-      allowMultiple
-      transition
-      transitionTimeout={250}
-      onStateChange={(e) => {
-        setVm((vm) => ({
-          ...vm,
-          openCollections: toggleValueInArray(
-            vm.openCollections,
-            Number(e.key),
-            e.current.isEnter,
-          ),
-        }));
-      }}
-    >
-      {collections.map((collection) => (
-        <Collection
-          key={collection.strapiId}
-          collection={collection}
-          parentCollection={parentCollection}
-          isOpen={vm.openCollections.includes(collection.strapiId)}
-          onClickItem={onClickItem}
-        />
-      ))}
-    </Accordion>
   );
 };
 
