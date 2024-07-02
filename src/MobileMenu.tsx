@@ -5,6 +5,7 @@ import Account from "./components/Account";
 import React from "react";
 import { ContentType, MasterGroup } from "./common";
 import { Link } from "react-router-dom";
+import { generateUrl } from "./routes/CollectionLog";
 
 type Props = {
   onNavigate: (place: ContentType, group?: MasterGroup) => void;
@@ -18,28 +19,28 @@ function MobileMenu({ onNavigate, onAuth, currentUser, onLogout }: Props) {
     <div className={styles.MobileMenu}>
       <Link
         className={styles.MobileMenuLink}
-        to={"/transmogs/" + MasterGroup.GENERAL.toLowerCase()}
+        to={generateUrl(MasterGroup.GENERAL)}
         onClick={() => onNavigate(ContentType.LEDGER)}
       >
         Essential Collection
       </Link>
       <Link
         className={styles.MobileMenuLink}
-        to={"/transmogs/" + MasterGroup.SEASONS.toLowerCase()}
+        to={generateUrl(MasterGroup.SEASONS)}
         onClick={() => onNavigate(ContentType.LEDGER)}
       >
         Seasons
       </Link>
       <Link
         className={styles.MobileMenuLink}
-        to={"/transmogs/" + MasterGroup.SHOP_ITEMS.toLowerCase()}
+        to={generateUrl(MasterGroup.SHOP_ITEMS)}
         onClick={() => onNavigate(ContentType.LEDGER)}
       >
         Tejal's Shop
       </Link>
       <Link
         className={styles.MobileMenuLink}
-        to={"/transmogs/" + MasterGroup.PROMOTIONAL.toLowerCase()}
+        to={generateUrl(MasterGroup.PROMOTIONAL)}
         onClick={() => onNavigate(ContentType.LEDGER)}
       >
         Promotional
