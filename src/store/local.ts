@@ -13,7 +13,7 @@ const COLLECTION_KEY = "collection";
 // deprecated
 const STORE_KEY = "d4log";
 
-export function getCollection(): CollectionLog {
+export function getUserCollectionLog(): CollectionLog {
   return getValueFromStorage(COLLECTION_KEY, defaultCollection);
 }
 
@@ -21,7 +21,7 @@ export function saveCollection(collection: CollectionLog) {
   setValueInStorage(COLLECTION_KEY, collection);
 }
 
-export function getSettings(): Settings {
+export function getUserSettings(): Settings {
   return getValueFromStorage(SETTINGS_KEY, defaultSettings);
 }
 

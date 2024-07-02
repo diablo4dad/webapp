@@ -1,10 +1,4 @@
-import React, {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import {
   DadCollection,
   DadCollectionItem,
@@ -38,11 +32,10 @@ import Account, { Direction } from "./components/Account";
 import { auth } from "./config/firebase";
 import { ContentType, MasterGroup, SideBarType } from "./common";
 import LedgerSkeleton from "./LedgerSkeleton";
-import { fetchDb } from "./server";
 import NavMenu from "./NavMenu";
 import { selectItemOrDefault } from "./data/reducers";
 import { filterDb } from "./data/filters";
-import { flattenDadDb, strapiToDad } from "./data/transforms";
+import { flattenDadDb } from "./data/transforms";
 import { countAllItemsDabDb } from "./data/aggregate";
 import { getDefaultItemId } from "./data/getters";
 import { createEmptyDb } from "./data/factory";
@@ -59,6 +52,8 @@ import {
 import { countItemInDbOwned } from "./collection/aggregate";
 import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
+import { useLoaderData } from "react-router-dom";
+import { LoaderPayload } from "./routes/CollectionLog";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -102,6 +97,7 @@ type AppViewModel = {
 };
 
 function Application(): ReactElement<HTMLDivElement> {
+  const { db, masterGroup } = useLoaderData() as LoaderPayload;
   const log = useCollection();
   const settings = useSettings();
 
@@ -119,11 +115,9 @@ function Application(): ReactElement<HTMLDivElement> {
   }, []);
 
   const [user, setUser] = useState<User | null>(null);
-  const [db, setDb] = useState(createEmptyDb());
   const [dbCount, setDbCount] = useState(0);
   const [sideBar, setSideBar] = useState(SideBarType.ITEM);
   const [content, setContent] = useState(ContentType.LEDGER);
-  const [masterGroup, setMasterGroup] = useState(MasterGroup.GENERAL);
   const history = useRef([ContentType.LEDGER]);
   const filteredDb = filterDb(db, settings, log);
   const collectionItems = flattenDadDb(filteredDb);
@@ -174,60 +168,8 @@ function Application(): ReactElement<HTMLDivElement> {
     };
 
     pageRef.current = vm.page;
-    setMasterGroup(group);
-    setDb(vm.db);
     setDbCount(vm.dbCount);
   };
-
-  const fetchDbCallback = useCallback(
-    async (collection: MasterGroup, page: number) => {
-      // pre-condition
-      if (loadingPromise.current) {
-        console.log("[fetchDb] Request dropped; fetch in progress.");
-        return;
-      }
-
-      // pre-condition
-      if (page === -1) {
-        console.log("[fetchDb] Request dropped; pagination exhausted.");
-        return;
-      }
-
-      console.log("[fetchDb] Loading...", { collection, page });
-      loadingPromise.current = fetchDb(collection, page);
-
-      try {
-        // merge page into base
-        const resp = await loadingPromise.current;
-
-        // user changed category before finished loading... drop
-        // if (collection !== masterGroup) {
-        //     console.log("Category changed, payload dropped.", {
-        //         'expected': collection,
-        //         'found': masterGroup,
-        //     });
-        //     return;
-        // }
-
-        const nextPage = strapiToDad(resp);
-        setDb((existing) => ({
-          collections: [...existing.collections, ...nextPage.collections],
-        }));
-
-        // bump page count
-        if (resp.meta.pagination.page === resp.meta.pagination.pageCount) {
-          pageRef.current = -1;
-        } else {
-          pageRef.current = resp.meta.pagination.page + 1;
-        }
-      } catch (e) {
-        console.log("[fetchDb] Error occurred...", e);
-      } finally {
-        loadingPromise.current = null;
-      }
-    },
-    [],
-  );
 
   function onToggleConfig() {
     setSideBar(
@@ -313,25 +255,6 @@ function Application(): ReactElement<HTMLDivElement> {
     };
   }, []);
 
-  // initial page load
-  useEffect(() => {
-    // pre-condition; only auto-fetch the initial page
-    if (pageRef.current !== 0) {
-      return;
-    }
-
-    console.log("[Bootstrap] Initialing...", masterGroup);
-
-    // not used in static mode... needs rework to fix live mode
-    // fetchCollectionCount().then((count) => {
-    //     console.log("[Bootstrap] Fetched count.", count);
-    // });
-
-    fetchDbCallback(masterGroup, pageRef.current).then(() => {
-      console.log("[Bootstrap] Fetched DB.");
-    });
-  }, [masterGroup]);
-
   return (
     <div className={styles.Page}>
       <div className={styles.PageHeader}>
@@ -373,10 +296,7 @@ function Application(): ReactElement<HTMLDivElement> {
           <div className={styles.HeaderRight}>
             <div className={styles.HeaderRightContent}>
               <nav className={styles.HeaderNav}>
-                <NavMenu
-                  activeGroup={masterGroup}
-                  onChange={onChangeCategory}
-                />
+                <NavMenu activeGroup={masterGroup} />
               </nav>
               <div className={styles.HeaderAccountWidgets}>
                 <Progress

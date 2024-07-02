@@ -7,10 +7,11 @@ import PromoIcon from "./image/chest.webp";
 import SeasonIcon from "./image/season.webp";
 // import ChallengeIcon from "./image/challenge.webp"
 import { ChevronRight } from "./Icons";
+import { Link } from "react-router-dom";
 
 type Props = {
   activeGroup: MasterGroup;
-  onChange: (newGroup: MasterGroup) => void;
+  onChange?: (newGroup: MasterGroup) => void;
 };
 
 type NavItemMeta = {
@@ -103,16 +104,17 @@ function NavMenu({ activeGroup, onChange }: Props) {
         {otherNavItems.map((menuItem) => {
           const innerMeta = NAV_ITEM_META.get(menuItem) ?? DEFAULT_META;
           return (
-            <div
+            <Link
+              to={"/transmogs/" + menuItem.toLowerCase()}
               key={menuItem}
               className={styles.MenuItem}
-              onClick={() => onChange(menuItem)}
+              onClick={onChange ? () => onChange(menuItem) : undefined}
             >
               <span className={styles.MenuItemIcon}>
                 <img src={innerMeta.icon}></img>
               </span>
               <span className={styles.MenuItemText}>{innerMeta.name}</span>
-            </div>
+            </Link>
           );
         })}
       </div>
