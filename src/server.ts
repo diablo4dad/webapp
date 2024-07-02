@@ -20,7 +20,7 @@ function countTotalInCollectionUri(
       url.searchParams.append("pagination[page]", String(1));
       return url.href;
     default:
-      return masterGroup.toLowerCase() + ".json";
+      return "/" + masterGroup.toLowerCase() + ".json";
   }
 }
 
@@ -52,7 +52,7 @@ function getCollectionUri(
       url.searchParams.append("filters[subcollection][id][$null]", "true");
       return url.href;
     default:
-      return masterGroup.toLowerCase() + ".json";
+      return "/" + masterGroup.toLowerCase() + ".json";
   }
 }
 
