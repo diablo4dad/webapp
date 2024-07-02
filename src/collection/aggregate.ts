@@ -16,9 +16,7 @@ export function countItemsInCollectionOwned(
   collectionLog: CollectionLog,
   collection: DadCollection,
 ): number {
-  return getAllCollectionItems(collection)
-    .flatMap((ci) => ci.items)
-    .map((i) => i.itemId)
-    .map(Number)
-    .reduce((a, c) => (isItemCollected(collectionLog, c) ? a + 1 : a), 0);
+  return getAllCollectionItems(collection).filter((ci) =>
+    ci.items.some((i) => isItemCollected(collectionLog, Number(i.itemId))),
+  ).length;
 }
