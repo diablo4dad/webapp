@@ -1,11 +1,5 @@
 import React, { ReactElement, useEffect, useRef, useState } from "react";
-import {
-  DadCollection,
-  DadCollectionItem,
-  DadDb,
-  StrapiCollection,
-  StrapiResultSet,
-} from "./data";
+import { DadCollection, DadCollectionItem } from "./data";
 import logo from "./image/d4ico.png";
 
 import styles from "./Application.module.css";
@@ -31,17 +25,14 @@ import { GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
 import Account, { Direction } from "./components/Account";
 import { auth } from "./config/firebase";
 import { ContentType, MasterGroup, SideBarType } from "./common";
-import LedgerSkeleton from "./LedgerSkeleton";
 import NavMenu from "./NavMenu";
 import { selectItemOrDefault } from "./data/reducers";
 import { filterDb } from "./data/filters";
 import { flattenDadDb } from "./data/transforms";
 import { countAllItemsDabDb } from "./data/aggregate";
 import { getDefaultItemId } from "./data/getters";
-import { createEmptyDb } from "./data/factory";
 import { useCollection } from "./collection/context";
 import { useSettings } from "./settings/context";
-import { getLedgerViewSetting } from "./settings/accessor";
 import {
   getViewModel,
   saveCollection,
@@ -90,12 +81,6 @@ export type ViewModel = {
   openCollections: number[];
 };
 
-type AppViewModel = {
-  db: DadDb;
-  page: number;
-  dbCount: number;
-};
-
 function Application(): ReactElement<HTMLDivElement> {
   const { db, masterGroup } = useLoaderData() as LoaderPayload;
   const log = useCollection();
@@ -115,7 +100,6 @@ function Application(): ReactElement<HTMLDivElement> {
   }, []);
 
   const [user, setUser] = useState<User | null>(null);
-  const [dbCount, setDbCount] = useState(0);
   const [sideBar, setSideBar] = useState(SideBarType.ITEM);
   const [content, setContent] = useState(ContentType.LEDGER);
   const history = useRef([ContentType.LEDGER]);
@@ -138,39 +122,6 @@ function Application(): ReactElement<HTMLDivElement> {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [log]);
 
-  // maintains a group aggregated cache
-  const groups = useRef(new Map<MasterGroup, AppViewModel>());
-
-  // references for "load on scroll" paging
-  const contentRef = useRef<HTMLDivElement>(document.createElement("div"));
-  const observers = useRef<IntersectionObserver[]>([]);
-
-  // paging
-  const pageRef = useRef(0);
-  const loadingPromise = useRef<Promise<
-    StrapiResultSet<StrapiCollection>
-  > | null>(null);
-
-  const onChangeCategory = (group: MasterGroup) => {
-    observers.current.forEach((o) => o.disconnect());
-    observers.current = [];
-
-    groups.current.set(masterGroup, {
-      page: pageRef.current,
-      db: db,
-      dbCount: dbCount,
-    });
-
-    const vm = groups.current.get(group) ?? {
-      db: createEmptyDb(),
-      page: 0,
-      dbCount: 0,
-    };
-
-    pageRef.current = vm.page;
-    setDbCount(vm.dbCount);
-  };
-
   function onToggleConfig() {
     setSideBar(
       sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG,
@@ -187,9 +138,6 @@ function Application(): ReactElement<HTMLDivElement> {
 
   function onNavigate(content: ContentType, group?: MasterGroup) {
     setContent(pushHistory(content));
-    if (group) {
-      onChangeCategory(group);
-    }
   }
 
   function pushHistory(content: ContentType) {
@@ -318,7 +266,7 @@ function Application(): ReactElement<HTMLDivElement> {
           </div>
         </header>
       </div>
-      <div className={styles.PageContent} ref={contentRef}>
+      <div className={styles.PageContent}>
         <div className={styles.Shell}>
           <aside className={styles.Sidebar}>
             <div className={styles.SidebarLayout}>
@@ -341,40 +289,21 @@ function Application(): ReactElement<HTMLDivElement> {
           </aside>
           <main className={styles.Content}>
             {content === ContentType.LEDGER && (
-              <>
-                <Ledger
-                  collections={filteredDb.collections}
-                  openCollections={vm.openCollections}
-                  onClickItem={onClickItem}
-                  onCollectionChange={(collectionId, isOpen) => {
-                    setVm((vm) => ({
-                      ...vm,
-                      openCollections: toggleValueInArray(
-                        vm.openCollections,
-                        collectionId,
-                        isOpen,
-                      ),
-                    }));
-                  }}
-                />
-                {(filteredDb.collections.length === 0 ||
-                  loadingPromise.current !== null) && (
-                  <>
-                    <LedgerSkeleton
-                      view={getLedgerViewSetting(settings)}
-                      numItems={6}
-                    />
-                    <LedgerSkeleton
-                      view={getLedgerViewSetting(settings)}
-                      numItems={6}
-                    />
-                    <LedgerSkeleton
-                      view={getLedgerViewSetting(settings)}
-                      numItems={6}
-                    />
-                  </>
-                )}
-              </>
+              <Ledger
+                collections={filteredDb.collections}
+                openCollections={vm.openCollections}
+                onClickItem={onClickItem}
+                onCollectionChange={(collectionId, isOpen) => {
+                  setVm((vm) => ({
+                    ...vm,
+                    openCollections: toggleValueInArray(
+                      vm.openCollections,
+                      collectionId,
+                      isOpen,
+                    ),
+                  }));
+                }}
+              />
             )}
             {content === ContentType.MOBILE_MENU && (
               <>
