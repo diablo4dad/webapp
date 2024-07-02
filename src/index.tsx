@@ -1,24 +1,29 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import Application from "./Application";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { SettingsProvider } from "./settings/context";
-import { getCollection, getSettings } from "./store/local";
-import { CollectionProvider } from "./collection/context";
+import { CollectionView, loader } from "./routes/CollectionLog";
+import { Root } from "./routes/Root";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Application />,
+    element: <Root />,
+    children: [
+      {
+        index: true,
+        element: <CollectionView />,
+        loader: loader,
+      },
+      {
+        path: "/transmogs/:collectionId",
+        element: <CollectionView />,
+        loader: loader,
+      },
+    ],
   },
 ]);
-
-// Loads settings and collection from localStorage
-// If application has not been used before, these will be default
-const settings = getSettings();
-const collection = getCollection();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
@@ -26,11 +31,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <SettingsProvider settings={settings}>
-      <CollectionProvider collection={collection}>
-        <RouterProvider router={router} />
-      </CollectionProvider>
-    </SettingsProvider>
+    <RouterProvider router={router} />
   </React.StrictMode>,
 );
 

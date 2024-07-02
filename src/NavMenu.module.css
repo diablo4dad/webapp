@@ -101,6 +101,7 @@
     cursor: pointer;
     background-color: #2D3239;
     border-right: 1px solid #2D3239;
+    text-decoration: none;
 }
 
 .MenuItem:first-child {

@@ -4,6 +4,7 @@ import { User } from "firebase/auth";
 import Account from "./components/Account";
 import React from "react";
 import { ContentType, MasterGroup } from "./common";
+import { Link } from "react-router-dom";
 
 type Props = {
   onNavigate: (place: ContentType, group?: MasterGroup) => void;
@@ -15,30 +16,34 @@ type Props = {
 function MobileMenu({ onNavigate, onAuth, currentUser, onLogout }: Props) {
   return (
     <div className={styles.MobileMenu}>
-      <button
+      <Link
         className={styles.MobileMenuLink}
-        onClick={() => onNavigate(ContentType.LEDGER, MasterGroup.GENERAL)}
+        to={"/transmogs/" + MasterGroup.GENERAL.toLowerCase()}
+        onClick={() => onNavigate(ContentType.LEDGER)}
       >
         Essential Collection
-      </button>
-      <button
+      </Link>
+      <Link
         className={styles.MobileMenuLink}
-        onClick={() => onNavigate(ContentType.LEDGER, MasterGroup.SEASONS)}
+        to={"/transmogs/" + MasterGroup.SEASONS.toLowerCase()}
+        onClick={() => onNavigate(ContentType.LEDGER)}
       >
         Seasons
-      </button>
-      <button
+      </Link>
+      <Link
         className={styles.MobileMenuLink}
-        onClick={() => onNavigate(ContentType.LEDGER, MasterGroup.SHOP_ITEMS)}
+        to={"/transmogs/" + MasterGroup.SHOP_ITEMS.toLowerCase()}
+        onClick={() => onNavigate(ContentType.LEDGER)}
       >
         Tejal's Shop
-      </button>
-      <button
+      </Link>
+      <Link
         className={styles.MobileMenuLink}
-        onClick={() => onNavigate(ContentType.LEDGER, MasterGroup.PROMOTIONAL)}
+        to={"/transmogs/" + MasterGroup.PROMOTIONAL.toLowerCase()}
+        onClick={() => onNavigate(ContentType.LEDGER)}
       >
-        Promotion
-      </button>
+        Promotional
+      </Link>
       <button
         className={styles.MobileMenuLink}
         onClick={() => onNavigate(ContentType.CONFIG)}
