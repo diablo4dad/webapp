@@ -1,35 +1,30 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { firestore } from "../config/firebase";
-import { runFirestoreMigrations, runStoreMigrations } from "./migrations";
-import { FirebaseData, StoreData } from "./index";
+import { runFirestoreMigrations, runStoreMigrations } from "../migrations";
+import { FirebaseData, initStore } from "./index";
 import { CollectionLog } from "../collection/type";
 import { VERSION } from "../config";
-import { getStoreData } from "./local";
 
 export async function fetchFromFirestore(
   uid: string,
-): Promise<StoreData | null> {
+): Promise<FirebaseData | null> {
   const docRef = doc(firestore, "collections", uid);
   const snapshot = await getDoc(docRef);
   if (!snapshot.exists()) {
     return null;
   }
 
-  // sync with firestore
   const firestoreData = snapshot.data() as FirebaseData;
   const firestoreDataSanitised = runFirestoreMigrations(firestoreData);
-
-  const localStorageData = getStoreData();
-  const localStorageDataMerged = {
-    ...localStorageData,
+  const storeDataPatched = await runStoreMigrations({
+    ...initStore(), // mixin legacy
     ...firestoreDataSanitised,
+  });
+
+  return {
+    version: storeDataPatched.version,
+    collectionLog: storeDataPatched.collectionLog,
   };
-
-  const storeDataPatched = await runStoreMigrations(localStorageDataMerged);
-
-  console.log("Got Firestore Snapshot...", storeDataPatched);
-
-  return storeDataPatched;
 }
 
 export async function saveToFirestore(

@@ -6,12 +6,7 @@ import styles from "./Application.module.css";
 import Ledger from "./Ledger";
 import ItemSidebar from "./ItemSidebar";
 import ConfigSidebar from "./ConfigSidebar";
-import {
-  DISCORD_INVITE_LINK,
-  LAST_UPDATED,
-  SITE_VERSION,
-  VERSION,
-} from "./config";
+import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "./config";
 import Progress from "./components/Progress";
 import { Discord, Gear, Hamburger } from "./Icons";
 import Button, { BtnColours } from "./Button";
@@ -37,7 +32,6 @@ import {
   getViewModel,
   saveCollection,
   saveSettings,
-  saveVersion,
   saveViewModel,
 } from "./store/local";
 import { countItemInDbOwned } from "./collection/aggregate";
@@ -45,7 +39,7 @@ import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
 import { useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
-import { saveToFirestore } from "./store/firestore";
+import { fetchFromFirestore, saveToFirestore } from "./store/firestore";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -93,7 +87,6 @@ function Application(): ReactElement<HTMLDivElement> {
   saveViewModel(vm);
   saveCollection(log);
   saveSettings(settings);
-  saveVersion({ version: VERSION });
 
   // preload to prevent jank
   useEffect(() => {
@@ -197,12 +190,15 @@ function Application(): ReactElement<HTMLDivElement> {
     console.log("[Auth] Authenticating...");
 
     // add user state listener
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       console.log("[Auth] State changed.", { ...user });
       setUser(user);
-      // if (user) {
-      //   const collectionLog = fetchFromFirestore(user.uid);
-      // }
+      if (user) {
+        const data = await fetchFromFirestore(user.uid);
+        if (data) {
+          saveCollection(data.collectionLog);
+        }
+      }
     });
 
     return () => {
