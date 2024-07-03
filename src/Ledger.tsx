@@ -37,6 +37,8 @@ type Props = {
   collections: DadCollection[];
   parentCollection?: DadCollection;
   onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
+  onToggleItem?: (item: DadCollectionItem) => void;
+  onToggleCollection?: (collection: DadCollection) => void;
   onCollectionChange: (collectionId: number, isOpen: boolean) => void;
   openCollections: number[];
 };
@@ -49,6 +51,8 @@ const Ledger = ({
   collections,
   parentCollection,
   onClickItem,
+  onToggleItem,
+  onToggleCollection,
   onCollectionChange,
   openCollections,
 }: Props) => {
@@ -72,6 +76,8 @@ const Ledger = ({
           openCollections={openCollections}
           onCollectionChange={onCollectionChange}
           onClickItem={onClickItem}
+          onToggleItem={onToggleItem}
+          onToggleCollection={onToggleCollection}
         />
       ))}
     </Accordion>
@@ -82,6 +88,8 @@ const LedgerInner = ({
   collection,
   parentCollection,
   onClickItem,
+  onToggleItem,
+  onToggleCollection,
   onCollectionChange,
   openCollections,
 }: PropsInner) => {
@@ -90,6 +98,10 @@ const LedgerInner = ({
   const dispatch = useCollectionDispatch();
 
   const toggleItem = (dci: DadCollectionItem) => (collected: boolean) => {
+    if (onToggleItem) {
+      onToggleItem(dci);
+    }
+
     dci.items
       .map((i) => i.itemId)
       .map(Number)
@@ -103,6 +115,10 @@ const LedgerInner = ({
   };
 
   const toggleCollection = (dc: DadCollection) => (collected: boolean) => {
+    if (onToggleCollection) {
+      onToggleCollection(dc);
+    }
+
     getAllCollectionItems(dc)
       .flatMap((ci) => ci.items)
       .map((i) => i.itemId)
@@ -272,6 +288,8 @@ const LedgerInner = ({
               collections={collection.subcollections}
               parentCollection={collection}
               onClickItem={onClickItem}
+              onToggleItem={onToggleItem}
+              onToggleCollection={onToggleCollection}
               onCollectionChange={onCollectionChange}
               openCollections={openCollections}
             />

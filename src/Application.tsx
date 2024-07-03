@@ -45,6 +45,7 @@ import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
 import { useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
+import { saveToFirestore } from "./store/firestore";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -113,14 +114,21 @@ function Application(): ReactElement<HTMLDivElement> {
     selectedCollectionItemId,
   );
 
-  // // this can be replaced with useEffectEvent when its released
-  // // https://react.dev/learn/separating-events-from-effects#declaring-an-effect-event
-  // useEffect(() => {
-  //   if (user?.uid) {
-  //     void saveToFirestore(user.uid, log);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [log]);
+  useEffect(() => {
+    function commit() {
+      if (user?.uid) {
+        void saveToFirestore(user.uid, log).then(() => {
+          console.log("[Firestore] Wrote to Firestore.");
+        });
+      }
+    }
+
+    const timeoutId = setTimeout(commit, 2500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [user, log]);
 
   function onToggleConfig() {
     setSideBar(

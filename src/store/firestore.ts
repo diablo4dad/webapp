@@ -41,6 +41,4 @@ export async function saveToFirestore(
     collectionLog,
     version: VERSION,
   });
-
-  console.log("Firestore write committed.");
 }
