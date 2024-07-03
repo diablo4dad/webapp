@@ -1,10 +1,16 @@
-import { FirebaseData, StoreData, VersionMeta } from "./index";
+import { FirebaseData, StoreData, VersionMeta } from "../store";
 import migration130 from "./migrate1d3d0.json";
 import migration140 from "./migrate1d4d0.json";
 import migration141 from "./migrate1d4d1.json";
 import { VERSION } from "../config";
 import { MasterGroup } from "../common";
 import { ArtifactMeta, ItemFlag } from "../collection/type";
+import {
+  getStoreData,
+  getVersion,
+  saveCollection,
+  saveVersion,
+} from "../store/local";
 
 type FirestoreData1d2d0 = {
   entries: ArtifactMeta[];
@@ -244,4 +250,16 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
   }
 
   return store;
+}
+
+export function runLocalStorageMigrations() {
+  const version = getVersion();
+  if (version === null) {
+    console.log("Running v1.7.0 local storage migration...");
+
+    // Intentionally throw away settings and view model
+    const storeData = getStoreData();
+    saveCollection(storeData.collectionLog);
+    saveVersion(VERSION);
+  }
 }
