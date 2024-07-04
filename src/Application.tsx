@@ -329,7 +329,7 @@ function Application(): ReactElement<HTMLDivElement> {
           )}
         </>
       }
-      footerSticky={
+      stickyBottom={
         <>
           {content === ContentType.LEDGER && (
             <Progress
