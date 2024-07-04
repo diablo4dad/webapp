@@ -1,25 +1,5 @@
 @value ProgressBar, Progress from "components/Progress.module.css";
 
-.Page {
-    min-height: 100vh;
-    background-color: #282c34;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.PageHeader {
-    position: sticky;
-    top: 0;
-    z-index: 5000;
-}
-
-.PageContent {
-    display: flex;
-    flex: 1;
-}
-
 .Header {
     width: 100%;
     height: 6rem;
@@ -107,16 +87,6 @@
     font-size: 0.875rem;
 }
 
-.Shell {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.Sidebar {
-    display: none;
-    background-color: #252930;
-}
 
 .SidebarLayout {
     display: flex;
@@ -201,27 +171,6 @@
     fill: #ccc;
 }
 
-.Content {
-    position: relative;
-    width: 100%;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-}
-
-.ProgressMobile {
-    padding: 1rem;
-    position: sticky;
-    bottom: 0;
-    z-index: 5000;
-    background-color: #1e2126;
-}
-
-.Footer {
-    display: block;
-    background-color: #1e2126;
-    border-top: 1px solid #282c34;
-}
 
 .Discord {
     padding: 0 1rem;
@@ -263,32 +212,12 @@
 }
 
 @media screen and (min-width: 1200px) and (max-width: 1400px) {
-    .PageHeader .ProgressBar {
+    .HeaderRight .ProgressBar {
         opacity: 0;
     }
 }
 
 @media screen and (min-width: 1200px) {
-    .Shell {
-        flex-direction: row;
-    }
-
-    .Page {
-        height: 100vh;
-        justify-content: flex-start;
-    }
-
-    .PageHeader {
-    }
-
-    .PageHeader .Progress {
-        max-width: 30rem;
-    }
-
-    .PageContent {
-        display: block;
-        overflow: auto;
-    }
 
     .PageFooter {
 
@@ -312,6 +241,10 @@
         display: block;
     }
 
+    .HeaderRight .Progress {
+        max-width: 30rem;
+    }
+
     .HeaderRightContent {
         width: 100%;
         flex-direction: row;
@@ -326,20 +259,6 @@
 
     .HeaderInfoName {
         font-size: 1.5rem;
-    }
-
-    .Content {
-        display: block;
-        flex: auto;
-    }
-
-    .Sidebar {
-        display: block;
-        position: inherit;
-        width: 50rem;
-        border-right: 1px solid #1d2026;
-        border-bottom: none;
-        z-index: 10;
     }
 
     .SidebarLayout {
@@ -363,16 +282,6 @@
         flex: 1;
         flex-direction: column;
         overflow: auto;
-    }
-
-    .ProgressMobile {
-        display: none;
-    }
-
-    .Footer {
-        display: none;
-        align-items: center;
-        justify-content: space-between;
     }
 
     .Discord {
