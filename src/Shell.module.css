@@ -1,4 +1,4 @@
-.Page {
+.Block {
     min-height: 100vh;
     background-color: #282c34;
     color: white;
@@ -7,13 +7,20 @@
     justify-content: space-between;
 }
 
-.PageHeader {
+.Header {
     position: sticky;
     top: 0;
     z-index: 5000;
 }
 
-.PageContent {
+.StickyTop {
+    position: sticky;
+    top: 0;
+    z-index: 5000;
+    background-color: #1e2126;
+}
+
+.Content {
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -24,7 +31,7 @@
     background-color: #252930;
 }
 
-.Content {
+.Main {
     position: relative;
     width: 100%;
     display: flex;
@@ -32,7 +39,7 @@
     flex-direction: column;
 }
 
-.ProgressMobile {
+.StickyBottom {
     padding: 1rem;
     position: sticky;
     bottom: 0;
@@ -47,12 +54,16 @@
 }
 
 @media screen and (min-width: 1200px) {
-    .Page {
+    .Block {
         height: 100vh;
         justify-content: flex-start;
     }
 
-    .PageContent {
+    .StickyTop {
+        display: none;
+    }
+
+    .Content {
         overflow: auto;
         flex-direction: row;
     }
@@ -67,12 +78,12 @@
         z-index: 10;
     }
 
-    .Content {
+    .Main {
         display: block;
         flex: auto;
     }
 
-    .ProgressMobile {
+    .StickyBottom {
         display: none;
     }
 
