@@ -16,12 +16,7 @@
 .PageContent {
     display: flex;
     flex: 1;
-}
-
-.Shell {
-    display: flex;
     flex-direction: column;
-    flex: 1;
 }
 
 .Sidebar {
@@ -58,17 +53,14 @@
     }
 
     .PageContent {
-        display: block;
         overflow: auto;
-    }
-
-    .Shell {
         flex-direction: row;
     }
 
     .Sidebar {
         display: block;
-        position: inherit;
+        position: sticky;
+        top: 0;
         width: 50rem;
         border-right: 1px solid #1d2026;
         border-bottom: none;

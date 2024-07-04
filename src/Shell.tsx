@@ -14,10 +14,8 @@ function Shell({ header, sidebar, main, footerSticky, footer }: Props) {
     <div className={styles.Page}>
       <div className={styles.PageHeader}>{header}</div>
       <div className={styles.PageContent}>
-        <div className={styles.Shell}>
-          <aside className={styles.Sidebar}>{sidebar}</aside>
-          <main className={styles.Content}>{main}</main>
-        </div>
+        <aside className={styles.Sidebar}>{sidebar}</aside>
+        <main className={styles.Content}>{main}</main>
       </div>
       <div className={styles.ProgressMobile}>{footerSticky}</div>
       <div className={styles.Footer}>{footer}</div>
