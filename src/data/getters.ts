@@ -5,7 +5,7 @@ import {
   DadDb,
   DEFAULT_ITEM,
 } from "./index";
-import missing from "../image/imgfill.png";
+import missing from "../image/placeholder.webp";
 
 export function getItemName(ci: DadCollectionItem): string {
   if (ci.items.length === 0) {

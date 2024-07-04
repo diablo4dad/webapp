@@ -250,7 +250,7 @@ function Application(): ReactElement<HTMLDivElement> {
       sidebar={
         <>
           {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
-          {sideBar === SideBarType.ITEM && selectedCollectionItem && (
+          {sideBar === SideBarType.ITEM && (
             <ItemSidebar collectionItem={selectedCollectionItem} />
           )}
         </>
