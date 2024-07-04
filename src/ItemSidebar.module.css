@@ -1,4 +1,4 @@
-.Panel {
+.Block {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -70,6 +70,7 @@
     flex-direction: row;
     column-gap: 1rem;
     align-items: center;
+    width: 100%;
     padding: 1rem 2rem;
     background-color: #303640;
 }
@@ -202,4 +203,31 @@
     /*.Panel {*/
     /*    display: block;*/
     /*}*/
+}
+
+/* Class Specific Modifiers */
+.BarbarianClassIcon,
+.DruidClassIcon,
+.NecromancerClassIcon,
+.RogueClassIcon,
+.SorcererClassIcon {
+    display: none;
+}
+
+.Barbarian .BarbarianClassIcon,
+.Druid .DruidClassIcon,
+.Necromancer .NecromancerClassIcon,
+.Rogue .RogueClassIcon,
+.Sorcerer .SorcererClassIcon {
+    display: inline-block;
+}
+
+/* All skeleton loading states here */
+.Skeleton {
+
+}
+
+.Skeleton .ItemImage {
+    background-color: #303640;
+    border-radius: 1rem;
 }

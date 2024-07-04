@@ -37,6 +37,7 @@ import { isItemCollected, isItemHidden } from "./collection/predicate";
 import React from "react";
 import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
+import classNames from "classnames";
 
 function generateEditUrl(item: DadCollectionItem): string {
   return (
@@ -85,47 +86,68 @@ function ItemSidebar({ collectionItem }: ItemProps) {
   const log = useCollection();
   const dispatcher = useCollectionDispatch();
 
+  // DEBUG skeleton
+  // collectionItem = DEFAULT_COLLECTION_ITEM;
+
   const item = getDefaultItemFromCollectionItems(collectionItem);
   const itemId = Number(item.itemId);
+  const isSkeleton = item.strapiId === -1;
+
+  const className = classNames({
+    [styles.Block]: true,
+    [styles.Skeleton]: isSkeleton,
+    [styles.Barbarian]: isSkeleton || usableBy("Barbarian", collectionItem),
+    [styles.Druid]: isSkeleton || usableBy("Druid", collectionItem),
+    [styles.Necromancer]: isSkeleton || usableBy("Necromancer", collectionItem),
+    [styles.Rogue]: isSkeleton || usableBy("Rogue", collectionItem),
+    [styles.Sorcerer]: isSkeleton || usableBy("Sorcerer", collectionItem),
+  });
 
   return (
-    <div className={styles.Panel}>
+    <div className={className}>
       <div>
         <img
-          src={getImageUri(item)}
           className={styles.ItemImage}
+          src={getImageUri(item)}
           alt={item.name}
         />
         <div className={styles.ItemTitle}>{getItemName(collectionItem)}</div>
         <div className={styles.ItemType}>{getItemType(collectionItem)}</div>
         <div className={styles.ItemClasses}>
-          {usableBy("Barbarian", collectionItem) && (
-            <img
-              className={styles.ItemClassIcon}
-              src={barbarian}
-              alt="Barbarian"
-            />
-          )}
-          {usableBy("Druid", collectionItem) && (
-            <img className={styles.ItemClassIcon} src={druid} alt="Druid" />
-          )}
-          {usableBy("Necromancer", collectionItem) && (
-            <img
-              className={styles.ItemClassIcon}
-              src={necromancer}
-              alt="Necromancer"
-            />
-          )}
-          {usableBy("Rogue", collectionItem) && (
-            <img className={styles.ItemClassIcon} src={rogue} alt="Rogue" />
-          )}
-          {usableBy("Sorcerer", collectionItem) && (
-            <img
-              className={styles.ItemClassIcon}
-              src={sorceress}
-              alt="Sorcerer"
-            />
-          )}
+          <img
+            className={classNames(
+              styles.ItemClassIcon,
+              styles.BarbarianClassIcon,
+            )}
+            src={barbarian}
+            alt="Barbarian"
+          />
+          <img
+            className={classNames(styles.ItemClassIcon, styles.DruidClassIcon)}
+            src={druid}
+            alt="Druid"
+          />
+          <img
+            className={classNames(
+              styles.ItemClassIcon,
+              styles.NecromancerClassIcon,
+            )}
+            src={necromancer}
+            alt="Necromancer"
+          />
+          <img
+            className={classNames(styles.ItemClassIcon, styles.RogueClassIcon)}
+            src={rogue}
+            alt="Rogue"
+          />
+          <img
+            className={classNames(
+              styles.ItemClassIcon,
+              styles.SorcererClassIcon,
+            )}
+            src={sorceress}
+            alt="Sorcerer"
+          />
         </div>
         <div
           className={styles.ItemDescription}

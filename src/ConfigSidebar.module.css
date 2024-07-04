@@ -1,4 +1,4 @@
-.Panel {
+.Block {
     display: flex;
     flex-direction: column;
     row-gap: 2rem;
@@ -24,7 +24,7 @@
 }
 
 @media screen and (min-width: 1200px) {
-    .Panel {
+    .Block {
         padding: 2rem;
     }
 
