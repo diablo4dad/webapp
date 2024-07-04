@@ -1,4 +1,4 @@
-import styles from "./Application.module.css";
+import styles from "./Shell.module.css";
 import React, { ReactNode } from "react";
 
 type Props = {

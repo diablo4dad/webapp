@@ -1,0 +1,92 @@
+.Page {
+    min-height: 100vh;
+    background-color: #282c34;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.PageHeader {
+    position: sticky;
+    top: 0;
+    z-index: 5000;
+}
+
+.PageContent {
+    display: flex;
+    flex: 1;
+}
+
+.Shell {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.Sidebar {
+    display: none;
+    background-color: #252930;
+}
+
+.Content {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.ProgressMobile {
+    padding: 1rem;
+    position: sticky;
+    bottom: 0;
+    z-index: 5000;
+    background-color: #1e2126;
+}
+
+.Footer {
+    display: block;
+    background-color: #1e2126;
+    border-top: 1px solid #282c34;
+}
+
+@media screen and (min-width: 1200px) {
+    .Page {
+        height: 100vh;
+        justify-content: flex-start;
+    }
+
+    .PageContent {
+        display: block;
+        overflow: auto;
+    }
+
+    .Shell {
+        flex-direction: row;
+    }
+
+    .Sidebar {
+        display: block;
+        position: inherit;
+        width: 50rem;
+        border-right: 1px solid #1d2026;
+        border-bottom: none;
+        z-index: 10;
+    }
+
+    .Content {
+        display: block;
+        flex: auto;
+    }
+
+    .ProgressMobile {
+        display: none;
+    }
+
+    .Footer {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
