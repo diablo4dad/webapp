@@ -278,18 +278,22 @@ function Application(): ReactElement<HTMLDivElement> {
         </header>
       }
       sidebar={
-        <div className={styles.SidebarLayout}>
+        <>
+          {sideBar === SideBarType.CONFIG && (
+            <div className={styles.SidebarLayout}>
+              <ConfigSidebar />
+            </div>
+          )}
           {sideBar === SideBarType.ITEM && selectedCollectionItem && (
-            <>
+            <div className={styles.SidebarLayout}>
               <ItemSidebar collectionItem={selectedCollectionItem} />
               <footer className={styles.SidebarFooter}>
                 <DiscordInvite />
                 <VersionInfo />
               </footer>
-            </>
+            </div>
           )}
-          {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
-        </div>
+        </>
       }
       main={
         <>
