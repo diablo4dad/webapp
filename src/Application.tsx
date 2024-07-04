@@ -40,6 +40,7 @@ import { toggleValueInArray } from "./common/arrays";
 import { useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
 import { fetchFromFirestore, saveToFirestore } from "./store/firestore";
+import Shell from "./Shell";
 
 function VersionInfo(): ReactElement<HTMLDivElement> {
   return (
@@ -208,8 +209,8 @@ function Application(): ReactElement<HTMLDivElement> {
   }, []);
 
   return (
-    <div className={styles.Page}>
-      <div className={styles.PageHeader}>
+    <Shell
+      header={
         <header className={styles.Header}>
           <div className={styles.HeaderLeft}>
             <div className={styles.HeaderLeftContent}>
@@ -269,81 +270,82 @@ function Application(): ReactElement<HTMLDivElement> {
             </div>
           </div>
         </header>
-      </div>
-      <div className={styles.PageContent}>
-        <div className={styles.Shell}>
-          <aside className={styles.Sidebar}>
-            <div className={styles.SidebarLayout}>
-              <div className={styles.SidebarLayoutTop}></div>
-              <div className={styles.SidebarLayoutBottom}>
-                <section className={styles.SidebarContent}>
-                  {sideBar === SideBarType.ITEM && selectedCollectionItem && (
-                    <>
-                      <ItemSidebar collectionItem={selectedCollectionItem} />
-                      <footer className={styles.SidebarFooter}>
-                        <DiscordInvite />
-                        <VersionInfo />
-                      </footer>
-                    </>
-                  )}
-                  {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
-                </section>
-              </div>
-            </div>
-          </aside>
-          <main className={styles.Content}>
-            {content === ContentType.LEDGER && (
-              <Ledger
-                collections={filteredDb.collections}
-                openCollections={vm.openCollections}
-                onClickItem={onClickItem}
-                onCollectionChange={(collectionId, isOpen) => {
-                  setVm((vm) => ({
-                    ...vm,
-                    openCollections: toggleValueInArray(
-                      vm.openCollections,
-                      collectionId,
-                      isOpen,
-                    ),
-                  }));
-                }}
+      }
+      sidebar={
+        <div className={styles.SidebarLayout}>
+          <div className={styles.SidebarLayoutBottom}>
+            <section className={styles.SidebarContent}>
+              {sideBar === SideBarType.ITEM && selectedCollectionItem && (
+                <>
+                  <ItemSidebar collectionItem={selectedCollectionItem} />
+                  <footer className={styles.SidebarFooter}>
+                    <DiscordInvite />
+                    <VersionInfo />
+                  </footer>
+                </>
+              )}
+              {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
+            </section>
+          </div>
+        </div>
+      }
+      main={
+        <>
+          {content === ContentType.LEDGER && (
+            <Ledger
+              collections={filteredDb.collections}
+              openCollections={vm.openCollections}
+              onClickItem={onClickItem}
+              onCollectionChange={(collectionId, isOpen) => {
+                setVm((vm) => ({
+                  ...vm,
+                  openCollections: toggleValueInArray(
+                    vm.openCollections,
+                    collectionId,
+                    isOpen,
+                  ),
+                }));
+              }}
+            />
+          )}
+          {content === ContentType.MOBILE_MENU && (
+            <>
+              <MobileHeader>Menu</MobileHeader>
+              <MobileMenu
+                currentUser={user}
+                onNavigate={onNavigate}
+                onAuth={signIn}
+                onLogout={signOut}
               />
-            )}
-            {content === ContentType.MOBILE_MENU && (
-              <>
-                <MobileHeader>Menu</MobileHeader>
-                <MobileMenu
-                  currentUser={user}
-                  onNavigate={onNavigate}
-                  onAuth={signIn}
-                  onLogout={signOut}
-                />
-                <MobileCloseButton onClick={() => setContent(popHistory())} />
-              </>
-            )}
-            {content === ContentType.CONFIG && (
-              <>
-                <MobileHeader>Settings</MobileHeader>
-                <ConfigSidebar />
-                <MobileCloseButton onClick={() => setContent(popHistory())} />
-              </>
-            )}
-          </main>
-        </div>
-      </div>
-      {content === ContentType.LEDGER && (
-        <div className={styles.ProgressMobile}>
-          <Progress
-            totalCollected={countItemInDbOwned(log, filteredDb)}
-            collectionSize={countAllItemsDabDb(filteredDb)}
-          />
-        </div>
-      )}
-      <footer className={styles.Footer}>
-        <DiscordInvite />
-        <VersionInfo />
-      </footer>
-    </div>
+              <MobileCloseButton onClick={() => setContent(popHistory())} />
+            </>
+          )}
+          {content === ContentType.CONFIG && (
+            <>
+              <MobileHeader>Settings</MobileHeader>
+              <ConfigSidebar />
+              <MobileCloseButton onClick={() => setContent(popHistory())} />
+            </>
+          )}
+        </>
+      }
+      footerSticky={
+        <>
+          {content === ContentType.LEDGER && (
+            <Progress
+              totalCollected={countItemInDbOwned(log, filteredDb)}
+              collectionSize={countAllItemsDabDb(filteredDb)}
+            />
+          )}
+        </>
+      }
+      footer={
+        <>
+          <DiscordInvite />
+          <VersionInfo />
+        </>
+      }
+    />
   );
 }
 
