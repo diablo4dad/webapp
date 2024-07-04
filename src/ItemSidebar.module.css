@@ -1,5 +1,8 @@
 .Panel {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
 }
 
 .PanelHeading {
@@ -196,7 +199,7 @@
 }
 
 @media screen and (min-width: 1200px) {
-    .Panel {
-        display: block;
-    }
+    /*.Panel {*/
+    /*    display: block;*/
+    /*}*/
 }

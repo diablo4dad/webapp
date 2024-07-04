@@ -6,9 +6,8 @@ import styles from "./Application.module.css";
 import Ledger from "./Ledger";
 import ItemSidebar from "./ItemSidebar";
 import ConfigSidebar from "./ConfigSidebar";
-import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "./config";
 import Progress from "./components/Progress";
-import { Discord, Gear, Hamburger } from "./Icons";
+import { Gear, Hamburger } from "./Icons";
 import Button, { BtnColours } from "./Button";
 import Authenticate, { AuthGiant, Orientation } from "./Authenticate";
 import MobileMenu from "./MobileMenu";
@@ -41,37 +40,8 @@ import { useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
 import { fetchFromFirestore, saveToFirestore } from "./store/firestore";
 import Shell from "./Shell";
-
-function VersionInfo(): ReactElement<HTMLDivElement> {
-  return (
-    <div className={styles.SiteVersion}>
-      <div>Last updated {LAST_UPDATED}</div>
-      <div>
-        Site Version <code>{SITE_VERSION}</code>
-      </div>
-    </div>
-  );
-}
-
-function DiscordInvite(): ReactElement<HTMLDivElement> {
-  return (
-    <div className={styles.Discord}>
-      <div className={styles.DiscordIcon}>
-        <a href={DISCORD_INVITE_LINK}>
-          <Discord></Discord>
-        </a>
-      </div>
-      <div className={styles.DiscordInfo}>
-        <a className={styles.DiscordInfoLink} href={DISCORD_INVITE_LINK}>
-          Join the Discord Server
-        </a>
-        <div className={styles.DiscordInfoSlugs}>
-          Site News | Help Needed | Bragging
-        </div>
-      </div>
-    </div>
-  );
-}
+import { VersionInfo } from "./components/VersionPanel";
+import { DiscordInvite } from "./components/DiscordPanel";
 
 export type ViewModel = {
   openCollections: number[];
@@ -279,19 +249,9 @@ function Application(): ReactElement<HTMLDivElement> {
       }
       sidebar={
         <>
-          {sideBar === SideBarType.CONFIG && (
-            <div className={styles.SidebarLayout}>
-              <ConfigSidebar />
-            </div>
-          )}
+          {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
           {sideBar === SideBarType.ITEM && selectedCollectionItem && (
-            <div className={styles.SidebarLayout}>
-              <ItemSidebar collectionItem={selectedCollectionItem} />
-              <footer className={styles.SidebarFooter}>
-                <DiscordInvite />
-                <VersionInfo />
-              </footer>
-            </div>
+            <ItemSidebar collectionItem={selectedCollectionItem} />
           )}
         </>
       }
