@@ -94,24 +94,8 @@
     flex-direction: column;
 }
 
-.SidebarLayoutTop {
-    display: flex;
-    flex-direction: column;
-}
-
-.SidebarLayoutBottom {
-    display: block;
-}
-
 .SidebarFooter {
     display: none;
-}
-
-.SidebarContent {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 
 .HeaderIcon {
@@ -265,6 +249,7 @@
         position: sticky;
         top: 0;
 
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -275,13 +260,6 @@
 
     .SidebarFooter {
         display: block;
-    }
-
-    .SidebarLayoutBottom {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        overflow: auto;
     }
 
     .Discord {
