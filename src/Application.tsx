@@ -77,6 +77,12 @@ export type ViewModel = {
   openCollections: number[];
 };
 
+// Controls heading contents
+// Controls sidebar contents
+// Provides outlet
+// Needs D4Data
+// Needs Settings
+// Needs Collections Log
 function Application(): ReactElement<HTMLDivElement> {
   const { db, masterGroup } = useLoaderData() as LoaderPayload;
   const log = useCollection();
@@ -273,20 +279,16 @@ function Application(): ReactElement<HTMLDivElement> {
       }
       sidebar={
         <div className={styles.SidebarLayout}>
-          <div className={styles.SidebarLayoutBottom}>
-            <section className={styles.SidebarContent}>
-              {sideBar === SideBarType.ITEM && selectedCollectionItem && (
-                <>
-                  <ItemSidebar collectionItem={selectedCollectionItem} />
-                  <footer className={styles.SidebarFooter}>
-                    <DiscordInvite />
-                    <VersionInfo />
-                  </footer>
-                </>
-              )}
-              {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
-            </section>
-          </div>
+          {sideBar === SideBarType.ITEM && selectedCollectionItem && (
+            <>
+              <ItemSidebar collectionItem={selectedCollectionItem} />
+              <footer className={styles.SidebarFooter}>
+                <DiscordInvite />
+                <VersionInfo />
+              </footer>
+            </>
+          )}
+          {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
         </div>
       }
       main={
