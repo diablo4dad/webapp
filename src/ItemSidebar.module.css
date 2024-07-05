@@ -213,6 +213,7 @@
 .RogueClassIcon,
 .SorcererClassIcon {
     opacity: 0.15;
+    transition: opacity 250ms;
 }
 
 .Barbarian .BarbarianClassIcon,
