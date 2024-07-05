@@ -9,7 +9,7 @@ function ConfigSidebar() {
   const dispatch = useSettingsDispatch();
 
   return (
-    <div className={styles.Panel}>
+    <div className={styles.Block}>
       {groups.map((group) => (
         <fieldset className={styles.Fieldset}>
           <legend>{group.label}</legend>
