@@ -21,7 +21,6 @@ import { auth } from "./config/firebase";
 import { ContentType, MasterGroup, SideBarType } from "./common";
 import NavMenu from "./NavMenu";
 import { selectItemOrDefault } from "./data/reducers";
-import { filterDb } from "./data/filters";
 import { flattenDadDb } from "./data/transforms";
 import { countAllItemsDabDb } from "./data/aggregate";
 import { getDefaultItemId } from "./data/getters";
@@ -36,12 +35,11 @@ import {
 import { countItemInDbOwned } from "./collection/aggregate";
 import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
-import { useLoaderData } from "react-router-dom";
-import { LoaderPayload } from "./routes/CollectionLog";
 import { fetchFromFirestore, saveToFirestore } from "./store/firestore";
 import Shell from "./Shell";
 import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
+import {useData} from "./data/context";
 
 export type ViewModel = {
   openCollections: number[];
@@ -54,7 +52,7 @@ export type ViewModel = {
 // Needs Settings
 // Needs Collections Log
 function Application(): ReactElement<HTMLDivElement> {
-  const { db, masterGroup } = useLoaderData() as LoaderPayload;
+  const { filteredDb, group } = useData();
   const log = useCollection();
   const settings = useSettings();
 
@@ -74,7 +72,6 @@ function Application(): ReactElement<HTMLDivElement> {
   const [sideBar, setSideBar] = useState(SideBarType.ITEM);
   const [content, setContent] = useState(ContentType.LEDGER);
   const history = useRef([ContentType.LEDGER]);
-  const filteredDb = filterDb(db, settings, log);
   const collectionItems = flattenDadDb(filteredDb);
   const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(
     getDefaultItemId(filteredDb),
@@ -225,7 +222,7 @@ function Application(): ReactElement<HTMLDivElement> {
           <div className={styles.HeaderRight}>
             <div className={styles.HeaderRightContent}>
               <nav className={styles.HeaderNav}>
-                <NavMenu activeGroup={masterGroup} />
+                <NavMenu activeGroup={group} />
               </nav>
               <div className={styles.HeaderAccountWidgets}>
                 <Progress
