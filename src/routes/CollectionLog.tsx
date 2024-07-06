@@ -2,8 +2,10 @@ import { DadDb } from "../data";
 import { fetchDb } from "../server";
 import { MasterGroup } from "../common";
 import { strapiToDad } from "../data/transforms";
-import React from "react";
+import React, {useEffect} from "react";
 import Application from "../Application";
+import { defer, useLoaderData } from "react-router-dom";
+import {useData} from "../data/context";
 
 export type Params = {
   params: {
@@ -12,8 +14,8 @@ export type Params = {
 };
 
 export type LoaderPayload = {
-  db: DadDb;
-  masterGroup: MasterGroup;
+  db: Promise<DadDb>;
+  group: MasterGroup;
 };
 
 const slugMap: ReadonlyMap<MasterGroup, string> = new Map([
@@ -40,16 +42,35 @@ export function generateUrl(group: MasterGroup): string {
   return `/transmogs/${groupToSlug(group)}`;
 }
 
-export async function loader({ params }: Params): Promise<LoaderPayload> {
-  const masterGroup = slugToGroup(params.collectionId ?? "general");
-  const db = strapiToDad(await fetchDb(masterGroup));
+export async function loader({ params }: Params) {
+  const group = slugToGroup(params.collectionId ?? "general");
+  const db = fetchDb(group).then(strapiToDad);
 
-  return {
+  return defer({
     db,
-    masterGroup,
-  };
+    group,
+  });
 }
 
 export function CollectionView() {
-  return <Application />;
+  const { db, group } = useLoaderData() as LoaderPayload;
+  const { switchDb } = useData();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    db.then(resolvedDb => {
+      if (!cancelled) {
+        switchDb(group, resolvedDb);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    }
+  }, [db, group, switchDb]);
+
+  return (
+    <Application />
+  );
 }

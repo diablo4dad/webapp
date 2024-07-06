@@ -2,7 +2,8 @@ const VERSION = { major: 1, minor: 6, revision: 10 };
 const SITE_VERSION = `${VERSION.major}.${VERSION.minor}.${VERSION.revision}`;
 const LAST_UPDATED = "June 24th, 2024";
 const DISCORD_INVITE_LINK = "https://discord.gg/mPRBrU2kYT";
-const MODE = process.env.NODE_ENV === "production" ? "static" : "live";
+// const MODE = process.env.NODE_ENV === "production" ? "static" : "live";
+const MODE = "static";
 const SERVER_ADDR = "http://localhost:1337";
 
 export {
