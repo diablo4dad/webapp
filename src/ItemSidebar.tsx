@@ -96,11 +96,11 @@ function ItemSidebar({ collectionItem }: ItemProps) {
   const className = classNames({
     [styles.Block]: true,
     [styles.Skeleton]: isSkeleton,
-    [styles.Barbarian]: isSkeleton || usableBy("Barbarian", collectionItem),
-    [styles.Druid]: isSkeleton || usableBy("Druid", collectionItem),
-    [styles.Necromancer]: isSkeleton || usableBy("Necromancer", collectionItem),
-    [styles.Rogue]: isSkeleton || usableBy("Rogue", collectionItem),
-    [styles.Sorcerer]: isSkeleton || usableBy("Sorcerer", collectionItem),
+    [styles.Barbarian]: !isSkeleton && usableBy("Barbarian", collectionItem),
+    [styles.Druid]: !isSkeleton && usableBy("Druid", collectionItem),
+    [styles.Necromancer]: !isSkeleton && usableBy("Necromancer", collectionItem),
+    [styles.Rogue]: !isSkeleton && usableBy("Rogue", collectionItem),
+    [styles.Sorcerer]: !isSkeleton && usableBy("Sorcerer", collectionItem),
   });
 
   return (
