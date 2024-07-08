@@ -41,7 +41,7 @@
 }
 
 .ItemClassIcon {
-    max-width: 2.5rem;
+    max-width: 38px;
     height: auto;
 }
 
@@ -225,16 +225,22 @@
 }
 
 /* All skeleton loading states here */
-.Skeleton {
+.Skeleton { }
 
+.Skeleton .ItemTitle,
+.Skeleton .ItemType,
+.Skeleton .ItemClassIcon,
+.Skeleton .ItemLocationDescription,
+.Skeleton .ItemLocationCategory {
+    position: relative;
+    color: transparent;
 }
 
-.Skeleton .ItemImage {
-    background-color: #303640;
-    border-radius: 1rem;
-}
-
-.Skeleton .ItemLocation:after {
+.Skeleton .ItemTitle:after,
+.Skeleton .ItemType:after,
+.Skeleton .ItemClassIcon:after,
+.Skeleton .ItemLocationDescription:after,
+.Skeleton .ItemLocationCategory:after {
     content: '';
     display: block;
     width: 100%;
@@ -243,17 +249,68 @@
     left: 0;
     top: 0;
     background-repeat: no-repeat;
-    background-image: linear-gradient(90deg, rgba(48, 54, 64, 0), rgba(48, 54, 64, 0.8) 50%, rgba(48, 54, 64, 0) 100%),
-    linear-gradient(#cccccc 16px, transparent 0),
-    linear-gradient(#cccccc 16px, transparent 0),
-    linear-gradient(#303640 100%, transparent 0);
-    background-size: 8rem 100%, 35% 1rem, 75% 1rem, 100% 100%;
-    background-position: -25% 0, 2rem 2.5rem, 2rem 1.25rem, 0 0;
-    animation: skeleton-animation 1500ms infinite;
+    animation: skeleton-loading 1s linear infinite alternate;
 }
 
-@keyframes skeleton-animation {
-    to {
-        background-position: 125% 0, 2rem 2.5rem, 2rem 1.25rem, 0 0;
+.Skeleton .ItemTitle:after,
+.Skeleton .ItemType:after,
+.Skeleton .ItemClassIcon:after,
+.Skeleton .ItemLocationDescription:after,
+.Skeleton .ItemLocationCategory:after,
+.Skeleton .ItemImage {
+    animation: skeleton-loading 0.75s linear infinite alternate;
+}
+
+.Skeleton .ItemTitle:after {
+    background-image: linear-gradient(#cccccc 2rem, transparent 0);
+    background-size: 50% 2rem;
+    background-position: 2rem 2rem;
+}
+
+.Skeleton .ItemType:after {
+    background-image: linear-gradient(#cccccc 1rem, transparent 0);
+    background-size: 25% 1rem;
+    background-position: 2rem 0;
+}
+
+.Skeleton .ItemLocationDescription:after {
+    background-image: linear-gradient(#cccccc 1rem, transparent 0);
+    background-size: 50% 1rem;
+    background-position: 0 0;
+}
+
+.Skeleton .ItemLocationCategory:after {
+    background-image: linear-gradient(#cccccc 1rem, transparent 0);
+    background-size: 25% 1rem;
+    background-position: 0 0;
+}
+
+.Skeleton .ItemClassIcon:after {
+    background-image: linear-gradient(#cccccc 1rem, transparent 0);
+    background-size: 100% 1rem;
+    background-position: 0 0;
+}
+
+.Skeleton .ItemImage {
+    background-color: #cccccc;
+    border-radius: 1rem;
+}
+
+.Skeleton .ItemActions {
+    opacity: 0;
+}
+
+.Skeleton .ItemDropRequirements,
+.Skeleton .ItemTags,
+.Skeleton .ItemMeta {
+    display: none;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
     }
 }
