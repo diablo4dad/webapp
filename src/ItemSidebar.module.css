@@ -42,6 +42,7 @@
 
 .ItemClassIcon {
     max-width: 38px;
+    max-height: 36px; /* workaround, fix sorc icon aspect */
     height: auto;
 }
 
@@ -227,13 +228,21 @@
 /* All skeleton loading states here */
 .Skeleton { }
 
+.Skeleton .ItemTitle span,
+.Skeleton .ItemType span,
+.Skeleton .ItemLocationDescription span,
+.Skeleton .ItemLocationCategory span,
+.Skeleton .ItemAction input,
+.Skeleton .ItemAction label {
+    visibility: hidden;
+}
+
 .Skeleton .ItemTitle,
 .Skeleton .ItemType,
 .Skeleton .ItemClassIcon,
 .Skeleton .ItemLocationDescription,
 .Skeleton .ItemLocationCategory {
     position: relative;
-    color: transparent;
 }
 
 .Skeleton .ItemTitle:after,
@@ -254,10 +263,11 @@
 
 .Skeleton .ItemTitle:after,
 .Skeleton .ItemType:after,
-.Skeleton .ItemClassIcon:after,
 .Skeleton .ItemLocationDescription:after,
 .Skeleton .ItemLocationCategory:after,
-.Skeleton .ItemImage {
+.Skeleton .ItemClassIcon,
+.Skeleton .ItemImage,
+.Skeleton .ItemAction {
     animation: skeleton-loading 0.75s linear infinite alternate;
 }
 
@@ -285,19 +295,9 @@
     background-position: 0 0;
 }
 
-.Skeleton .ItemClassIcon:after {
-    background-image: linear-gradient(#cccccc 1rem, transparent 0);
-    background-size: 100% 1rem;
-    background-position: 0 0;
-}
-
+.Skeleton .ItemAction,
 .Skeleton .ItemImage {
     background-color: #cccccc;
-    border-radius: 1rem;
-}
-
-.Skeleton .ItemActions {
-    opacity: 0;
 }
 
 .Skeleton .ItemDropRequirements,

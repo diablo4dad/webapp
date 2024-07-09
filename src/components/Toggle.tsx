@@ -8,10 +8,12 @@ type ToggleProps = {
   disabled?: boolean;
   flip?: boolean;
   label?: string;
+  className?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
 function Toggle({
+  className,
   name,
   onChange,
   disabled,
@@ -23,6 +25,7 @@ function Toggle({
   const classes = classNames({
     [styles.toggle]: true,
     [styles.flip]: flip,
+    [className ?? '']: true,
   });
 
   return (

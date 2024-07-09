@@ -1,6 +1,6 @@
 import {
   DadCollectionItem,
-  DadItem,
+  DadItem, DEFAULT_COLLECTION_ITEM,
   getDefaultItemFromCollectionItems,
 } from "./data";
 import styles from "./ItemSidebar.module.css";
@@ -111,8 +111,12 @@ function ItemSidebar({ collectionItem }: ItemProps) {
           src={getImageUri(item)}
           alt={item.name}
         />
-        <div className={styles.ItemTitle}>{getItemName(collectionItem)}</div>
-        <div className={styles.ItemType}>{getItemType(collectionItem)}</div>
+        <div className={styles.ItemTitle}>
+          <span>{getItemName(collectionItem)}</span>
+        </div>
+        <div className={styles.ItemType}>
+          <span>{getItemType(collectionItem)}</span>
+        </div>
         <div className={styles.ItemClasses}>
           <img
             className={classNames(
@@ -149,14 +153,9 @@ function ItemSidebar({ collectionItem }: ItemProps) {
             alt="Sorcerer"
           />
         </div>
-        <div
-          className={styles.ItemDescription}
-          hidden={!item.description || true}
-        >
-          {item.description}
-        </div>
         <div className={styles.ItemActions}>
           <Toggle
+            className={styles.ItemAction}
             name="collected"
             checked={isItemCollected(log, itemId)}
             onChange={(e) =>
@@ -169,6 +168,7 @@ function ItemSidebar({ collectionItem }: ItemProps) {
             label={"Collected"}
           />
           <Toggle
+            className={styles.ItemAction}
             name="hidden"
             checked={isItemHidden(log, itemId)}
             onChange={(e) =>
@@ -185,7 +185,7 @@ function ItemSidebar({ collectionItem }: ItemProps) {
           <div className={styles.ItemLocation}>
             <div className={styles.ItemLocationInfo}>
               <div className={styles.ItemLocationDescription}>
-                {getItemDescription(collectionItem)}
+                <span>{getItemDescription(collectionItem)}</span>
               </div>
               <div className={styles.ItemLocationCategory}>
                 <span>{collectionItem.claim}</span>
