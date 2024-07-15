@@ -1,10 +1,15 @@
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, {
+  ReactElement,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { DadCollection, DadCollectionItem } from "./data";
 import logo from "./image/d4ico.png";
 
 import styles from "./Application.module.css";
 import Ledger from "./Ledger";
-import ItemSidebar from "./ItemSidebar";
 import ConfigSidebar from "./ConfigSidebar";
 import Progress from "./components/Progress";
 import { Gear, Hamburger } from "./Icons";
@@ -39,7 +44,12 @@ import { fetchFromFirestore, saveToFirestore } from "./store/firestore";
 import Shell from "./Shell";
 import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
-import {useData} from "./data/context";
+import { useData } from "./data/context";
+import ItemSidebarSkeleton from "./ItemSidebarSkeleton";
+import LedgerSkeleton from "./LedgerSkeleton";
+import { Await, useLoaderData } from "react-router-dom";
+import { LoaderPayload } from "./routes/CollectionLog";
+import ItemSidebar from "./ItemSidebar";
 
 export type ViewModel = {
   openCollections: number[];
@@ -52,6 +62,7 @@ export type ViewModel = {
 // Needs Settings
 // Needs Collections Log
 function Application(): ReactElement<HTMLDivElement> {
+  const { db } = useLoaderData() as LoaderPayload;
   const { filteredDb, group } = useData();
   const log = useCollection();
   const settings = useSettings();
@@ -248,28 +259,36 @@ function Application(): ReactElement<HTMLDivElement> {
         <>
           {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
           {sideBar === SideBarType.ITEM && (
-            <ItemSidebar collectionItem={selectedCollectionItem} />
+            <Suspense fallback={<ItemSidebarSkeleton />}>
+              <Await resolve={db}>
+                <ItemSidebar collectionItem={selectedCollectionItem} />
+              </Await>
+            </Suspense>
           )}
         </>
       }
       main={
         <>
           {content === ContentType.LEDGER && (
-            <Ledger
-              collections={filteredDb.collections}
-              openCollections={vm.openCollections}
-              onClickItem={onClickItem}
-              onCollectionChange={(collectionId, isOpen) => {
-                setVm((vm) => ({
-                  ...vm,
-                  openCollections: toggleValueInArray(
-                    vm.openCollections,
-                    collectionId,
-                    isOpen,
-                  ),
-                }));
-              }}
-            />
+            <Suspense fallback={<LedgerSkeleton />}>
+              <Await resolve={db}>
+                <Ledger
+                  collections={filteredDb.collections}
+                  openCollections={vm.openCollections}
+                  onClickItem={onClickItem}
+                  onCollectionChange={(collectionId, isOpen) => {
+                    setVm((vm) => ({
+                      ...vm,
+                      openCollections: toggleValueInArray(
+                        vm.openCollections,
+                        collectionId,
+                        isOpen,
+                      ),
+                    }));
+                  }}
+                />
+              </Await>
+            </Suspense>
           )}
           {content === ContentType.MOBILE_MENU && (
             <>

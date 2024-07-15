@@ -469,3 +469,54 @@
         box-shadow: 0 0 0.5rem 0.25rem rgb(73, 159, 109, 0.75);
     }
 }
+
+/* Skeleton */
+.Skeleton {
+
+}
+
+.Skeleton.Ledger {
+
+}
+
+.Skeleton .LedgerHeader {
+    position: static;
+}
+
+.Skeleton .LedgerTitle {
+    background-color: #cccccc;
+}
+
+.Skeleton .LedgerTitle span {
+    visibility: hidden;
+}
+
+.Skeleton .LedgerDescription {
+    background-color: #cccccc;
+}
+
+.Skeleton .LedgerDescription span {
+    visibility: hidden;
+}
+
+.Skeleton .LedgerActions span {
+    background-color: #cccccc;
+    width: 3rem;
+    height: 3rem;
+    padding: 0.5rem;
+}
+
+.Skeleton .LedgerTitle,
+.Skeleton .LedgerDescription,
+.Skeleton .LedgerActions span {
+    animation: skeleton-loading 0.75s linear infinite alternate;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}

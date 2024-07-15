@@ -258,7 +258,7 @@
     left: 0;
     top: 0;
     background-repeat: no-repeat;
-    animation: skeleton-loading 1s linear infinite alternate;
+    animation: skeleton-loading 0.75s linear infinite alternate;
 }
 
 .Skeleton .ItemTitle:after,
