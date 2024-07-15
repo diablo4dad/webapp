@@ -48,6 +48,7 @@
     /*inset 0 -2px 6px rgba(0, 0, 0, 0.4);*/
     position: relative;
     overflow: hidden;
+    transition: width 500ms;
 }
 
 .ProgressTicker {
