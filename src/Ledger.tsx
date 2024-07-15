@@ -220,7 +220,7 @@ const LedgerInner = ({
               const itemId = Number(item.itemId);
               const isCollected = isItemCollected(log, itemId);
               const isHidden = isItemHidden(log, itemId);
-              const isAshava = itemId === 1482434;
+              // const isAshava = itemId === 1482434;
 
               const className = classNames({
                 [styles.Item]: true,
@@ -229,7 +229,7 @@ const LedgerInner = ({
                 [styles.ItemPremium]: collectionItem.premium,
                 [styles.ItemUnique]:
                   collectionItem.items[0]?.magicType === "Unique",
-                [styles.ItemGlow]: isAshava && isCollected,
+                // [styles.ItemGlow]: isAshava && isCollected,
               });
 
               return (
