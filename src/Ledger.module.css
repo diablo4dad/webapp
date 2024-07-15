@@ -457,16 +457,16 @@
         box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
     }
     to {
-        box-shadow: 0 0 0.5rem 0.25rem rgb(73, 159, 109, 0.75);
+        box-shadow: 0 0 0.5rem 0.25rem rgba(101, 113, 128, 0.75);
     }
 }
 
 @keyframes glow-inverse {
     from {
-        box-shadow: 0 0 0.5rem -0.25rem rgb(73, 159, 109, 0.25);
+        box-shadow: 0 0 0.5rem -0.25rem rgb(101, 113, 128, 0.25);
     }
     to {
-        box-shadow: 0 0 0.5rem 0.25rem rgb(73, 159, 109, 0.75);
+        box-shadow: 0 0 0.5rem 0.25rem rgb(101, 113, 128, 0.25);
     }
 }
 
