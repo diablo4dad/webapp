@@ -1,6 +1,6 @@
 import {
   DadCollectionItem,
-  DadItem, DEFAULT_COLLECTION_ITEM,
+  DadItem,
   getDefaultItemFromCollectionItems,
 } from "./data";
 import styles from "./ItemSidebar.module.css";
@@ -79,33 +79,30 @@ function doDisplayDropInfo(collectionItem: DadCollectionItem, item: DadItem) {
 }
 
 type ItemProps = {
+  className?: string;
   collectionItem: DadCollectionItem;
 };
 
-function ItemSidebar({ collectionItem }: ItemProps) {
+function ItemSidebar({ collectionItem, className }: ItemProps) {
   const log = useCollection();
   const dispatcher = useCollectionDispatch();
 
-  // DEBUG skeleton
-  // collectionItem = DEFAULT_COLLECTION_ITEM;
-
   const item = getDefaultItemFromCollectionItems(collectionItem);
   const itemId = Number(item.itemId);
-  const isSkeleton = item.strapiId === -1;
 
-  const className = classNames({
+  const classNameStr = classNames({
     [styles.Block]: true,
-    [styles.Skeleton]: isSkeleton,
-    [styles.Barbarian]: !isSkeleton && usableBy("Barbarian", collectionItem),
-    [styles.Druid]: !isSkeleton && usableBy("Druid", collectionItem),
-    [styles.Necromancer]: !isSkeleton && usableBy("Necromancer", collectionItem),
-    [styles.Rogue]: !isSkeleton && usableBy("Rogue", collectionItem),
-    [styles.Sorcerer]: !isSkeleton && usableBy("Sorcerer", collectionItem),
+    [styles.Barbarian]: usableBy("Barbarian", collectionItem),
+    [styles.Druid]: usableBy("Druid", collectionItem),
+    [styles.Necromancer]: usableBy("Necromancer", collectionItem),
+    [styles.Rogue]: usableBy("Rogue", collectionItem),
+    [styles.Sorcerer]: usableBy("Sorcerer", collectionItem),
+    [className ?? ""]: true,
   });
 
   return (
-    <div className={className}>
-      <div>
+    <div className={classNameStr}>
+      <div className={styles.SidebarContent}>
         <img
           className={styles.ItemImage}
           src={getImageUri(item)}
