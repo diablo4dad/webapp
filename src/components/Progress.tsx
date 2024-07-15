@@ -6,10 +6,8 @@ type Props = {
 };
 
 function Progress({ totalCollected, collectionSize }: Props) {
-  const percentage = Math.min(
-    Math.floor((totalCollected / collectionSize) * 100),
-    100,
-  );
+  const value = Math.floor((totalCollected / collectionSize) * 100);
+  const percentage = Math.min(isNaN(value) ? 0 : value, 100);
 
   return (
     <div className={styles.Progress}>
