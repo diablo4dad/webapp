@@ -1,70 +1,31 @@
 import styles from "./Ledger.module.css";
 import React from "react";
-import { Currency } from "./Icons";
-import imgfill from "./image/imgfill.png";
+import classNames from "classnames";
 
-type Props = {
-  view: "list" | "card";
-  numItems: number;
-};
+function LedgerSkeleton() {
+  const classNameStr = classNames(styles.Ledger, styles.Skeleton);
 
-function LedgerSkeleton({ view, numItems = 3 }: Props) {
   return (
-    <div
-      className={
-        styles.Ledger + " " + (view === "card" ? styles.LedgerCards : "")
-      }
-    >
-      <div className={styles.LedgerHeader}>
-        <div className={styles.LedgerButton}>
-          <div
-            className={
-              styles.LedgerTitle + " " + styles.LedgerHeadingPlaceholder
-            }
-          >
-            Loading...
-          </div>
-          <div
-            className={
-              styles.LedgerDescription +
-              " " +
-              styles.LedgerDescriptionPlaceholder
-            }
-          >
-            Loading Loading Loading...
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.LedgerRow}>
-        {new Array(numItems).fill(0).map((_, k) => (
-          <div className={styles.Item} key={k}>
-            <img
-              className={styles.ItemImage + " " + styles.ItemImagePlaceholder}
-              src={imgfill}
-            />
-            <div className={styles.ItemInfo}>
-              <div
-                className={styles.ItemName + " " + styles.ItemNamePlaceholder}
-              >
-                Loading...
-              </div>
-              <div
-                className={styles.ItemName + " " + styles.ItemNamePlaceholder}
-              >
-                Loading...
-              </div>
-              <div className={styles.ItemType}>
-                <span>Item Type | Claim</span>
-                <span className={styles.ItemIconPremiumTitle}>
-                  <Currency />
+    <div className={classNameStr}>
+      {new Array(5).fill(0).map((_, k) => (
+        <div className={styles.LedgerHeader} key={k}>
+          <div className={styles.LedgerButton}>
+            <div>
+              <h1 className={styles.LedgerTitle}>
+                <span>{"Loading... Loading..."}</span>
+              </h1>
+              <div className={styles.LedgerDescription}>
+                <span>
+                  {"Loading... Loading... Loading... Loading... Loading..."}
                 </span>
               </div>
-              <div className={styles.ItemClaimDescription}>Description</div>
             </div>
+            <span className={styles.LedgerActions}>
+              <span />
+            </span>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
