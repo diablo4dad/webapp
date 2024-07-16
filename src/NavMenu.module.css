@@ -2,8 +2,7 @@
     display: flex;
 }
 
-.Nav:hover,
-.Nav:focus-within {
+.NavOpen {
     position: absolute;
     z-index: 100;
 
@@ -11,20 +10,18 @@
     box-shadow: 1px 2px 5px #111;
 }
 
-.Nav:hover .Menu,
-.Nav:focus-within .Menu {
+.NavOpen .Menu {
     display: flex;
     flex-direction: column;
 }
 
-.Nav:hover .NavBtn,
-.Nav:focus-within .NavBtn {
+.NavOpen .NavBtn {
     border: 0;
     box-shadow: none;
+    width: 100%;
 }
 
-.Nav:hover .NavActive,
-.Nav:focus-within .NavActive {
+.NavOpen .NavActive {
     display: block;
     background-color: #23272e;
     border-top: 1px solid #2D3239;
@@ -32,13 +29,11 @@
     border-bottom: 1px solid #2D3239;
 }
 
-.Nav:hover .NavActiveDesc,
-.Nav:focus-within .NavActiveDesc {
+.NavOpen .NavActiveDesc {
     display: block;
 }
 
-.Nav:hover .NavBtnArrow,
-.Nav:focus-within .NavBtnArrow {
+.NavOpen .NavBtnArrow {
     display: none;
 }
 
@@ -66,6 +61,8 @@
     font-family: inherit;
 
     box-shadow: 1px 2px 5px #111;
+
+    cursor: pointer;
 
     /*box-shadow: 3px 3px 5px rgba(9, 9, 12, 0.25) inset;*/
     /*font-size: 1rem;*/
@@ -114,7 +111,12 @@
     border-bottom-right-radius: 0.5rem;
 }
 
-.MenuItem:hover {
+.MenuItemActive {
+    background-color: #23272e;
+    cursor: default;
+}
+
+.MenuItem:not(.MenuItemActive):hover {
     background-color: #23272e;
 }
 

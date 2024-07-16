@@ -5,10 +5,11 @@ import GeneralIcon from "./image/goblin.webp";
 import CashShopIcon from "./image/money.webp";
 import PromoIcon from "./image/chest.webp";
 import SeasonIcon from "./image/season.webp";
-// import ChallengeIcon from "./image/challenge.webp"
+import ChallengeIcon from "./image/challenge.webp";
 import { ChevronRight } from "./Icons";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { generateUrl } from "./routes/CollectionLog";
+import classNames from "classnames";
 
 type Props = {
   activeGroup: MasterGroup;
@@ -42,12 +43,21 @@ const NAV_ITEM_META: Map<MasterGroup, NavItemMeta> = new Map([
     },
   ],
   [
+    MasterGroup.CHALLENGE,
+    {
+      name: "Challenge",
+      desc: "Transmogs earned through completing challenges and feats of strength.",
+      icon: ChallengeIcon,
+      order: 3,
+    },
+  ],
+  [
     MasterGroup.SHOP_ITEMS,
     {
       name: "Tejal's Shop",
       desc: "Transmogs purchased through the cash shop for real life money, hello whales!",
       icon: CashShopIcon,
-      order: 3,
+      order: 4,
     },
   ],
   [
@@ -56,15 +66,9 @@ const NAV_ITEM_META: Map<MasterGroup, NavItemMeta> = new Map([
       name: "Promotional",
       desc: "Transmogs acquired through channel partner promotions like Twitch Drops.",
       icon: PromoIcon,
-      order: 4,
+      order: 5,
     },
   ],
-  // [MasterGroup.CHALLENGE, {
-  //     name: "Challenge",
-  //     desc: "Transmogs earned through completing challenges and feats of strength.",
-  //     icon: ChallengeIcon,
-  //     order: 5,
-  // }]
 ]);
 
 const DEFAULT_META: NavItemMeta = {
@@ -76,19 +80,17 @@ const DEFAULT_META: NavItemMeta = {
 
 function NavMenu({ activeGroup, onChange }: Props) {
   const [open, setOpen] = useState(false);
-  const meta = NAV_ITEM_META.get(activeGroup) ?? DEFAULT_META;
-  const otherNavItems = Array.from(NAV_ITEM_META.keys())
-    .filter((m) => m !== activeGroup)
-    .sort((a, b) => {
-      const am = NAV_ITEM_META.get(a) ?? DEFAULT_META;
-      const bm = NAV_ITEM_META.get(b) ?? DEFAULT_META;
-      if (am.order < bm.order) return -1;
-      if (am.order > bm.order) return 1;
-      return 0;
-    });
+  const [active, setActive] = useState(activeGroup);
+  const meta = NAV_ITEM_META.get(active) ?? DEFAULT_META;
+  const keys = Array.from(NAV_ITEM_META.keys());
+
+  const className = classNames({
+    [styles.Nav]: true,
+    [styles.NavOpen]: open,
+  });
 
   return (
-    <div className={styles.Nav}>
+    <div className={className}>
       <div className={styles.NavActive}>
         <button className={styles.NavBtn} onClick={() => setOpen(!open)}>
           <span className={styles.NavBtnIcon}>
@@ -102,20 +104,32 @@ function NavMenu({ activeGroup, onChange }: Props) {
         <div className={styles.NavActiveDesc}>{meta.desc}</div>
       </div>
       <div className={styles.Menu} hidden={!open}>
-        {otherNavItems.map((menuItem) => {
+        {keys.map((menuItem) => {
           const innerMeta = NAV_ITEM_META.get(menuItem) ?? DEFAULT_META;
           return (
-            <Link
+            <NavLink
               to={generateUrl(menuItem)}
               key={menuItem}
-              className={styles.MenuItem}
-              onClick={onChange ? () => onChange(menuItem) : undefined}
+              className={() =>
+                classNames({
+                  [styles.MenuItem]: true,
+                  [styles.MenuItemActive]: activeGroup === menuItem,
+                })
+              }
+              onClick={() => {
+                setOpen(false);
+
+                if (onChange) {
+                  onChange(menuItem);
+                }
+              }}
+              onMouseEnter={() => setActive(menuItem)}
             >
               <span className={styles.MenuItemIcon}>
                 <img src={innerMeta.icon}></img>
               </span>
               <span className={styles.MenuItemText}>{innerMeta.name}</span>
-            </Link>
+            </NavLink>
           );
         })}
       </div>

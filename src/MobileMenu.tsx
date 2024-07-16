@@ -33,6 +33,13 @@ function MobileMenu({ onNavigate, onAuth, currentUser, onLogout }: Props) {
       </Link>
       <Link
         className={styles.MobileMenuLink}
+        to={generateUrl(MasterGroup.CHALLENGE)}
+        onClick={() => onNavigate(ContentType.LEDGER)}
+      >
+        Challenge
+      </Link>
+      <Link
+        className={styles.MobileMenuLink}
         to={generateUrl(MasterGroup.SHOP_ITEMS)}
         onClick={() => onNavigate(ContentType.LEDGER)}
       >
