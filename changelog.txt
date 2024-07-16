@@ -3,6 +3,31 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.7.0] - 2024-07-01
+
+### Added
+
+- URL routing and browser history between collections
+  - e.g. https://diablo4.dad/transmogs/general
+- Transitions when opening and closing collections
+
+### Updated
+
+- Improved skeletons layout for smoother transitions when loading
+- Improved dynamic loading of images, reduced screen shift
+- Improved class icon layout
+- Renamed collection "Standard Armor" to "Armor"
+- Renamed collection "Standard Weapon" to "Weapons"
+- Moved "Caldeum Steed" to the "Open World" collection
+
+### Fixed
+
+- Progress bar flicker when loading
+
+### Removed
+
+- Unnecessary hide progress bar option
+
 ## [1.6.10] - 2024-06-24
 
 ### Added
