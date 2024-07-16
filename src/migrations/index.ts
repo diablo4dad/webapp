@@ -214,13 +214,13 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
   if (isPatchNeeded(store, 1, 6, 10)) {
     console.log("Running v1.6.10 migration...");
 
-    const migration169 = await import("./migrate1d6d9.json");
+    const migration1610 = await import("./migrate1d6d10.json");
     const collected = new Set<number>();
     const hidden = new Set<number>();
 
     store.collectionLog.entries?.forEach((e) => {
       // @ts-ignore
-      const lookup = migration169[String(e.id)];
+      const lookup = migration1610[String(e.id)];
       if (!lookup) {
         console.error("Could not map CMS item to item ID.", e);
         return;
@@ -245,7 +245,7 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
     store.version = {
       major: 1,
       minor: 6,
-      revision: 9,
+      revision: 10,
     };
   }
 
