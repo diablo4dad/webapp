@@ -90,9 +90,9 @@ function NavMenu({ activeGroup, onChange }: Props) {
   });
 
   return (
-    <div className={className}>
+    <div className={className} onClick={() => setOpen(!open)}>
       <div className={styles.NavActive}>
-        <button className={styles.NavBtn} onClick={() => setOpen(!open)}>
+        <button className={styles.NavBtn}>
           <span className={styles.NavBtnIcon}>
             <img src={meta.icon}></img>
           </span>
@@ -117,8 +117,6 @@ function NavMenu({ activeGroup, onChange }: Props) {
                 })
               }
               onClick={() => {
-                setOpen(false);
-
                 if (onChange) {
                   onChange(menuItem);
                 }
