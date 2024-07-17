@@ -16,6 +16,7 @@ collections.
 - Improved skeletons layout for smoother transitions when loading
 - Improved dynamic loading of images, reduced screen shift
 - Improved class icon layout
+- Collection menu visibility now toggled via to clicks
 - Renamed collection "Standard Armor" to "Armor"
 - Renamed collection "Standard Weapon" to "Weapons"
 - Moved "Caldeum Steed" to the "Open World" collection
