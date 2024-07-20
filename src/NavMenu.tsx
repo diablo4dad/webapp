@@ -80,7 +80,7 @@ const DEFAULT_META: NavItemMeta = {
 
 function NavMenu({ activeGroup, onChange }: Props) {
   const [open, setOpen] = useState(false);
-  const [preview, setPreview] = useState<MasterGroup | undefined>(activeGroup);
+  const [preview, setPreview] = useState<MasterGroup | undefined>();
   const meta = NAV_ITEM_META.get(preview ?? activeGroup) ?? DEFAULT_META;
   const keys = Array.from(NAV_ITEM_META.keys());
 
