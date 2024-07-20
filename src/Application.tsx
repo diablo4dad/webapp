@@ -62,8 +62,8 @@ export type ViewModel = {
 // Needs Settings
 // Needs Collections Log
 function Application(): ReactElement<HTMLDivElement> {
-  const { db } = useLoaderData() as LoaderPayload;
-  const { filteredDb, group } = useData();
+  const { db, group } = useLoaderData() as LoaderPayload;
+  const { filteredDb } = useData();
   const log = useCollection();
   const settings = useSettings();
 
