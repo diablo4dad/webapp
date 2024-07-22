@@ -2,14 +2,14 @@ import { CollectionLog } from "./type";
 
 export function isItemCollected(
   collection: CollectionLog,
-  itemId: number,
+  itemId: number[],
 ): boolean {
-  return collection.collected.includes(itemId);
+  return itemId.every((i) => collection.collected.includes(i));
 }
 
 export function isItemHidden(
   collection: CollectionLog,
-  itemId: number,
+  itemId: number[],
 ): boolean {
-  return collection.hidden.includes(itemId);
+  return itemId.every((i) => collection.hidden.includes(i));
 }

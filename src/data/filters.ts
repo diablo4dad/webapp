@@ -6,6 +6,7 @@ import { Option, Settings } from "../settings/type";
 import { isEnabled } from "../settings/predicate";
 import { CollectionLog } from "../collection/type";
 import { isItemCollected, isItemHidden } from "../collection/predicate";
+import { getDiabloItemIds } from "./getters";
 
 function filterCollectionItems(
   db: DadDb,
@@ -64,20 +65,14 @@ function filterCollectedItems(
   collectionLog: CollectionLog,
 ): (dci: DadCollectionItem) => boolean {
   return (dci: DadCollectionItem) =>
-    !dci.items
-      .map((i) => i.itemId)
-      .map(Number)
-      .some((i) => isItemCollected(collectionLog, i));
+    !isItemCollected(collectionLog, getDiabloItemIds(dci));
 }
 
 function filterHiddenItems(
   collectionLog: CollectionLog,
 ): (dci: DadCollectionItem) => boolean {
   return (dci: DadCollectionItem) =>
-    !dci.items
-      .map((i) => i.itemId)
-      .map(Number)
-      .some((i) => isItemHidden(collectionLog, i));
+    !isItemHidden(collectionLog, getDiabloItemIds(dci));
 }
 
 export function filterDb(
