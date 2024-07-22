@@ -2,10 +2,10 @@ import { DadDb } from "../data";
 import { fetchDb } from "../server";
 import { MasterGroup } from "../common";
 import { strapiToDad } from "../data/transforms";
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import Application from "../Application";
 import { defer, useLoaderData } from "react-router-dom";
-import {useData} from "../data/context";
+import { useData } from "../data/context";
 
 export type Params = {
   params: {
@@ -23,7 +23,7 @@ const slugMap: ReadonlyMap<MasterGroup, string> = new Map([
   [MasterGroup.SEASONS, "seasons"],
   [MasterGroup.SHOP_ITEMS, "store"],
   [MasterGroup.PROMOTIONAL, "promotional"],
-  [MasterGroup.CHALLENGE, "challenge"],
+  [MasterGroup.CHALLENGE, "challenges"],
 ]);
 
 const slugMapInverse: ReadonlyMap<string, MasterGroup> = new Map(
@@ -59,7 +59,7 @@ export function CollectionView() {
   useEffect(() => {
     let cancelled = false;
 
-    db.then(resolvedDb => {
+    db.then((resolvedDb) => {
       if (!cancelled) {
         switchDb(group, resolvedDb);
       }
@@ -67,10 +67,8 @@ export function CollectionView() {
 
     return () => {
       cancelled = true;
-    }
+    };
   }, [db, group, switchDb]);
 
-  return (
-    <Application />
-  );
+  return <Application />;
 }
