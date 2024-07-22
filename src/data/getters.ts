@@ -119,3 +119,7 @@ export function getDefaultItemFromCollectionItems(
 ): DadBase {
   return collectionItems.items[0] ?? DEFAULT_ITEM;
 }
+
+export function getDiabloItemIds(collectionItem: DadCollectionItem): number[] {
+  return collectionItem.items.map((ci) => ci.itemId).map(Number);
+}

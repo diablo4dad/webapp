@@ -9,6 +9,7 @@ import { Currency, Tick, TickCircle } from "./Icons";
 import Button, { BtnColours } from "./Button";
 import {
   getAllCollectionItems,
+  getDiabloItemIds,
   getImageUri,
   getItemDescription,
   getItemName,
@@ -102,16 +103,11 @@ const LedgerInner = ({
       onToggleItem(dci);
     }
 
-    dci.items
-      .map((i) => i.itemId)
-      .map(Number)
-      .forEach((itemId) => {
-        dispatch({
-          type: CollectionActionType.COLLECT,
-          itemId: itemId,
-          toggle: collected,
-        });
-      });
+    dispatch({
+      type: CollectionActionType.COLLECT,
+      itemId: getDiabloItemIds(dci),
+      toggle: collected,
+    });
   };
 
   const toggleCollection = (dc: DadCollection) => (collected: boolean) => {
@@ -119,17 +115,13 @@ const LedgerInner = ({
       onToggleCollection(dc);
     }
 
-    getAllCollectionItems(dc)
-      .flatMap((ci) => ci.items)
-      .map((i) => i.itemId)
-      .map(Number)
-      .forEach((itemId) => {
-        dispatch({
-          type: CollectionActionType.COLLECT,
-          itemId: itemId,
-          toggle: collected,
-        });
+    getAllCollectionItems(dc).forEach((dci) => {
+      dispatch({
+        type: CollectionActionType.COLLECT,
+        itemId: getDiabloItemIds(dci),
+        toggle: collected,
       });
+    });
   };
 
   const collected = countItemsInCollectionOwned(log, collection);
@@ -217,9 +209,9 @@ const LedgerInner = ({
           >
             {collection.collectionItems.map((collectionItem) => {
               const item = getDefaultItemFromCollectionItems(collectionItem);
-              const itemId = Number(item.itemId);
-              const isCollected = isItemCollected(log, itemId);
-              const isHidden = isItemHidden(log, itemId);
+              const itemIds = getDiabloItemIds(collectionItem);
+              const isCollected = isItemCollected(log, itemIds);
+              const isHidden = isItemHidden(log, itemIds);
               // const isAshava = itemId === 1482434;
 
               const className = classNames({

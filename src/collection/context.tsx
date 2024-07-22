@@ -23,7 +23,7 @@ export enum CollectionActionType {
 
 export type CollectionAction = {
   type: CollectionActionType;
-  itemId: number;
+  itemId: number[];
   toggle: boolean;
 };
 
@@ -63,24 +63,20 @@ function collectionReducer(
   collectionLog: CollectionLog,
   action: CollectionAction,
 ): CollectionLog {
-  switch (action.type) {
-    case CollectionActionType.COLLECT:
-      return {
-        ...collectionLog,
-        collected: toggleValueInArray(
-          collectionLog.collected,
-          action.itemId,
-          action.toggle,
-        ),
-      };
-    case CollectionActionType.HIDE:
-      return {
-        ...collectionLog,
-        hidden: toggleValueInArray(
-          collectionLog.hidden,
-          action.itemId,
-          action.toggle,
-        ),
-      };
-  }
+  return action.itemId.reduce((a, c) => {
+    switch (action.type) {
+      case CollectionActionType.COLLECT:
+        return {
+          ...a,
+          collected: toggleValueInArray(a.collected, c, action.toggle),
+        };
+      case CollectionActionType.HIDE:
+        return {
+          ...a,
+          hidden: toggleValueInArray(a.hidden, c, action.toggle),
+        };
+      default:
+        return a;
+    }
+  }, collectionLog);
 }

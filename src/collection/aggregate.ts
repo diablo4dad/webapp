@@ -1,5 +1,5 @@
 import { DadCollection, DadDb } from "../data";
-import { getAllCollectionItems } from "../data/getters";
+import { getAllCollectionItems, getDiabloItemIds } from "../data/getters";
 import { CollectionLog } from "./type";
 import { isItemCollected } from "./predicate";
 
@@ -17,6 +17,6 @@ export function countItemsInCollectionOwned(
   collection: DadCollection,
 ): number {
   return getAllCollectionItems(collection).filter((ci) =>
-    ci.items.some((i) => isItemCollected(collectionLog, Number(i.itemId))),
+    isItemCollected(collectionLog, getDiabloItemIds(ci)),
   ).length;
 }

@@ -22,6 +22,7 @@ import Toggle from "./components/Toggle";
 import { SERVER_ADDR } from "./config";
 import { ItemGroup, itemGroups } from "./common";
 import {
+  getDiabloItemIds,
   getImageUri,
   getItemDescription,
   getItemName,
@@ -88,7 +89,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
   const dispatcher = useCollectionDispatch();
 
   const item = getDefaultItemFromCollectionItems(collectionItem);
-  const itemId = Number(item.itemId);
+  const itemIds = getDiabloItemIds(collectionItem);
 
   const classNameStr = classNames({
     [styles.Block]: true,
@@ -154,11 +155,11 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
           <Toggle
             className={styles.ItemAction}
             name="collected"
-            checked={isItemCollected(log, itemId)}
+            checked={isItemCollected(log, itemIds)}
             onChange={(e) =>
               dispatcher({
                 type: CollectionActionType.COLLECT,
-                itemId: itemId,
+                itemId: itemIds,
                 toggle: e.target.checked,
               })
             }
@@ -167,11 +168,11 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
           <Toggle
             className={styles.ItemAction}
             name="hidden"
-            checked={isItemHidden(log, itemId)}
+            checked={isItemHidden(log, itemIds)}
             onChange={(e) =>
               dispatcher({
                 type: CollectionActionType.HIDE,
-                itemId: itemId,
+                itemId: itemIds,
                 toggle: e.target.checked,
               })
             }
