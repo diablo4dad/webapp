@@ -1,6 +1,6 @@
 const VERSION = { major: 1, minor: 7, revision: 0 };
 const SITE_VERSION = `${VERSION.major}.${VERSION.minor}.${VERSION.revision}`;
-const LAST_UPDATED = "July 20th, 2024";
+const LAST_UPDATED = "July 23rd, 2024";
 const DISCORD_INVITE_LINK = "https://discord.gg/mPRBrU2kYT";
 const MODE = process.env.NODE_ENV === "production" ? "static" : "live";
 // const MODE = "static";
