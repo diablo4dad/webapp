@@ -7,6 +7,7 @@ collections.
 
 ### Added
 
+- Challenges collection
 - URL routing and browser history between collections
   - e.g. https://diablo4.dad/transmogs/general
 - Transitions when opening and closing collections
@@ -19,15 +20,19 @@ collections.
 - Collection menu visibility now toggled via to clicks
 - Renamed collection "Standard Armor" to "Armor"
 - Renamed collection "Standard Weapon" to "Weapons"
-- Moved "Caldeum Steed" to the "Open World" collection
+- Moved Seasonal reputation board rewards to own sub-category
+- Moved essential collections into sub-categories (zones, monsters etc.)
 
 ### Fixed
 
 - Progress bar flicker when loading
+- Fur-Lined Boots + Mitts erroneously selected from Season 2 collection
 
 ### Removed
 
 - Unnecessary hide progress bar option
+- Challenge category from the Essential Collection
+- Well-Wisher title from the Quest collection
 
 ## [1.6.10] - 2024-06-24
 
