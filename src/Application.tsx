@@ -29,12 +29,17 @@ import { selectItemOrDefault } from "./data/reducers";
 import { flattenDadDb } from "./data/transforms";
 import { countAllItemsDabDb } from "./data/aggregate";
 import { getDefaultItemId } from "./data/getters";
-import { useCollection } from "./collection/context";
+import {
+  CollectionActionType,
+  useCollection,
+  useCollectionDispatch,
+} from "./collection/context";
 import { useSettings } from "./settings/context";
 import {
   getViewModel,
   saveCollection,
   saveSettings,
+  saveVersion,
   saveViewModel,
 } from "./store/local";
 import { countItemInDbOwned } from "./collection/aggregate";
@@ -50,6 +55,9 @@ import LedgerSkeleton from "./LedgerSkeleton";
 import { Await, useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
 import ItemSidebar from "./ItemSidebar";
+import { VERSION } from "./config";
+import { runStoreDataMigrations } from "./migrations";
+import { initStore } from "./store";
 
 export type ViewModel = {
   openCollections: number[];
@@ -65,6 +73,7 @@ function Application(): ReactElement<HTMLDivElement> {
   const { db, group } = useLoaderData() as LoaderPayload;
   const { filteredDb } = useData();
   const log = useCollection();
+  const dispatch = useCollectionDispatch();
   const settings = useSettings();
 
   const [vm, setVm] = useState<ViewModel>(getViewModel());
@@ -84,9 +93,11 @@ function Application(): ReactElement<HTMLDivElement> {
   const [content, setContent] = useState(ContentType.LEDGER);
   const history = useRef([ContentType.LEDGER]);
   const collectionItems = flattenDadDb(filteredDb);
+
   const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(
     getDefaultItemId(filteredDb),
   );
+
   const selectedCollectionItem = selectItemOrDefault(
     collectionItems,
     selectedCollectionItemId,
@@ -181,7 +192,20 @@ function Application(): ReactElement<HTMLDivElement> {
       if (user) {
         const data = await fetchFromFirestore(user.uid);
         if (data) {
-          saveCollection(data.collectionLog);
+          console.log("Fetched Collection from Firestore...", data);
+
+          const dataPatched = runStoreDataMigrations({
+            ...initStore(), // mixin legacy
+            ...data,
+          });
+
+          saveCollection(dataPatched.collectionLog);
+          saveVersion(VERSION);
+
+          dispatch({
+            type: CollectionActionType.RELOAD,
+            collection: dataPatched.collectionLog,
+          });
         }
       }
     });

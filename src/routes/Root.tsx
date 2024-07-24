@@ -3,7 +3,7 @@ import { SettingsProvider } from "../settings/context";
 import { CollectionProvider } from "../collection/context";
 import { getUserCollectionLog, getUserSettings } from "../store/local";
 import { runLocalStorageMigrations } from "../migrations";
-import {DataProvider} from "../data/context";
+import { DataProvider } from "../data/context";
 
 export function Root() {
   // Run LocalStorage migrations

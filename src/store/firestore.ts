@@ -1,7 +1,7 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { firestore } from "../config/firebase";
-import { runFirestoreMigrations, runStoreMigrations } from "../migrations";
-import { FirebaseData, initStore } from "./index";
+import { runFirestoreMigrations } from "../migrations";
+import { FirebaseData } from "./index";
 import { CollectionLog } from "../collection/type";
 import { VERSION } from "../config";
 
@@ -15,16 +15,7 @@ export async function fetchFromFirestore(
   }
 
   const firestoreData = snapshot.data() as FirebaseData;
-  const firestoreDataSanitised = runFirestoreMigrations(firestoreData);
-  const storeDataPatched = await runStoreMigrations({
-    ...initStore(), // mixin legacy
-    ...firestoreDataSanitised,
-  });
-
-  return {
-    version: storeDataPatched.version,
-    collectionLog: storeDataPatched.collectionLog,
-  };
+  return runFirestoreMigrations(firestoreData);
 }
 
 export async function saveToFirestore(

@@ -19,13 +19,21 @@ const defaultDispatch = () => defaultCollection;
 export enum CollectionActionType {
   COLLECT = "collect",
   HIDE = "hide",
+  RELOAD = "reload",
 }
 
-export type CollectionAction = {
-  type: CollectionActionType;
+export type ReloadCollectionAction = {
+  type: CollectionActionType.RELOAD;
+  collection: CollectionLog;
+};
+
+export type ToggleCollectionAction = {
+  type: CollectionActionType.COLLECT | CollectionActionType.HIDE;
   itemId: number[];
   toggle: boolean;
 };
+
+export type CollectionAction = ReloadCollectionAction | ToggleCollectionAction;
 
 type Props = PropsWithChildren & {
   collection?: CollectionLog;
@@ -63,6 +71,12 @@ function collectionReducer(
   collectionLog: CollectionLog,
   action: CollectionAction,
 ): CollectionLog {
+  // usually used when syncing from firestore
+  if (action.type === CollectionActionType.RELOAD) {
+    return action.collection;
+  }
+
+  // ui interactions
   return action.itemId.reduce((a, c) => {
     switch (action.type) {
       case CollectionActionType.COLLECT:
