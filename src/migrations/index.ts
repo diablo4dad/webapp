@@ -2,12 +2,16 @@ import { FirebaseData, StoreData, VersionMeta } from "../store";
 import migration130 from "./migrate1d3d0.json";
 import migration140 from "./migrate1d4d0.json";
 import migration141 from "./migrate1d4d1.json";
+import migration1610 from "./migrate1d6d10.json";
+
 import { VERSION } from "../config";
 import { MasterGroup } from "../common";
 import { ArtifactMeta, ItemFlag } from "../collection/type";
 import {
+  deleteStoreData,
   getStoreData,
   getVersion,
+  isPreV170,
   saveCollection,
   saveVersion,
 } from "../store/local";
@@ -29,10 +33,10 @@ function isPatchNeeded(
   revision: number,
 ): boolean {
   if (data.version === undefined) return true;
-  if (data.version.major < major) return true;
-  if (data.version.minor < minor) return true;
-  if (data.version.revision < revision) return true;
-  return false;
+  if (data.version.major > major) return false;
+  if (data.version.minor > minor) return false;
+  if (data.version.revision > revision) return false;
+  return true;
 }
 
 export function runFirestoreMigrations(
@@ -72,7 +76,7 @@ export function runFirestoreMigrations(
 
     // otherwise, it's v1.2.0
     console.log("Running Firestore v1.2.0 migration...");
-    return {
+    data = {
       collectionLog: {
         entries: data.entries ?? [],
         collected: [],
@@ -89,7 +93,8 @@ export function runFirestoreMigrations(
   // adds collected and hidden arrays
   if (isPatchNeeded(data, 1, 6, 10)) {
     console.log("Running Firestore v1.6.10 migration...");
-    return {
+
+    data = {
       ...data,
       collectionLog: {
         ...data.collectionLog,
@@ -103,7 +108,7 @@ export function runFirestoreMigrations(
   return data as FirebaseData;
 }
 
-export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
+export function runStoreDataMigrations(store: StoreData): StoreData {
   if (isPatchNeeded(store, 1, 2, 0)) {
     console.log("Running v1.2.0 migration...");
 
@@ -214,7 +219,6 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
   if (isPatchNeeded(store, 1, 6, 10)) {
     console.log("Running v1.6.10 migration...");
 
-    const migration1610 = await import("./migrate1d6d10.json");
     const collected = new Set<number>();
     const hidden = new Set<number>();
 
@@ -236,7 +240,6 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
     });
 
     store.collectionLog = {
-      entries: [],
       collected: Array.from(collected),
       hidden: Array.from(hidden),
     };
@@ -253,13 +256,23 @@ export async function runStoreMigrations(store: StoreData): Promise<StoreData> {
 }
 
 export function runLocalStorageMigrations() {
-  const version = getVersion();
-  if (version === null) {
-    console.log("Running v1.7.0 local storage migration...");
+  if (isPreV170()) {
+    const storeData = runStoreDataMigrations(getStoreData());
 
-    // Intentionally throw away settings and view model
-    const storeData = getStoreData();
+    // use new local storage format
+    console.log("Running v1.7.0 migration...");
     saveCollection(storeData.collectionLog);
+    saveVersion({
+      major: 1,
+      minor: 7,
+      revision: 0,
+    });
+
+    // clean up
+    deleteStoreData();
+  }
+
+  if (getVersion() === null) {
     saveVersion(VERSION);
   }
 }

@@ -48,6 +48,22 @@ export function saveVersion(version: VersionInfo) {
 }
 
 // deprecated
+export function deleteStoreData() {
+  try {
+    localStorage.removeItem(STORE_KEY);
+  } catch (e) {
+    if (e instanceof DOMException) {
+      console.error("Unable to delete value from localStorage.", e.stack);
+    } else if (e instanceof Error) {
+      console.error("Unexpected error occurred.", e.stack);
+    }
+  }
+}
+
+export function isPreV170(): boolean {
+  return getValueFromStorage(STORE_KEY, null) !== null;
+}
+
 export function getStoreData(): StoreData {
   return getValueFromStorage(STORE_KEY, initStore());
 }
