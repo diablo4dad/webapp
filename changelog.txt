@@ -10,13 +10,13 @@ collections.
 - Challenges collection
 - URL routing and browser history between collections
   - e.g. https://diablo4.dad/transmogs/general
-- Transitions when opening and closing collections
 
 ### Updated
 
 - Improved skeletons layout for smoother transitions when loading
 - Improved dynamic loading of images, reduced screen shift
 - Improved class icon layout
+- Transitions when opening and closing collections
 - Collection menu visibility now toggled via to clicks
 - Renamed collection "Standard Armor" to "Armor"
 - Renamed collection "Standard Weapon" to "Weapons"
@@ -30,9 +30,10 @@ collections.
 
 ### Removed
 
-- Unnecessary hide progress bar option
 - Challenge category from the Essential Collection
 - Well-Wisher title from the Quest collection
+- Unused hide progress bar option
+- Superfluous hide completed collections option
 
 ## [1.6.10] - 2024-06-24
 
