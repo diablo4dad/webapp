@@ -52,10 +52,16 @@ export function getItemType(ci: DadCollectionItem): string {
   }
 }
 
+function stringParser(input: string): string {
+  input = input.replace("{icon:Icon_WorldTier_4, 2.5}", "World Tier IV");
+
+  return input;
+}
+
 export function getItemDescription(item: DadCollectionItem): string {
   // setting a description overrides inferred/default
   if (item.claimDescription) {
-    return item.claimDescription;
+    return stringParser(item.claimDescription);
   }
 
   // unique items
