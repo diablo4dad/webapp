@@ -56,7 +56,7 @@ import { Await, useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
 import ItemSidebar from "./ItemSidebar";
 import { VERSION } from "./config";
-import { runStoreDataMigrations } from "./migrations";
+import { runPreV170Migrations } from "./migrations";
 import { initStore } from "./store";
 
 export type ViewModel = {
@@ -194,7 +194,7 @@ function Application(): ReactElement<HTMLDivElement> {
         if (data) {
           console.log("Fetched Collection from Firestore...", data);
 
-          const dataPatched = runStoreDataMigrations({
+          const dataPatched = runPreV170Migrations({
             ...initStore(), // mixin legacy
             ...data,
           });

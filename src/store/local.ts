@@ -1,4 +1,4 @@
-import { initStore, StoreData, VersionInfo, VersionMeta } from "./index";
+import { initStore, StoreData, VersionInfo } from "./index";
 import { Settings } from "../settings/type";
 import { defaultSettings } from "../settings/context";
 import { CollectionLog } from "../collection/type";
@@ -39,7 +39,7 @@ export function saveViewModel(vm: ViewModel) {
   setValueInStorage(VM_KEY, vm);
 }
 
-export function getVersion(): VersionMeta | null {
+export function getVersion(): VersionInfo | null {
   return getValueFromStorage(VERSION_KEY, null);
 }
 

@@ -1,20 +1,23 @@
-import { FirebaseData, StoreData, VersionMeta } from "../store";
+import { FirebaseData, StoreData, VersionInfo, VersionMeta } from "../store";
 import migration130 from "./migrate1d3d0.json";
 import migration140 from "./migrate1d4d0.json";
 import migration141 from "./migrate1d4d1.json";
 import migration1610 from "./migrate1d6d10.json";
+import migration170 from "./migrate1d7d0.json";
 
 import { VERSION } from "../config";
 import { MasterGroup } from "../common";
-import { ArtifactMeta, ItemFlag } from "../collection/type";
+import { ArtifactMeta, CollectionLog, ItemFlag } from "../collection/type";
 import {
   deleteStoreData,
   getStoreData,
+  getUserCollectionLog,
   getVersion,
   isPreV170,
   saveCollection,
   saveVersion,
 } from "../store/local";
+import { hashCode } from "../common/hash";
 
 type FirestoreData1d2d0 = {
   entries: ArtifactMeta[];
@@ -50,7 +53,6 @@ export function runFirestoreMigrations(
       return {
         version: VERSION,
         collectionLog: {
-          entries: [],
           collected: [],
           hidden: [],
         },
@@ -108,7 +110,7 @@ export function runFirestoreMigrations(
   return data as FirebaseData;
 }
 
-export function runStoreDataMigrations(store: StoreData): StoreData {
+export function runPreV170Migrations(store: StoreData): StoreData {
   if (isPatchNeeded(store, 1, 2, 0)) {
     console.log("Running v1.2.0 migration...");
 
@@ -255,12 +257,53 @@ export function runStoreDataMigrations(store: StoreData): StoreData {
   return store;
 }
 
+function runCollectionLogMigrations(
+  collection: CollectionLog,
+  version: VersionInfo,
+): CollectionLog {
+  // hashes collection item arrays
+  if (isPatchNeeded({ version }, 1, 7, 2)) {
+    console.log("Running v1.7.0 migration...");
+
+    const migrate = (collection: number[]) => {
+      const result: number[][] = [];
+
+      migration170.map((v) => {
+        const everyItemExists = v
+          .map(Number)
+          .every((i) => collection.includes(i));
+
+        if (everyItemExists) {
+          result.push(v);
+        }
+      });
+
+      const resultFlat = result.flatMap((e) => e);
+      collection.forEach((i) => {
+        if (!resultFlat.includes(i)) {
+          result.push([i]);
+        }
+      });
+
+      return result;
+    };
+
+    return {
+      collected: migrate(collection.collected).map(hashCode),
+      hidden: migrate(collection.hidden).map(hashCode),
+    };
+  }
+
+  return collection;
+}
+
 export function runLocalStorageMigrations() {
+  // before v1.7.0
   if (isPreV170()) {
-    const storeData = runStoreDataMigrations(getStoreData());
+    const storeData = runPreV170Migrations(getStoreData());
 
     // use new local storage format
-    console.log("Running v1.7.0 migration...");
+    console.log("Running v1.7.0 local storage migration...");
     saveCollection(storeData.collectionLog);
     saveVersion({
       major: 1,
@@ -272,7 +315,20 @@ export function runLocalStorageMigrations() {
     deleteStoreData();
   }
 
-  if (getVersion() === null) {
+  // failsafe, if no version sorry, gotta wipe you
+  if (getVersion() == null) {
+    // defaults
+    saveCollection({ collected: [], hidden: [] });
     saveVersion(VERSION);
+
+    // clean up
+    deleteStoreData();
   }
+
+  // run migrations (if any)
+  const version = getVersion() ?? VERSION;
+  const collectionPre = getUserCollectionLog();
+  const collectionPost = runCollectionLogMigrations(collectionPre, version);
+  saveCollection(collectionPost);
+  saveVersion(VERSION);
 }

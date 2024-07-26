@@ -45,7 +45,7 @@ const NAV_ITEM_META: Map<MasterGroup, NavItemMeta> = new Map([
   [
     MasterGroup.CHALLENGE,
     {
-      name: "Challenge",
+      name: "Challenges",
       desc: "Transmogs earned through completing challenges and feats of strength.",
       icon: ChallengeIcon,
       order: 3,

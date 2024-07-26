@@ -36,7 +36,7 @@ function MobileMenu({ onNavigate, onAuth, currentUser, onLogout }: Props) {
         to={generateUrl(MasterGroup.CHALLENGE)}
         onClick={() => onNavigate(ContentType.LEDGER)}
       >
-        Challenge
+        Challenges
       </Link>
       <Link
         className={styles.MobileMenuLink}
