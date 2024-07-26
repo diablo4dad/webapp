@@ -36,10 +36,10 @@ function isPatchNeeded(
   revision: number,
 ): boolean {
   if (data.version === undefined) return true;
-  if (data.version.major > major) return false;
-  if (data.version.minor > minor) return false;
-  if (data.version.revision >= revision) return false;
-  return true;
+  if (data.version.major < major) return true;
+  if (data.version.minor < minor) return true;
+  if (data.version.revision < revision) return true;
+  return false;
 }
 
 export function runFirestoreMigrations(
@@ -268,7 +268,7 @@ function runCollectionLogMigrations(
     const migrate = (collection: number[]) => {
       const result: number[][] = [];
 
-      migration170.map((v) => {
+      migration170.forEach((v) => {
         const everyItemExists = v
           .map(Number)
           .every((i) => collection.includes(i));
@@ -278,7 +278,7 @@ function runCollectionLogMigrations(
         }
       });
 
-      const resultFlat = result.flatMap((e) => e);
+      const resultFlat = result.flat();
       collection.forEach((i) => {
         if (!resultFlat.includes(i)) {
           result.push([i]);
@@ -307,8 +307,8 @@ export function runLocalStorageMigrations() {
     saveCollection(storeData.collectionLog);
     saveVersion({
       major: 1,
-      minor: 7,
-      revision: 0,
+      minor: 6,
+      revision: 10,
     });
 
     // clean up
