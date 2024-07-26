@@ -25,6 +25,7 @@ collections.
 
 ### Fixed
 
+- Hide collected items option reducing progress bar when enabled
 - Progress bar flicker when loading
 - Fur-Lined Boots + Mitts erroneously selected from Season 2 collection
 

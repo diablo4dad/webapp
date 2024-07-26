@@ -42,7 +42,10 @@ import {
   saveVersion,
   saveViewModel,
 } from "./store/local";
-import { countItemInDbOwned } from "./collection/aggregate";
+import {
+  countItemInDbHidden,
+  countItemInDbOwned,
+} from "./collection/aggregate";
 import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
 import { fetchFromFirestore, saveToFirestore } from "./store/firestore";
@@ -70,13 +73,16 @@ export type ViewModel = {
 // Needs Settings
 // Needs Collections Log
 function Application(): ReactElement<HTMLDivElement> {
-  const { db, group } = useLoaderData() as LoaderPayload;
-  const { filteredDb } = useData();
+  const { db: dbPromise, group } = useLoaderData() as LoaderPayload;
+  const { filteredDb, db } = useData();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
   const settings = useSettings();
 
   const [vm, setVm] = useState<ViewModel>(getViewModel());
+
+  const itemsCollected = countItemInDbOwned(log, db);
+  const itemsTotal = countAllItemsDabDb(db) - countItemInDbHidden(log, db);
 
   // persist settings
   saveViewModel(vm);
@@ -261,8 +267,8 @@ function Application(): ReactElement<HTMLDivElement> {
               </nav>
               <div className={styles.HeaderAccountWidgets}>
                 <Progress
-                  totalCollected={countItemInDbOwned(log, filteredDb)}
-                  collectionSize={countAllItemsDabDb(filteredDb)}
+                  totalCollected={itemsCollected}
+                  collectionSize={itemsTotal}
                 />
                 {user === null && (
                   <Authenticate orientation={Orientation.ROW} onAuth={signIn} />
@@ -284,7 +290,7 @@ function Application(): ReactElement<HTMLDivElement> {
           {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
           {sideBar === SideBarType.ITEM && (
             <Suspense fallback={<ItemSidebarSkeleton />}>
-              <Await resolve={db}>
+              <Await resolve={dbPromise}>
                 <ItemSidebar collectionItem={selectedCollectionItem} />
               </Await>
             </Suspense>
@@ -295,7 +301,7 @@ function Application(): ReactElement<HTMLDivElement> {
         <>
           {content === ContentType.LEDGER && (
             <Suspense fallback={<LedgerSkeleton />}>
-              <Await resolve={db}>
+              <Await resolve={dbPromise}>
                 <Ledger
                   collections={filteredDb.collections}
                   openCollections={vm.openCollections}
@@ -339,8 +345,8 @@ function Application(): ReactElement<HTMLDivElement> {
         <>
           {content === ContentType.LEDGER && (
             <Progress
-              totalCollected={countItemInDbOwned(log, filteredDb)}
-              collectionSize={countAllItemsDabDb(filteredDb)}
+              totalCollected={itemsCollected}
+              collectionSize={itemsTotal}
             />
           )}
         </>
