@@ -257,7 +257,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
         <div className={styles.ItemMeta}>
           <div>
             <div>
-              Item ID: {collectionItem.items[0]?.itemId ?? -1}
+              Item ID: {collectionItem.items.map((i) => i.itemId).join(", ")}
               {process.env.NODE_ENV === "development" && (
                 <span>
                   {" "}
