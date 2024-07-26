@@ -1,15 +1,16 @@
 import { CollectionLog } from "./type";
+import { hashCode } from "../common/hash";
 
 export function isItemCollected(
   collection: CollectionLog,
   itemId: number[],
 ): boolean {
-  return itemId.every((i) => collection.collected.includes(i));
+  return collection.collected.includes(hashCode(itemId));
 }
 
 export function isItemHidden(
   collection: CollectionLog,
   itemId: number[],
 ): boolean {
-  return itemId.every((i) => collection.hidden.includes(i));
+  return collection.hidden.includes(hashCode(itemId));
 }
