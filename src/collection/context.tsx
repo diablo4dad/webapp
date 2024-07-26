@@ -8,6 +8,7 @@ import {
 
 import { CollectionLog } from "./type";
 import { toggleValueInArray } from "../common/arrays";
+import { hashCode } from "../common/hash";
 
 export const defaultCollection: CollectionLog = {
   collected: [],
@@ -71,26 +72,30 @@ function collectionReducer(
   collectionLog: CollectionLog,
   action: CollectionAction,
 ): CollectionLog {
-  // usually used when syncing from firestore
-  if (action.type === CollectionActionType.RELOAD) {
-    return action.collection;
+  switch (action.type) {
+    // usually used when syncing from firestore
+    case CollectionActionType.RELOAD:
+      return action.collection;
+    // ui interactions
+    case CollectionActionType.COLLECT:
+      return {
+        ...collectionLog,
+        collected: toggleValueInArray(
+          collectionLog.collected,
+          hashCode(action.itemId),
+          action.toggle,
+        ),
+      };
+    case CollectionActionType.HIDE:
+      return {
+        ...collectionLog,
+        hidden: toggleValueInArray(
+          collectionLog.hidden,
+          hashCode(action.itemId),
+          action.toggle,
+        ),
+      };
+    default:
+      return collectionLog;
   }
-
-  // ui interactions
-  return action.itemId.reduce((a, c) => {
-    switch (action.type) {
-      case CollectionActionType.COLLECT:
-        return {
-          ...a,
-          collected: toggleValueInArray(a.collected, c, action.toggle),
-        };
-      case CollectionActionType.HIDE:
-        return {
-          ...a,
-          hidden: toggleValueInArray(a.hidden, c, action.toggle),
-        };
-      default:
-        return a;
-    }
-  }, collectionLog);
 }

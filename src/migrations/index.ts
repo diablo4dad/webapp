@@ -38,7 +38,7 @@ function isPatchNeeded(
   if (data.version === undefined) return true;
   if (data.version.major > major) return false;
   if (data.version.minor > minor) return false;
-  if (data.version.revision > revision) return false;
+  if (data.version.revision >= revision) return false;
   return true;
 }
 
@@ -262,7 +262,7 @@ function runCollectionLogMigrations(
   version: VersionInfo,
 ): CollectionLog {
   // hashes collection item arrays
-  if (isPatchNeeded({ version }, 1, 7, 2)) {
+  if (isPatchNeeded({ version }, 1, 7, 0)) {
     console.log("Running v1.7.0 migration...");
 
     const migrate = (collection: number[]) => {
