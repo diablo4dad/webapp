@@ -21,6 +21,7 @@ const defaultContext: DataContextType = {
   group: MasterGroup.GENERAL,
   switchDb: () => undefined,
   filteredDb: defaultDadDb,
+  countedDb: defaultDadDb,
 };
 
 export type DataContextType = {
@@ -28,6 +29,7 @@ export type DataContextType = {
   group: MasterGroup;
   switchDb: (group: MasterGroup, db: DadDb) => void;
   filteredDb: DadDb;
+  countedDb: DadDb;
 };
 
 export const DataContext = createContext<DataContextType>(defaultContext);
@@ -43,10 +45,13 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [db, setDb] = useState<DadDb>(defaultDadDb);
   const [group, setGroup] = useState<MasterGroup>(MasterGroup.GENERAL);
   const filteredDb = useMemo(
-    () => filterDb(db, settings, log),
+    () => filterDb(db, settings, log, false),
     [db, settings, log],
   );
-
+  const countedDb = useMemo(
+    () => filterDb(db, settings, log, true),
+    [db, settings, log],
+  );
   const switchDb = useCallback(
     (group: MasterGroup, db: DadDb) => {
       setGroup(group);
@@ -61,8 +66,9 @@ export function DataProvider({ children }: PropsWithChildren) {
       group,
       switchDb,
       filteredDb,
+      countedDb,
     }),
-    [db, switchDb, filteredDb, group],
+    [db, switchDb, filteredDb, countedDb, group],
   );
 
   return (

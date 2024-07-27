@@ -42,10 +42,7 @@ import {
   saveVersion,
   saveViewModel,
 } from "./store/local";
-import {
-  countItemInDbHidden,
-  countItemInDbOwned,
-} from "./collection/aggregate";
+import { countItemInDbOwned } from "./collection/aggregate";
 import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
 import { fetchFromFirestore, saveToFirestore } from "./store/firestore";
@@ -74,15 +71,15 @@ export type ViewModel = {
 // Needs Collections Log
 function Application(): ReactElement<HTMLDivElement> {
   const { db: dbPromise, group } = useLoaderData() as LoaderPayload;
-  const { filteredDb, db } = useData();
+  const { filteredDb, countedDb } = useData();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
   const settings = useSettings();
 
   const [vm, setVm] = useState<ViewModel>(getViewModel());
 
-  const itemsCollected = countItemInDbOwned(log, db);
-  const itemsTotal = countAllItemsDabDb(db) - countItemInDbHidden(log, db);
+  const itemsCollected = countItemInDbOwned(log, countedDb);
+  const itemsTotal = countAllItemsDabDb(countedDb);
 
   // persist settings
   saveViewModel(vm);

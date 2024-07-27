@@ -176,7 +176,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
                 toggle: e.target.checked,
               })
             }
-            label={"Hidden"}
+            label={"Excluded"}
           />
         </div>
         <div className={styles.ItemLocations}>

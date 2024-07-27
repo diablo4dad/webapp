@@ -18,6 +18,7 @@ collections.
 - Improved class icon layout
 - Transitions when opening and closing collections
 - Collection menu visibility now toggled via to clicks
+- Renamed "hidden" toggle to "excluded" to make its purpose clearer
 - Renamed collection "Standard Armor" to "Armor"
 - Renamed collection "Standard Weapon" to "Weapons"
 - Moved Seasonal reputation board rewards to own sub-category
@@ -25,7 +26,9 @@ collections.
 
 ### Fixed
 
+- Progress Bar counter changing when "hide collected items" option enabled
 - Hide collected items option reducing progress bar when enabled
+- Overflow/scroll issue when the settings sidebar is open
 - Progress bar flicker when loading
 - Fur-Lined Boots + Mitts erroneously selected from Season 2 collection
 
