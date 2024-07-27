@@ -26,10 +26,7 @@ export function countItemsInCollectionOwned(
   collection: DadCollection,
 ): number {
   return getAllCollectionItems(collection).filter((ci) => {
-    const itemIds = getDiabloItemIds(ci);
-    const isCollected = isItemCollected(collectionLog, itemIds);
-    const isHidden = isItemHidden(collectionLog, itemIds);
-    return isCollected && !isHidden;
+    return isItemCollected(collectionLog, getDiabloItemIds(ci));
   }).length;
 }
 

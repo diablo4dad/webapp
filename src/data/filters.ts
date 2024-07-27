@@ -79,6 +79,7 @@ export function filterDb(
   dadDb: DadDb,
   settings: Settings,
   log: CollectionLog,
+  isCount: boolean = false,
 ): DadDb {
   let db = filterCollectionItems(
     dadDb,
@@ -105,7 +106,7 @@ export function filterDb(
     db = filterCollectionItems(db, filterUnobtainableItems());
   }
 
-  if (isEnabled(settings, Option.HIDE_COLLECTED)) {
+  if (isEnabled(settings, Option.HIDE_COLLECTED) && !isCount) {
     db = filterCollectionItems(db, filterCollectedItems(log));
   }
 

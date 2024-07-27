@@ -160,7 +160,7 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
       {
         type: WidgetType.TOGGLE,
         option: Option.SHOW_HIDDEN,
-        label: "Show Hidden",
+        label: "Show Excluded",
         action: createBooleanAction(Option.SHOW_HIDDEN),
         checked: createBooleanChecked(Option.SHOW_HIDDEN),
       },
@@ -190,7 +190,7 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
       {
         type: WidgetType.TOGGLE,
         option: Option.LEDGER_INVERSE,
-        label: "Inverse Card Layout",
+        label: "Inverse Cards",
         action: createBooleanAction(Option.LEDGER_INVERSE),
         checked: createBooleanChecked(Option.LEDGER_INVERSE),
       },
