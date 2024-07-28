@@ -16,7 +16,7 @@ export function DiscordInvite(): ReactElement<HTMLDivElement> {
           Join the Discord Server
         </a>
         <div className={styles.DiscordInfoSlugs}>
-          Site News | Help Needed | Bragging
+          Site News | Community | Bragging
         </div>
       </div>
     </div>
