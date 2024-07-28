@@ -6,7 +6,6 @@ import {
 import styles from "./Ledger.module.css";
 import React from "react";
 import { Currency, Tick, TickCircle } from "./Icons";
-import Button, { BtnColours } from "./Button";
 import {
   getAllCollectionItems,
   getDiabloItemIds,
@@ -33,6 +32,7 @@ import {
   useCollectionDispatch,
 } from "./collection/context";
 import { isItemCollected, isItemHidden } from "./collection/predicate";
+import btnStyles from "./Button.module.css";
 
 type Props = {
   collections: DadCollection[];
@@ -180,15 +180,19 @@ const LedgerInner = ({
             <div className={styles.LedgerDescription}>{descriptionLabel}</div>
           </div>
           <span className={styles.LedgerActions}>
-            <Button
-              colour={isComplete ? BtnColours.Green : BtnColours.Grey}
+            <span
+              className={classNames({
+                [btnStyles.Btn]: true,
+                [btnStyles.BtnGreen]: isComplete,
+                [btnStyles.BtnGrey]: !isComplete,
+              })}
               onClick={(e) => {
                 e.stopPropagation();
                 toggleCollection(collection)(!isComplete);
               }}
             >
               <Tick></Tick>
-            </Button>
+            </span>
           </span>
         </>
       }
