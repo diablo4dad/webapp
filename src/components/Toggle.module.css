@@ -68,10 +68,19 @@
     border: 0.15em solid var(--toggle-bg-color-off);
 }
 
+.toggle [type="checkbox"]:disabled + label::after {
+    background-color: #ccc;
+}
+
 .toggle [type="checkbox"]:checked + label::after {
     left: 1.6em;
     border-color: var(--toggle-bg-color-on);
     color: var(--toggle-bg-color-on);
+}
+
+.toggle.red [type="checkbox"]:checked + label::after {
+    border-color: #A62639;
+    color: #A62639;
 }
 
 .toggle [type="checkbox"]:indeterminate + label::after {
@@ -87,13 +96,18 @@
     border-color: var(--toggle-bg-color-on);
 }
 
+.toggle.red [type="checkbox"]:checked + label::before {
+    background-color: #A62639;
+    border-color: #A62639;
+}
+
 .toggle [type="checkbox"][disabled] + label::before {
     background-color: transparent;
-    border-color: #ddd;
+    border-color: #1e2126;
 }
 
 .toggle [type="checkbox"][disabled] + label::after {
-    border-color: #ddd;
+    border-color: #1e2126;
 }
 
 .toggle [disabled]:hover + label {

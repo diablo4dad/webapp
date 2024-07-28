@@ -9,6 +9,7 @@ type ToggleProps = {
   flip?: boolean;
   label?: string;
   className?: string;
+  color?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -19,13 +20,15 @@ function Toggle({
   disabled,
   flip,
   label,
+  color,
   checked = false,
 }: ToggleProps) {
   const id = useId();
   const classes = classNames({
     [styles.toggle]: true,
     [styles.flip]: flip,
-    [className ?? '']: true,
+    [className ?? ""]: true,
+    [styles.red]: color === "red",
   });
 
   return (
