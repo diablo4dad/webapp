@@ -4,7 +4,7 @@ import {
   getDefaultItemFromCollectionItems,
 } from "./data";
 import styles from "./Ledger.module.css";
-import React from "react";
+import React, { useRef } from "react";
 import { Currency, Tick, TickCircle } from "./Icons";
 import {
   getAllCollectionItems,
@@ -97,6 +97,7 @@ const LedgerInner = ({
   const settings = useSettings();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
+  const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
 
   const toggleItem = (dci: DadCollectionItem) => (collected: boolean) => {
     if (onToggleItem) {
@@ -188,7 +189,24 @@ const LedgerInner = ({
               })}
               onClick={(e) => {
                 e.stopPropagation();
-                toggleCollection(collection)(!isComplete);
+              }}
+              onMouseDown={() => {
+                clearTimeout(toggleCountDown.current);
+                toggleCountDown.current = setTimeout(() => {
+                  toggleCollection(collection)(!isComplete);
+                }, 500);
+              }}
+              onMouseUp={() => {
+                clearTimeout(toggleCountDown.current);
+              }}
+              onTouchStart={() => {
+                clearTimeout(toggleCountDown.current);
+                toggleCountDown.current = setTimeout(() => {
+                  toggleCollection(collection)(!isComplete);
+                }, 500);
+              }}
+              onTouchEnd={() => {
+                clearTimeout(toggleCountDown.current);
               }}
             >
               <Tick></Tick>

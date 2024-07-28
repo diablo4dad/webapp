@@ -20,6 +20,7 @@ collections.
 - Collection menu visibility now toggled via to clicks
 - Renamed "hidden" toggle to "excluded" to make its purpose clearer
 - Changed colour of excluded toggle to red
+- Added half second delay to toggle collection selection
 - Renamed collection "Standard Armor" to "Armor"
 - Renamed collection "Standard Weapon" to "Weapons"
 - Moved Seasonal reputation board rewards to own sub-category
