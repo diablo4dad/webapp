@@ -222,6 +222,10 @@
     color: #999 !important;
 }
 
+.ItemHidden .ItemImage {
+    filter: brightness(0%) !important;
+}
+
 .Item:hover .ItemImage {
     filter: brightness(125%) !important;
 }
