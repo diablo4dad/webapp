@@ -36,8 +36,8 @@ function isPatchNeeded(
   revision: number,
 ): boolean {
   if (data.version === undefined) return true;
-  if (data.version.major < major) return true;
-  if (data.version.minor < minor) return true;
+  if (data.version.major > major) return false;
+  if (data.version.minor > minor) return false;
   if (data.version.revision < revision) return true;
   return false;
 }
