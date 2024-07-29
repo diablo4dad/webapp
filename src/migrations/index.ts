@@ -37,10 +37,10 @@ function isPatchNeeded(
 ): boolean {
   if (data.version === undefined) return true;
   if (data.version.major > major) return false;
+  if (data.version.major < major) return true;
   if (data.version.minor > minor) return false;
   if (data.version.minor < minor) return true;
-  if (data.version.revision < revision) return true;
-  return false;
+  return data.version.revision < revision;
 }
 
 export function runFirestoreMigrations(
@@ -258,7 +258,7 @@ export function runPreV170Migrations(store: StoreData): StoreData {
   return store;
 }
 
-function runCollectionLogMigrations(
+export function runCollectionLogMigrations(
   collection: CollectionLog,
   version: VersionInfo,
 ): CollectionLog {
