@@ -33,6 +33,7 @@ import {
 } from "./collection/context";
 import { isItemCollected, isItemHidden } from "./collection/predicate";
 import btnStyles from "./Button.module.css";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./components/Tooltip";
 
 type Props = {
   collections: DadCollection[];
@@ -181,36 +182,41 @@ const LedgerInner = ({
             <div className={styles.LedgerDescription}>{descriptionLabel}</div>
           </div>
           <span className={styles.LedgerActions}>
-            <span
-              className={classNames({
-                [btnStyles.Btn]: true,
-                [btnStyles.BtnGreen]: isComplete,
-                [btnStyles.BtnGrey]: !isComplete,
-              })}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              onMouseDown={() => {
-                clearTimeout(toggleCountDown.current);
-                toggleCountDown.current = setTimeout(() => {
-                  toggleCollection(collection)(!isComplete);
-                }, 500);
-              }}
-              onMouseUp={() => {
-                clearTimeout(toggleCountDown.current);
-              }}
-              onTouchStart={() => {
-                clearTimeout(toggleCountDown.current);
-                toggleCountDown.current = setTimeout(() => {
-                  toggleCollection(collection)(!isComplete);
-                }, 500);
-              }}
-              onTouchEnd={() => {
-                clearTimeout(toggleCountDown.current);
-              }}
-            >
-              <Tick></Tick>
-            </span>
+            <Tooltip placement={"left"}>
+              <TooltipTrigger asChild={true}>
+                <span
+                  className={classNames({
+                    [btnStyles.Btn]: true,
+                    [btnStyles.BtnGreen]: isComplete,
+                    [btnStyles.BtnGrey]: !isComplete,
+                  })}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onMouseDown={() => {
+                    clearTimeout(toggleCountDown.current);
+                    toggleCountDown.current = setTimeout(() => {
+                      toggleCollection(collection)(!isComplete);
+                    }, 500);
+                  }}
+                  onMouseUp={() => {
+                    clearTimeout(toggleCountDown.current);
+                  }}
+                  onTouchStart={() => {
+                    clearTimeout(toggleCountDown.current);
+                    toggleCountDown.current = setTimeout(() => {
+                      toggleCollection(collection)(!isComplete);
+                    }, 500);
+                  }}
+                  onTouchEnd={() => {
+                    clearTimeout(toggleCountDown.current);
+                  }}
+                >
+                  <Tick></Tick>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>Hold down to toggle</TooltipContent>
+            </Tooltip>
           </span>
         </>
       }

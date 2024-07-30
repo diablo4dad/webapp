@@ -1,0 +1,14 @@
+.Block {
+    background-color: #1e2126;
+    color: #ccc;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: calc(100vw - 1rem);
+    font-size: 0.875rem;
+}
+
+.Block svg {
+    fill: #1e2126;
+}
