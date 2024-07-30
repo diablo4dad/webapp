@@ -1,4 +1,5 @@
 import React, {
+  createRef,
   ReactElement,
   Suspense,
   useEffect,
@@ -90,6 +91,9 @@ function Application(): ReactElement<HTMLDivElement> {
   useEffect(() => {
     new Image().src = placeholder;
   }, []);
+
+  const nav = createRef<HTMLDivElement>();
+  const [navOpen, setNavOpen] = useState(false);
 
   const [user, setUser] = useState<User | null>(null);
   const [sideBar, setSideBar] = useState(SideBarType.ITEM);
@@ -226,6 +230,12 @@ function Application(): ReactElement<HTMLDivElement> {
 
   return (
     <Shell
+      onClick={(e) => {
+        // @ts-ignore
+        if (!nav.current?.contains(e.target)) {
+          setNavOpen(false);
+        }
+      }}
       header={
         <header className={styles.Header}>
           <div className={styles.HeaderLeft}>
@@ -265,7 +275,7 @@ function Application(): ReactElement<HTMLDivElement> {
           <div className={styles.HeaderRight}>
             <div className={styles.HeaderRightContent}>
               <nav className={styles.HeaderNav}>
-                <NavMenu activeGroup={group} />
+                <NavMenu ref={nav} open={navOpen} setOpen={setNavOpen} activeGroup={group} />
               </nav>
               <div className={styles.HeaderAccountWidgets}>
                 <Progress

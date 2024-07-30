@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {ForwardedRef, forwardRef, useState} from "react";
 import styles from "./NavMenu.module.css";
 import { MasterGroup } from "./common";
 import GeneralIcon from "./image/goblin.webp";
@@ -14,6 +14,8 @@ import classNames from "classnames";
 type Props = {
   activeGroup: MasterGroup;
   onChange?: (newGroup: MasterGroup) => void;
+  open: boolean,
+  setOpen: (open: boolean) => void,
 };
 
 type NavItemMeta = {
@@ -78,8 +80,7 @@ const DEFAULT_META: NavItemMeta = {
   order: -1,
 };
 
-function NavMenu({ activeGroup, onChange }: Props) {
-  const [open, setOpen] = useState(false);
+const NavMenu = forwardRef(function NavMenu({ activeGroup, onChange, open, setOpen }: Props, ref: ForwardedRef<HTMLDivElement>) {
   const [preview, setPreview] = useState<MasterGroup | undefined>();
   const meta = NAV_ITEM_META.get(preview ?? activeGroup) ?? DEFAULT_META;
   const keys = Array.from(NAV_ITEM_META.keys());
@@ -90,7 +91,7 @@ function NavMenu({ activeGroup, onChange }: Props) {
   });
 
   return (
-    <div className={className} onClick={() => setOpen(!open)}>
+    <div className={className} onClick={() => setOpen(!open)} ref={ref}>
       <div className={styles.NavActive}>
         <button className={styles.NavBtn}>
           <span className={styles.NavBtnIcon}>
@@ -134,6 +135,6 @@ function NavMenu({ activeGroup, onChange }: Props) {
       </div>
     </div>
   );
-}
+});
 
 export default NavMenu;
