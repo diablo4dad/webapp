@@ -3,6 +3,12 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.7.1]
+
+### Updated
+
+- Nav menu will close when clicking anywhere on the page
+
 ## [1.7.0] - 2024-07-01
 
 ### Added
