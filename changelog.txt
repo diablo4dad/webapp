@@ -3,13 +3,16 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
-## [1.7.1]
+## [1.7.1] - 2024-07-31
 
 ### Updated
 
 - Nav menu will close when clicking anywhere on the page
+- Add tooltip to "toggle collection" button
+- Marked "Enthusiastic Admire" and "Diabolic Roamer" titles unobtainable
+- Moved "Well-Wisher" title to Feats of Strength
 
-## [1.7.0] - 2024-07-01
+## [1.7.0] - 2024-07-29
 
 ### Added
 
