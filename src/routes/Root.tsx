@@ -5,6 +5,7 @@ import { getUserCollectionLog, getUserSettings } from "../store/local";
 import { DataProvider } from "../data/context";
 import { AuthProvider } from "../auth/context";
 import { runLocalStorageMigrations } from "../migrations/localstorage";
+import { PersistenceLayer } from "../store/PersistenceLayer";
 
 export function Root() {
   // Run LocalStorage migrations
@@ -20,7 +21,9 @@ export function Root() {
       <CollectionProvider collection={collection}>
         <DataProvider>
           <AuthProvider>
-            <Outlet />
+            <PersistenceLayer>
+              <Outlet />
+            </PersistenceLayer>
           </AuthProvider>
         </DataProvider>
       </CollectionProvider>
