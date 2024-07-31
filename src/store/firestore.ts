@@ -1,9 +1,9 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { firestore } from "../config/firebase";
-import { runFirestoreMigrations } from "../migrations";
 import { FirebaseData } from "./index";
 import { CollectionLog } from "../collection/type";
 import { VERSION } from "../config";
+import { runFirestoreMigrations } from "../migrations/firestore";
 
 export async function fetchFromFirestore(
   uid: string,

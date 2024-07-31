@@ -2,9 +2,9 @@ import { Outlet } from "react-router-dom";
 import { SettingsProvider } from "../settings/context";
 import { CollectionProvider } from "../collection/context";
 import { getUserCollectionLog, getUserSettings } from "../store/local";
-import { runLocalStorageMigrations } from "../migrations";
 import { DataProvider } from "../data/context";
-import {AuthProvider} from "../auth/context";
+import { AuthProvider } from "../auth/context";
+import { runLocalStorageMigrations } from "../migrations/localstorage";
 
 export function Root() {
   // Run LocalStorage migrations

@@ -3,12 +3,18 @@ import {
   Dispatch,
   PropsWithChildren,
   useContext,
+  useEffect,
   useReducer,
+  useRef,
 } from "react";
 
 import { CollectionLog } from "./type";
 import { toggleValueInArray } from "../common/arrays";
 import { hashCode } from "../common/hash";
+import { saveCollection, saveVersion } from "../store/local";
+import { VERSION } from "../config";
+import { VersionInfo } from "../store";
+import { runCollectionLogMigrations } from "../migrations";
 
 export const defaultCollection: CollectionLog = {
   collected: [],
@@ -26,6 +32,7 @@ export enum CollectionActionType {
 export type ReloadCollectionAction = {
   type: CollectionActionType.RELOAD;
   collection: CollectionLog;
+  version: VersionInfo;
 };
 
 export type ToggleCollectionAction = {
@@ -46,10 +53,21 @@ export const CollectionDispatchContext =
   createContext<Dispatch<CollectionAction>>(defaultDispatch);
 
 export function CollectionProvider({ children, collection }: Props) {
+  const loaded = useRef(false);
   const [value, dispatch] = useReducer(
     collectionReducer,
     collection ?? defaultCollection,
   );
+
+  // save to local storage effect
+  useEffect(() => {
+    if (loaded.current) {
+      saveCollection(value);
+      saveVersion(VERSION);
+    } else {
+      loaded.current = true;
+    }
+  }, [value]);
 
   return (
     <CollectionContext.Provider value={value}>
@@ -75,7 +93,8 @@ function collectionReducer(
   switch (action.type) {
     // usually used when syncing from firestore
     case CollectionActionType.RELOAD:
-      return action.collection;
+      return runCollectionLogMigrations(action.collection, action.version);
+
     // ui interactions
     case CollectionActionType.COLLECT:
       return {
@@ -86,6 +105,7 @@ function collectionReducer(
           action.toggle,
         ),
       };
+
     case CollectionActionType.HIDE:
       return {
         ...collectionLog,
@@ -95,6 +115,7 @@ function collectionReducer(
           action.toggle,
         ),
       };
+
     default:
       return collectionLog;
   }

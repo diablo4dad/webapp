@@ -1,117 +1,61 @@
-import { FirebaseData, StoreData, VersionInfo, VersionMeta } from "../store";
+import { initStore, StoreData, VersionInfo } from "../store";
 import migration130 from "./migrate1d3d0.json";
 import migration140 from "./migrate1d4d0.json";
 import migration141 from "./migrate1d4d1.json";
 import migration1610 from "./migrate1d6d10.json";
 import migration170 from "./migrate1d7d0.json";
-
-import { VERSION } from "../config";
 import { MasterGroup } from "../common";
-import { ArtifactMeta, CollectionLog, ItemFlag } from "../collection/type";
-import {
-  deleteStoreData,
-  getStoreData,
-  getUserCollectionLog,
-  getVersion,
-  isPreV170,
-  saveCollection,
-  saveVersion,
-} from "../store/local";
+import { CollectionLog, ItemFlag } from "../collection/type";
 import { hashCode } from "../common/hash";
+import { isPatchNeeded } from "./util";
 
-type FirestoreData1d2d0 = {
-  entries: ArtifactMeta[];
-};
+export function runCollectionLogMigrations(
+  collection: CollectionLog,
+  version: VersionInfo,
+): CollectionLog {
+  ({ collectionLog: collection, version } = runCollectionLogMigrationsPreV170({
+    ...initStore(), // mixin legacy
+    collectionLog: collection,
+    version: version,
+  }));
 
-function isFirestoreData1d2d0(
-  data: FirestoreData1d2d0 | FirebaseData,
-): data is FirestoreData1d2d0 {
-  return data.hasOwnProperty("entries");
-}
+  // hashes collection item arrays
+  if (isPatchNeeded({ version }, 1, 7, 0)) {
+    console.log("Running v1.7.0 migration...");
 
-function isPatchNeeded(
-  data: VersionMeta,
-  major: number,
-  minor: number,
-  revision: number,
-): boolean {
-  if (data.version === undefined) return true;
-  if (data.version.major > major) return false;
-  if (data.version.major < major) return true;
-  if (data.version.minor > minor) return false;
-  if (data.version.minor < minor) return true;
-  return data.version.revision < revision;
-}
+    const migrate = (collection: number[]) => {
+      const result: number[][] = [];
 
-export function runFirestoreMigrations(
-  data: FirestoreData1d2d0 | FirebaseData,
-): FirebaseData {
-  if (isFirestoreData1d2d0(data)) {
-    // is collection is empty, nothing to migrate
-    if (!Array.isArray(data.entries) || data.entries.length === 0) {
-      console.log("Collection log empty; migrating to latest.");
+      migration170.forEach((v) => {
+        const everyItemExists = v
+          .map(Number)
+          .every((i) => collection.includes(i));
 
-      return {
-        version: VERSION,
-        collectionLog: {
-          collected: [],
-          hidden: [],
-        },
-      };
-    }
+        if (everyItemExists) {
+          result.push(v);
+        }
+      });
 
-    // check pre v1.2.0
-    if (data.entries[0].flags !== undefined) {
-      console.log("Running Firestore v1.0.0 migration...");
-      return {
-        collectionLog: {
-          entries: data.entries,
-          collected: [],
-          hidden: [],
-        },
-        version: {
-          major: 1,
-          minor: 0,
-          revision: 0,
-        },
-      };
-    }
+      const resultFlat = result.flat();
+      collection.forEach((i) => {
+        if (!resultFlat.includes(i)) {
+          result.push([i]);
+        }
+      });
 
-    // otherwise, it's v1.2.0
-    console.log("Running Firestore v1.2.0 migration...");
-    data = {
-      collectionLog: {
-        entries: data.entries ?? [],
-        collected: [],
-        hidden: [],
-      },
-      version: {
-        major: 1,
-        minor: 2,
-        revision: 0,
-      },
+      return result;
+    };
+
+    return {
+      collected: migrate(collection.collected).map(hashCode),
+      hidden: migrate(collection.hidden).map(hashCode),
     };
   }
 
-  // adds collected and hidden arrays
-  if (isPatchNeeded(data, 1, 6, 10)) {
-    console.log("Running Firestore v1.6.10 migration...");
-
-    data = {
-      ...data,
-      collectionLog: {
-        ...data.collectionLog,
-        collected: [],
-        hidden: [],
-      },
-    };
-  }
-
-  // no migrations needed
-  return data as FirebaseData;
+  return collection;
 }
 
-export function runPreV170Migrations(store: StoreData): StoreData {
+function runCollectionLogMigrationsPreV170(store: StoreData): StoreData {
   if (isPatchNeeded(store, 1, 2, 0)) {
     console.log("Running v1.2.0 migration...");
 
@@ -258,78 +202,3 @@ export function runPreV170Migrations(store: StoreData): StoreData {
   return store;
 }
 
-export function runCollectionLogMigrations(
-  collection: CollectionLog,
-  version: VersionInfo,
-): CollectionLog {
-  // hashes collection item arrays
-  if (isPatchNeeded({ version }, 1, 7, 0)) {
-    console.log("Running v1.7.0 migration...");
-
-    const migrate = (collection: number[]) => {
-      const result: number[][] = [];
-
-      migration170.forEach((v) => {
-        const everyItemExists = v
-          .map(Number)
-          .every((i) => collection.includes(i));
-
-        if (everyItemExists) {
-          result.push(v);
-        }
-      });
-
-      const resultFlat = result.flat();
-      collection.forEach((i) => {
-        if (!resultFlat.includes(i)) {
-          result.push([i]);
-        }
-      });
-
-      return result;
-    };
-
-    return {
-      collected: migrate(collection.collected).map(hashCode),
-      hidden: migrate(collection.hidden).map(hashCode),
-    };
-  }
-
-  return collection;
-}
-
-export function runLocalStorageMigrations() {
-  // before v1.7.0
-  if (isPreV170()) {
-    const storeData = runPreV170Migrations(getStoreData());
-
-    // use new local storage format
-    console.log("Running v1.7.0 local storage migration...");
-    saveCollection(storeData.collectionLog);
-    saveVersion({
-      major: 1,
-      minor: 6,
-      revision: 10,
-    });
-
-    // clean up
-    deleteStoreData();
-  }
-
-  // failsafe, if no version sorry, gotta wipe you
-  if (getVersion() == null) {
-    // defaults
-    saveCollection({ collected: [], hidden: [] });
-    saveVersion(VERSION);
-
-    // clean up
-    deleteStoreData();
-  }
-
-  // run migrations (if any)
-  const version = getVersion() ?? VERSION;
-  const collectionPre = getUserCollectionLog();
-  const collectionPost = runCollectionLogMigrations(collectionPre, version);
-  saveCollection(collectionPost);
-  saveVersion(VERSION);
-}
