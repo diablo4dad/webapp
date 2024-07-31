@@ -59,16 +59,6 @@ export function CollectionProvider({ children, collection }: Props) {
     collection ?? defaultCollection,
   );
 
-  // save to local storage effect
-  useEffect(() => {
-    if (loaded.current) {
-      saveCollection(value);
-      saveVersion(VERSION);
-    } else {
-      loaded.current = true;
-    }
-  }, [value]);
-
   return (
     <CollectionContext.Provider value={value}>
       <CollectionDispatchContext.Provider value={dispatch}>

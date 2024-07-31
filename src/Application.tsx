@@ -2,7 +2,6 @@ import React, {
   createRef,
   ReactElement,
   Suspense,
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -29,9 +28,7 @@ import { flattenDadDb } from "./data/transforms";
 import { countAllItemsDabDb } from "./data/aggregate";
 import { getDefaultItemId } from "./data/getters";
 import {
-  CollectionActionType,
   useCollection,
-  useCollectionDispatch,
 } from "./collection/context";
 import { useSettings } from "./settings/context";
 import {
@@ -42,7 +39,6 @@ import {
 import { countItemInDbOwned } from "./collection/aggregate";
 import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
-import { fetchFromFirestore, saveToFirestore } from "./store/firestore";
 import Shell from "./Shell";
 import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
@@ -53,7 +49,6 @@ import { Await, useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
 import ItemSidebar from "./ItemSidebar";
 import {useAuth} from "./auth/context";
-import {DadUser} from "./auth/type";
 
 export type ViewModel = {
   openCollections: number[];
@@ -69,7 +64,6 @@ function Application(): ReactElement<HTMLDivElement> {
   const { db: dbPromise, group } = useLoaderData() as LoaderPayload;
   const { filteredDb, countedDb } = useData();
   const log = useCollection();
-  const dispatch = useCollectionDispatch();
   const settings = useSettings();
   const { user, signIn, signOut } = useAuth();
 
@@ -141,41 +135,6 @@ function Application(): ReactElement<HTMLDivElement> {
   function popHistory(): ContentType {
     return history.current.pop() ?? ContentType.LEDGER;
   }
-
-  const pullFromFirestore = useCallback(async (user: DadUser) => {
-    const data = await fetchFromFirestore(user.uid);
-    if (data) {
-      console.log("Fetched Collection from Firestore...", data);
-
-      dispatch({
-        type: CollectionActionType.RELOAD,
-        collection: data.collectionLog,
-        version: data.version,
-      });
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (user) {
-      void pullFromFirestore(user);
-    }
-  }, [pullFromFirestore, user]);
-
-  useEffect(() => {
-    function commit() {
-      if (user?.uid) {
-        void saveToFirestore(user.uid, log).then(() => {
-          console.log("[Firestore] Wrote to Firestore.");
-        });
-      }
-    }
-
-    const timeoutId = setTimeout(commit, 2500);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [user, log]);
 
   return (
     <Shell
