@@ -11,8 +11,6 @@ import {
 import { CollectionLog } from "./type";
 import { toggleValueInArray } from "../common/arrays";
 import { hashCode } from "../common/hash";
-import { saveCollection, saveVersion } from "../store/local";
-import { VERSION } from "../config";
 import { VersionInfo } from "../store";
 import { runCollectionLogMigrations } from "../migrations";
 
