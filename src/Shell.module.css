@@ -11,6 +11,8 @@
     position: sticky;
     top: 0;
     z-index: 5000;
+    height: 6rem;
+    background-color: #1e2126;
 }
 
 .StickyTop {
@@ -56,6 +58,11 @@
     .Block {
         height: 100vh;
         justify-content: flex-start;
+    }
+
+    .Header {
+        box-shadow: 0 1px 3px rgba(17, 17, 17, 0.5);
+        border-bottom: 1px solid #303640;
     }
 
     .StickyTop {

@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { CollectionView, loader } from "./routes/CollectionLog";
 import { Root } from "./routes/Root";
 
 const router = createBrowserRouter([
@@ -13,13 +12,17 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <CollectionView />,
-        loader: loader,
+        lazy: async () => {
+          const { CollectionView, loader } = await import("./routes/CollectionLog");
+          return { loader, Component: CollectionView };
+        },
       },
       {
         path: "/transmogs/:collectionId",
-        element: <CollectionView />,
-        loader: loader,
+        lazy: async () => {
+          const { CollectionView, loader } = await import("./routes/CollectionLog");
+          return { loader, Component: CollectionView };
+        },
       },
     ],
   },
