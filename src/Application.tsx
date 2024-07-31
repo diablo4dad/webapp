@@ -2,6 +2,7 @@ import React, {
   createRef,
   ReactElement,
   Suspense,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -15,15 +16,12 @@ import ConfigSidebar from "./ConfigSidebar";
 import Progress from "./components/Progress";
 import { Gear, Hamburger } from "./Icons";
 import Button, { BtnColours } from "./Button";
-import Authenticate, { AuthGiant, Orientation } from "./Authenticate";
+import Authenticate, { Orientation } from "./Authenticate";
 import MobileMenu from "./MobileMenu";
 import MobileCloseButton from "./MobileCloseButton";
 import MobileHeader from "./MobileHeader";
 
-import { GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
-
 import Account, { Direction } from "./components/Account";
-import { auth } from "./config/firebase";
 import { ContentType, MasterGroup, SideBarType } from "./common";
 import NavMenu from "./NavMenu";
 import { selectItemOrDefault } from "./data/reducers";
@@ -59,6 +57,8 @@ import ItemSidebar from "./ItemSidebar";
 import { VERSION } from "./config";
 import { runCollectionLogMigrations, runPreV170Migrations } from "./migrations";
 import { initStore } from "./store";
+import {useAuth} from "./auth/context";
+import {DadUser} from "./auth/type";
 
 export type ViewModel = {
   openCollections: number[];
@@ -76,6 +76,7 @@ function Application(): ReactElement<HTMLDivElement> {
   const log = useCollection();
   const dispatch = useCollectionDispatch();
   const settings = useSettings();
+  const { user, signIn, signOut } = useAuth();
 
   const [vm, setVm] = useState<ViewModel>(getViewModel());
 
@@ -95,7 +96,6 @@ function Application(): ReactElement<HTMLDivElement> {
   const nav = createRef<HTMLDivElement>();
   const [navOpen, setNavOpen] = useState(false);
 
-  const [user, setUser] = useState<User | null>(null);
   const [sideBar, setSideBar] = useState(SideBarType.ITEM);
   const [content, setContent] = useState(ContentType.LEDGER);
   const history = useRef([ContentType.LEDGER]);
@@ -164,69 +164,36 @@ function Application(): ReactElement<HTMLDivElement> {
     return history.current.pop() ?? ContentType.LEDGER;
   }
 
-  function signIn(giant: AuthGiant) {
-    const provider = new GoogleAuthProvider();
+  const pullFromFirestore = useCallback(async (user: DadUser) => {
+    const data = await fetchFromFirestore(user.uid);
+    if (data) {
+      console.log("Fetched Collection from Firestore...", data);
 
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        if (credential) {
-          const user = result.user;
-          console.log("[Auth] Logged in.", { ...user });
-        } else {
-          console.error("[Auth] Signed in but Credential was null.");
-        }
-      })
-      .catch((error) => {
-        console.log("[Auth] Error signing in.", error);
+      const legacyPatches = runPreV170Migrations({
+        ...initStore(), // mixin legacy
+        ...data,
       });
-  }
 
-  function signOut() {
-    auth.signOut().then(() => {
-      console.log("[Auth] Signed out.");
-    });
-  }
+      const postV170Patch = runCollectionLogMigrations(
+        legacyPatches.collectionLog,
+        legacyPatches.version,
+      );
 
-  // auth effect
+      saveCollection(postV170Patch);
+      saveVersion(VERSION);
+
+      dispatch({
+        type: CollectionActionType.RELOAD,
+        collection: postV170Patch,
+      });
+    }
+  }, [dispatch]);
+
   useEffect(() => {
-    console.log("[Auth] Authenticating...");
-
-    // add user state listener
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      console.log("[Auth] State changed.", { ...user });
-      setUser(user);
-      if (user) {
-        const data = await fetchFromFirestore(user.uid);
-        if (data) {
-          console.log("Fetched Collection from Firestore...", data);
-
-          const legacyPatches = runPreV170Migrations({
-            ...initStore(), // mixin legacy
-            ...data,
-          });
-
-          const postV170Patch = runCollectionLogMigrations(
-            legacyPatches.collectionLog,
-            legacyPatches.version,
-          );
-
-          saveCollection(postV170Patch);
-          saveVersion(VERSION);
-
-          dispatch({
-            type: CollectionActionType.RELOAD,
-            collection: postV170Patch,
-          });
-        }
-      }
-    });
-
-    return () => {
-      console.log("[Auth] Unsubscribing...");
-      unsubscribe();
-    };
-  }, []);
+    if (user) {
+      void pullFromFirestore(user);
+    }
+  }, [pullFromFirestore, user]);
 
   return (
     <Shell
@@ -282,10 +249,10 @@ function Application(): ReactElement<HTMLDivElement> {
                   totalCollected={itemsCollected}
                   collectionSize={itemsTotal}
                 />
-                {user === null && (
+                {user === undefined && (
                   <Authenticate orientation={Orientation.ROW} onAuth={signIn} />
                 )}
-                {user !== null && (
+                {user !== undefined && (
                   <Account
                     currentUser={user}
                     onLogout={signOut}
