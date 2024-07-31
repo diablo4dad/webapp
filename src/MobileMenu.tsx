@@ -1,17 +1,17 @@
 import Authenticate, { AuthGiant } from "./Authenticate";
 import styles from "./MobileMenu.module.css";
-import { User } from "firebase/auth";
 import Account from "./components/Account";
 import React from "react";
 import { ContentType, MasterGroup } from "./common";
 import { Link } from "react-router-dom";
 import { generateUrl } from "./routes/CollectionLog";
+import {DadUser} from "./auth/type";
 
 type Props = {
   onNavigate: (place: ContentType, group?: MasterGroup) => void;
   onAuth: (giant: AuthGiant) => void;
   onLogout: () => void;
-  currentUser: User | null;
+  currentUser?: DadUser;
 };
 
 function MobileMenu({ onNavigate, onAuth, currentUser, onLogout }: Props) {
@@ -59,7 +59,7 @@ function MobileMenu({ onNavigate, onAuth, currentUser, onLogout }: Props) {
         Settings
       </button>
       <div className={styles.MobileMenuAccount}>
-        {currentUser === null && <Authenticate onAuth={onAuth} />}
+        {currentUser === undefined && <Authenticate onAuth={onAuth} />}
         {currentUser && (
           <Account currentUser={currentUser} onLogout={onLogout} />
         )}

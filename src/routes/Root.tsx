@@ -4,6 +4,7 @@ import { CollectionProvider } from "../collection/context";
 import { getUserCollectionLog, getUserSettings } from "../store/local";
 import { runLocalStorageMigrations } from "../migrations";
 import { DataProvider } from "../data/context";
+import {AuthProvider} from "../auth/context";
 
 export function Root() {
   // Run LocalStorage migrations
@@ -18,7 +19,9 @@ export function Root() {
     <SettingsProvider settings={settings}>
       <CollectionProvider collection={collection}>
         <DataProvider>
-          <Outlet />
+          <AuthProvider>
+            <Outlet />
+          </AuthProvider>
         </DataProvider>
       </CollectionProvider>
     </SettingsProvider>

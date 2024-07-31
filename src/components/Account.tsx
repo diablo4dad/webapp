@@ -1,7 +1,7 @@
 import styles from "./Account.module.css";
-import { User } from "firebase/auth";
 import { Google } from "../Icons";
 import classNames from "classnames";
+import {DadUser} from "../auth/type";
 
 enum Direction {
   COLUMN,
@@ -9,13 +9,13 @@ enum Direction {
 }
 
 type Props = {
-  currentUser: User;
+  currentUser: DadUser;
   onLogout: () => void;
   direction?: Direction;
 };
 
-function getActiveFromDate(currentUser: User): string {
-  return new Date(currentUser.metadata.creationTime ?? "").toLocaleDateString();
+function getActiveFromDate(currentUser: DadUser): string {
+  return new Date(currentUser.registered ?? "").toLocaleDateString();
 }
 
 function Account({
