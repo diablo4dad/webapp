@@ -36,9 +36,7 @@ import {
 import { useSettings } from "./settings/context";
 import {
   getViewModel,
-  saveCollection,
   saveSettings,
-  saveVersion,
   saveViewModel,
 } from "./store/local";
 import { countItemInDbOwned } from "./collection/aggregate";
@@ -54,9 +52,6 @@ import LedgerSkeleton from "./LedgerSkeleton";
 import { Await, useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
 import ItemSidebar from "./ItemSidebar";
-import { VERSION } from "./config";
-import { runCollectionLogMigrations, runPreV170Migrations } from "./migrations";
-import { initStore } from "./store";
 import {useAuth} from "./auth/context";
 import {DadUser} from "./auth/type";
 
@@ -85,7 +80,6 @@ function Application(): ReactElement<HTMLDivElement> {
 
   // persist settings
   saveViewModel(vm);
-  saveCollection(log);
   saveSettings(settings);
 
   // preload to prevent jank
@@ -109,22 +103,6 @@ function Application(): ReactElement<HTMLDivElement> {
     collectionItems,
     selectedCollectionItemId,
   );
-
-  useEffect(() => {
-    function commit() {
-      if (user?.uid) {
-        void saveToFirestore(user.uid, log).then(() => {
-          console.log("[Firestore] Wrote to Firestore.");
-        });
-      }
-    }
-
-    const timeoutId = setTimeout(commit, 2500);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [user, log]);
 
   function onToggleConfig() {
     setSideBar(
@@ -169,22 +147,10 @@ function Application(): ReactElement<HTMLDivElement> {
     if (data) {
       console.log("Fetched Collection from Firestore...", data);
 
-      const legacyPatches = runPreV170Migrations({
-        ...initStore(), // mixin legacy
-        ...data,
-      });
-
-      const postV170Patch = runCollectionLogMigrations(
-        legacyPatches.collectionLog,
-        legacyPatches.version,
-      );
-
-      saveCollection(postV170Patch);
-      saveVersion(VERSION);
-
       dispatch({
         type: CollectionActionType.RELOAD,
-        collection: postV170Patch,
+        collection: data.collectionLog,
+        version: data.version,
       });
     }
   }, [dispatch]);
@@ -194,6 +160,22 @@ function Application(): ReactElement<HTMLDivElement> {
       void pullFromFirestore(user);
     }
   }, [pullFromFirestore, user]);
+
+  useEffect(() => {
+    function commit() {
+      if (user?.uid) {
+        void saveToFirestore(user.uid, log).then(() => {
+          console.log("[Firestore] Wrote to Firestore.");
+        });
+      }
+    }
+
+    const timeoutId = setTimeout(commit, 2500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [user, log]);
 
   return (
     <Shell
