@@ -3,10 +3,11 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
-## [1.7.2]
+## [1.7.2] - 2024-08-01
 
 ### Updated
 
+- Mark respective Feats of Strength as "out of rotation"
 - Updated presentation of excluded items
 - Updated collection counters to negate excluded items
 - Disable collected toggle when item is excluded
