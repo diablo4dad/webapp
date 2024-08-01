@@ -1,17 +1,10 @@
-import {
-  DadCollectionItem,
-  DadItem,
-  getDefaultItemFromCollectionItems,
-} from "./data";
+import { DadCollectionItem, getDefaultItemFromCollectionItems } from "./data";
 import styles from "./ItemSidebar.module.css";
 import necromancer from "./image/necromancer.webp";
 import druid from "./image/druid.webp";
 import rogue from "./image/rogue.webp";
 import barbarian from "./image/barbarian.webp";
 import sorceress from "./image/sorceress.webp";
-import wt1 from "./image/wt1.webp";
-import wt3 from "./image/wt3.webp";
-import wt4 from "./image/wt4.webp";
 import series from "./image/seriesclip.webp";
 import season from "./image/seasonclip.webp";
 import premium from "./image/premiumclip.webp";
@@ -20,7 +13,6 @@ import wardrobe from "./image/wardrobeclip.webp";
 import oor from "./image/oorclip.webp";
 import Toggle from "./components/Toggle";
 import { SERVER_ADDR } from "./config";
-import { ItemGroup, itemGroups } from "./common";
 import {
   getDiabloItemIds,
   getImageUri,
@@ -50,33 +42,6 @@ function generateEditUrl(item: DadCollectionItem): string {
 
 function usableBy(clazz: string, dci: DadCollectionItem): boolean {
   return dci.items.some((di) => di.usableByClass.includes(clazz));
-}
-
-function getItemGroup(itemType: string): ItemGroup {
-  for (const [group, itemTypes] of itemGroups.entries()) {
-    if (itemTypes.includes(itemType)) {
-      return group;
-    }
-  }
-
-  throw new Error("Unhandled item type: " + itemType);
-}
-
-function doDisplayDropInfo(collectionItem: DadCollectionItem, item: DadItem) {
-  if (
-    !["Monster Drop", "World Boss Drop", "World Drop"].includes(
-      collectionItem.claim ?? "",
-    )
-  ) {
-    return false;
-  }
-
-  const itemGroup = getItemGroup(item.itemType);
-  if (![ItemGroup.ARMOR, ItemGroup.WEAPONS].includes(itemGroup)) {
-    return false;
-  }
-
-  return !(item.dropMinLevel == 0 && item.dropMaxLevel == 0);
 }
 
 type ItemProps = {
@@ -193,31 +158,6 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
             </div>
           </div>
         </div>
-        {doDisplayDropInfo(collectionItem, item) && (
-          <div className={styles.ItemDropRequirements}>
-            <div className={styles.ItemWorldTier}>Minimum World Tier</div>
-            <img
-              src={wt1}
-              className={styles.ItemWorldTierIcon}
-              hidden={
-                item.dropMinWorldTier !== null && item.dropMinWorldTier !== 0
-              }
-            />
-            <img
-              src={wt3}
-              className={styles.ItemWorldTierIcon}
-              hidden={item.dropMinWorldTier !== 2}
-            />
-            <img
-              src={wt4}
-              className={styles.ItemWorldTierIcon}
-              hidden={item.dropMinWorldTier !== 3}
-            />
-            <div className={styles.ItemLevelRequirements}>
-              Monster Level {Math.max(item.dropMinLevel, 1)}+
-            </div>
-          </div>
-        )}
         <div className={styles.ItemTags}>
           {item.series && (
             <div className={styles.ItemTag}>

@@ -100,32 +100,6 @@
 
 }
 
-.ItemDropRequirements {
-    display: flex;
-    align-items: center;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-}
-
-.ItemWorldTier {
-    font-size: 0.875rem;
-    color: #ccc;
-}
-
-.ItemWorldTierIcon {
-    max-width: 2rem;
-    height: auto;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-}
-
-.ItemLevelRequirements {
-    font-size: 0.875rem;
-    color: #ccc;
-}
-
 .ItemDescription {
     font-style: italic;
     font-size: 0.8rem;
@@ -300,7 +274,6 @@
     background-color: #cccccc;
 }
 
-.Skeleton .ItemDropRequirements,
 .Skeleton .ItemTags,
 .Skeleton .ItemMeta {
     display: none;

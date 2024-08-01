@@ -16,6 +16,10 @@ collections.
 - Sidebar item immediately disappearing after marking item excluded
 - Tooltips not appearing when list view is enabled
 
+### Removed
+
+- Obsolete world drop information from sidebar
+
 ## [1.7.1] - 2024-07-31
 
 ### Updated
