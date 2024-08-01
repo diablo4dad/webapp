@@ -13,6 +13,7 @@ collections.
 ### Fixed
 
 - Sidebar item immediately disappearing after marking item excluded.
+- Tooltips not appearing when list view is enabled.
 
 ## [1.7.1] - 2024-07-31
 
