@@ -5,7 +5,7 @@
 .LedgerHeader {
     position: sticky;
     top: 0;
-    z-index: 4;
+    z-index: 1;
 }
 
 .LedgerButton {
@@ -169,7 +169,6 @@
 .ItemImage {
     width: 4rem;
     filter: brightness(50%);
-    z-index: 1;
 }
 
 .ItemInfo {
