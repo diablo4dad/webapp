@@ -7,13 +7,14 @@ collections.
 
 ### Updated
 
-- Updated presentation of excluded items.
-- Updated collection counters to negate excluded items.
+- Updated presentation of excluded items
+- Updated collection counters to negate excluded items
+- Disable collected toggle when item is excluded
 
 ### Fixed
 
-- Sidebar item immediately disappearing after marking item excluded.
-- Tooltips not appearing when list view is enabled.
+- Sidebar item immediately disappearing after marking item excluded
+- Tooltips not appearing when list view is enabled
 
 ## [1.7.1] - 2024-07-31
 
