@@ -247,6 +247,12 @@
     margin: calc(0.5rem + 1px);
 }
 
+.ItemIconHidden svg {
+    fill: #A62639;
+    margin: calc(0.5rem + 1px);
+}
+
+.ItemHidden .ItemIconHidden svg,
 .ItemCollected .ItemIconCollection svg {
     opacity: 1;
 }
@@ -320,6 +326,7 @@
     margin-right: 0;
 }
 
+.LedgerCards .ItemIconHidden svg,
 .LedgerCards .ItemIconCollection svg {
     position: absolute;
     right: 0;
@@ -332,7 +339,8 @@
     left: 0;
 }
 
-.LedgerCards .ItemCollected {
+.LedgerCards .ItemCollected,
+.LedgerCards .ItemHidden {
     border: 1px solid #1d2026;
     background-color: #303640;
     box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
@@ -342,7 +350,12 @@
     fill: #20472f;
 }
 
-.LedgerCards .ItemCollected:before {
+.LedgerCards .ItemIconHidden svg {
+    fill: #661723;
+}
+
+.LedgerCards .ItemCollected:before,
+.LedgerCards .ItemHidden:before {
     content: '';
     position: absolute;
     top: 0;
@@ -351,6 +364,10 @@
     border-left: 3rem solid transparent;
     border-top-right-radius: 0.5rem;
     width: 0;
+}
+
+.LedgerCards .ItemHidden:before {
+    border-top-color: #A62639;
 }
 
 .LedgerCards .ItemPremium .ItemIconPremium svg {
@@ -371,6 +388,7 @@
     }
 }
 
+.ItemHidden .ItemImage,
 .ItemCollected .ItemImage {
     filter: none;
 }
@@ -396,7 +414,8 @@
     opacity: 1;
 }
 
-.LedgerCardsInverse .ItemCollected {
+.LedgerCardsInverse .ItemCollected,
+.LedgerCardsInverse .ItemHidden {
     background-color: #23272e;
     border: 1px solid transparent;
     box-shadow: none;
@@ -407,11 +426,7 @@
     opacity: 0.5;
 }
 
-.LedgerCardsInverse .ItemCollected .ItemImage {
-    filter: brightness(50%);
-}
-
-
+.LedgerCards .ItemIconHidden svg,
 .LedgerCards .ItemIconCollection svg {
     margin: 0;
 }
@@ -439,6 +454,7 @@
         --grid-item--min-width: 120px;
     }
 
+    .ItemIconHidden svg,
     .ItemIconCollection svg {
         margin: 0;
     }

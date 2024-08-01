@@ -5,7 +5,10 @@ export function isItemCollected(
   collection: CollectionLog,
   itemId: number[],
 ): boolean {
-  return collection.collected.includes(hashCode(itemId));
+  return (
+    collection.collected.includes(hashCode(itemId)) &&
+    !isItemHidden(collection, itemId)
+  );
 }
 
 export function isItemHidden(

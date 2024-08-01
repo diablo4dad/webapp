@@ -3,6 +3,7 @@ import React, {
   ReactElement,
   Suspense,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -24,19 +25,15 @@ import Account, { Direction } from "./components/Account";
 import { ContentType, MasterGroup, SideBarType } from "./common";
 import NavMenu from "./NavMenu";
 import { selectItemOrDefault } from "./data/reducers";
-import { flattenDadDb } from "./data/transforms";
 import { countAllItemsDabDb } from "./data/aggregate";
 import { getDefaultItemId } from "./data/getters";
-import {
-  useCollection,
-} from "./collection/context";
+import { useCollection } from "./collection/context";
 import { useSettings } from "./settings/context";
+import { getViewModel, saveSettings, saveViewModel } from "./store/local";
 import {
-  getViewModel,
-  saveSettings,
-  saveViewModel,
-} from "./store/local";
-import { countItemInDbOwned } from "./collection/aggregate";
+  countItemInDbHidden,
+  countItemInDbOwned,
+} from "./collection/aggregate";
 import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
 import Shell from "./Shell";
@@ -48,7 +45,7 @@ import LedgerSkeleton from "./LedgerSkeleton";
 import { Await, useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
 import ItemSidebar from "./ItemSidebar";
-import {useAuth} from "./auth/context";
+import { useAuth } from "./auth/context";
 
 export type ViewModel = {
   openCollections: number[];
@@ -62,7 +59,7 @@ export type ViewModel = {
 // Needs Collections Log
 function Application(): ReactElement<HTMLDivElement> {
   const { db: dbPromise, group } = useLoaderData() as LoaderPayload;
-  const { filteredDb, countedDb } = useData();
+  const { filteredDb, countedDb, db } = useData();
   const log = useCollection();
   const settings = useSettings();
   const { user, signIn, signOut } = useAuth();
@@ -70,7 +67,8 @@ function Application(): ReactElement<HTMLDivElement> {
   const [vm, setVm] = useState<ViewModel>(getViewModel());
 
   const itemsCollected = countItemInDbOwned(log, countedDb);
-  const itemsTotal = countAllItemsDabDb(countedDb);
+  const itemsTotal =
+    countAllItemsDabDb(countedDb) - countItemInDbHidden(log, countedDb);
 
   // persist settings
   saveViewModel(vm);
@@ -87,15 +85,11 @@ function Application(): ReactElement<HTMLDivElement> {
   const [sideBar, setSideBar] = useState(SideBarType.ITEM);
   const [content, setContent] = useState(ContentType.LEDGER);
   const history = useRef([ContentType.LEDGER]);
-  const collectionItems = flattenDadDb(filteredDb);
 
-  const [selectedCollectionItemId, setSelectedCollectionItemId] = useState(
-    getDefaultItemId(filteredDb),
-  );
-
-  const selectedCollectionItem = selectItemOrDefault(
-    collectionItems,
-    selectedCollectionItemId,
+  const [focusItemId, setFocusItemId] = useState(getDefaultItemId(db));
+  const focusItem = useMemo(
+    () => selectItemOrDefault(db, focusItemId),
+    [db, focusItemId],
   );
 
   function onToggleConfig() {
@@ -108,7 +102,7 @@ function Application(): ReactElement<HTMLDivElement> {
     collection: DadCollection,
     collectionItem: DadCollectionItem,
   ) {
-    setSelectedCollectionItemId(collectionItem.strapiId);
+    setFocusItemId(collectionItem.strapiId);
     setSideBar(SideBarType.ITEM);
   }
 
@@ -183,7 +177,12 @@ function Application(): ReactElement<HTMLDivElement> {
           <div className={styles.HeaderRight}>
             <div className={styles.HeaderRightContent}>
               <nav className={styles.HeaderNav}>
-                <NavMenu ref={nav} open={navOpen} setOpen={setNavOpen} activeGroup={group} />
+                <NavMenu
+                  ref={nav}
+                  open={navOpen}
+                  setOpen={setNavOpen}
+                  activeGroup={group}
+                />
               </nav>
               <div className={styles.HeaderAccountWidgets}>
                 <Progress
@@ -211,7 +210,7 @@ function Application(): ReactElement<HTMLDivElement> {
           {sideBar === SideBarType.ITEM && (
             <Suspense fallback={<ItemSidebarSkeleton />}>
               <Await resolve={dbPromise}>
-                <ItemSidebar collectionItem={selectedCollectionItem} />
+                <ItemSidebar collectionItem={focusItem} />
               </Await>
             </Suspense>
           )}

@@ -5,7 +5,7 @@ import {
 } from "./data";
 import styles from "./Ledger.module.css";
 import React, { useRef } from "react";
-import { Currency, Tick, TickCircle } from "./Icons";
+import { Close, Currency, Tick, TickCircle } from "./Icons";
 import {
   getAllCollectionItems,
   getDiabloItemIds,
@@ -15,7 +15,10 @@ import {
   getItemType,
 } from "./data/getters";
 import { countAllItemsInCollection } from "./data/aggregate";
-import { countItemsInCollectionOwned } from "./collection/aggregate";
+import {
+  countItemsInCollectionHidden,
+  countItemsInCollectionOwned,
+} from "./collection/aggregate";
 import { generateEditCategoryUrl } from "./server";
 import { onTouchStart } from "./common/dom";
 import LazyImage from "./components/LazyImage";
@@ -127,7 +130,9 @@ const LedgerInner = ({
   };
 
   const collected = countItemsInCollectionOwned(log, collection);
-  const total = countAllItemsInCollection(collection);
+  const total =
+    countAllItemsInCollection(collection) -
+    countItemsInCollectionHidden(log, collection);
   const isComplete = collected === total;
   const ledgerIsOpen = openCollections.includes(collection.strapiId);
 
@@ -244,7 +249,7 @@ const LedgerInner = ({
 
               const className = classNames({
                 [styles.Item]: true,
-                [styles.ItemCollected]: isCollected,
+                [styles.ItemCollected]: isCollected && !isHidden,
                 [styles.ItemHidden]: isHidden,
                 [styles.ItemPremium]: collectionItem.premium,
                 [styles.ItemUnique]:
@@ -293,13 +298,24 @@ const LedgerInner = ({
                     >
                       <Currency></Currency>
                     </span>
-                    <span
-                      className={
-                        styles.ItemIcon + " " + styles.ItemIconCollection
-                      }
-                    >
-                      <TickCircle></TickCircle>
-                    </span>
+                    {isCollected && (
+                      <span
+                        className={
+                          styles.ItemIcon + " " + styles.ItemIconCollection
+                        }
+                      >
+                        <TickCircle></TickCircle>
+                      </span>
+                    )}
+                    {isHidden && (
+                      <span
+                        className={
+                          styles.ItemIcon + " " + styles.ItemIconHidden
+                        }
+                      >
+                        <Close></Close>
+                      </span>
+                    )}
                   </div>
                 </div>
               );
