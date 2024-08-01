@@ -1,14 +1,17 @@
 import {
   DadCollection,
   DadCollectionItem,
+  DadDb,
   DEFAULT_COLLECTION_ITEM,
 } from "./index";
 import { getAllCollectionItems } from "./getters";
+import { flattenDadDb } from "./transforms";
 
 export function selectItemOrDefault(
-  dci: DadCollectionItem[],
+  db: DadDb,
   selectedItemId: number,
 ): DadCollectionItem {
+  const dci = flattenDadDb(db);
   return (
     dci.filter((ci) => ci.strapiId === selectedItemId).pop() ??
     dci.at(0) ??

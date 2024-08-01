@@ -2,6 +2,7 @@
 .toggle [disabled] + label,
 .toggle [disabled]:hover + label {
     color: #999;
+    cursor: default;
 }
 
 .toggle [type="checkbox"] {

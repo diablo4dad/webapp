@@ -156,6 +156,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
             className={styles.ItemAction}
             name="collected"
             checked={isItemCollected(log, itemIds)}
+            disabled={isItemHidden(log, itemIds)}
             onChange={(e) =>
               dispatcher({
                 type: CollectionActionType.COLLECT,
