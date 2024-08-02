@@ -1,20 +1,20 @@
-import { DadCollection, DadDb } from "./index";
+import { Collection, CollectionGroup } from "./index";
 
-export function countAllItemsDabDb(db: DadDb): number {
-  return db.collections.reduce((a, c) => countAllItemsInCollection(c) + a, 0);
+export function countAllItemsDabDb(db: CollectionGroup): number {
+  return db.reduce((a, c) => countAllItemsInCollection(c) + a, 0);
 }
 
-export function countAllItemsInCollection(collection: DadCollection): number {
+export function countAllItemsInCollection(collection: Collection): number {
   return (
     countItemsInCollection(collection) + countItemsInSubcollection(collection)
   );
 }
 
-export function countItemsInCollection(collection: DadCollection): number {
+export function countItemsInCollection(collection: Collection): number {
   return collection.collectionItems.length;
 }
 
-export function countItemsInSubcollection(collection: DadCollection): number {
+export function countItemsInSubcollection(collection: Collection): number {
   return collection.subcollections.reduce(
     (a, c) => a + countItemsInCollection(c),
     0,

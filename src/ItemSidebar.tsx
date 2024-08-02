@@ -1,4 +1,8 @@
-import { DadCollectionItem, getDefaultItemFromCollectionItems } from "./data";
+import {
+  CharacterClass,
+  CollectionItem,
+  getDefaultItemFromCollectionItems,
+} from "./data";
 import styles from "./ItemSidebar.module.css";
 import necromancer from "./image/necromancer.webp";
 import druid from "./image/druid.webp";
@@ -12,7 +16,6 @@ import unobtainable from "./image/unobtainableclip.webp";
 import wardrobe from "./image/wardrobeclip.webp";
 import oor from "./image/oorclip.webp";
 import Toggle from "./components/Toggle";
-import { SERVER_ADDR } from "./config";
 import {
   getDiabloItemIds,
   getImageUri,
@@ -31,22 +34,15 @@ import React from "react";
 import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
 import classNames from "classnames";
+import { hashCode } from "./common/hash";
 
-function generateEditUrl(item: DadCollectionItem): string {
-  return (
-    SERVER_ADDR +
-    "/admin/content-manager/collectionType/api::collection-item.collection-item/" +
-    item.strapiId
-  );
-}
-
-function usableBy(clazz: string, dci: DadCollectionItem): boolean {
-  return dci.items.some((di) => di.usableByClass.includes(clazz));
+function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
+  return dci.items.some((di) => di.usableByClass?.[clazz] === 1 ?? false);
 }
 
 type ItemProps = {
   className?: string;
-  collectionItem: DadCollectionItem;
+  collectionItem: CollectionItem;
 };
 
 function ItemSidebar({ collectionItem, className }: ItemProps) {
@@ -58,11 +54,11 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
 
   const classNameStr = classNames({
     [styles.Block]: true,
-    [styles.Barbarian]: usableBy("Barbarian", collectionItem),
-    [styles.Druid]: usableBy("Druid", collectionItem),
-    [styles.Necromancer]: usableBy("Necromancer", collectionItem),
-    [styles.Rogue]: usableBy("Rogue", collectionItem),
-    [styles.Sorcerer]: usableBy("Sorcerer", collectionItem),
+    [styles.Barbarian]: usableBy(CharacterClass.BARBARIAN, collectionItem),
+    [styles.Druid]: usableBy(CharacterClass.DRUID, collectionItem),
+    [styles.Necromancer]: usableBy(CharacterClass.NECROMANCER, collectionItem),
+    [styles.Rogue]: usableBy(CharacterClass.ROGUE, collectionItem),
+    [styles.Sorcerer]: usableBy(CharacterClass.SORCERER, collectionItem),
     [className ?? ""]: true,
   });
 
@@ -199,24 +195,21 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
         <div className={styles.ItemMeta}>
           <div>
             <div>
-              Item ID: {collectionItem.items.map((i) => i.itemId).join(", ")}
+              <div>
+                Item ID: {collectionItem.items.map((i) => i.id).join(", ")}
+              </div>
               {process.env.NODE_ENV === "development" && (
-                <span>
-                  {" "}
-                  |{" "}
-                  <a
-                    href={generateEditUrl(collectionItem)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Edit
-                  </a>
-                </span>
+                <>
+                  <div>
+                    Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
+                  </div>
+                  <div>Image URL: {item.icon}</div>
+                  {collectionItem.items.map((i) => (
+                    <div key={i.id}>Filename: {i.filename}</div>
+                  ))}
+                </>
               )}
             </div>
-            {process.env.NODE_ENV === "development" && (
-              <div>Image ID: {item.iconId}</div>
-            )}
           </div>
         </div>
       </div>
