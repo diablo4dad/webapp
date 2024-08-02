@@ -1,11 +1,10 @@
 import { DadDb } from "../data";
-import { fetchDb } from "../server";
 import { MasterGroup } from "../common";
-import { strapiToDad } from "../data/transforms";
 import React, { useEffect } from "react";
 import Application from "../Application";
 import { defer, useLoaderData } from "react-router-dom";
 import { useData } from "../data/context";
+import { hydrateDadDb } from "../data/factory";
 
 export type Params = {
   params: {
@@ -44,7 +43,9 @@ export function generateUrl(group: MasterGroup): string {
 
 export async function loader({ params }: Params) {
   const group = slugToGroup(params.collectionId ?? "general");
-  const db = fetchDb(group).then(strapiToDad);
+  const db = fetch("/d4dad.json")
+    .then((resp) => resp.json())
+    .then(hydrateDadDb);
 
   return defer({
     db,
@@ -54,21 +55,22 @@ export async function loader({ params }: Params) {
 
 export function CollectionView() {
   const { db, group } = useLoaderData() as LoaderPayload;
-  const { switchDb } = useData();
+  const { switchDb, setDb } = useData();
 
   useEffect(() => {
     let cancelled = false;
 
     db.then((resolvedDb) => {
       if (!cancelled) {
-        switchDb(group, resolvedDb);
+        setDb(resolvedDb);
+        switchDb(group);
       }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [db, group, switchDb]);
+  }, [db, setDb, group, switchDb]);
 
   return <Application />;
 }

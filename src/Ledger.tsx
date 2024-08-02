@@ -1,7 +1,8 @@
 import {
-  DadCollection,
-  DadCollectionItem,
+  Collection,
+  CollectionItem,
   getDefaultItemFromCollectionItems,
+  MagicType,
 } from "./data";
 import styles from "./Ledger.module.css";
 import React, { useRef } from "react";
@@ -19,7 +20,6 @@ import {
   countItemsInCollectionHidden,
   countItemsInCollectionOwned,
 } from "./collection/aggregate";
-import { generateEditCategoryUrl } from "./server";
 import { onTouchStart } from "./common/dom";
 import LazyImage from "./components/LazyImage";
 import placeholder from "./image/placeholder.webp";
@@ -39,17 +39,17 @@ import btnStyles from "./Button.module.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./components/Tooltip";
 
 type Props = {
-  collections: DadCollection[];
-  parentCollection?: DadCollection;
-  onClickItem: (collection: DadCollection, item: DadCollectionItem) => void;
-  onToggleItem?: (item: DadCollectionItem) => void;
-  onToggleCollection?: (collection: DadCollection) => void;
+  collections: Collection[];
+  parentCollection?: Collection;
+  onClickItem: (collection: Collection, item: CollectionItem) => void;
+  onToggleItem?: (item: CollectionItem) => void;
+  onToggleCollection?: (collection: Collection) => void;
   onCollectionChange: (collectionId: number, isOpen: boolean) => void;
   openCollections: number[];
 };
 
 type PropsInner = Props & {
-  collection: DadCollection;
+  collection: Collection;
 };
 
 const Ledger = ({
@@ -74,7 +74,7 @@ const Ledger = ({
     >
       {collections.map((collection) => (
         <LedgerInner
-          key={collection.strapiId}
+          key={collection.id}
           collection={collection}
           collections={collections}
           parentCollection={parentCollection}
@@ -103,7 +103,7 @@ const LedgerInner = ({
   const dispatch = useCollectionDispatch();
   const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
 
-  const toggleItem = (dci: DadCollectionItem) => (collected: boolean) => {
+  const toggleItem = (dci: CollectionItem) => (collected: boolean) => {
     if (onToggleItem) {
       onToggleItem(dci);
     }
@@ -115,7 +115,7 @@ const LedgerInner = ({
     });
   };
 
-  const toggleCollection = (dc: DadCollection) => (collected: boolean) => {
+  const toggleCollection = (dc: Collection) => (collected: boolean) => {
     if (onToggleCollection) {
       onToggleCollection(dc);
     }
@@ -134,7 +134,7 @@ const LedgerInner = ({
     countAllItemsInCollection(collection) -
     countItemsInCollectionHidden(log, collection);
   const isComplete = collected === total;
-  const ledgerIsOpen = openCollections.includes(collection.strapiId);
+  const ledgerIsOpen = openCollections.includes(collection.id);
 
   const headingLabel = collection.name;
   const counterLabel = `[${collected}/${total}]`;
@@ -154,7 +154,7 @@ const LedgerInner = ({
     <AccordionItem
       hidden={isCollectionEmpty(collection)}
       initialEntered={ledgerIsOpen}
-      itemKey={collection.strapiId}
+      itemKey={collection.id}
       className={className}
       headingProps={{
         className: styles.LedgerHeader,
@@ -171,18 +171,6 @@ const LedgerInner = ({
             <h1 className={styles.LedgerTitle}>
               {headingLabel}
               <span className={styles.LedgerCounter}>{counterLabel}</span>
-              {process.env.NODE_ENV === "development" && (
-                <span className={styles.LedgerEdit}>
-                  <span> | </span>
-                  <a
-                    target="_blank"
-                    href={generateEditCategoryUrl(collection.strapiId)}
-                    rel="noreferrer"
-                  >
-                    Edit
-                  </a>
-                </span>
-              )}
             </h1>
             <div className={styles.LedgerDescription}>{descriptionLabel}</div>
           </div>
@@ -253,7 +241,7 @@ const LedgerInner = ({
                 [styles.ItemHidden]: isHidden,
                 [styles.ItemPremium]: collectionItem.premium,
                 [styles.ItemUnique]:
-                  collectionItem.items[0]?.magicType === "Unique",
+                  collectionItem.items[0]?.magicType === MagicType.UNIQUE,
                 // [styles.ItemGlow]: isAshava && isCollected,
               });
 
@@ -265,7 +253,7 @@ const LedgerInner = ({
                   onTouchStart={onTouchStart(() =>
                     toggleItem(collectionItem)(!isCollected),
                   )}
-                  key={collectionItem.strapiId}
+                  key={collectionItem.id}
                 >
                   <LazyImage
                     placeholder={placeholder}

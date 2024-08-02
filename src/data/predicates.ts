@@ -1,11 +1,11 @@
-import { DadCollection, DadItem } from "./index";
+import { Collection, Item } from "./index";
 import { wardrobeIcons } from "../common";
 
-export function doesHaveWardrobePlaceholder(item: DadItem): boolean {
-  return item.transMog && wardrobeIcons.includes(item.itemType);
+export function doesHaveWardrobePlaceholder(item: Item): boolean {
+  return !!item.isTransmog && wardrobeIcons.includes(item.itemType.name);
 }
 
-export function isCollectionEmpty(collection: DadCollection): boolean {
+export function isCollectionEmpty(collection: Collection): boolean {
   return (
     collection.collectionItems.length === 0 &&
     collection.subcollections.length === 0

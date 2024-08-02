@@ -1,13 +1,14 @@
 import {
-  DadBase,
-  DadCollection,
-  DadCollectionItem,
-  DadDb,
+  Collection,
+  CollectionGroup,
+  CollectionItem,
   DEFAULT_ITEM,
+  Item,
 } from "./index";
 import missing from "../image/placeholder.webp";
+import { flattenDadDb } from "./transforms";
 
-export function getItemName(ci: DadCollectionItem): string {
+export function getItemName(ci: CollectionItem): string {
   if (ci.items.length === 0) {
     return "empty";
   }
@@ -24,7 +25,7 @@ export function getItemName(ci: DadCollectionItem): string {
   }
 
   const itemPeek = ci.items[0];
-  switch (itemPeek.itemType) {
+  switch (itemPeek.itemType.name) {
     case "Player Title (Prefix)":
     case "Player Title (Suffix)":
       return ci.items.map((i) => i.name).join(" ");
@@ -33,22 +34,22 @@ export function getItemName(ci: DadCollectionItem): string {
   }
 }
 
-export function getItemType(ci: DadCollectionItem): string {
+export function getItemType(ci: CollectionItem): string {
   if (ci.items.length === 0) {
     return "empty";
   }
 
   if (ci.items.length === 1) {
-    return ci.items[0].itemType;
+    return ci.items[0].itemType.name;
   }
 
   const itemPeek = ci.items[0];
-  switch (itemPeek.itemType) {
+  switch (itemPeek.itemType.name) {
     case "Player Title (Prefix)":
     case "Player Title (Suffix)":
       return "Player Title";
     default:
-      return itemPeek.itemType;
+      return itemPeek.itemType.name;
   }
 }
 
@@ -58,7 +59,7 @@ function stringParser(input: string): string {
   return input;
 }
 
-export function getItemDescription(item: DadCollectionItem): string {
+export function getItemDescription(item: CollectionItem): string {
   // setting a description overrides inferred/default
   if (item.claimDescription) {
     return stringParser(item.claimDescription);
@@ -103,29 +104,29 @@ export function getItemDescription(item: DadCollectionItem): string {
   }
 }
 
-export function getDefaultItemId(dadDb: DadDb): number {
-  return dadDb.collections[0]?.collectionItems[0]?.strapiId ?? -1;
+export function getDefaultItemId(dadDb: CollectionGroup): number {
+  return flattenDadDb(dadDb)[0]?.id ?? -1;
 }
 
 export function getAllCollectionItems(
-  collection: DadCollection,
-): DadCollectionItem[] {
+  collection: Collection,
+): CollectionItem[] {
   return [
     ...collection.collectionItems,
     ...collection.subcollections.flatMap(getAllCollectionItems),
   ];
 }
 
-export function getImageUri(item: DadBase): string {
+export function getImageUri(item: Item): string {
   return item.icon ?? missing;
 }
 
 export function getDefaultItemFromCollectionItems(
-  collectionItems: DadCollectionItem,
-): DadBase {
+  collectionItems: CollectionItem,
+): Item {
   return collectionItems.items[0] ?? DEFAULT_ITEM;
 }
 
-export function getDiabloItemIds(collectionItem: DadCollectionItem): number[] {
-  return collectionItem.items.map((ci) => ci.itemId).map(Number);
+export function getDiabloItemIds(collectionItem: CollectionItem): number[] {
+  return collectionItem.items.map((ci) => ci.id);
 }

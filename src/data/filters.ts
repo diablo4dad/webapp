@@ -1,5 +1,5 @@
-import { DadCollection, DadCollectionItem, DadDb } from "./index";
-import { getEnabledItemTypes } from "../common";
+import { Collection, CollectionGroup, CollectionItem } from "./index";
+import { getEnabledItemTypes, MasterGroup } from "../common";
 
 import { doesHaveWardrobePlaceholder } from "./predicates";
 import { Option, Settings } from "../settings/type";
@@ -8,11 +8,18 @@ import { CollectionLog } from "../collection/type";
 import { isItemCollected, isItemHidden } from "../collection/predicate";
 import { getDiabloItemIds } from "./getters";
 
+function filterCollectionCategory(
+  group: CollectionGroup,
+  category: MasterGroup,
+): CollectionGroup {
+  return group.filter((c) => c.category === category);
+}
+
 function filterCollectionItems(
-  db: DadDb,
-  filter: (dci: DadCollectionItem) => boolean,
-): DadDb {
-  function applyFilter(dc: DadCollection): DadCollection {
+  group: CollectionGroup,
+  filter: (dci: CollectionItem) => boolean,
+): CollectionGroup {
+  function applyFilter(dc: Collection): Collection {
     return {
       ...dc,
       collectionItems: dc.collectionItems.filter(filter),
@@ -22,67 +29,68 @@ function filterCollectionItems(
     };
   }
 
-  return {
-    collections: db.collections.map(applyFilter),
-  };
+  return group.map(applyFilter);
 }
 
 function filterItemsByType(
   itemTypes: string[],
-): (dci: DadCollectionItem) => boolean {
-  return function (dci: DadCollectionItem) {
+): (dci: CollectionItem) => boolean {
+  return function (dci: CollectionItem) {
     return (
-      itemTypes.flatMap((it) => dci.items.filter((di) => di.itemType === it))
-        .length !== 0
+      itemTypes.flatMap((it) =>
+        dci.items.filter((di) => di.itemType.name === it),
+      ).length !== 0
     );
   };
 }
 
-function filterPremiumItems(): (dci: DadCollectionItem) => boolean {
-  return (dci: DadCollectionItem) => dci.premium !== true;
+function filterPremiumItems(): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) => dci.premium !== true;
 }
 
-function filterPromotionalItems(): (dci: DadCollectionItem) => boolean {
-  return (dci: DadCollectionItem) => dci.promotional !== true;
+function filterPromotionalItems(): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) => dci.promotional !== true;
 }
 
-function filterOutOfRotationItems(): (dci: DadCollectionItem) => boolean {
-  return (dci: DadCollectionItem) => dci.outOfRotation !== true;
+function filterOutOfRotationItems(): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) => dci.outOfRotation !== true;
 }
 
-function filterUnobtainableItems(): (dci: DadCollectionItem) => boolean {
-  return (dci: DadCollectionItem) => dci.unobtainable !== true;
+function filterUnobtainableItems(): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) => dci.unobtainable !== true;
 }
 
 export function filterWardrobePlaceholderItems(): (
-  dci: DadCollectionItem,
+  dci: CollectionItem,
 ) => boolean {
-  return (dci: DadCollectionItem) =>
+  return (dci: CollectionItem) =>
     dci.items.filter(doesHaveWardrobePlaceholder).length !== 0;
 }
 
 function filterCollectedItems(
   collectionLog: CollectionLog,
-): (dci: DadCollectionItem) => boolean {
-  return (dci: DadCollectionItem) =>
+): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) =>
     !isItemCollected(collectionLog, getDiabloItemIds(dci));
 }
 
 function filterHiddenItems(
   collectionLog: CollectionLog,
-): (dci: DadCollectionItem) => boolean {
-  return (dci: DadCollectionItem) =>
+): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) =>
     !isItemHidden(collectionLog, getDiabloItemIds(dci));
 }
 
 export function filterDb(
-  dadDb: DadDb,
+  group: CollectionGroup,
   settings: Settings,
   log: CollectionLog,
+  category: MasterGroup,
   isCount: boolean = false,
-): DadDb {
-  let db = filterCollectionItems(
-    dadDb,
+): CollectionGroup {
+  let db = filterCollectionCategory(group, category);
+  db = filterCollectionItems(
+    db,
     filterItemsByType(getEnabledItemTypes(settings)),
   );
 

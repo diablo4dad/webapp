@@ -1,27 +1,24 @@
 import {
-  DadCollection,
-  DadCollectionItem,
-  DadDb,
+  Collection,
+  CollectionGroup,
+  CollectionItem,
   DEFAULT_COLLECTION_ITEM,
 } from "./index";
 import { getAllCollectionItems } from "./getters";
 import { flattenDadDb } from "./transforms";
 
 export function selectItemOrDefault(
-  db: DadDb,
+  collection: CollectionGroup,
   selectedItemId: number,
-): DadCollectionItem {
-  const dci = flattenDadDb(db);
+): CollectionItem {
   return (
-    dci.filter((ci) => ci.strapiId === selectedItemId).pop() ??
-    dci.at(0) ??
+    flattenDadDb(collection).find((ci) => ci.id === selectedItemId) ??
     DEFAULT_COLLECTION_ITEM
   );
 }
 
-export function reduceItemIds(dadCollection: DadCollection): number[] {
+export function reduceItemIds(dadCollection: Collection): number[] {
   return getAllCollectionItems(dadCollection)
     .flatMap((dci) => dci.items)
-    .map((i) => i.itemId)
-    .map(Number);
+    .map((i) => i.id);
 }

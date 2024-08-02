@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { DadCollection, DadCollectionItem } from "./data";
+import { Collection, CollectionItem } from "./data";
 import logo from "./image/d4ico.png";
 
 import styles from "./Application.module.css";
@@ -86,11 +86,18 @@ function Application(): ReactElement<HTMLDivElement> {
   const [content, setContent] = useState(ContentType.LEDGER);
   const history = useRef([ContentType.LEDGER]);
 
-  const [focusItemId, setFocusItemId] = useState(getDefaultItemId(db));
+  const [focusItemId, setFocusItemId] = useState(-1);
   const focusItem = useMemo(
-    () => selectItemOrDefault(db, focusItemId),
+    () => selectItemOrDefault(db.collections, focusItemId),
     [db, focusItemId],
   );
+
+  // anti-pattern - revisit this
+  useEffect(() => {
+    if (focusItemId === -1) {
+      setFocusItemId(getDefaultItemId(filteredDb));
+    }
+  }, [focusItemId, filteredDb]);
 
   function onToggleConfig() {
     setSideBar(
@@ -98,11 +105,8 @@ function Application(): ReactElement<HTMLDivElement> {
     );
   }
 
-  function onClickItem(
-    collection: DadCollection,
-    collectionItem: DadCollectionItem,
-  ) {
-    setFocusItemId(collectionItem.strapiId);
+  function onClickItem(collection: Collection, collectionItem: CollectionItem) {
+    setFocusItemId(collectionItem.id);
     setSideBar(SideBarType.ITEM);
   }
 
@@ -222,7 +226,7 @@ function Application(): ReactElement<HTMLDivElement> {
             <Suspense fallback={<LedgerSkeleton />}>
               <Await resolve={dbPromise}>
                 <Ledger
-                  collections={filteredDb.collections}
+                  collections={filteredDb}
                   openCollections={vm.openCollections}
                   onClickItem={onClickItem}
                   onCollectionChange={(collectionId, isOpen) => {

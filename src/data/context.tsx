@@ -1,12 +1,11 @@
 import {
   createContext,
   PropsWithChildren,
-  useCallback,
   useContext,
   useMemo,
   useState,
 } from "react";
-import { DadDb } from "./index";
+import { CollectionGroup, DadDb } from "./index";
 import { useCollection } from "../collection/context";
 import { useSettings } from "../settings/context";
 import { filterDb } from "./filters";
@@ -14,22 +13,26 @@ import { MasterGroup } from "../common";
 
 const defaultDadDb: DadDb = {
   collections: [],
+  items: [],
+  itemTypes: [],
 };
 
 const defaultContext: DataContextType = {
   db: defaultDadDb,
   group: MasterGroup.GENERAL,
+  setDb: () => undefined,
   switchDb: () => undefined,
-  filteredDb: defaultDadDb,
-  countedDb: defaultDadDb,
+  filteredDb: [],
+  countedDb: [],
 };
 
 export type DataContextType = {
   db: DadDb;
   group: MasterGroup;
-  switchDb: (group: MasterGroup, db: DadDb) => void;
-  filteredDb: DadDb;
-  countedDb: DadDb;
+  setDb: (dadDb: DadDb) => void;
+  switchDb: (group: MasterGroup) => void;
+  countedDb: CollectionGroup;
+  filteredDb: CollectionGroup;
 };
 
 export const DataContext = createContext<DataContextType>(defaultContext);
@@ -43,32 +46,26 @@ export function DataProvider({ children }: PropsWithChildren) {
   const settings = useSettings();
 
   const [db, setDb] = useState<DadDb>(defaultDadDb);
-  const [group, setGroup] = useState<MasterGroup>(MasterGroup.GENERAL);
+  const [group, switchDb] = useState<MasterGroup>(MasterGroup.GENERAL);
   const filteredDb = useMemo(
-    () => filterDb(db, settings, log, false),
-    [db, settings, log],
+    () => filterDb(db.collections, settings, log, group, false),
+    [db, settings, log, group],
   );
   const countedDb = useMemo(
-    () => filterDb(db, settings, log, true),
-    [db, settings, log],
-  );
-  const switchDb = useCallback(
-    (group: MasterGroup, db: DadDb) => {
-      setGroup(group);
-      setDb(db);
-    },
-    [setGroup, setDb],
+    () => filterDb(db.collections, settings, log, group, true),
+    [db, settings, log, group],
   );
 
   const contextValue = useMemo(
     () => ({
       db,
       group,
+      setDb,
       switchDb,
       filteredDb,
       countedDb,
     }),
-    [db, switchDb, filteredDb, countedDb, group],
+    [db, filteredDb, countedDb, group],
   );
 
   return (
