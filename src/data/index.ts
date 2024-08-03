@@ -1,3 +1,7 @@
+export enum CharacterGender {
+  MALE,
+  FEMALE,
+}
 export enum CharacterClass {
   SORCERER,
   DRUID,
@@ -19,23 +23,25 @@ export type Entity = {
   filename?: string;
 };
 
-export type GenderImages = [number, number];
+export type GenderImagesRef = [number, number];
 export type ItemRef = Entity & {
   icon: number;
   itemType: number;
   magicType?: number;
   isTransmog?: boolean;
   usableByClass?: number[];
-  invImages?: GenderImages[];
+  invImages?: GenderImagesRef[];
   name: string;
   description?: string;
   transmogName?: string;
   series?: string;
 };
 
-export type Item = Omit<ItemRef, "itemType" | "icon"> & {
+export type GenderImages = [string | null, string | null];
+export type Item = Omit<ItemRef, "itemType" | "icon" | "invImages"> & {
   itemType: ItemType;
   icon: string;
+  invImages?: GenderImages[];
 };
 
 export type ItemType = Entity & {

@@ -11,3 +11,9 @@ export function isCollectionEmpty(collection: Collection): boolean {
     collection.subcollections.length === 0
   );
 }
+
+export function hasIconVariants(item: Item): boolean {
+  return (
+    (item.invImages ?? []).filter((i) => i.some((j) => j !== null)).length > 1
+  );
+}

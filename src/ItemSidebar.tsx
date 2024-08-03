@@ -18,12 +18,16 @@ import oor from "./image/oorclip.webp";
 import Toggle from "./components/Toggle";
 import {
   getDiabloItemIds,
+  getIconVariants,
   getImageUri,
   getItemDescription,
   getItemName,
   getItemType,
 } from "./data/getters";
-import { doesHaveWardrobePlaceholder } from "./data/predicates";
+import {
+  doesHaveWardrobePlaceholder,
+  hasIconVariants,
+} from "./data/predicates";
 import {
   CollectionActionType,
   useCollection,
@@ -35,6 +39,11 @@ import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
 import classNames from "classnames";
 import { hashCode } from "./common/hash";
+import { useSettings } from "./settings/context";
+import { isEnabled } from "./settings/predicate";
+import { Option } from "./settings/type";
+import { getPreferredClass, getPreferredGender } from "./settings/accessor";
+import i18n from "./i18n";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
   return dci.items.some((di) => di.usableByClass?.[clazz] === 1 ?? false);
@@ -48,9 +57,12 @@ type ItemProps = {
 function ItemSidebar({ collectionItem, className }: ItemProps) {
   const log = useCollection();
   const dispatcher = useCollectionDispatch();
+  const settings = useSettings();
 
   const item = getDefaultItemFromCollectionItems(collectionItem);
   const itemIds = getDiabloItemIds(collectionItem);
+  const preferredClass = getPreferredClass(settings);
+  const preferredGender = getPreferredGender(settings);
 
   const classNameStr = classNames({
     [styles.Block]: true,
@@ -192,26 +204,38 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
             </div>
           )}
         </div>
-        <div className={styles.ItemMeta}>
-          <div>
+        {isEnabled(settings, Option.DEBUG) && (
+          <div className={styles.ItemMeta}>
             <div>
-              <div>
-                Item ID: {collectionItem.items.map((i) => i.id).join(", ")}
-              </div>
-              {process.env.NODE_ENV === "development" && (
-                <>
-                  <div>
-                    Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
-                  </div>
-                  <div>Image URL: {item.icon}</div>
-                  {collectionItem.items.map((i) => (
-                    <div key={i.id}>Filename: {i.filename}</div>
-                  ))}
-                </>
-              )}
+              Item ID: {collectionItem.items.map((i) => i.id).join(", ")}
             </div>
+            {collectionItem.items.length > 1 && (
+              <div>
+                Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
+              </div>
+            )}
+            <div>Item Icon: {item.icon.replace("/icons/", "")}</div>
+            {collectionItem.items.map((i) => (
+              <div key={i.id}>
+                <div>
+                  Datamined File: {i.filename?.replace("base/meta/", "")}
+                </div>
+                {hasIconVariants(item) && (
+                  <ul>
+                    {getIconVariants(item, preferredGender).map(
+                      ([charClass, icon]) => (
+                        <li>
+                          {i18n.characterClass[charClass]} Icon:{" "}
+                          {icon.replace("/icons/", "")}
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                )}
+              </div>
+            ))}
           </div>
-        </div>
+        )}
       </div>
       <footer className={styles.SidebarFooter}>
         <DiscordInvite />

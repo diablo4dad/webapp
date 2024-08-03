@@ -9,11 +9,10 @@ import {
   BooleanOption,
   LedgerView,
   Option,
-  PreferredClass,
-  PreferredGender,
   Settings,
   StringOption,
 } from "./type";
+import { CharacterClass, CharacterGender } from "../data";
 
 export const defaultSettings: Settings = {
   // items
@@ -41,8 +40,9 @@ export const defaultSettings: Settings = {
   // view
   [Option.LEDGER_VIEW]: LedgerView.CARD,
   [Option.LEDGER_INVERSE]: false,
-  [Option.PREFERRED_CLASS]: PreferredClass.BARBARIAN,
-  [Option.PREFERRED_GENDER]: PreferredGender.MALE,
+  [Option.PREFERRED_CLASS]: CharacterClass.BARBARIAN,
+  [Option.PREFERRED_GENDER]: CharacterGender.MALE,
+  [Option.DEBUG]: false,
 };
 
 const defaultDispatch = () => defaultSettings;

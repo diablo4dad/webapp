@@ -1,3 +1,5 @@
+import { CharacterClass, CharacterGender } from "../data";
+
 export enum Option {
   // types
   SHOW_MOUNTS = "show_mounts",
@@ -26,24 +28,12 @@ export enum Option {
   LEDGER_INVERSE = "ledger_inverse",
   PREFERRED_CLASS = "preferred_class",
   PREFERRED_GENDER = "preferred_gender",
+  DEBUG = "debug",
 }
 
 export enum LedgerView {
   CARD = "card",
   LIST = "list",
-}
-
-export enum PreferredClass {
-  BARBARIAN,
-  DRUID,
-  NECROMANCER,
-  ROGUE,
-  SORCERER,
-}
-
-export enum PreferredGender {
-  MALE,
-  FEMALE,
 }
 
 export type Settings = {
@@ -72,8 +62,9 @@ export type Settings = {
   // display
   [Option.LEDGER_VIEW]: LedgerView;
   [Option.LEDGER_INVERSE]: boolean;
-  [Option.PREFERRED_CLASS]: PreferredClass;
-  [Option.PREFERRED_GENDER]: PreferredGender;
+  [Option.PREFERRED_CLASS]: CharacterClass;
+  [Option.PREFERRED_GENDER]: CharacterGender;
+  [Option.DEBUG]: boolean;
 };
 
 export type NumberOption = Option.PREFERRED_CLASS | Option.PREFERRED_GENDER;

@@ -8,6 +8,7 @@ import {
   DadDbRef,
   DEFAULT_ITEM,
   DEFAULT_ITEM_TYPE,
+  GenderImages,
   Item,
   ItemRef,
   ItemType,
@@ -44,6 +45,9 @@ function hydrateItem(itemTypes: Map<number, ItemType>): (_: ItemRef) => Item {
     ...item,
     icon: hydrateImage(item.icon),
     itemType: itemTypes.get(item.itemType) ?? DEFAULT_ITEM_TYPE,
+    invImages: item.invImages?.map((i) =>
+      i.map((j) => (j ? hydrateImage(j) : null)),
+    ) as GenderImages[],
     usableByClass:
       item.usableByClass ?? Object.values(CharacterClass).map(() => 1),
   });
