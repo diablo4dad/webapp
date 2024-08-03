@@ -1,17 +1,13 @@
-import {
-  Collection,
-  CollectionItem,
-  getDefaultItemFromCollectionItems,
-  MagicType,
-} from "./data";
+import { Collection, CollectionItem, getDefaultItem, MagicType } from "./data";
 import styles from "./Ledger.module.css";
 import React, { useRef } from "react";
 import { Close, Currency, Tick, TickCircle } from "./Icons";
 import {
   getAllCollectionItems,
-  getDiabloItemIds,
-  getImageUri,
+  getClassIconVariant,
+  getClassItemVariant,
   getItemDescription,
+  getItemIds,
   getItemName,
   getItemType,
 } from "./data/getters";
@@ -37,6 +33,7 @@ import {
 import { isItemCollected, isItemHidden } from "./collection/predicate";
 import btnStyles from "./Button.module.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./components/Tooltip";
+import { getPreferredClass, getPreferredGender } from "./settings/accessor";
 
 type Props = {
   collections: Collection[];
@@ -103,6 +100,10 @@ const LedgerInner = ({
   const dispatch = useCollectionDispatch();
   const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
 
+  // preferences
+  const preferredClass = getPreferredClass(settings);
+  const preferredGender = getPreferredGender(settings);
+
   const toggleItem = (dci: CollectionItem) => (collected: boolean) => {
     if (onToggleItem) {
       onToggleItem(dci);
@@ -110,7 +111,7 @@ const LedgerInner = ({
 
     dispatch({
       type: CollectionActionType.COLLECT,
-      itemId: getDiabloItemIds(dci),
+      itemId: getItemIds(dci),
       toggle: collected,
     });
   };
@@ -123,7 +124,7 @@ const LedgerInner = ({
     getAllCollectionItems(dc).forEach((dci) => {
       dispatch({
         type: CollectionActionType.COLLECT,
-        itemId: getDiabloItemIds(dci),
+        itemId: getItemIds(dci),
         toggle: collected,
       });
     });
@@ -229,8 +230,13 @@ const LedgerInner = ({
             }
           >
             {collection.collectionItems.map((collectionItem) => {
-              const item = getDefaultItemFromCollectionItems(collectionItem);
-              const itemIds = getDiabloItemIds(collectionItem);
+              const item =
+                getClassItemVariant(collectionItem, preferredClass) ??
+                getDefaultItem(collectionItem);
+              const icon =
+                getClassIconVariant(item, preferredClass, preferredGender) ??
+                item.icon;
+              const itemIds = getItemIds(collectionItem);
               const isCollected = isItemCollected(log, itemIds);
               const isHidden = isItemHidden(log, itemIds);
               // const isAshava = itemId === 1482434;
@@ -258,16 +264,17 @@ const LedgerInner = ({
                   <LazyImage
                     placeholder={placeholder}
                     className={styles.ItemImage}
-                    src={getImageUri(item)}
-                    alt={item.name}
+                    src={icon}
+                    alt={getItemName(collectionItem, item)}
                   />
                   <div className={styles.ItemInfo}>
                     <div className={styles.ItemName}>
-                      {getItemName(collectionItem)}
+                      {getItemName(collectionItem, item)}
                     </div>
                     <div className={styles.ItemType}>
                       <span>
-                        {getItemType(collectionItem)} | {collectionItem.claim}
+                        {getItemType(collectionItem, item)} |{" "}
+                        {collectionItem.claim}
                       </span>
                       <span
                         className={styles.ItemIconPremiumTitle}

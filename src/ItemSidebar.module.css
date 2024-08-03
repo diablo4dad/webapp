@@ -46,6 +46,38 @@
     height: auto;
 }
 
+.ItemClass {
+    position: relative;
+}
+
+.ItemClass:before {
+    display: none;
+    position: absolute;
+    top: 19px;
+    left: calc(18px - 0.25rem);
+    width: 0.375rem;
+    height: 0.375rem;
+    background-color: #2d3239;
+    border-radius: 0.5rem;
+    content: '';
+}
+
+.ItemClassVariant {
+    cursor: pointer;
+}
+
+.ItemClassVariant:before {
+    display: block;
+}
+
+.ItemClassActive:before {
+    background-color: #a7a7a7;
+}
+
+.ItemClass:hover:before {
+    background-color: #3e885b;
+}
+
 .ItemClassIcon:not(:last-child) {
     padding-right: 0.25rem;
 }

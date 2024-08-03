@@ -6,7 +6,7 @@ import { Option, Settings } from "../settings/type";
 import { isEnabled } from "../settings/predicate";
 import { CollectionLog } from "../collection/type";
 import { isItemCollected, isItemHidden } from "../collection/predicate";
-import { getDiabloItemIds } from "./getters";
+import { getItemIds } from "./getters";
 
 function filterCollectionCategory(
   group: CollectionGroup,
@@ -71,14 +71,13 @@ function filterCollectedItems(
   collectionLog: CollectionLog,
 ): (dci: CollectionItem) => boolean {
   return (dci: CollectionItem) =>
-    !isItemCollected(collectionLog, getDiabloItemIds(dci));
+    !isItemCollected(collectionLog, getItemIds(dci));
 }
 
 function filterHiddenItems(
   collectionLog: CollectionLog,
 ): (dci: CollectionItem) => boolean {
-  return (dci: CollectionItem) =>
-    !isItemHidden(collectionLog, getDiabloItemIds(dci));
+  return (dci: CollectionItem) => !isItemHidden(collectionLog, getItemIds(dci));
 }
 
 export function filterDb(
