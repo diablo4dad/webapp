@@ -8,6 +8,7 @@ import {
 import {
   BooleanOption,
   LedgerView,
+  NumberOption,
   Option,
   Settings,
   StringOption,
@@ -65,6 +66,11 @@ export type SettingsAction =
       type: SettingsActionType.UPDATE;
       option: BooleanOption;
       value: boolean;
+    }
+  | {
+      type: SettingsActionType.UPDATE;
+      option: NumberOption;
+      value: number;
     };
 
 export const SettingsContext = createContext<Settings>(defaultSettings);

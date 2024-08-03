@@ -1,8 +1,18 @@
-import { BooleanOption, LedgerView, Option, Settings } from "./type";
+import {
+  BooleanOption,
+  LedgerView,
+  NumberOption,
+  Option,
+  Settings,
+} from "./type";
 import { SettingsAction, SettingsActionType } from "./context";
 import { ChangeEvent } from "react";
 import { OptionWidgetGroup, WidgetType } from "../common/widget";
 import { isEnabled, isLedgerView } from "./predicate";
+import { getNumberValue } from "./accessor";
+import { enumKeys } from "../common/enums";
+import { CharacterClass } from "../data";
+import i18n from "../i18n";
 
 function createBooleanAction(
   option: BooleanOption,
@@ -14,11 +24,29 @@ function createBooleanAction(
   });
 }
 
+function createChoiceAction(
+  option: NumberOption,
+): (e: ChangeEvent<HTMLSelectElement>) => SettingsAction {
+  return (e: ChangeEvent<HTMLSelectElement>) => ({
+    type: SettingsActionType.UPDATE,
+    option: option,
+    value: Number(e.target.value),
+  });
+}
+
 function createBooleanChecked(
   option: BooleanOption,
 ): (settings: Settings) => boolean {
   return (settings: Settings) => {
     return isEnabled(settings, option);
+  };
+}
+
+function createNumberSelected(
+  option: NumberOption,
+): (settings: Settings) => number {
+  return (settings: Settings) => {
+    return getNumberValue(settings, option);
   };
 }
 
@@ -197,9 +225,20 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
       {
         type: WidgetType.TOGGLE,
         option: Option.DEBUG,
-        label: "Enable Debug",
+        label: "Show Debug Info",
         action: createBooleanAction(Option.DEBUG),
         checked: createBooleanChecked(Option.DEBUG),
+      },
+      {
+        type: WidgetType.DROPDOWN,
+        option: Option.PREFERRED_CLASS,
+        label: "Class Preference",
+        action: createChoiceAction(Option.PREFERRED_CLASS),
+        value: createNumberSelected(Option.PREFERRED_CLASS),
+        options: enumKeys(CharacterClass).map((k) => {
+          const cc = CharacterClass[k];
+          return [cc, i18n.characterClass[cc]];
+        }),
       },
     ],
   },

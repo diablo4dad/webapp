@@ -1,4 +1,4 @@
-import { LedgerView, Option, Settings } from "./type";
+import { LedgerView, NumberOption, Option, Settings } from "./type";
 import { CharacterClass, CharacterGender } from "../data";
 
 export function getLedgerViewSetting(settings: Settings): LedgerView {
@@ -11,4 +11,11 @@ export function getPreferredClass(settings: Settings): CharacterClass {
 
 export function getPreferredGender(settings: Settings): CharacterGender {
   return settings[Option.PREFERRED_GENDER] ?? CharacterGender.MALE;
+}
+
+export function getNumberValue(
+  settings: Settings,
+  option: NumberOption,
+): number {
+  return settings[option];
 }
