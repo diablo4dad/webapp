@@ -1,8 +1,4 @@
-import {
-  CharacterClass,
-  CollectionItem,
-  getDefaultItemFromCollectionItems,
-} from "./data";
+import { CharacterClass, CollectionItem, getDefaultItem } from "./data";
 import styles from "./ItemSidebar.module.css";
 import necromancer from "./image/necromancer.webp";
 import druid from "./image/druid.webp";
@@ -17,16 +13,18 @@ import wardrobe from "./image/wardrobeclip.webp";
 import oor from "./image/oorclip.webp";
 import Toggle from "./components/Toggle";
 import {
-  getDiabloItemIds,
+  getClassIconVariant,
+  getClassItemVariant,
   getIconVariants,
-  getImageUri,
   getItemDescription,
+  getItemIds,
   getItemName,
   getItemType,
 } from "./data/getters";
 import {
   doesHaveWardrobePlaceholder,
   hasIconVariants,
+  hasItemVariation,
 } from "./data/predicates";
 import {
   CollectionActionType,
@@ -34,7 +32,7 @@ import {
   useCollectionDispatch,
 } from "./collection/context";
 import { isItemCollected, isItemHidden } from "./collection/predicate";
-import React from "react";
+import React, { useState } from "react";
 import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
 import classNames from "classnames";
@@ -44,6 +42,7 @@ import { isEnabled } from "./settings/predicate";
 import { Option } from "./settings/type";
 import { getPreferredClass, getPreferredGender } from "./settings/accessor";
 import i18n from "./i18n";
+import { enumKeys } from "./common/enums";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
   return dci.items.some((di) => di.usableByClass?.[clazz] === 1 ?? false);
@@ -54,15 +53,46 @@ type ItemProps = {
   collectionItem: CollectionItem;
 };
 
+const classIconCssMap = new Map<CharacterClass, string>([
+  [CharacterClass.BARBARIAN, styles.BarbarianClassIcon],
+  [CharacterClass.DRUID, styles.DruidClassIcon],
+  [CharacterClass.ROGUE, styles.RogueClassIcon],
+  [CharacterClass.SORCERER, styles.SorcererClassIcon],
+  [CharacterClass.NECROMANCER, styles.NecromancerClassIcon],
+]);
+
+const classIconMap = new Map<CharacterClass, string>([
+  [CharacterClass.BARBARIAN, barbarian],
+  [CharacterClass.DRUID, druid],
+  [CharacterClass.ROGUE, rogue],
+  [CharacterClass.SORCERER, sorceress],
+  [CharacterClass.NECROMANCER, necromancer],
+]);
+
 function ItemSidebar({ collectionItem, className }: ItemProps) {
   const log = useCollection();
   const dispatcher = useCollectionDispatch();
   const settings = useSettings();
 
-  const item = getDefaultItemFromCollectionItems(collectionItem);
-  const itemIds = getDiabloItemIds(collectionItem);
+  // preferences
   const preferredClass = getPreferredClass(settings);
   const preferredGender = getPreferredGender(settings);
+
+  // state
+  const [focusClass, setFocusClass] = useState(preferredClass);
+  const [hoverClass, setHoverClass] = useState<CharacterClass | null>(null);
+
+  // computed values
+  const itemIds = getItemIds(collectionItem);
+  const focusItem =
+    getClassItemVariant(collectionItem, hoverClass ?? focusClass) ??
+    getDefaultItem(collectionItem);
+  const focusIcon =
+    getClassIconVariant(focusItem, hoverClass ?? focusClass, preferredGender) ??
+    focusItem.icon;
+  const hasClassVariation = (characterClass: CharacterClass) =>
+    hasItemVariation(collectionItem, characterClass) ||
+    hasIconVariants(focusItem);
 
   const classNameStr = classNames({
     [styles.Block]: true,
@@ -74,55 +104,58 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
     [className ?? ""]: true,
   });
 
+  const itemClassCss = (characterClass: CharacterClass) => {
+    return classNames({
+      [styles.ItemClass]: true,
+      [styles.ItemClassActive]: focusClass === characterClass,
+      [styles.ItemClassVariant]: hasClassVariation(characterClass),
+    });
+  };
+
+  const itemClassIconCss = (characterClass: CharacterClass) => {
+    return classNames({
+      [styles.ItemClassIcon]: true,
+      [classIconCssMap.get(characterClass) ?? ""]: true,
+    });
+  };
+
+  // handlers
+  const handleIconClick = (clazz: CharacterClass) => () => setFocusClass(clazz);
+  const handleIconHover = (clazz: CharacterClass) => () => setHoverClass(clazz);
+  const handleIconLeave = () => setHoverClass(null);
+
   return (
     <div className={classNameStr}>
       <div className={styles.SidebarContent}>
         <img
           className={styles.ItemImage}
-          src={getImageUri(item)}
-          alt={item.name}
+          src={focusIcon}
+          alt={getItemName(collectionItem, focusItem)}
         />
         <div className={styles.ItemTitle}>
-          <span>{getItemName(collectionItem)}</span>
+          <span>{getItemName(collectionItem, focusItem)}</span>
         </div>
         <div className={styles.ItemType}>
-          <span>{getItemType(collectionItem)}</span>
+          <span>{getItemType(collectionItem, focusItem)}</span>
         </div>
         <div className={styles.ItemClasses}>
-          <img
-            className={classNames(
-              styles.ItemClassIcon,
-              styles.BarbarianClassIcon,
-            )}
-            src={barbarian}
-            alt="Barbarian"
-          />
-          <img
-            className={classNames(styles.ItemClassIcon, styles.DruidClassIcon)}
-            src={druid}
-            alt="Druid"
-          />
-          <img
-            className={classNames(
-              styles.ItemClassIcon,
-              styles.NecromancerClassIcon,
-            )}
-            src={necromancer}
-            alt="Necromancer"
-          />
-          <img
-            className={classNames(styles.ItemClassIcon, styles.RogueClassIcon)}
-            src={rogue}
-            alt="Rogue"
-          />
-          <img
-            className={classNames(
-              styles.ItemClassIcon,
-              styles.SorcererClassIcon,
-            )}
-            src={sorceress}
-            alt="Sorcerer"
-          />
+          {enumKeys(CharacterClass)
+            .sort()
+            .map((cc) => {
+              const v = CharacterClass[cc];
+              return (
+                <span className={itemClassCss(v)}>
+                  <img
+                    className={itemClassIconCss(v)}
+                    onClick={handleIconClick(v)}
+                    onMouseEnter={handleIconHover(v)}
+                    onMouseLeave={handleIconLeave}
+                    src={classIconMap.get(v) ?? ""}
+                    alt={i18n.characterClass[v] ?? ""}
+                  />
+                </span>
+              );
+            })}
         </div>
         <div className={styles.ItemActions}>
           <Toggle
@@ -167,10 +200,10 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
           </div>
         </div>
         <div className={styles.ItemTags}>
-          {item.series && (
+          {focusItem.series && (
             <div className={styles.ItemTag}>
               <img className={styles.ItemTagIcon} src={series} />
-              <span>{item.series.replaceAll('"', "")}</span>
+              <span>{focusItem.series.replaceAll('"', "")}</span>
             </div>
           )}
           {collectionItem.season && (
@@ -214,17 +247,17 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
                 Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
               </div>
             )}
-            <div>Item Icon: {item.icon.replace("/icons/", "")}</div>
+            <div>Item Icon: {focusItem.icon.replace("/icons/", "")}</div>
             {collectionItem.items.map((i) => (
               <div key={i.id}>
                 <div>
                   Datamined File: {i.filename?.replace("base/meta/", "")}
                 </div>
-                {hasIconVariants(item) && (
+                {hasIconVariants(focusItem) && (
                   <ul>
-                    {getIconVariants(item, preferredGender).map(
+                    {getIconVariants(focusItem, preferredGender).map(
                       ([charClass, icon]) => (
-                        <li>
+                        <li key={charClass}>
                           {i18n.characterClass[charClass]} Icon:{" "}
                           {icon.replace("/icons/", "")}
                         </li>

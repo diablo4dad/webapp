@@ -1,5 +1,5 @@
 import { Collection, CollectionGroup } from "../data";
-import { getAllCollectionItems, getDiabloItemIds } from "../data/getters";
+import { getAllCollectionItems, getItemIds } from "../data/getters";
 import { CollectionLog } from "./type";
 import { isItemCollected, isItemHidden } from "./predicate";
 
@@ -26,7 +26,7 @@ export function countItemsInCollectionOwned(
   collection: Collection,
 ): number {
   return getAllCollectionItems(collection).filter((ci) => {
-    return isItemCollected(collectionLog, getDiabloItemIds(ci));
+    return isItemCollected(collectionLog, getItemIds(ci));
   }).length;
 }
 
@@ -35,6 +35,6 @@ export function countItemsInCollectionHidden(
   collection: Collection,
 ): number {
   return getAllCollectionItems(collection).filter((ci) =>
-    isItemHidden(collectionLog, getDiabloItemIds(ci)),
+    isItemHidden(collectionLog, getItemIds(ci)),
   ).length;
 }

@@ -10,20 +10,14 @@ import {
 import missing from "../image/placeholder.webp";
 import { flattenDadDb } from "./transforms";
 
-export function getItemName(ci: CollectionItem): string {
-  if (ci.items.length === 0) {
-    return "empty";
-  }
-
-  if (ci.items.length === 1) {
-    const baseItem = ci.items[0];
-
+export function getItemName(ci: CollectionItem, item: Item): string {
+  if (ci.items.length <= 1) {
     // transmog name overrides base
-    if (baseItem.transmogName) {
-      return baseItem.transmogName;
+    if (item.transmogName) {
+      return item.transmogName;
     }
 
-    return baseItem.name;
+    return item.name;
   }
 
   const itemPeek = ci.items[0];
@@ -36,13 +30,9 @@ export function getItemName(ci: CollectionItem): string {
   }
 }
 
-export function getItemType(ci: CollectionItem): string {
-  if (ci.items.length === 0) {
-    return "empty";
-  }
-
-  if (ci.items.length === 1) {
-    return ci.items[0].itemType.name;
+export function getItemType(ci: CollectionItem, item: Item): string {
+  if (ci.items.length <= 1) {
+    return item.itemType.name;
   }
 
   const itemPeek = ci.items[0];
@@ -123,13 +113,11 @@ export function getImageUri(item: Item): string {
   return item.icon ?? missing;
 }
 
-export function getDefaultItemFromCollectionItems(
-  collectionItems: CollectionItem,
-): Item {
+export function getDefaultItem(collectionItems: CollectionItem): Item {
   return collectionItems.items[0] ?? DEFAULT_ITEM;
 }
 
-export function getDiabloItemIds(collectionItem: CollectionItem): number[] {
+export function getItemIds(collectionItem: CollectionItem): number[] {
   return collectionItem.items.map((ci) => ci.id);
 }
 
@@ -140,4 +128,25 @@ export function getIconVariants(
   return (item.invImages ?? [])
     .map((i, idx) => [idx as CharacterClass, i[gender] ?? null])
     .filter(([, i]) => i !== null) as [CharacterClass, string][];
+}
+
+export function getClassItemVariant(
+  ci: CollectionItem,
+  characterClass: CharacterClass,
+): Item | undefined {
+  return ci.items
+    .filter(
+      (i) =>
+        i.usableByClass.filter((c, i) => c === 1 && i === characterClass)
+          .length === 1,
+    )
+    .pop();
+}
+
+export function getClassIconVariant(
+  item: Item,
+  clazz: CharacterClass,
+  gender: CharacterGender,
+): string | undefined {
+  return item.invImages?.[clazz]?.[gender] ?? undefined;
 }

@@ -3,7 +3,7 @@ export enum CharacterGender {
   FEMALE,
 }
 export enum CharacterClass {
-  SORCERER,
+  SORCERER = 0,
   DRUID,
   BARBARIAN,
   ROGUE,
@@ -38,10 +38,14 @@ export type ItemRef = Entity & {
 };
 
 export type GenderImages = [string | null, string | null];
-export type Item = Omit<ItemRef, "itemType" | "icon" | "invImages"> & {
+export type Item = Omit<
+  ItemRef,
+  "itemType" | "icon" | "invImages" | "usableByClass"
+> & {
   itemType: ItemType;
   icon: string;
-  invImages?: GenderImages[];
+  invImages: GenderImages[];
+  usableByClass: number[];
 };
 
 export type ItemType = Entity & {
@@ -111,6 +115,14 @@ const DEFAULT_ITEM: Item = {
   itemType: DEFAULT_ITEM_TYPE,
   icon: "/icons/0.webp",
   name: "missing",
+  usableByClass: [1, 1, 1, 1, 1],
+  invImages: [
+    [null, null],
+    [null, null],
+    [null, null],
+    [null, null],
+    [null, null],
+  ],
 };
 
 const DEFAULT_COLLECTION_ITEM: CollectionItem = {
@@ -134,4 +146,4 @@ export {
   DEFAULT_COLLECTION,
 };
 export type { CollectionItemRef, CollectionRef, DadDb };
-export { getDefaultItemFromCollectionItems } from "./getters";
+export { getDefaultItem } from "./getters";
