@@ -1,4 +1,6 @@
 import {
+  CharacterClass,
+  CharacterGender,
   Collection,
   CollectionGroup,
   CollectionItem,
@@ -129,4 +131,13 @@ export function getDefaultItemFromCollectionItems(
 
 export function getDiabloItemIds(collectionItem: CollectionItem): number[] {
   return collectionItem.items.map((ci) => ci.id);
+}
+
+export function getIconVariants(
+  item: Item,
+  gender: CharacterGender,
+): [CharacterClass, string][] {
+  return (item.invImages ?? [])
+    .map((i, idx) => [idx as CharacterClass, i[gender] ?? null])
+    .filter(([, i]) => i !== null) as [CharacterClass, string][];
 }

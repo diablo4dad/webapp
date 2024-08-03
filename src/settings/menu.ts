@@ -194,6 +194,13 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
         action: createBooleanAction(Option.LEDGER_INVERSE),
         checked: createBooleanChecked(Option.LEDGER_INVERSE),
       },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.DEBUG,
+        label: "Enable Debug",
+        action: createBooleanAction(Option.DEBUG),
+        checked: createBooleanChecked(Option.DEBUG),
+      },
     ],
   },
 ];
