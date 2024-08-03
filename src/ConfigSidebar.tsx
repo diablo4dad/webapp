@@ -26,8 +26,22 @@ function ConfigSidebar() {
                     onChange={(e) => dispatch(widget.action(e))}
                   />
                 );
-              default:
-                return <strong>{widget.type} not implemented.</strong>;
+              case WidgetType.DROPDOWN:
+                return (
+                  <div
+                    key={widget.option}
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <label>{widget.label}</label>
+                    <select onChange={(e) => dispatch(widget.action(e))}>
+                      {widget.options.map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                );
             }
           })}
         </fieldset>
