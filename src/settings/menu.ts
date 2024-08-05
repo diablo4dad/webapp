@@ -11,7 +11,7 @@ import { OptionWidgetGroup, WidgetType } from "../common/widget";
 import { isEnabled, isLedgerView } from "./predicate";
 import { getNumberValue } from "./accessor";
 import { enumKeys } from "../common/enums";
-import { CharacterClass } from "../data";
+import { CharacterClass, CharacterGender } from "../data";
 import i18n from "../i18n";
 
 function createBooleanAction(
@@ -223,22 +223,35 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
         checked: createBooleanChecked(Option.LEDGER_INVERSE),
       },
       {
-        type: WidgetType.TOGGLE,
-        option: Option.DEBUG,
-        label: "Show Debug Info",
-        action: createBooleanAction(Option.DEBUG),
-        checked: createBooleanChecked(Option.DEBUG),
-      },
-      {
         type: WidgetType.DROPDOWN,
         option: Option.PREFERRED_CLASS,
         label: "Class Preference",
         action: createChoiceAction(Option.PREFERRED_CLASS),
         value: createNumberSelected(Option.PREFERRED_CLASS),
+        default: CharacterClass.BARBARIAN,
         options: enumKeys(CharacterClass).map((k) => {
           const cc = CharacterClass[k];
           return [cc, i18n.characterClass[cc]];
         }),
+      },
+      {
+        type: WidgetType.DROPDOWN,
+        option: Option.PREFERRED_GENDER,
+        label: "Gender Preference",
+        action: createChoiceAction(Option.PREFERRED_GENDER),
+        value: createNumberSelected(Option.PREFERRED_GENDER),
+        default: CharacterGender.MALE,
+        options: enumKeys(CharacterGender).map((k) => {
+          const cc = CharacterGender[k];
+          return [cc, i18n.characterGender[cc]];
+        }),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.DEBUG,
+        label: "Show Debug Info",
+        action: createBooleanAction(Option.DEBUG),
+        checked: createBooleanChecked(Option.DEBUG),
       },
     ],
   },

@@ -1,0 +1,14 @@
+.Block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.Label {
+    padding: 0.5rem 0;
+}
+
+.Select {
+    padding: 0.375rem;
+    border-radius: 0.5rem;
+}
