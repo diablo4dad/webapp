@@ -144,7 +144,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
             .map((cc) => {
               const v = CharacterClass[cc];
               return (
-                <span className={itemClassCss(v)}>
+                <span key={v} className={itemClassCss(v)}>
                   <img
                     className={itemClassIconCss(v)}
                     onClick={handleIconClick(v)}

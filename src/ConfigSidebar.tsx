@@ -3,6 +3,7 @@ import Toggle from "./components/Toggle";
 import { useSettings, useSettingsDispatch } from "./settings/context";
 import { groups } from "./settings/menu";
 import { WidgetType } from "./common/widget";
+import Select from "./components/Select";
 
 function ConfigSidebar() {
   const settings = useSettings();
@@ -11,7 +12,7 @@ function ConfigSidebar() {
   return (
     <div className={styles.Block}>
       {groups.map((group) => (
-        <fieldset className={styles.Fieldset}>
+        <fieldset key={group.label} className={styles.Fieldset}>
           <legend>{group.label}</legend>
           {group.widgets.map((widget) => {
             switch (widget.type) {
@@ -28,19 +29,18 @@ function ConfigSidebar() {
                 );
               case WidgetType.DROPDOWN:
                 return (
-                  <div
+                  <Select
                     key={widget.option}
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <label>{widget.label}</label>
-                    <select onChange={(e) => dispatch(widget.action(e))}>
-                      {widget.options.map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                    label={widget.label}
+                    options={widget.options}
+                    defaultValue={widget.value(settings)}
+                    onChange={(e) => {
+                      console.log("On Select Change", {
+                        value: e.target.value,
+                      });
+                      dispatch(widget.action(e));
+                    }}
+                  />
                 );
             }
           })}

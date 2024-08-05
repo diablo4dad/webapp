@@ -24,6 +24,7 @@ export type DropdownWidget = Widget & {
   action: (e: ChangeEvent<HTMLSelectElement>) => SettingsAction;
   value: (settings: Settings) => number;
   options: [string | number, string][];
+  default: string | number;
 };
 
 export type OptionWidget = ToggleWidget | DropdownWidget;

@@ -284,6 +284,7 @@
 
 .LedgerCards .ItemImage {
     width: auto;
+    max-width: 120px;
     padding: 0.5rem 0.5rem 0;
 }
 

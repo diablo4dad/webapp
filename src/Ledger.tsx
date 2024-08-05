@@ -17,7 +17,7 @@ import {
   countItemsInCollectionOwned,
 } from "./collection/aggregate";
 import { onTouchStart } from "./common/dom";
-import LazyImage from "./components/LazyImage";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import placeholder from "./image/placeholder.webp";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { useSettings } from "./settings/context";
@@ -261,8 +261,9 @@ const LedgerInner = ({
                   )}
                   key={collectionItem.id}
                 >
-                  <LazyImage
-                    placeholder={placeholder}
+                  <LazyLoadImage
+                    wrapperProps={{ style: { aspectRatio: "2/3" } }}
+                    placeholderSrc={placeholder}
                     className={styles.ItemImage}
                     src={icon}
                     alt={getItemName(collectionItem, item)}
