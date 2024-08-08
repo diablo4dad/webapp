@@ -20,13 +20,12 @@ export function getItemName(ci: CollectionItem, item: Item): string {
     return item.name;
   }
 
-  const itemPeek = ci.items[0];
-  switch (itemPeek.itemType.name) {
+  switch (ci.items[0].itemType.name) {
     case "Player Title (Prefix)":
     case "Player Title (Suffix)":
       return ci.items.map((i) => i.name).join(" ");
     default:
-      return itemPeek.name;
+      return item.name;
   }
 }
 
