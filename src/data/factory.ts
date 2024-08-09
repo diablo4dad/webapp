@@ -53,13 +53,29 @@ function hydrateItem(itemTypes: Map<number, ItemType>): (_: ItemRef) => Item {
   });
 }
 
+function backFill(c: Collection, parent?: Collection): Collection {
+  return {
+    ...c,
+    season: parent?.season ?? c.season,
+    outOfRotation: parent?.outOfRotation ?? c.outOfRotation,
+    subcollections: c.subcollections.map((sc) => backFill(sc, c)),
+    collectionItems: c.collectionItems.map((ci) => ({
+      ...ci,
+      season: parent?.season,
+      outOfRotation: parent?.outOfRotation,
+    })),
+  };
+}
+
 function hydrateDadDb(dadDb: DadDbRef): DadDb {
   const itemTypeLookup = new Map<number, ItemType>(
     dadDb.itemTypes.map((it) => [it.id, it]),
   );
   const items = dadDb.items.map(hydrateItem(itemTypeLookup));
   const itemLookup = new Map<number, Item>(items.map((i) => [i.id, i]));
-  const collections = dadDb.collections.map(hydrateCollection(itemLookup));
+  const collections = dadDb.collections
+    .map(hydrateCollection(itemLookup))
+    .map((c) => backFill(c));
 
   return {
     ...dadDb,

@@ -77,6 +77,8 @@ export type CollectionItem = Omit<CollectionItemRef, "items"> & {
 type CollectionRef = {
   id: number;
   name: string;
+  season?: number;
+  outOfRotation?: boolean;
   description?: string;
   category?: string;
   bundleId?: number;
