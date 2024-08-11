@@ -278,14 +278,13 @@
     align-items: inherit;
     background-color: #23272e;
     border: 1px solid #23272e;
-    padding: 0;
+    padding: 0.5rem 0.5rem 0;
     opacity: 1;
 }
 
 .LedgerCards .ItemImage {
-    width: auto;
-    max-width: 120px;
-    padding: 0.5rem 0.5rem 0;
+    width: 100%;
+    aspect-ratio: 2/3;
 }
 
 .LedgerCards .ItemInfo {

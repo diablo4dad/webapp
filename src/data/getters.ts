@@ -67,6 +67,7 @@ export function getItemDescription(item: CollectionItem): string {
   switch (item.claim) {
     case "Cash Shop":
       return "Purchased from the cash shop.";
+    case "Accelerated Battle Pass":
     case "Battle Pass":
       return `Season ${item.season} Battle Pass reward.`;
     case "Monster Drop":
