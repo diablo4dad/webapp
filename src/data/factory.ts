@@ -15,7 +15,7 @@ import {
 } from "./index";
 
 function hydrateImage(iconId: number): string {
-  return `/icons/${iconId}.webp`;
+  return `icons/${iconId}.webp`;
 }
 
 function hydrateCollectionItem(

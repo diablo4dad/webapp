@@ -34,6 +34,7 @@ import { isItemCollected, isItemHidden } from "./collection/predicate";
 import btnStyles from "./Button.module.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./components/Tooltip";
 import { getPreferredClass, getPreferredGender } from "./settings/accessor";
+import { getIcon } from "./bucket";
 
 type Props = {
   collections: Collection[];
@@ -262,10 +263,15 @@ const LedgerInner = ({
                   key={collectionItem.id}
                 >
                   <LazyLoadImage
-                    wrapperProps={{ style: { aspectRatio: "2/3" } }}
+                    wrapperProps={{
+                      style: {
+                        width: "100%",
+                        aspectRatio: "2/3",
+                      },
+                    }}
                     placeholderSrc={placeholder}
                     className={styles.ItemImage}
-                    src={icon}
+                    src={getIcon(icon)}
                     alt={getItemName(collectionItem, item)}
                   />
                   <div className={styles.ItemInfo}>

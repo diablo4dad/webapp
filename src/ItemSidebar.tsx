@@ -43,6 +43,8 @@ import { Option } from "./settings/type";
 import { getPreferredClass, getPreferredGender } from "./settings/accessor";
 import i18n from "./i18n";
 import { enumKeys } from "./common/enums";
+import { DATA_REPO } from "./config";
+import { getIcon } from "./bucket";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
   return dci.items.some((di) => di.usableByClass?.[clazz] === 1 ?? false);
@@ -129,7 +131,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
       <div className={styles.SidebarContent}>
         <img
           className={styles.ItemImage}
-          src={focusIcon}
+          src={getIcon(focusIcon)}
           alt={getItemName(collectionItem, focusItem)}
         />
         <div className={styles.ItemTitle}>
@@ -247,19 +249,21 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
                 Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
               </div>
             )}
-            <div>Item Icon: {focusItem.icon.replace("/icons/", "")}</div>
+            <div>Item Icon: {focusItem.icon.replace("icons/", "")}</div>
             {collectionItem.items.map((i) => (
               <div key={i.id}>
                 <div>
-                  Datamined File: {i.filename?.replace("base/meta/", "")}
+                  Datamined File:{" "}
+                  <a href={`${DATA_REPO}/${i.filename}.json`} target={"_blank"}>
+                    {i.filename?.replace("base/meta/", "")}
+                  </a>
                 </div>
                 {hasIconVariants(focusItem) && (
                   <ul>
                     {getIconVariants(focusItem, preferredGender).map(
                       ([charClass, icon]) => (
                         <li key={charClass}>
-                          {i18n.characterClass[charClass]} Icon:{" "}
-                          {icon.replace("/icons/", "")}
+                          {i18n.characterClass[charClass]} Icon: {icon}
                         </li>
                       ),
                     )}
