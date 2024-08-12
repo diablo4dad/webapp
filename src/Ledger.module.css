@@ -234,7 +234,11 @@
 }
 
 .ItemUnique .ItemName {
-    color: #dca779 !important;
+    color: #d6a577 !important;
+}
+
+.ItemMythic .ItemName {
+    color: #92679d !important;
 }
 
 .ItemRare .ItemName {

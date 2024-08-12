@@ -240,16 +240,17 @@ const LedgerInner = ({
               const itemIds = getItemIds(collectionItem);
               const isCollected = isItemCollected(log, itemIds);
               const isHidden = isItemHidden(log, itemIds);
-              // const isAshava = itemId === 1482434;
+              const showCollected =
+                isCollected && !isHidden && !collectionItem.unobtainable;
+              const showExcluded = isHidden || collectionItem.unobtainable;
 
               const className = classNames({
                 [styles.Item]: true,
-                [styles.ItemCollected]: isCollected && !isHidden,
-                [styles.ItemHidden]: isHidden,
+                [styles.ItemCollected]: showCollected,
+                [styles.ItemHidden]: showExcluded,
                 [styles.ItemPremium]: collectionItem.premium,
-                [styles.ItemUnique]:
-                  collectionItem.items[0]?.magicType === MagicType.UNIQUE,
-                // [styles.ItemGlow]: isAshava && isCollected,
+                [styles.ItemUnique]: item.magicType === MagicType.UNIQUE,
+                [styles.ItemMythic]: item.magicType === MagicType.MYTHIC,
               });
 
               return (
@@ -309,7 +310,7 @@ const LedgerInner = ({
                         <TickCircle></TickCircle>
                       </span>
                     )}
-                    {isHidden && (
+                    {showExcluded && (
                       <span
                         className={
                           styles.ItemIcon + " " + styles.ItemIconHidden
