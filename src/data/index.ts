@@ -15,7 +15,7 @@ export enum MagicType {
   LEGENDARY,
   UNIQUE,
   MAGIC,
-  RARE,
+  MYTHIC,
 }
 
 export type Entity = {
