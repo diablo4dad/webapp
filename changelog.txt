@@ -3,6 +3,36 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.8.0] - 2024-08-13
+
+### Added
+
+- Season of the Internal Hordes collection
+- Season 5 uniques and mythics
+- Ability to switch the class and gender of icons for items with variations
+- Show Debug Info switch under options
+- "The Hunger" weapon cosmetics to Tejal's Gifts
+- "Orichalcum Defender" to the Returning Champion collection
+
+### Updated
+
+- Appearance of unobtainable items (similar to excluded)
+- Moved "Decorated Skull" to the Season Journey #4 collection
+- Moved "Kris" to the Season Journey #2 collection
+- Moved "Morningstar" to the Quest collection
+- Moved "Kard" to the Question collection
+- Moved "Doom Hammer" to the Season Journey #5 collection
+- Moved "Tome" focus item to the Season Journey #5 collection
+- Updated various item descriptions for readability and accuracy
+- Removed unobtainable tag from Keepsake, Augur and Trophy Tusk (focus items)
+- Moved "1st Year Anniversary" and "Dark Gifts" collections to Tejal's Gifts
+
+### Fixes
+
+- Significantly reduced the size of the database
+- Reduced screen shift when lazy loading item icons
+- Refreshed database, fixing icons and item names such as "Exceptional Gloves"
+
 ## [1.7.2] - 2024-08-01
 
 ### Updated
