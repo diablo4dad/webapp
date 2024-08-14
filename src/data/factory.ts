@@ -61,8 +61,9 @@ function backFill(c: Collection, parent?: Collection): Collection {
     subcollections: c.subcollections.map((sc) => backFill(sc, c)),
     collectionItems: c.collectionItems.map((ci) => ({
       ...ci,
-      season: ci.season ?? c?.season,
-      outOfRotation: ci.outOfRotation ?? c?.outOfRotation,
+      season: ci.season ?? c?.season ?? parent?.season,
+      outOfRotation:
+        ci.outOfRotation ?? c?.outOfRotation ?? parent?.outOfRotation,
     })),
   };
 }
