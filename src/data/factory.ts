@@ -56,13 +56,13 @@ function hydrateItem(itemTypes: Map<number, ItemType>): (_: ItemRef) => Item {
 function backFill(c: Collection, parent?: Collection): Collection {
   return {
     ...c,
-    season: parent?.season ?? c.season,
-    outOfRotation: parent?.outOfRotation ?? c.outOfRotation,
+    season: c.season ?? parent?.season,
+    outOfRotation: c.outOfRotation ?? parent?.outOfRotation,
     subcollections: c.subcollections.map((sc) => backFill(sc, c)),
     collectionItems: c.collectionItems.map((ci) => ({
       ...ci,
-      season: parent?.season,
-      outOfRotation: parent?.outOfRotation,
+      season: ci.season ?? c?.season,
+      outOfRotation: ci.outOfRotation ?? c?.outOfRotation,
     })),
   };
 }
