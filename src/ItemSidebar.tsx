@@ -202,16 +202,16 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
           </div>
         </div>
         <div className={styles.ItemTags}>
-          {focusItem.series && (
-            <div className={styles.ItemTag}>
-              <img className={styles.ItemTagIcon} src={series} />
-              <span>{focusItem.series.replaceAll('"', "")}</span>
-            </div>
-          )}
           {collectionItem.season && (
             <div className={styles.ItemTag}>
               <img className={styles.ItemTagIcon} src={season} />
               <span>Season {collectionItem.season}</span>
+            </div>
+          )}
+          {focusItem.series && (
+            <div className={styles.ItemTag}>
+              <img className={styles.ItemTagIcon} src={series} />
+              <span>{focusItem.series.replaceAll('"', "")}</span>
             </div>
           )}
           {collectionItem.premium && (
@@ -239,40 +239,43 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
             </div>
           )}
         </div>
-        {isEnabled(settings, Option.DEBUG) && (
-          <div className={styles.ItemMeta}>
-            <div>
-              Item ID: {collectionItem.items.map((i) => i.id).join(", ")}
-            </div>
-            {collectionItem.items.length > 1 && (
-              <div>
-                Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
-              </div>
-            )}
-            <div>Item Icon: {focusItem.icon.replace("icons/", "")}</div>
-            {collectionItem.items.map((i) => (
-              <div key={i.id}>
+        <div className={styles.ItemMeta}>
+          <div>Item ID: {collectionItem.items.map((i) => i.id).join(", ")}</div>
+          {isEnabled(settings, Option.DEBUG) && (
+            <>
+              {collectionItem.items.length > 1 && (
                 <div>
-                  Datamined File:{" "}
-                  <a href={`${DATA_REPO}/${i.filename}.json`} target={"_blank"}>
-                    {i.filename?.replace("base/meta/", "")}
-                  </a>
+                  Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
                 </div>
-                {hasIconVariants(focusItem) && (
-                  <ul>
-                    {getIconVariants(focusItem, preferredGender).map(
-                      ([charClass, icon]) => (
-                        <li key={charClass}>
-                          {i18n.characterClass[charClass]} Icon: {icon}
-                        </li>
-                      ),
-                    )}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+              )}
+              <div>Item Icon: {focusItem.icon.replace("icons/", "")}</div>
+              {collectionItem.items.map((i) => (
+                <div key={i.id}>
+                  <div>
+                    Datamined File:{" "}
+                    <a
+                      href={`${DATA_REPO}/${i.filename}.json`}
+                      target={"_blank"}
+                    >
+                      {i.filename?.replace("base/meta/", "")}
+                    </a>
+                  </div>
+                  {hasIconVariants(focusItem) && (
+                    <ul>
+                      {getIconVariants(focusItem, preferredGender).map(
+                        ([charClass, icon]) => (
+                          <li key={charClass}>
+                            {i18n.characterClass[charClass]} Icon: {icon}
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       </div>
       <footer className={styles.SidebarFooter}>
         <DiscordInvite />
