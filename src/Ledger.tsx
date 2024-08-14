@@ -264,12 +264,7 @@ const LedgerInner = ({
                   key={collectionItem.id}
                 >
                   <LazyLoadImage
-                    wrapperProps={{
-                      style: {
-                        width: "100%",
-                        aspectRatio: "2/3",
-                      },
-                    }}
+                    wrapperClassName={styles.ItemImageWrapper}
                     placeholderSrc={placeholder}
                     className={styles.ItemImage}
                     src={getIcon(icon)}

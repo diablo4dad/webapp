@@ -30,6 +30,7 @@ collections.
 - Replaced "Death Charm" with "Trophy Tusk" (focus)
 - Replaced "Tecpatl" with "Stiletto" (dagger)
 - Moved "1st Year Anniversary" and "Dark Gifts" collections to Tejal's Gifts
+- Adjust typography of list view
 
 ### Fixes
 
