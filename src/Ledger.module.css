@@ -171,6 +171,11 @@
     filter: brightness(50%);
 }
 
+.ItemImageWrapper {
+    width: 4rem;
+    height: 6rem;
+}
+
 .ItemInfo {
     flex: 1;
     padding: 0 1rem;
@@ -180,13 +185,13 @@
 .ItemName {
     color: orange;
     margin-bottom: 0.125rem;
-    font-size: 1rem;
+    font-size: 1.25rem;
 }
 
 .ItemType {
     display: block;
     text-transform: uppercase;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.25rem;
     font-size: 0.75rem;
     color: #ccc;
 }
@@ -286,8 +291,10 @@
     opacity: 1;
 }
 
+.LedgerCards .ItemImageWrapper,
 .LedgerCards .ItemImage {
     width: 100%;
+    height: auto;
     aspect-ratio: 2/3;
 }
 
