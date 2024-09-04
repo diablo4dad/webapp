@@ -9,6 +9,7 @@ import {
 } from "./index";
 import missing from "../image/placeholder.webp";
 import { flattenDadDb } from "./transforms";
+import { enumKeys } from "../common/enums";
 
 export function getItemName(ci: CollectionItem, item: Item): string {
   if (ci.items.length <= 1) {
@@ -148,5 +149,16 @@ export function getClassIconVariant(
   clazz: CharacterClass,
   gender: CharacterGender,
 ): string | undefined {
-  return item.invImages?.[clazz]?.[gender] ?? undefined;
+  const preferred = item.invImages?.[clazz]?.[gender];
+  if (preferred) {
+    return preferred;
+  }
+
+  for (const ccKey of enumKeys(CharacterClass)) {
+    const ccValue = CharacterClass[ccKey];
+    const img = item.invImages?.[ccValue]?.[gender];
+    if (img !== null) {
+      return img;
+    }
+  }
 }
