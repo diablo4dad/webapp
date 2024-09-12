@@ -22,7 +22,10 @@ export function saveCollection(collection: CollectionLog) {
 }
 
 export function getUserSettings(): Settings {
-  return getValueFromStorage(SETTINGS_KEY, defaultSettings);
+  return {
+    ...defaultSettings,
+    ...getValueFromStorage(SETTINGS_KEY, defaultSettings),
+  };
 }
 
 export function saveSettings(settings: Settings) {
