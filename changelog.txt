@@ -3,6 +3,17 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.8.1] - 2024-09-04
+
+### Added
+
+- Season 5 challenges rewards
+- Season 5 shop additions
+
+### Fixed
+
+- Icon not swapping gender for shop icons
+
 ## [1.8.0] - 2024-08-14
 
 ### Added
