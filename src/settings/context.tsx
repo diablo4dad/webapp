@@ -32,6 +32,7 @@ export const defaultSettings: Settings = {
   [Option.SHOW_PETS]: true,
   // filters
   [Option.SHOW_PREMIUM]: true,
+  [Option.SHOW_SHOP]: true,
   [Option.SHOW_PROMOTIONAL]: true,
   [Option.SHOW_OUT_OF_ROTATION]: true,
   [Option.SHOW_HIDDEN]: false,

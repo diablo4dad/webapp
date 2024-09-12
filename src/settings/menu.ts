@@ -159,6 +159,13 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
       },
       {
         type: WidgetType.TOGGLE,
+        option: Option.SHOW_SHOP,
+        label: "Show Shop Items",
+        action: createBooleanAction(Option.SHOW_SHOP),
+        checked: createBooleanChecked(Option.SHOW_SHOP),
+      },
+      {
+        type: WidgetType.TOGGLE,
         option: Option.SHOW_PROMOTIONAL,
         label: "Show Promotional",
         action: createBooleanAction(Option.SHOW_PROMOTIONAL),

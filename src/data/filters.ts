@@ -44,6 +44,10 @@ function filterItemsByType(
   };
 }
 
+function filterShopItems(): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) => dci.claim !== "Cash Shop";
+}
+
 function filterPremiumItems(): (dci: CollectionItem) => boolean {
   return (dci: CollectionItem) => dci.premium !== true;
 }
@@ -95,6 +99,10 @@ export function filterDb(
 
   if (!isEnabled(settings, Option.SHOW_PREMIUM)) {
     db = filterCollectionItems(db, filterPremiumItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_SHOP)) {
+    db = filterCollectionItems(db, filterShopItems());
   }
 
   if (!isEnabled(settings, Option.SHOW_OUT_OF_ROTATION)) {

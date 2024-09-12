@@ -17,6 +17,7 @@ export enum Option {
   SHOW_PETS = "show_pets",
   // filters
   SHOW_PREMIUM = "show_premium",
+  SHOW_SHOP = "show_shop",
   SHOW_PROMOTIONAL = "show_promotional",
   SHOW_OUT_OF_ROTATION = "show_out_of_rotation",
   SHOW_HIDDEN = "show_hidden",
@@ -53,6 +54,7 @@ export type Settings = {
   [Option.SHOW_PETS]: boolean;
   // filters
   [Option.SHOW_PREMIUM]: boolean;
+  [Option.SHOW_SHOP]: boolean;
   [Option.SHOW_PROMOTIONAL]: boolean;
   [Option.SHOW_OUT_OF_ROTATION]: boolean;
   [Option.SHOW_HIDDEN]: boolean;

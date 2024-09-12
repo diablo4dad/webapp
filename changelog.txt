@@ -8,6 +8,7 @@ collections.
 ### Added
 
 - Universal collection that lists every item by type
+- Filter to hide shop items
 
 ### Fixed
 
