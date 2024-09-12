@@ -5,7 +5,7 @@ import React from "react";
 import { ContentType, MasterGroup } from "./common";
 import { Link } from "react-router-dom";
 import { generateUrl } from "./routes/CollectionLog";
-import {DadUser} from "./auth/type";
+import { DadUser } from "./auth/type";
 
 type Props = {
   onNavigate: (place: ContentType, group?: MasterGroup) => void;
@@ -51,6 +51,13 @@ function MobileMenu({ onNavigate, onAuth, currentUser, onLogout }: Props) {
         onClick={() => onNavigate(ContentType.LEDGER)}
       >
         Promotional
+      </Link>
+      <Link
+        className={styles.MobileMenuLink}
+        to={generateUrl(MasterGroup.UNIVERSAL)}
+        onClick={() => onNavigate(ContentType.LEDGER)}
+      >
+        Universal
       </Link>
       <button
         className={styles.MobileMenuLink}
