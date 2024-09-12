@@ -13,6 +13,7 @@ import {
   ItemRef,
   ItemType,
 } from "./index";
+import { createGlobalCollection } from "./transforms";
 
 function hydrateImage(iconId: number): string {
   return `icons/${iconId}.webp`;
@@ -61,6 +62,7 @@ function backFill(c: Collection, parent?: Collection): Collection {
     subcollections: c.subcollections.map((sc) => backFill(sc, c)),
     collectionItems: c.collectionItems.map((ci) => ({
       ...ci,
+      premium: ci.premium ?? c?.premium ?? parent?.premium,
       season: ci.season ?? c?.season ?? parent?.season,
       outOfRotation:
         ci.outOfRotation ?? c?.outOfRotation ?? parent?.outOfRotation,
@@ -77,6 +79,9 @@ function hydrateDadDb(dadDb: DadDbRef): DadDb {
   const collections = dadDb.collections
     .map(hydrateCollection(itemLookup))
     .map((c) => backFill(c));
+
+  const global = createGlobalCollection(dadDb.itemTypes, collections);
+  collections.push(...global);
 
   return {
     ...dadDb,

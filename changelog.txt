@@ -3,6 +3,21 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.8.2] - 2024-09-12
+
+### Added
+
+- Universal collection that lists every item by type
+
+### Fixed
+
+- Missing "Father's Blasphemy" mount armor icons
+- Added "Premium" tag to all shop items
+
+### Updated
+
+- "Challenges" icon in the drop menu
+
 ## [1.8.1] - 2024-09-04
 
 ### Added
