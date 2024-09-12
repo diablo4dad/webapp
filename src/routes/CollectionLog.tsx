@@ -23,6 +23,7 @@ const slugMap: ReadonlyMap<MasterGroup, string> = new Map([
   [MasterGroup.SHOP_ITEMS, "store"],
   [MasterGroup.PROMOTIONAL, "promotional"],
   [MasterGroup.CHALLENGE, "challenges"],
+  [MasterGroup.UNIVERSAL, "universal"],
 ]);
 
 const slugMapInverse: ReadonlyMap<string, MasterGroup> = new Map(

@@ -1,4 +1,4 @@
-import {ForwardedRef, forwardRef, useState} from "react";
+import { ForwardedRef, forwardRef, useState } from "react";
 import styles from "./NavMenu.module.css";
 import { MasterGroup } from "./common";
 import GeneralIcon from "./image/goblin.webp";
@@ -6,6 +6,7 @@ import CashShopIcon from "./image/money.webp";
 import PromoIcon from "./image/chest.webp";
 import SeasonIcon from "./image/season.webp";
 import ChallengeIcon from "./image/challenge.webp";
+import GlobalIcon from "./image/global.webp";
 import { ChevronRight } from "./Icons";
 import { NavLink } from "react-router-dom";
 import { generateUrl } from "./routes/CollectionLog";
@@ -14,8 +15,8 @@ import classNames from "classnames";
 type Props = {
   activeGroup: MasterGroup;
   onChange?: (newGroup: MasterGroup) => void;
-  open: boolean,
-  setOpen: (open: boolean) => void,
+  open: boolean;
+  setOpen: (open: boolean) => void;
 };
 
 type NavItemMeta = {
@@ -71,6 +72,15 @@ const NAV_ITEM_META: Map<MasterGroup, NavItemMeta> = new Map([
       order: 5,
     },
   ],
+  [
+    MasterGroup.UNIVERSAL,
+    {
+      name: "Universal",
+      desc: "Every transmog in one collection categorised by item type.",
+      icon: GlobalIcon,
+      order: 6,
+    },
+  ],
 ]);
 
 const DEFAULT_META: NavItemMeta = {
@@ -80,7 +90,10 @@ const DEFAULT_META: NavItemMeta = {
   order: -1,
 };
 
-const NavMenu = forwardRef(function NavMenu({ activeGroup, onChange, open, setOpen }: Props, ref: ForwardedRef<HTMLDivElement>) {
+const NavMenu = forwardRef(function NavMenu(
+  { activeGroup, onChange, open, setOpen }: Props,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   const [preview, setPreview] = useState<MasterGroup | undefined>();
   const meta = NAV_ITEM_META.get(preview ?? activeGroup) ?? DEFAULT_META;
   const keys = Array.from(NAV_ITEM_META.keys());

@@ -81,6 +81,9 @@ type CollectionRef = {
   outOfRotation?: boolean;
   description?: string;
   category?: string;
+  premium?: boolean;
+  claim?: string;
+  claimDescription?: string;
   bundleId?: number;
   subcollections?: CollectionRef[];
   collectionItems: CollectionItemRef[];

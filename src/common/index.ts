@@ -7,6 +7,7 @@ enum MasterGroup {
   PROMOTIONAL = "Promotional",
   SEASONS = "Season",
   CHALLENGE = "Challenge",
+  UNIVERSAL = "Universal",
 }
 
 enum ItemGroup {
@@ -77,8 +78,8 @@ const itemGroups = new Map([
   [ItemGroup.TOWN_PORTALS, ["Town Portal"]],
   [ItemGroup.HEADSTONES, ["Headstone"]],
   [ItemGroup.EMBLEMS, ["Emblem"]],
-  [ItemGroup.PLAYER_TITLES, ["Player Title (Prefix)", "Player Title (Suffix)"]],
   [ItemGroup.PETS, ["Pet"]],
+  [ItemGroup.PLAYER_TITLES, ["Player Title (Prefix)", "Player Title (Suffix)"]],
 ]);
 
 const wardrobeIcons = [
