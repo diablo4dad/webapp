@@ -24,6 +24,8 @@ const defaultContext: DataContextType = {
   switchDb: () => undefined,
   filteredDb: [],
   countedDb: [],
+  searchTerm: "",
+  setSearchTerm: () => undefined,
 };
 
 export type DataContextType = {
@@ -33,6 +35,8 @@ export type DataContextType = {
   switchDb: (group: MasterGroup) => void;
   countedDb: CollectionGroup;
   filteredDb: CollectionGroup;
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
 };
 
 export const DataContext = createContext<DataContextType>(defaultContext);
@@ -47,12 +51,13 @@ export function DataProvider({ children }: PropsWithChildren) {
 
   const [db, setDb] = useState<DadDb>(defaultDadDb);
   const [group, switchDb] = useState<MasterGroup>(MasterGroup.GENERAL);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const filteredDb = useMemo(
-    () => filterDb(db.collections, settings, log, group, false),
-    [db, settings, log, group],
+    () => filterDb(db.collections, settings, log, group, searchTerm, false),
+    [db, settings, log, group, searchTerm],
   );
   const countedDb = useMemo(
-    () => filterDb(db.collections, settings, log, group, true),
+    () => filterDb(db.collections, settings, log, group, null, true),
     [db, settings, log, group],
   );
 
@@ -64,8 +69,10 @@ export function DataProvider({ children }: PropsWithChildren) {
       switchDb,
       filteredDb,
       countedDb,
+      searchTerm,
+      setSearchTerm,
     }),
-    [db, filteredDb, countedDb, group],
+    [db, filteredDb, countedDb, group, searchTerm],
   );
 
   return (

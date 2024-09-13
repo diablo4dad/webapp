@@ -1,3 +1,5 @@
+import Fuse from "fuse.js";
+
 import { Collection, CollectionGroup, CollectionItem } from "./index";
 import { getEnabledItemTypes, MasterGroup } from "../common";
 
@@ -7,6 +9,7 @@ import { isEnabled } from "../settings/predicate";
 import { CollectionLog } from "../collection/type";
 import { isItemCollected, isItemHidden } from "../collection/predicate";
 import { getItemIds } from "./getters";
+import { flattenDadDb } from "./transforms";
 
 function filterCollectionCategory(
   group: CollectionGroup,
@@ -84,11 +87,44 @@ function filterHiddenItems(
   return (dci: CollectionItem) => !isItemHidden(collectionLog, getItemIds(dci));
 }
 
+function search(db: CollectionGroup, term: string): CollectionGroup {
+  const options = {
+    ignoreLocation: true,
+    threshold: 0.15,
+    keys: [
+      {
+        name: "items.name",
+        weight: 1,
+      },
+      {
+        name: "items.series",
+        weight: 0.5,
+      },
+      {
+        name: "items.itemType.name",
+        weight: 0.5,
+      },
+      {
+        name: "claimDescription",
+        weight: 0.25,
+      },
+    ],
+  };
+
+  const flattenDb = flattenDadDb(db);
+  const fuse = new Fuse(flattenDb, options);
+  const result = fuse.search(term);
+  const resultId = result.map((r) => r.item.id);
+
+  return filterCollectionItems(db, (ci) => resultId.includes(ci.id));
+}
+
 export function filterDb(
   group: CollectionGroup,
   settings: Settings,
   log: CollectionLog,
   category: MasterGroup,
+  searchTerm: string | null = null,
   isCount: boolean = false,
 ): CollectionGroup {
   let db = filterCollectionCategory(group, category);
@@ -127,6 +163,10 @@ export function filterDb(
 
   if (isEnabled(settings, Option.SHOW_WARDROBE_ONLY)) {
     db = filterCollectionItems(db, filterWardrobePlaceholderItems());
+  }
+
+  if (searchTerm && !isCount) {
+    db = search(db, searchTerm);
   }
 
   return db;

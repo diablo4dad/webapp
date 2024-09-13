@@ -1,0 +1,63 @@
+.Search {
+    position: relative;
+    display: flex;
+    border-radius: 0.5rem;
+    box-shadow: 1px 2px 5px #111;
+    width: 100%;
+}
+
+.Search:focus-within {
+    box-shadow: none;
+}
+
+.Search:focus-within .Input {
+    outline: none;
+    border-left-color: #404752;
+    border-top-color: #404752;
+    border-bottom-color: #404752;
+}
+
+.Search:focus-within .Icon {
+    border-top-color: #404752;
+    border-bottom-color: #404752;
+    border-right-color: #404752;
+}
+
+.Input {
+    width: 100%;
+    padding: 0.75rem 0.75rem;
+    background: #23272e;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    border-top: 1px solid #2D3239;
+    border-bottom: 1px solid #2D3239;
+    border-left: 1px solid #2D3239;
+    border-right: none;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.Icon {
+    display: flex;
+    padding: 0.75rem 1rem 0.75rem 0.75rem;
+    background: #23272e;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-top: 1px solid #2D3239;
+    border-bottom: 1px solid #2D3239;
+    border-right: 1px solid #2D3239;
+}
+
+.Icon svg {
+    fill: #6F7D8C;
+    width: 1.75rem;
+    height: auto;
+}
+
+.IconClose {
+    cursor: pointer;
+}
+
+.IconClose svg {
+    fill: #ccc;
+}

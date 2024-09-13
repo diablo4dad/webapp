@@ -46,6 +46,7 @@ import { Await, useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
 import ItemSidebar from "./ItemSidebar";
 import { useAuth } from "./auth/context";
+import Search from "./components/Search";
 
 export type ViewModel = {
   openCollections: number[];
@@ -59,7 +60,7 @@ export type ViewModel = {
 // Needs Collections Log
 function Application(): ReactElement<HTMLDivElement> {
   const { db: dbPromise, group } = useLoaderData() as LoaderPayload;
-  const { filteredDb, countedDb, db } = useData();
+  const { filteredDb, countedDb, db, searchTerm, setSearchTerm } = useData();
   const log = useCollection();
   const settings = useSettings();
   const { user, signIn, signOut } = useAuth();
@@ -189,6 +190,11 @@ function Application(): ReactElement<HTMLDivElement> {
                 />
               </nav>
               <div className={styles.HeaderAccountWidgets}>
+                <Search
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  onClear={() => setSearchTerm("")}
+                />
                 <Progress
                   totalCollected={itemsCollected}
                   collectionSize={itemsTotal}
