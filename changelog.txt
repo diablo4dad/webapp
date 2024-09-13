@@ -3,6 +3,17 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.9.0] - 2024-09-13
+
+### Added
+
+- Site search feature
+- "CU Demon's Blood & Angel's Tears" promotion collection
+
+### Updated
+
+- Placeholder screen when filters/search too restrictive
+
 ## [1.8.2] - 2024-09-12
 
 ### Added
