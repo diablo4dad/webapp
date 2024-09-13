@@ -10,6 +10,7 @@ import { useCollection } from "../collection/context";
 import { useSettings } from "../settings/context";
 import { filterDb } from "./filters";
 import { MasterGroup } from "../common";
+import { useDebounceValue } from "usehooks-ts";
 
 const defaultDadDb: DadDb = {
   collections: [],
@@ -52,9 +53,18 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [db, setDb] = useState<DadDb>(defaultDadDb);
   const [group, switchDb] = useState<MasterGroup>(MasterGroup.GENERAL);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
   const filteredDb = useMemo(
-    () => filterDb(db.collections, settings, log, group, searchTerm, false),
-    [db, settings, log, group, searchTerm],
+    () =>
+      filterDb(
+        db.collections,
+        settings,
+        log,
+        group,
+        debouncedSearchTerm,
+        false,
+      ),
+    [db, settings, log, group, debouncedSearchTerm],
   );
   const countedDb = useMemo(
     () => filterDb(db.collections, settings, log, group, null, true),

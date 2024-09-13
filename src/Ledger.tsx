@@ -155,7 +155,7 @@ const LedgerInner = ({
   return (
     <AccordionItem
       hidden={isCollectionEmpty(collection)}
-      initialEntered={ledgerIsOpen}
+      initialEntered={ledgerIsOpen || collection.id === 888}
       itemKey={collection.id}
       className={className}
       headingProps={{

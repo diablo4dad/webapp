@@ -114,9 +114,18 @@ function search(db: CollectionGroup, term: string): CollectionGroup {
   const flattenDb = flattenDadDb(db);
   const fuse = new Fuse(flattenDb, options);
   const result = fuse.search(term);
-  const resultId = result.map((r) => r.item.id);
 
-  return filterCollectionItems(db, (ci) => resultId.includes(ci.id));
+  return [
+    {
+      id: 888,
+      name: "Search Results",
+      description: `Transmogs that match term "${term}"...`,
+      collectionItems: result.map((r) => r.item),
+      subcollections: [],
+    },
+  ];
+
+  // return filterCollectionItems(db, (ci) => resultId.includes(ci.id));
 }
 
 export function filterDb(
@@ -127,7 +136,10 @@ export function filterDb(
   searchTerm: string | null = null,
   isCount: boolean = false,
 ): CollectionGroup {
-  let db = filterCollectionCategory(group, category);
+  let db = filterCollectionCategory(
+    group,
+    searchTerm ? MasterGroup.UNIVERSAL : category,
+  );
   db = filterCollectionItems(
     db,
     filterItemsByType(getEnabledItemTypes(settings)),
