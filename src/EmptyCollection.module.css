@@ -1,0 +1,13 @@
+.Empty {
+    padding: 1rem;
+}
+
+.Heading {
+    margin-top: 0;
+}
+
+@media screen and (min-width: 1200px) {
+    .Empty {
+        padding: 2rem;
+    }
+}

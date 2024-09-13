@@ -47,6 +47,7 @@ import { LoaderPayload } from "./routes/CollectionLog";
 import ItemSidebar from "./ItemSidebar";
 import { useAuth } from "./auth/context";
 import Search from "./components/Search";
+import EmptyCollection from "./EmptyCollection";
 
 export type ViewModel = {
   openCollections: number[];
@@ -246,6 +247,7 @@ function Application(): ReactElement<HTMLDivElement> {
                     }));
                   }}
                 />
+                {countAllItemsDabDb(filteredDb) === 0 && <EmptyCollection />}
               </Await>
             </Suspense>
           )}
