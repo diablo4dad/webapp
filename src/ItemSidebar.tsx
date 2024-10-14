@@ -11,7 +11,7 @@ import season from "./image/seasonclip.webp";
 import premium from "./image/premiumclip.webp";
 import unobtainable from "./image/unobtainableclip.webp";
 import wardrobe from "./image/wardrobeclip.webp";
-import expansion from "./image/d4ico_x1.png";
+import expansion from "./image/logo/d4ico_x1.png";
 import oor from "./image/oorclip.webp";
 import Toggle from "./components/Toggle";
 import {

@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { Collection, CollectionItem } from "./data";
-import logo from "./image/d4ico_x1.png";
+import logo from "./image/logo/d4ico_x1.png";
 
 import styles from "./Application.module.css";
 import Ledger from "./Ledger";
