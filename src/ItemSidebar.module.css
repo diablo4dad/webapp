@@ -41,8 +41,7 @@
 }
 
 .ItemClassIcon {
-    max-width: 38px;
-    max-height: 36px; /* workaround, fix sorc icon aspect */
+    max-width: 2.5rem;
     height: auto;
 }
 
@@ -217,7 +216,8 @@
 .DruidClassIcon,
 .NecromancerClassIcon,
 .RogueClassIcon,
-.SorcererClassIcon {
+.SorcererClassIcon,
+.SpiritbornClassIcon {
     opacity: 0.15;
     transition: opacity 250ms;
 }
@@ -226,7 +226,8 @@
 .Druid .DruidClassIcon,
 .Necromancer .NecromancerClassIcon,
 .Rogue .RogueClassIcon,
-.Sorcerer .SorcererClassIcon {
+.Sorcerer .SorcererClassIcon,
+.Spiritborn .SpiritbornClassIcon {
     opacity: 1;
 }
 

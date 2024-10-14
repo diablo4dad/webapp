@@ -1,15 +1,17 @@
 import { CharacterClass, CollectionItem, getDefaultItem } from "./data";
 import styles from "./ItemSidebar.module.css";
-import necromancer from "./image/necromancer.webp";
-import druid from "./image/druid.webp";
-import rogue from "./image/rogue.webp";
-import barbarian from "./image/barbarian.webp";
-import sorceress from "./image/sorceress.webp";
+import necromancer from "./image/2DUI_ClassIcons_1313874421.webp";
+import druid from "./image/2DUI_ClassIcons_1302501686.webp";
+import rogue from "./image/2DUI_ClassIcons_1318981920.webp";
+import barbarian from "./image/2DUI_ClassIcons_1080583445.webp";
+import sorceress from "./image/2DUI_ClassIcons_1081209621.webp";
+import spiritborn from "./image/2DUI_ClassIcons_2408651818.webp";
 import series from "./image/seriesclip.webp";
 import season from "./image/seasonclip.webp";
 import premium from "./image/premiumclip.webp";
 import unobtainable from "./image/unobtainableclip.webp";
 import wardrobe from "./image/wardrobeclip.webp";
+import expansion from "./image/d4ico_x1.png";
 import oor from "./image/oorclip.webp";
 import Toggle from "./components/Toggle";
 import {
@@ -25,6 +27,7 @@ import {
   doesHaveWardrobePlaceholder,
   hasIconVariants,
   hasItemVariation,
+  isVesselOfHatredItem,
 } from "./data/predicates";
 import {
   CollectionActionType,
@@ -61,6 +64,7 @@ const classIconCssMap = new Map<CharacterClass, string>([
   [CharacterClass.ROGUE, styles.RogueClassIcon],
   [CharacterClass.SORCERER, styles.SorcererClassIcon],
   [CharacterClass.NECROMANCER, styles.NecromancerClassIcon],
+  [CharacterClass.SPIRITBORN, styles.SpiritbornClassIcon],
 ]);
 
 const classIconMap = new Map<CharacterClass, string>([
@@ -69,6 +73,7 @@ const classIconMap = new Map<CharacterClass, string>([
   [CharacterClass.ROGUE, rogue],
   [CharacterClass.SORCERER, sorceress],
   [CharacterClass.NECROMANCER, necromancer],
+  [CharacterClass.SPIRITBORN, spiritborn],
 ]);
 
 function ItemSidebar({ collectionItem, className }: ItemProps) {
@@ -103,6 +108,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
     [styles.Necromancer]: usableBy(CharacterClass.NECROMANCER, collectionItem),
     [styles.Rogue]: usableBy(CharacterClass.ROGUE, collectionItem),
     [styles.Sorcerer]: usableBy(CharacterClass.SORCERER, collectionItem),
+    [styles.Spiritborn]: usableBy(CharacterClass.SPIRITBORN, collectionItem),
     [className ?? ""]: true,
   });
 
@@ -202,6 +208,12 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
           </div>
         </div>
         <div className={styles.ItemTags}>
+          {collectionItem.items.some(isVesselOfHatredItem) && (
+            <div className={styles.ItemTag}>
+              <img className={styles.ItemTagIcon} src={expansion} />
+              <span>VoH Item</span>
+            </div>
+          )}
           {collectionItem.season && (
             <div className={styles.ItemTag}>
               <img className={styles.ItemTagIcon} src={season} />

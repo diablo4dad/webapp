@@ -8,6 +8,7 @@ export enum CharacterClass {
   BARBARIAN,
   ROGUE,
   NECROMANCER,
+  SPIRITBORN,
 }
 
 export enum MagicType {
@@ -29,6 +30,7 @@ export type ItemRef = Entity & {
   itemType: number;
   magicType?: number;
   isTransmog?: boolean;
+  vohItem?: boolean;
   usableByClass?: number[];
   invImages?: GenderImagesRef[];
   name: string;

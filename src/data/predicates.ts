@@ -5,6 +5,10 @@ export function doesHaveWardrobePlaceholder(item: Item): boolean {
   return !!item.isTransmog && wardrobeIcons.includes(item.itemType.name);
 }
 
+export function isVesselOfHatredItem(item: Item): boolean {
+  return !!item.vohItem;
+}
+
 export function isCollectionEmpty(collection: Collection): boolean {
   return (
     collection.collectionItems.length === 0 &&

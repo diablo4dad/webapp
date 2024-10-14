@@ -11,6 +11,7 @@ const I18N = {
     [CharacterClass.SORCERER]: "Sorcerer",
     [CharacterClass.DRUID]: "Druid",
     [CharacterClass.NECROMANCER]: "Necromancer",
+    [CharacterClass.SPIRITBORN]: "Spiritborn",
   },
 };
 

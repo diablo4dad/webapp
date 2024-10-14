@@ -70,6 +70,8 @@ const itemGroups = new Map([
       "Two-Handed Scythe",
       "Staff",
       "Two-Handed Sword",
+      "Quarterstaff",
+      "Glaive",
     ],
   ],
   [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]],
