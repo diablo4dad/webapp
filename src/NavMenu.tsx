@@ -1,12 +1,12 @@
 import { ForwardedRef, forwardRef, useState } from "react";
 import styles from "./NavMenu.module.css";
 import { MasterGroup } from "./common";
-import GeneralIcon from "./image/goblin.webp";
-import CashShopIcon from "./image/money.webp";
-import PromoIcon from "./image/chest.webp";
-import SeasonIcon from "./image/season.webp";
-import ChallengeIcon from "./image/challenge.webp";
-import GlobalIcon from "./image/global.webp";
+import GeneralIcon from "./image/icons/goblin.webp";
+import CashShopIcon from "./image/icons/purse.webp";
+import PromoIcon from "./image/icons/chest.webp";
+import SeasonIcon from "./image/icons/season.webp";
+import ChallengeIcon from "./image/icons/dungeon.webp";
+import GlobalIcon from "./image/icons/wardrobe.webp";
 import { ChevronRight } from "./Icons";
 import { NavLink } from "react-router-dom";
 import { generateUrl } from "./routes/CollectionLog";
