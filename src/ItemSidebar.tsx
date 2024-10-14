@@ -6,13 +6,13 @@ import rogue from "./image/classes/rogue.webp";
 import barbarian from "./image/classes/barbarian.webp";
 import sorceress from "./image/classes/sorcerer.webp";
 import spiritborn from "./image/classes/spiritborn.webp";
-import series from "./image/seriesclip.webp";
-import season from "./image/seasonclip.webp";
-import premium from "./image/premiumclip.webp";
-import unobtainable from "./image/unobtainableclip.webp";
-import wardrobe from "./image/wardrobeclip.webp";
+import series from "./image/miniico/series.webp";
+import season from "./image/miniico/season.webp";
+import premium from "./image/miniico/purse.webp";
+import unobtainable from "./image/miniico/mystery.webp";
+import wardrobe from "./image/miniico/wardrobe.webp";
 import expansion from "./image/logo/d4ico_x1.png";
-import oor from "./image/oorclip.webp";
+import oor from "./image/miniico/skull.webp";
 import Toggle from "./components/Toggle";
 import {
   getClassIconVariant,
