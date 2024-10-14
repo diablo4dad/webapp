@@ -1,11 +1,11 @@
 import { CharacterClass, CollectionItem, getDefaultItem } from "./data";
 import styles from "./ItemSidebar.module.css";
-import necromancer from "./image/2DUI_ClassIcons_1313874421.webp";
-import druid from "./image/2DUI_ClassIcons_1302501686.webp";
-import rogue from "./image/2DUI_ClassIcons_1318981920.webp";
-import barbarian from "./image/2DUI_ClassIcons_1080583445.webp";
-import sorceress from "./image/2DUI_ClassIcons_1081209621.webp";
-import spiritborn from "./image/2DUI_ClassIcons_2408651818.webp";
+import necromancer from "./image/classes/necromancer.webp";
+import druid from "./image/classes/druid.webp";
+import rogue from "./image/classes/rogue.webp";
+import barbarian from "./image/classes/barbarian.webp";
+import sorceress from "./image/classes/sorcerer.webp";
+import spiritborn from "./image/classes/spiritborn.webp";
 import series from "./image/seriesclip.webp";
 import season from "./image/seasonclip.webp";
 import premium from "./image/premiumclip.webp";
