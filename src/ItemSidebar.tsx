@@ -219,20 +219,16 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
                 <span>{collectionItem.claim}</span>
               </div>
             </div>
+            {collectionItem.claimZone !== undefined && (
+              <img
+                hidden={true}
+                className={styles.ItemLocationIcon}
+                src={regionIconMap.get(collectionItem.claimZone)}
+                alt={i18n.region[collectionItem.claimZone]}
+              />
+            )}
           </div>
         </div>
-        {collectionItem.claimZone !== undefined && (
-          <div className={styles.ItemZone}>
-            <img
-              className={styles.ItemZoneIcon}
-              src={regionIconMap.get(collectionItem.claimZone)}
-              alt={i18n.region[collectionItem.claimZone]}
-            />
-            <div className={styles.ItemZoneInfo}>
-              {i18n.region[collectionItem.claimZone]}
-            </div>
-          </div>
-        )}
         <div className={styles.ItemTags}>
           {collectionItem.items.some(isVesselOfHatredItem) && (
             <div className={styles.ItemTag}>
