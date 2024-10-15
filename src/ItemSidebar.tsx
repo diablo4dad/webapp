@@ -1,24 +1,23 @@
-import { CharacterClass, CollectionItem, getDefaultItem } from "./data";
-import styles from "./ItemSidebar.module.css";
-import necromancer from "./image/classes/necromancer.webp";
-import druid from "./image/classes/druid.webp";
-import rogue from "./image/classes/rogue.webp";
-import barbarian from "./image/classes/barbarian.webp";
-import sorceress from "./image/classes/sorcerer.webp";
-import spiritborn from "./image/classes/spiritborn.webp";
-import series from "./image/miniico/series.webp";
-import season from "./image/miniico/season.webp";
-import premium from "./image/miniico/purse.webp";
-import unobtainable from "./image/miniico/mystery.webp";
-import wardrobe from "./image/miniico/wardrobe.webp";
-import expansion from "./image/logo/d4ico_x1.png";
-import oor from "./image/miniico/skull.webp";
+import classNames from "classnames";
+import React, { useState } from "react";
+import { getIcon } from "./bucket";
+import {
+  CollectionActionType,
+  useCollection,
+  useCollectionDispatch,
+} from "./collection/context";
+import { isItemCollected, isItemHidden } from "./collection/predicate";
+import { enumKeys } from "./common/enums";
+import { hashCode } from "./common/hash";
+import { DiscordInvite } from "./components/DiscordPanel";
 import Toggle from "./components/Toggle";
+import { VersionInfo } from "./components/VersionPanel";
+import { DATA_REPO } from "./config";
+import { CharacterClass, CollectionItem, getDefaultItem, Zone } from "./data";
 import {
   getClassIconVariant,
   getClassItemVariant,
   getIconVariants,
-  getItemDescription,
   getItemIds,
   getItemName,
   getItemType,
@@ -29,25 +28,31 @@ import {
   hasItemVariation,
   isVesselOfHatredItem,
 } from "./data/predicates";
-import {
-  CollectionActionType,
-  useCollection,
-  useCollectionDispatch,
-} from "./collection/context";
-import { isItemCollected, isItemHidden } from "./collection/predicate";
-import React, { useState } from "react";
-import { VersionInfo } from "./components/VersionPanel";
-import { DiscordInvite } from "./components/DiscordPanel";
-import classNames from "classnames";
-import { hashCode } from "./common/hash";
+import i18n, { getItemDescription } from "./i18n";
+import barbarian from "./image/classes/barbarian.webp";
+import druid from "./image/classes/druid.webp";
+import necromancer from "./image/classes/necromancer.webp";
+import rogue from "./image/classes/rogue.webp";
+import sorceress from "./image/classes/sorcerer.webp";
+import spiritborn from "./image/classes/spiritborn.webp";
+import expansion from "./image/logo/d4ico_x1.png";
+import unobtainable from "./image/miniico/mystery.webp";
+import premium from "./image/miniico/purse.webp";
+import season from "./image/miniico/season.webp";
+import series from "./image/miniico/series.webp";
+import oor from "./image/miniico/skull.webp";
+import wardrobe from "./image/miniico/wardrobe.webp";
+import fracturedPeaks from "./image/region/fractured_peaks.webp";
+import drySteppes from "./image/region/dry_steppes.webp";
+import kehjistan from "./image/region/kehjistan.webp";
+import hawezar from "./image/region/hawezar.webp";
+import scosglen from "./image/region/scosglen.webp";
+import nahantu from "./image/region/nahantu.webp";
+import styles from "./ItemSidebar.module.css";
+import { getPreferredClass, getPreferredGender } from "./settings/accessor";
 import { useSettings } from "./settings/context";
 import { isEnabled } from "./settings/predicate";
 import { Option } from "./settings/type";
-import { getPreferredClass, getPreferredGender } from "./settings/accessor";
-import i18n from "./i18n";
-import { enumKeys } from "./common/enums";
-import { DATA_REPO } from "./config";
-import { getIcon } from "./bucket";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
   return dci.items.some((di) => di.usableByClass?.[clazz] === 1 ?? false);
@@ -74,6 +79,15 @@ const classIconMap = new Map<CharacterClass, string>([
   [CharacterClass.SORCERER, sorceress],
   [CharacterClass.NECROMANCER, necromancer],
   [CharacterClass.SPIRITBORN, spiritborn],
+]);
+
+const regionIconMap = new Map<Zone, string>([
+  [Zone.FRACTURED_PEAKS, fracturedPeaks],
+  [Zone.SCOSGLEN, scosglen],
+  [Zone.HAWEZAR, hawezar],
+  [Zone.KEHJISTAN, kehjistan],
+  [Zone.DRY_STEPPES, drySteppes],
+  [Zone.NAHANTU, nahantu],
 ]);
 
 function ItemSidebar({ collectionItem, className }: ItemProps) {
@@ -207,6 +221,18 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
             </div>
           </div>
         </div>
+        {collectionItem.claimZone !== undefined && (
+          <div className={styles.ItemZone}>
+            <img
+              className={styles.ItemZoneIcon}
+              src={regionIconMap.get(collectionItem.claimZone)}
+              alt={i18n.region[collectionItem.claimZone]}
+            />
+            <div className={styles.ItemZoneInfo}>
+              {i18n.region[collectionItem.claimZone]}
+            </div>
+          </div>
+        )}
         <div className={styles.ItemTags}>
           {collectionItem.items.some(isVesselOfHatredItem) && (
             <div className={styles.ItemTag}>

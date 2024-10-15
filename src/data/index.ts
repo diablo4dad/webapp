@@ -19,6 +19,22 @@ export enum MagicType {
   MYTHIC,
 }
 
+export enum Zone {
+  FRACTURED_PEAKS,
+  SCOSGLEN,
+  KEHJISTAN,
+  DRY_STEPPES,
+  HAWEZAR,
+  NAHANTU,
+}
+
+export enum Chest {
+  SILENT,
+  HELLTIDE,
+  LEGION,
+  WORLD_EVENT,
+}
+
 export type Entity = {
   id: number;
   filename?: string;
@@ -60,7 +76,8 @@ type CollectionItemRef = {
 
   claim: string;
   claimDescription?: string;
-  claimZone?: string;
+  claimZone?: Zone;
+  claimChest?: Chest;
   claimMonster?: string;
 
   outOfRotation?: boolean;
@@ -86,6 +103,7 @@ type CollectionRef = {
   premium?: boolean;
   claim?: string;
   claimDescription?: string;
+  claimZone?: Zone;
   bundleId?: number;
   subcollections?: CollectionRef[];
   collectionItems: CollectionItemRef[];

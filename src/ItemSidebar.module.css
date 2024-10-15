@@ -149,7 +149,23 @@
     right: 2rem;
 }
 
+.ItemZone {
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    margin: 1rem 0;
+    gap: 0.5rem;
+}
 
+.ItemZoneIcon {
+    max-width: 3rem;
+    height: auto;
+}
+
+.ItemZoneInfo {
+    color: #ccc;
+}
 
 .ItemMeta {
     padding-left: 2rem;

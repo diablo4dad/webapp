@@ -64,6 +64,7 @@ function backFill(c: Collection, parent?: Collection): Collection {
       ...ci,
       premium: ci.premium ?? c?.premium ?? parent?.premium,
       season: ci.season ?? c?.season ?? parent?.season,
+      claimZone: ci.claimZone ?? c?.claimZone ?? parent?.claimZone,
       outOfRotation:
         ci.outOfRotation ?? c?.outOfRotation ?? parent?.outOfRotation,
     })),
