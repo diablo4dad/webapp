@@ -57,10 +57,10 @@
 .ItemClass:before {
     display: none;
     position: absolute;
-    top: 19px;
-    left: calc(18px - 0.25rem);
-    width: 0.375rem;
-    height: 0.375rem;
+    top: 1rem;
+    left: calc(1.25rem - 0.25rem);
+    width: 0.5rem;
+    height: 0.5rem;
     background-color: #2d3239;
     border-radius: 0.5rem;
     content: '';
