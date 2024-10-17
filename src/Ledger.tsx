@@ -171,7 +171,9 @@ const LedgerInner = ({
         <>
           <div>
             <h1 className={styles.LedgerTitle}>
-              {headingLabel}
+              <span className={styles.LedgerCollectionName}>
+                {headingLabel}
+              </span>
               <span className={styles.LedgerCounter}>{counterLabel}</span>
             </h1>
             <div className={styles.LedgerDescription}>{descriptionLabel}</div>

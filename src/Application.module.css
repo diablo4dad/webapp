@@ -109,8 +109,13 @@
 }
 
 .HeaderInfoName {
-    font-size: 1.25rem;
     margin-bottom: 0.125rem;
+
+    font-family: "PT Serif", serif;
+    font-style: normal;
+    font-size: 2rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px #111;
 }
 
 .HeaderInfoTagLine {
@@ -230,10 +235,6 @@
     .HeaderRightContent > div:nth-child(1) {
         max-width: 40%;
         min-width: 20rem;
-    }
-
-    .HeaderInfoName {
-        font-size: 1.5rem;
     }
 
     .SidebarFooter {

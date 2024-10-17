@@ -32,7 +32,6 @@
 .LedgerTitle {
     display: inline-block;
     margin: 0 0.5rem 0.25rem 0;
-    /*text-shadow: 3px 3px 3px #111;*/
     font-size: 1.5rem;
     text-align: left;
     color: #fff;
@@ -66,8 +65,20 @@
 }
 
 .LedgerDescription {
-    font-size: 0.875rem;
     color: #ccc;
+    font-family: "Ubuntu", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 300;
+}
+
+.LedgerCollectionName {
+    display: inline-block;
+    margin-right: 0.25rem;
+
+    font-family: "PT Serif", serif;
+    font-style: normal;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px #111;
 }
 
 .LedgerCounter {

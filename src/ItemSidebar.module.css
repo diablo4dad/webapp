@@ -19,11 +19,16 @@
 }
 
 .ItemTitle {
-    color: orange;
-    font-size: 1.5rem;
     padding-top: 2rem;
     padding-left: 2rem;
     margin-bottom: 0.5rem;
+
+    color: orange;
+    font-family: "PT Serif", serif;
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px #111;
 }
 
 .ItemType {
@@ -188,11 +193,15 @@
 .ItemTag {
     display: inline-flex;
     align-items: center;
-    border-radius: 2rem;
-    background-color: #2d3239;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
     margin-bottom: 0.5rem;
+
+    padding: 0.5rem 1rem;
+    background-color: #2d3239;
+    border-radius: 2rem;
+
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: #ccc;
 }
 
 .ItemTag:last-child {
