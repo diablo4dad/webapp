@@ -1,14 +1,14 @@
 import Fuse from "fuse.js";
+import { isItemCollected, isItemHidden } from "../collection/predicate";
+import { CollectionLog } from "../collection/type";
+import { getEnabledItemTypes, MasterGroup } from "../common";
+import { isEnabled } from "../settings/predicate";
+import { Option, Settings } from "../settings/type";
+import { getItemIds } from "./getters";
 
 import { Collection, CollectionGroup, CollectionItem } from "./index";
-import { getEnabledItemTypes, MasterGroup } from "../common";
 
 import { doesHaveWardrobePlaceholder } from "./predicates";
-import { Option, Settings } from "../settings/type";
-import { isEnabled } from "../settings/predicate";
-import { CollectionLog } from "../collection/type";
-import { isItemCollected, isItemHidden } from "../collection/predicate";
-import { getItemIds } from "./getters";
 import { flattenDadDb } from "./transforms";
 
 function filterCollectionCategory(
@@ -87,6 +87,20 @@ function filterHiddenItems(
   return (dci: CollectionItem) => !isItemHidden(collectionLog, getItemIds(dci));
 }
 
+function filterBattlePassItems(): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) =>
+    ![
+      "Battle Pass",
+      "Accelerated Battle Pass",
+      "Season Journey",
+      "Reputation Board",
+    ].includes(dci.claim);
+}
+
+function filterBattlePassAcceleratedItems(): (dci: CollectionItem) => boolean {
+  return (dci: CollectionItem) => dci.claim !== "Accelerated Battle Pass";
+}
+
 function search(db: CollectionGroup, term: string): CollectionGroup {
   const options = {
     ignoreLocation: true,
@@ -151,6 +165,14 @@ export function filterDb(
 
   if (!isEnabled(settings, Option.SHOW_SHOP)) {
     db = filterCollectionItems(db, filterShopItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_BATTLE_PASS)) {
+    db = filterCollectionItems(db, filterBattlePassItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_BATTLE_PASS_ACCELERATED)) {
+    db = filterCollectionItems(db, filterBattlePassAcceleratedItems());
   }
 
   if (!isEnabled(settings, Option.SHOW_OUT_OF_ROTATION)) {

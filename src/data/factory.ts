@@ -63,6 +63,7 @@ function backFill(c: Collection, parent?: Collection): Collection {
     collectionItems: c.collectionItems.map((ci) => ({
       ...ci,
       premium: ci.premium ?? c?.premium ?? parent?.premium,
+      promotional: ci.promotional ?? c?.promotional ?? parent?.promotional,
       season: ci.season ?? c?.season ?? parent?.season,
       claimZone: ci.claimZone ?? c?.claimZone ?? parent?.claimZone,
       outOfRotation:

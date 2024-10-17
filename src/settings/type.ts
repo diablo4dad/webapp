@@ -17,13 +17,16 @@ export enum Option {
   SHOW_PETS = "show_pets",
   // filters
   SHOW_PREMIUM = "show_premium",
-  SHOW_SHOP = "show_shop",
-  SHOW_PROMOTIONAL = "show_promotional",
   SHOW_OUT_OF_ROTATION = "show_out_of_rotation",
   SHOW_HIDDEN = "show_hidden",
   SHOW_UNOBTAINABLE = "show_unobtainable",
   SHOW_WARDROBE_ONLY = "show_wardrobe_only",
   HIDE_COLLECTED = "hide_collected",
+  // collectables
+  SHOW_SHOP = "show_shop",
+  SHOW_BATTLE_PASS = "show_battle_pass",
+  SHOW_BATTLE_PASS_ACCELERATED = "show_battle_pass_plus",
+  SHOW_PROMOTIONAL = "show_promotional",
   // display
   LEDGER_VIEW = "ledger_view",
   LEDGER_INVERSE = "ledger_inverse",
@@ -54,13 +57,16 @@ export type Settings = {
   [Option.SHOW_PETS]: boolean;
   // filters
   [Option.SHOW_PREMIUM]: boolean;
-  [Option.SHOW_SHOP]: boolean;
-  [Option.SHOW_PROMOTIONAL]: boolean;
   [Option.SHOW_OUT_OF_ROTATION]: boolean;
   [Option.SHOW_HIDDEN]: boolean;
   [Option.SHOW_UNOBTAINABLE]: boolean;
   [Option.SHOW_WARDROBE_ONLY]: boolean;
   [Option.HIDE_COLLECTED]: boolean;
+  // collectables
+  [Option.SHOW_SHOP]: boolean;
+  [Option.SHOW_BATTLE_PASS]: boolean;
+  [Option.SHOW_BATTLE_PASS_ACCELERATED]: boolean;
+  [Option.SHOW_PROMOTIONAL]: boolean;
   // display
   [Option.LEDGER_VIEW]: LedgerView;
   [Option.LEDGER_INVERSE]: boolean;

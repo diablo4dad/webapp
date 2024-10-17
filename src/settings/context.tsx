@@ -32,13 +32,16 @@ export const defaultSettings: Settings = {
   [Option.SHOW_PETS]: true,
   // filters
   [Option.SHOW_PREMIUM]: true,
-  [Option.SHOW_SHOP]: true,
-  [Option.SHOW_PROMOTIONAL]: true,
   [Option.SHOW_OUT_OF_ROTATION]: true,
   [Option.SHOW_HIDDEN]: false,
   [Option.SHOW_UNOBTAINABLE]: false,
   [Option.SHOW_WARDROBE_ONLY]: false,
   [Option.HIDE_COLLECTED]: false,
+  // collectables
+  [Option.SHOW_SHOP]: true,
+  [Option.SHOW_BATTLE_PASS]: true,
+  [Option.SHOW_BATTLE_PASS_ACCELERATED]: true,
+  [Option.SHOW_PROMOTIONAL]: true,
   // view
   [Option.LEDGER_VIEW]: LedgerView.CARD,
   [Option.LEDGER_INVERSE]: false,

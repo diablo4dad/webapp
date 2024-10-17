@@ -101,6 +101,7 @@ type CollectionRef = {
   description?: string;
   category?: string;
   premium?: boolean;
+  promotional?: boolean;
   claim?: string;
   claimDescription?: string;
   claimZone?: Zone;

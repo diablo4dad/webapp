@@ -52,6 +52,39 @@ function createNumberSelected(
 
 export const groups: ReadonlyArray<OptionWidgetGroup> = [
   {
+    label: "Categories",
+    widgets: [
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_SHOP,
+        label: "Shop",
+        action: createBooleanAction(Option.SHOW_SHOP),
+        checked: createBooleanChecked(Option.SHOW_SHOP),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_BATTLE_PASS,
+        label: "Battle Pass",
+        action: createBooleanAction(Option.SHOW_BATTLE_PASS),
+        checked: createBooleanChecked(Option.SHOW_BATTLE_PASS),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_BATTLE_PASS_ACCELERATED,
+        label: "Battle Pass Accelerated",
+        action: createBooleanAction(Option.SHOW_BATTLE_PASS_ACCELERATED),
+        checked: createBooleanChecked(Option.SHOW_BATTLE_PASS_ACCELERATED),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_PROMOTIONAL,
+        label: "Promotional",
+        action: createBooleanAction(Option.SHOW_PROMOTIONAL),
+        checked: createBooleanChecked(Option.SHOW_PROMOTIONAL),
+      },
+    ],
+  },
+  {
     label: "Items",
     widgets: [
       {
@@ -156,20 +189,6 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
         label: "Show Premium",
         action: createBooleanAction(Option.SHOW_PREMIUM),
         checked: createBooleanChecked(Option.SHOW_PREMIUM),
-      },
-      {
-        type: WidgetType.TOGGLE,
-        option: Option.SHOW_SHOP,
-        label: "Show Shop Items",
-        action: createBooleanAction(Option.SHOW_SHOP),
-        checked: createBooleanChecked(Option.SHOW_SHOP),
-      },
-      {
-        type: WidgetType.TOGGLE,
-        option: Option.SHOW_PROMOTIONAL,
-        label: "Show Promotional",
-        action: createBooleanAction(Option.SHOW_PROMOTIONAL),
-        checked: createBooleanChecked(Option.SHOW_PROMOTIONAL),
       },
       {
         type: WidgetType.TOGGLE,
