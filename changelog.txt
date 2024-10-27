@@ -20,6 +20,7 @@ collections.
 
 - Support a Streamer #2 heading
 - Duplicate "Hooked Piercer" in the Dark Citadel collection
+- Missing pets from the Software Purchase > VoH collection
 
 ## [1.10.2] - 2024-10-18
 
