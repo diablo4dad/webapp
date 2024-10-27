@@ -1,6 +1,6 @@
 {
   "name": "d4dad",
-  "version": "1.10.0",
+  "version": "1.10.2",
   "private": true,
   "dependencies": {
     "@floating-ui/react": "^0.26.20",

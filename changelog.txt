@@ -3,7 +3,45 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
-## [1.10.0]
+## [1.10.2] - 2024-10-18
+
+### Added
+
+- "Nahantu Veilwalker" armor set added
+- "Dark Leopard" and "Scion of Hatred Barding" main quest rewards
+
+### Updated
+
+- Merged Dark Citadel vendor items into Raid Drops
+- Description of "Hooked Piercer" to include vendor price
+- Description of Urivar's helm + sword as quest rewards
+
+### Removed
+
+- "Leucistic Lion" from vendor collection
+
+## [1.10.1] - 2024-10-18
+
+### Added
+
+- Warcraft Legends II shop collections
+- Rebel's Cache weapon pack collection
+- "Leucistic Panther" to vendor collection
+
+### Updated
+
+- Site fonts are now "PT Serif" and "Ubuntu"
+
+### Fixed
+
+- Missing "Demonbinder" icon
+
+### Known Issues
+
+- "Demigod Caster" wand has a [PH] icon
+- "Scales of the Dead Sea" mount armor icon missing
+
+## [1.10.0] - 1024-10-17
 
 ### Added
 
