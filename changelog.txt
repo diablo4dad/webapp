@@ -3,6 +3,23 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.10.3] - 2024-10-27
+
+### Added
+
+- 5x Spiritborn unique armor transmogs
+- "The Hateful Stone" challenge reward for Paragon 300
+
+### Updated
+
+- Descriptions of various quest items
+- Descriptions of the "Nahantu Veilwalker" VoH pre-order set
+
+### Fixed
+
+- Support a Streamer #2 heading
+- Duplicate "Hooked Piercer" in the Dark Citadel collection
+
 ## [1.10.2] - 2024-10-18
 
 ### Added
