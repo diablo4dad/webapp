@@ -3,6 +3,14 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.10.4] - 2024-10-28
+
+### Fixed
+
+- Moved "Undercity Temple Barding" to zone collection
+- Consistent unique/mythic descriptions using the "Salvaged from..." template
+- Punctuation of "Sanctuary" in item descriptions
+
 ## [1.10.3] - 2024-10-27
 
 ### Added
