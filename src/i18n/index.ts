@@ -76,7 +76,7 @@ export function getItemDescription(item: CollectionItem): string {
     case "PvP Drop":
       return "Dropped by killing players and looting Baleful Chests.";
     case "World Drop":
-      return "Dropped throughout sanctuary.";
+      return "Dropped throughout Sanctuary.";
     default:
       return "Description unavailable.";
   }
