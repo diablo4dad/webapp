@@ -3,6 +3,7 @@ import {
   CharacterGender,
   Chest,
   CollectionItem,
+  MagicType,
   Zone,
 } from "../data";
 
@@ -46,6 +47,12 @@ export function getItemDescription(item: CollectionItem): string {
     const baseItem = item.items[0];
     if (baseItem.transmogName) {
       return `Salvaged from ${baseItem.name}.`;
+    }
+
+    if (baseItem.magicType) {
+      if ([MagicType.UNIQUE, MagicType.MYTHIC].includes(baseItem.magicType)) {
+        return `Salvaged from ${baseItem.name}.`;
+      }
     }
   }
 
