@@ -30,6 +30,13 @@ export const defaultSettings: Settings = {
   [Option.SHOW_EMBLEMS]: true,
   [Option.SHOW_TITLES]: true,
   [Option.SHOW_PETS]: true,
+  // classes
+  [Option.SHOW_SORCERER]: true,
+  [Option.SHOW_DRUID]: true,
+  [Option.SHOW_BARBARIAN]: true,
+  [Option.SHOW_ROGUE]: true,
+  [Option.SHOW_NECROMANCER]: true,
+  [Option.SHOW_SPIRITBORN]: true,
   // filters
   [Option.SHOW_PREMIUM]: true,
   [Option.SHOW_OUT_OF_ROTATION]: true,

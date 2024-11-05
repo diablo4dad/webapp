@@ -181,6 +181,53 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
     ],
   },
   {
+    label: "Classes",
+    widgets: [
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_SORCERER,
+        label: "Show Sorcerer",
+        action: createBooleanAction(Option.SHOW_SORCERER),
+        checked: createBooleanChecked(Option.SHOW_SORCERER),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_DRUID,
+        label: "Show Druid",
+        action: createBooleanAction(Option.SHOW_DRUID),
+        checked: createBooleanChecked(Option.SHOW_DRUID),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_BARBARIAN,
+        label: "Show Barbarian",
+        action: createBooleanAction(Option.SHOW_BARBARIAN),
+        checked: createBooleanChecked(Option.SHOW_BARBARIAN),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_ROGUE,
+        label: "Show Rogue",
+        action: createBooleanAction(Option.SHOW_ROGUE),
+        checked: createBooleanChecked(Option.SHOW_ROGUE),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_NECROMANCER,
+        label: "Show Necromancer",
+        action: createBooleanAction(Option.SHOW_NECROMANCER),
+        checked: createBooleanChecked(Option.SHOW_NECROMANCER),
+      },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_SPIRITBORN,
+        label: "Show Spiritborn",
+        action: createBooleanAction(Option.SHOW_SPIRITBORN),
+        checked: createBooleanChecked(Option.SHOW_SPIRITBORN),
+      },
+    ],
+  },
+  {
     label: "Filters",
     widgets: [
       {

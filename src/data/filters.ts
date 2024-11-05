@@ -1,12 +1,17 @@
 import Fuse from "fuse.js";
 import { isItemCollected, isItemHidden } from "../collection/predicate";
 import { CollectionLog } from "../collection/type";
-import { getEnabledItemTypes, MasterGroup } from "../common";
+import { getEnabledClasses, getEnabledItemTypes, MasterGroup } from "../common";
 import { isEnabled } from "../settings/predicate";
 import { Option, Settings } from "../settings/type";
 import { getItemIds } from "./getters";
 
-import { Collection, CollectionGroup, CollectionItem } from "./index";
+import {
+  CharacterClass,
+  Collection,
+  CollectionGroup,
+  CollectionItem,
+} from "./index";
 
 import { doesHaveWardrobePlaceholder } from "./predicates";
 import { flattenDadDb } from "./transforms";
@@ -43,6 +48,23 @@ function filterItemsByType(
       itemTypes.flatMap((it) =>
         dci.items.filter((di) => di.itemType.name === it),
       ).length !== 0
+    );
+  };
+}
+
+function filterItemsByClass(
+  characterClasses: CharacterClass[],
+): (dci: CollectionItem) => boolean {
+  return function (dci: CollectionItem) {
+    if (characterClasses.length === 0) {
+      return true;
+    }
+
+    return dci.items.some((di) =>
+      di.usableByClass.some(
+        (cc, idx) =>
+          cc === 1 && characterClasses.includes(idx as CharacterClass),
+      ),
     );
   };
 }
@@ -157,6 +179,11 @@ export function filterDb(
   db = filterCollectionItems(
     db,
     filterItemsByType(getEnabledItemTypes(settings)),
+  );
+
+  db = filterCollectionItems(
+    db,
+    filterItemsByClass(getEnabledClasses(settings)),
   );
 
   if (!isEnabled(settings, Option.SHOW_PREMIUM)) {

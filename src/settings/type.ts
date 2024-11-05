@@ -15,6 +15,13 @@ export enum Option {
   SHOW_EMBLEMS = "show_emblems",
   SHOW_TITLES = "show_titles",
   SHOW_PETS = "show_pets",
+  // classes
+  SHOW_SORCERER = "show_sorcerer",
+  SHOW_DRUID = "show_druid",
+  SHOW_BARBARIAN = "show_barbarian",
+  SHOW_ROGUE = "show_rogue",
+  SHOW_NECROMANCER = "show_necromancer",
+  SHOW_SPIRITBORN = "show_spiritborn",
   // filters
   SHOW_PREMIUM = "show_premium",
   SHOW_OUT_OF_ROTATION = "show_out_of_rotation",
@@ -55,6 +62,13 @@ export type Settings = {
   [Option.SHOW_EMBLEMS]: boolean;
   [Option.SHOW_TITLES]: boolean;
   [Option.SHOW_PETS]: boolean;
+  // classes
+  [Option.SHOW_SORCERER]: boolean;
+  [Option.SHOW_DRUID]: boolean;
+  [Option.SHOW_BARBARIAN]: boolean;
+  [Option.SHOW_ROGUE]: boolean;
+  [Option.SHOW_NECROMANCER]: boolean;
+  [Option.SHOW_SPIRITBORN]: boolean;
   // filters
   [Option.SHOW_PREMIUM]: boolean;
   [Option.SHOW_OUT_OF_ROTATION]: boolean;

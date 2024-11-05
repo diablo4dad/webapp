@@ -1,5 +1,6 @@
-import { BooleanOption, Option, Settings } from "../settings/type";
+import { CharacterClass } from "../data";
 import { isEnabled } from "../settings/predicate";
+import { BooleanOption, Option, Settings } from "../settings/type";
 
 enum MasterGroup {
   GENERAL = "General",
@@ -114,6 +115,23 @@ function getEnabledItemTypes(settings: Settings): string[] {
     .concat(safeGet(Option.SHOW_PETS, ItemGroup.PETS));
 }
 
+function getEnabledClasses(settings: Settings): CharacterClass[] {
+  const safeGet = (
+    option: BooleanOption,
+    characterClass: CharacterClass,
+  ): CharacterClass[] => {
+    return isEnabled(settings, option) ? [characterClass] : [];
+  };
+
+  return Array<CharacterClass>()
+    .concat(safeGet(Option.SHOW_SORCERER, CharacterClass.SORCERER))
+    .concat(safeGet(Option.SHOW_DRUID, CharacterClass.DRUID))
+    .concat(safeGet(Option.SHOW_BARBARIAN, CharacterClass.BARBARIAN))
+    .concat(safeGet(Option.SHOW_ROGUE, CharacterClass.ROGUE))
+    .concat(safeGet(Option.SHOW_NECROMANCER, CharacterClass.NECROMANCER))
+    .concat(safeGet(Option.SHOW_SPIRITBORN, CharacterClass.SPIRITBORN));
+}
+
 export {
   SideBarType,
   ItemGroup,
@@ -123,4 +141,5 @@ export {
   MasterGroup,
   locale,
   getEnabledItemTypes,
+  getEnabledClasses,
 };

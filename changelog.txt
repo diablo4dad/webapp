@@ -7,6 +7,10 @@ collections.
 
 ### Added
 
+- Class specific filters
+
+### Updated
+
 - "Macabre Celebration" collection to Tejal's Gifts
 - "Celebrated" title, Khazra Helm and Boots to the Citadel challenge collection
 
