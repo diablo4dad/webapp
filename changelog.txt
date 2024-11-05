@@ -3,6 +3,19 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.10.5] - 2024-11-05
+
+### Added
+
+- "Macabre Celebration" collection to Tejal's Gifts
+- "Celebrated" title, Khazra Helm and Boots to the Citadel challenge collection
+
+### Fixed
+
+- Name of the "Malefic Gaze" 1h sword
+- Icon of the "Demigod Caster"
+- Missing "Asheara" and "Alkor" pets
+
 ## [1.10.4] - 2024-10-28
 
 ### Fixed
