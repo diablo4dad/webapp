@@ -12,7 +12,7 @@ import logo from "./image/logo/d4ico_x1.png";
 
 import styles from "./Application.module.css";
 import Ledger from "./collection/Ledger";
-import ConfigSidebar from "./ConfigSidebar";
+import ConfigSidebar from "./settings/ConfigSidebar";
 import Progress from "./components/Progress";
 import { Gear, Hamburger } from "./components/Icons";
 import Button, { BtnColours } from "./components/Button";

@@ -1,9 +1,9 @@
 import styles from "./ConfigSidebar.module.css";
-import Toggle from "./components/Toggle";
-import { useSettings, useSettingsDispatch } from "./settings/context";
-import { groups } from "./settings/menu";
-import { WidgetType } from "./common/widget";
-import Select from "./components/Select";
+import Toggle from "../components/Toggle";
+import { useSettings, useSettingsDispatch } from "./context";
+import { groups } from "./menu";
+import { WidgetType } from "../common/widget";
+import Select from "../components/Select";
 
 function ConfigSidebar() {
   const settings = useSettings();
