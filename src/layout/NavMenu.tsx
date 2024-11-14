@@ -1,15 +1,15 @@
 import { ForwardedRef, forwardRef, useState } from "react";
 import styles from "./NavMenu.module.css";
-import { MasterGroup } from "./common";
-import GeneralIcon from "./image/icons/goblin.webp";
-import CashShopIcon from "./image/icons/purse.webp";
-import PromoIcon from "./image/icons/chest.webp";
-import SeasonIcon from "./image/icons/season.webp";
-import ChallengeIcon from "./image/icons/dungeon.webp";
-import GlobalIcon from "./image/icons/wardrobe.webp";
-import { ChevronRight } from "./components/Icons";
+import { MasterGroup } from "../common";
+import GeneralIcon from "../image/icons/goblin.webp";
+import CashShopIcon from "../image/icons/purse.webp";
+import PromoIcon from "../image/icons/chest.webp";
+import SeasonIcon from "../image/icons/season.webp";
+import ChallengeIcon from "../image/icons/dungeon.webp";
+import GlobalIcon from "../image/icons/wardrobe.webp";
+import { ChevronRight } from "../components/Icons";
 import { NavLink } from "react-router-dom";
-import { generateUrl } from "./routes/CollectionLog";
+import { generateUrl } from "../routes/CollectionLog";
 import classNames from "classnames";
 
 type Props = {

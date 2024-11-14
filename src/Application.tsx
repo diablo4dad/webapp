@@ -17,13 +17,13 @@ import Progress from "./components/Progress";
 import { Gear, Hamburger } from "./components/Icons";
 import Button, { BtnColours } from "./components/Button";
 import Authenticate, { Orientation } from "./components/Authenticate";
-import MobileMenu from "./MobileMenu";
+import MobileMenu from "./layout/MobileMenu";
 import MobileCloseButton from "./components/MobileCloseButton";
-import MobileHeader from "./MobileHeader";
+import MobileHeader from "./layout/MobileHeader";
 
 import Account, { Direction } from "./components/Account";
 import { ContentType, MasterGroup, SideBarType } from "./common";
-import NavMenu from "./NavMenu";
+import NavMenu from "./layout/NavMenu";
 import { selectItemOrDefault } from "./data/reducers";
 import { countAllItemsDabDb } from "./data/aggregate";
 import { getDefaultItemId } from "./data/getters";
@@ -36,7 +36,7 @@ import {
 } from "./collection/aggregate";
 import placeholder from "./image/placeholder.webp";
 import { toggleValueInArray } from "./common/arrays";
-import Shell from "./Shell";
+import Shell from "./layout/Shell";
 import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
 import { useData } from "./data/context";

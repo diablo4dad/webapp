@@ -1,11 +1,11 @@
-import Authenticate, { AuthGiant } from "./components/Authenticate";
+import Authenticate, { AuthGiant } from "../components/Authenticate";
 import styles from "./MobileMenu.module.css";
-import Account from "./components/Account";
+import Account from "../components/Account";
 import React from "react";
-import { ContentType, MasterGroup } from "./common";
+import { ContentType, MasterGroup } from "../common";
 import { Link } from "react-router-dom";
-import { generateUrl } from "./routes/CollectionLog";
-import { DadUser } from "./auth/type";
+import { generateUrl } from "../routes/CollectionLog";
+import { DadUser } from "../auth/type";
 
 type Props = {
   onNavigate: (place: ContentType, group?: MasterGroup) => void;
