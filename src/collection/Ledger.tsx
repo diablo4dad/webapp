@@ -1,8 +1,8 @@
-import { Collection, CollectionItem, getDefaultItem, MagicType } from "./data";
-import { getItemDescription } from "./i18n";
+import { Collection, CollectionItem, getDefaultItem, MagicType } from "../data";
+import { getItemDescription } from "../i18n";
 import styles from "./Ledger.module.css";
 import React, { useRef } from "react";
-import { Close, Currency, Tick, TickCircle } from "./components/Icons";
+import { Close, Currency, Tick, TickCircle } from "../components/Icons";
 import {
   getAllCollectionItems,
   getClassIconVariant,
@@ -10,31 +10,31 @@ import {
   getItemIds,
   getItemName,
   getItemType,
-} from "./data/getters";
-import { countAllItemsInCollection } from "./data/aggregate";
+} from "../data/getters";
+import { countAllItemsInCollection } from "../data/aggregate";
 import {
   countItemsInCollectionHidden,
   countItemsInCollectionOwned,
-} from "./collection/aggregate";
-import { onTouchStart } from "./common/dom";
+} from "./aggregate";
+import { onTouchStart } from "../common/dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import placeholder from "./image/placeholder.webp";
+import placeholder from "../image/placeholder.webp";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
-import { useSettings } from "./settings/context";
-import { LedgerView } from "./settings/type";
+import { useSettings } from "../settings/context";
+import { LedgerView } from "../settings/type";
 import classNames from "classnames";
-import { isLedgerInverse, isLedgerView } from "./settings/predicate";
-import { isCollectionEmpty } from "./data/predicates";
+import { isLedgerInverse, isLedgerView } from "../settings/predicate";
+import { isCollectionEmpty } from "../data/predicates";
 import {
   CollectionActionType,
   useCollection,
   useCollectionDispatch,
-} from "./collection/context";
-import { isItemCollected, isItemHidden } from "./collection/predicate";
-import btnStyles from "./components/Button.module.css";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./components/Tooltip";
-import { getPreferredClass, getPreferredGender } from "./settings/accessor";
-import { getIcon } from "./bucket";
+} from "./context";
+import { isItemCollected, isItemHidden } from "./predicate";
+import btnStyles from "../components/Button.module.css";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
+import { getPreferredClass, getPreferredGender } from "../settings/accessor";
+import { getIcon } from "../bucket";
 
 type Props = {
   collections: Collection[];

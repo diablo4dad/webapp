@@ -11,7 +11,7 @@ import { Collection, CollectionItem } from "./data";
 import logo from "./image/logo/d4ico_x1.png";
 
 import styles from "./Application.module.css";
-import Ledger from "./Ledger";
+import Ledger from "./collection/Ledger";
 import ConfigSidebar from "./ConfigSidebar";
 import Progress from "./components/Progress";
 import { Gear, Hamburger } from "./components/Icons";
@@ -40,14 +40,14 @@ import Shell from "./layout/Shell";
 import { VersionInfo } from "./components/VersionPanel";
 import { DiscordInvite } from "./components/DiscordPanel";
 import { useData } from "./data/context";
-import ItemSidebarSkeleton from "./ItemSidebarSkeleton";
-import LedgerSkeleton from "./LedgerSkeleton";
+import ItemSidebarSkeleton from "./collection/ItemSidebarSkeleton";
+import LedgerSkeleton from "./collection/LedgerSkeleton";
 import { Await, useLoaderData } from "react-router-dom";
 import { LoaderPayload } from "./routes/CollectionLog";
-import ItemSidebar from "./ItemSidebar";
+import ItemSidebar from "./collection/ItemSidebar";
 import { useAuth } from "./auth/context";
 import Search from "./components/Search";
-import EmptyCollection from "./EmptyCollection";
+import EmptyCollection from "./collection/EmptyCollection";
 
 export type ViewModel = {
   openCollections: number[];
