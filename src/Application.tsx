@@ -18,7 +18,7 @@ import { Gear, Hamburger } from "./components/Icons";
 import Button, { BtnColours } from "./components/Button";
 import Authenticate, { Orientation } from "./components/Authenticate";
 import MobileMenu from "./MobileMenu";
-import MobileCloseButton from "./MobileCloseButton";
+import MobileCloseButton from "./components/MobileCloseButton";
 import MobileHeader from "./MobileHeader";
 
 import Account, { Direction } from "./components/Account";

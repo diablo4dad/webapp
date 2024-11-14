@@ -1,6 +1,6 @@
 import styles from "./MobileCloseButton.module.css";
 import { ButtonHTMLAttributes } from "react";
-import { Close } from "./components/Icons";
+import { Close } from "./Icons";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {};
 
