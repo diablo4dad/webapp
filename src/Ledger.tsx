@@ -2,7 +2,7 @@ import { Collection, CollectionItem, getDefaultItem, MagicType } from "./data";
 import { getItemDescription } from "./i18n";
 import styles from "./Ledger.module.css";
 import React, { useRef } from "react";
-import { Close, Currency, Tick, TickCircle } from "./Icons";
+import { Close, Currency, Tick, TickCircle } from "./components/Icons";
 import {
   getAllCollectionItems,
   getClassIconVariant,

@@ -1,5 +1,5 @@
 import styles from "./Search.module.css";
-import { Close, SearchIcon } from "../Icons";
+import { Close, SearchIcon } from "./Icons";
 import classNames from "classnames";
 
 type Props = {

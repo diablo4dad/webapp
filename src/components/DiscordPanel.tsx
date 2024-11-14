@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import styles from "../Application.module.css";
 import { DISCORD_INVITE_LINK } from "../config";
-import { Discord } from "../Icons";
+import { Discord } from "./Icons";
 
 export function DiscordInvite(): ReactElement<HTMLDivElement> {
   return (
