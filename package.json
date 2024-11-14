@@ -41,6 +41,11 @@
       "react-app/jest"
     ]
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(usehooks-ts)/)"
+    ]
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
