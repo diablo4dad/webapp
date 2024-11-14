@@ -1,7 +1,7 @@
 import { DadDb } from "../data";
 import { MasterGroup } from "../common";
 import React, { useEffect } from "react";
-import Application from "../Application";
+import Application from "../app/Application";
 import { defer, useLoaderData } from "react-router-dom";
 import { useData } from "../data/context";
 import { hydrateDadDb } from "../data/factory";

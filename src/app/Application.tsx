@@ -7,48 +7,48 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Collection, CollectionItem } from "./data";
-import i18n from "./i18n";
-import logo from "./image/logo/d4ico_x1.png";
+import { Collection, CollectionItem } from "../data";
+import i18n from "../i18n";
+import logo from "../image/logo/d4ico_x1.png";
 
 import styles from "./Application.module.css";
-import Ledger from "./collection/Ledger";
-import ConfigSidebar from "./settings/ConfigSidebar";
-import Progress from "./components/Progress";
-import { Gear, Hamburger } from "./components/Icons";
-import Button, { BtnColours } from "./components/Button";
-import Authenticate, { Orientation } from "./components/Authenticate";
-import MobileMenu from "./layout/MobileMenu";
-import MobileCloseButton from "./components/MobileCloseButton";
-import MobileHeader from "./layout/MobileHeader";
+import Ledger from "../collection/Ledger";
+import ConfigSidebar from "../settings/ConfigSidebar";
+import Progress from "../components/Progress";
+import { Gear, Hamburger } from "../components/Icons";
+import Button, { BtnColours } from "../components/Button";
+import Authenticate, { Orientation } from "../components/Authenticate";
+import MobileMenu from "../layout/MobileMenu";
+import MobileCloseButton from "../components/MobileCloseButton";
+import MobileHeader from "../layout/MobileHeader";
 
-import Account, { Direction } from "./components/Account";
-import { ContentType, MasterGroup, SideBarType } from "./common";
-import NavMenu from "./layout/NavMenu";
-import { selectItemOrDefault } from "./data/reducers";
-import { countAllItemsDabDb } from "./data/aggregate";
-import { getDefaultItemId } from "./data/getters";
-import { useCollection } from "./collection/context";
-import { useSettings } from "./settings/context";
-import { getViewModel, saveSettings, saveViewModel } from "./store/local";
+import Account, { Direction } from "../components/Account";
+import { ContentType, MasterGroup, SideBarType } from "../common";
+import NavMenu from "../layout/NavMenu";
+import { selectItemOrDefault } from "../data/reducers";
+import { countAllItemsDabDb } from "../data/aggregate";
+import { getDefaultItemId } from "../data/getters";
+import { useCollection } from "../collection/context";
+import { useSettings } from "../settings/context";
+import { getViewModel, saveSettings, saveViewModel } from "../store/local";
 import {
   countItemInDbHidden,
   countItemInDbOwned,
-} from "./collection/aggregate";
-import placeholder from "./image/placeholder.webp";
-import { toggleValueInArray } from "./common/arrays";
-import Shell from "./layout/Shell";
-import { VersionInfo } from "./components/VersionPanel";
-import { DiscordInvite } from "./components/DiscordPanel";
-import { useData } from "./data/context";
-import ItemSidebarSkeleton from "./collection/ItemSidebarSkeleton";
-import LedgerSkeleton from "./collection/LedgerSkeleton";
+} from "../collection/aggregate";
+import placeholder from "../image/placeholder.webp";
+import { toggleValueInArray } from "../common/arrays";
+import Shell from "../layout/Shell";
+import { VersionInfo } from "../components/VersionPanel";
+import { DiscordInvite } from "../components/DiscordPanel";
+import { useData } from "../data/context";
+import ItemSidebarSkeleton from "../collection/ItemSidebarSkeleton";
+import LedgerSkeleton from "../collection/LedgerSkeleton";
 import { Await, useLoaderData } from "react-router-dom";
-import { LoaderPayload } from "./routes/CollectionLog";
-import ItemSidebar from "./collection/ItemSidebar";
-import { useAuth } from "./auth/context";
-import Search from "./components/Search";
-import EmptyCollection from "./collection/EmptyCollection";
+import { LoaderPayload } from "../routes/CollectionLog";
+import ItemSidebar from "../collection/ItemSidebar";
+import { useAuth } from "../auth/context";
+import Search from "../components/Search";
+import EmptyCollection from "../collection/EmptyCollection";
 
 export type ViewModel = {
   openCollections: number[];

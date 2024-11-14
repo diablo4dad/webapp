@@ -1,6 +1,6 @@
-@value ProgressBar, Progress from "components/Progress.module.css";
-@value toggle from "components/Toggle.module.css";
-@value Search from "components/Search.module.css";
+@value ProgressBar, Progress from "../components/Progress.module.css";
+@value toggle from "../components/Toggle.module.css";
+@value Search from "../components/Search.module.css";
 
 .Header {
     width: 100%;

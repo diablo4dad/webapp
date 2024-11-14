@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import styles from "../Application.module.css";
+import styles from "../app/Application.module.css";
 import { LAST_UPDATED, SITE_VERSION } from "../config";
 
 export function VersionInfo(): ReactElement<HTMLDivElement> {

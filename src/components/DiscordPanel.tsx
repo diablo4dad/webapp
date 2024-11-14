@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import styles from "../Application.module.css";
+import styles from "../app/Application.module.css";
 import { DISCORD_INVITE_LINK } from "../config";
 import { Discord } from "./Icons";
 
