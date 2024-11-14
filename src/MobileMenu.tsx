@@ -1,4 +1,4 @@
-import Authenticate, { AuthGiant } from "./Authenticate";
+import Authenticate, { AuthGiant } from "./components/Authenticate";
 import styles from "./MobileMenu.module.css";
 import Account from "./components/Account";
 import React from "react";

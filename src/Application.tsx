@@ -16,7 +16,7 @@ import ConfigSidebar from "./ConfigSidebar";
 import Progress from "./components/Progress";
 import { Gear, Hamburger } from "./components/Icons";
 import Button, { BtnColours } from "./components/Button";
-import Authenticate, { Orientation } from "./Authenticate";
+import Authenticate, { Orientation } from "./components/Authenticate";
 import MobileMenu from "./MobileMenu";
 import MobileCloseButton from "./MobileCloseButton";
 import MobileHeader from "./MobileHeader";
