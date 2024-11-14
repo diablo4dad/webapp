@@ -1,7 +1,7 @@
 import styles from "./Account.module.css";
-import { Google } from "./Icons";
+import { Google } from "../components/Icons";
 import classNames from "classnames";
-import { DadUser } from "../auth/type";
+import { DadUser } from "./type";
 
 enum Direction {
   COLUMN,

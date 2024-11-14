@@ -17,12 +17,12 @@ import ConfigSidebar from "../settings/ConfigSidebar";
 import Progress from "../components/Progress";
 import { Gear, Hamburger } from "../components/Icons";
 import Button, { BtnColours } from "../components/Button";
-import Authenticate, { Orientation } from "../components/Authenticate";
+import Authenticate, { Orientation } from "../auth/Authenticate";
 import MobileMenu from "../layout/MobileMenu";
 import MobileCloseButton from "../components/MobileCloseButton";
 import MobileHeader from "../layout/MobileHeader";
 
-import Account, { Direction } from "../components/Account";
+import Account, { Direction } from "../auth/Account";
 import { ContentType, MasterGroup, SideBarType } from "../common";
 import NavMenu from "../layout/NavMenu";
 import { selectItemOrDefault } from "../data/reducers";

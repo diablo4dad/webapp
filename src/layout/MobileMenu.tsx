@@ -1,6 +1,6 @@
-import Authenticate, { AuthGiant } from "../components/Authenticate";
+import Authenticate, { AuthGiant } from "../auth/Authenticate";
 import styles from "./MobileMenu.module.css";
-import Account from "../components/Account";
+import Account from "../auth/Account";
 import React from "react";
 import { ContentType, MasterGroup } from "../common";
 import { Link } from "react-router-dom";
