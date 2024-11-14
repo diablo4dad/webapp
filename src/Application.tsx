@@ -15,7 +15,7 @@ import Ledger from "./Ledger";
 import ConfigSidebar from "./ConfigSidebar";
 import Progress from "./components/Progress";
 import { Gear, Hamburger } from "./Icons";
-import Button, { BtnColours } from "./Button";
+import Button, { BtnColours } from "./components/Button";
 import Authenticate, { Orientation } from "./Authenticate";
 import MobileMenu from "./MobileMenu";
 import MobileCloseButton from "./MobileCloseButton";

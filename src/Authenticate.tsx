@@ -1,5 +1,5 @@
 import styles from "./Authenticate.module.css";
-import Button from "./Button";
+import Button from "./components/Button";
 import { Google } from "./Icons";
 import React from "react";
 

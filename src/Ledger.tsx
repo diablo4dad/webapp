@@ -31,7 +31,7 @@ import {
   useCollectionDispatch,
 } from "./collection/context";
 import { isItemCollected, isItemHidden } from "./collection/predicate";
-import btnStyles from "./Button.module.css";
+import btnStyles from "./components/Button.module.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./components/Tooltip";
 import { getPreferredClass, getPreferredGender } from "./settings/accessor";
 import { getIcon } from "./bucket";
