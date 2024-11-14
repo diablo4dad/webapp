@@ -8,6 +8,9 @@ import {
 } from "../data";
 
 const I18N = {
+  siteTitle: "Diablo IV Dad",
+  siteTagLine: "Bringing closure to the completionist in you",
+  gameName: "Diablo IV",
   characterGender: {
     [CharacterGender.MALE]: "Male",
     [CharacterGender.FEMALE]: "Female",

@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import { Collection, CollectionItem } from "./data";
+import i18n from "./i18n";
 import logo from "./image/logo/d4ico_x1.png";
 
 import styles from "./Application.module.css";
@@ -148,11 +149,15 @@ function Application(): ReactElement<HTMLDivElement> {
         <header className={styles.Header}>
           <div className={styles.HeaderLeft}>
             <div className={styles.HeaderLeftContent}>
-              <img className={styles.HeaderIcon} src={logo} alt="Diablo 4" />
+              <img
+                className={styles.HeaderIcon}
+                src={logo}
+                alt={i18n.gameName}
+              />
               <div className={styles.HeaderInfo}>
-                <div className={styles.HeaderInfoName}>Diablo IV Dad</div>
+                <div className={styles.HeaderInfoName}>{i18n.siteTitle}</div>
                 <div className={styles.HeaderInfoTagLine}>
-                  Bringing closure to the completionist in you
+                  {i18n.siteTagLine}
                 </div>
               </div>
               <div className={styles.HeaderButtons}>
