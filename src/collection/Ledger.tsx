@@ -39,7 +39,7 @@ import { getIcon } from "../bucket";
 type Props = {
   collections: Collection[];
   parentCollection?: Collection;
-  onClickItem: (collection: Collection, item: CollectionItem) => void;
+  onClickItem: (item: CollectionItem) => void;
   onToggleItem?: (item: CollectionItem) => void;
   onToggleCollection?: (collection: Collection) => void;
   onCollectionChange: (collectionId: number, isOpen: boolean) => void;
@@ -258,7 +258,7 @@ const LedgerInner = ({
               return (
                 <div
                   className={className}
-                  onClick={() => onClickItem(collection, collectionItem)}
+                  onClick={() => onClickItem(collectionItem)}
                   onDoubleClick={() => toggleItem(collectionItem)(!isCollected)}
                   onTouchStart={onTouchStart(() =>
                     toggleItem(collectionItem)(!isCollected),

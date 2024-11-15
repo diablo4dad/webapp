@@ -5,6 +5,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { getDefaultItemId } from "./getters";
 import { CollectionGroup, DadDb } from "./index";
 import { useCollection } from "../collection/context";
 import { useSettings } from "../settings/context";
@@ -27,6 +28,8 @@ const defaultContext: DataContextType = {
   countedDb: [],
   searchTerm: "",
   setSearchTerm: () => undefined,
+  focusItemId: -1,
+  setFocusItemId: () => undefined,
 };
 
 export type DataContextType = {
@@ -38,6 +41,8 @@ export type DataContextType = {
   filteredDb: CollectionGroup;
   searchTerm: string;
   setSearchTerm: (value: string) => void;
+  focusItemId: number;
+  setFocusItemId: (itemId: number) => void;
 };
 
 export const DataContext = createContext<DataContextType>(defaultContext);
@@ -54,18 +59,23 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [group, switchDb] = useState<MasterGroup>(MasterGroup.GENERAL);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
-  const filteredDb = useMemo(
-    () =>
-      filterDb(
-        db.collections,
-        settings,
-        log,
-        group,
-        debouncedSearchTerm,
-        false,
-      ),
-    [db, settings, log, group, debouncedSearchTerm],
-  );
+  const [focusItemId, setFocusItemId] = useState(-1);
+  const filteredDb = useMemo(() => {
+    const filteredDb = filterDb(
+      db.collections,
+      settings,
+      log,
+      group,
+      debouncedSearchTerm,
+      false,
+    );
+
+    if (focusItemId === -1) {
+      setFocusItemId(getDefaultItemId(filteredDb));
+    }
+
+    return filteredDb;
+  }, [db, settings, log, group, debouncedSearchTerm]);
   const countedDb = useMemo(
     () => filterDb(db.collections, settings, log, group, null, true),
     [db, settings, log, group],
@@ -81,8 +91,10 @@ export function DataProvider({ children }: PropsWithChildren) {
       countedDb,
       searchTerm,
       setSearchTerm,
+      focusItemId,
+      setFocusItemId,
     }),
-    [db, filteredDb, countedDb, group, searchTerm],
+    [db, filteredDb, countedDb, group, searchTerm, focusItemId],
   );
 
   return (

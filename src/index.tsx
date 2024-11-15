@@ -1,32 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+import { Application } from "./app/Application";
 import reportWebVitals from "./reportWebVitals";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Root } from "./routes/Root";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Root />,
-    children: [
-      {
-        index: true,
-        lazy: async () => {
-          const { CollectionView, loader } = await import("./routes/CollectionLog");
-          return { loader, Component: CollectionView };
-        },
-      },
-      {
-        path: "/transmogs/:collectionId",
-        lazy: async () => {
-          const { CollectionView, loader } = await import("./routes/CollectionLog");
-          return { loader, Component: CollectionView };
-        },
-      },
-    ],
-  },
-]);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
@@ -34,7 +10,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Application />
   </React.StrictMode>,
 );
 

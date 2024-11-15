@@ -5,6 +5,7 @@ import {
   useContext,
   useReducer,
 } from "react";
+import { saveSettings } from "../store/local";
 import {
   BooleanOption,
   LedgerView,
@@ -97,6 +98,8 @@ export function SettingsProvider({ children, settings }: Props) {
     settingsReducer,
     settings ?? defaultSettings,
   );
+
+  saveSettings(value);
 
   return (
     <SettingsContext.Provider value={value}>
