@@ -1,5 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { SidebarProvider } from "../layout/context";
 import Root from "../routes/Root";
 import { SettingsProvider } from "../settings/context";
 import { CollectionProvider } from "../collection/context";
@@ -51,7 +52,9 @@ export function Application() {
         <DataProvider>
           <AuthProvider>
             <PersistenceLayer>
-              <RouterProvider router={router} />
+              <SidebarProvider>
+                <RouterProvider router={router} />
+              </SidebarProvider>
             </PersistenceLayer>
           </AuthProvider>
         </DataProvider>
