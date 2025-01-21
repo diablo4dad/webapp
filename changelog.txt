@@ -5,15 +5,18 @@ collections.
 
 ## [1.10.6] - 2024-12-21
 
+### Added
+
+- "Slay Ride to Hell" limited event
+- "Mountain Dew #2" promotional collection
+- "iam8bit" vinyl promotional collection
+- "The War Within" promotional collection
+
 ### Updated
 
-- Added "Slay Ride to Hell" limited event
-- Added "Kurast Undercity Barding" to the "Kurast Undercity" collection
-- Added "Severed Head of Zagraal" and "Patron" title to the "Dark Citadel"
-  collection
-- Added the second "Mountain Dew" promotional collection
-- Added the iam8bit vinyl promotional collection
-- Updated descriptions expansion quest items
+- Kurast Undercity collection: "Kurast Undercity Barding"
+- Dark Citadel collection: "Severed Head of Zagraal" and "Patron" title
+- Descriptions of expansion quest items (thanks Krismate!)
 - "Hatred's Seat" pants are now obtainable
 - "Stiletto" is now unobtainable
 
