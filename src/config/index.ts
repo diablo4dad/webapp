@@ -1,6 +1,6 @@
-const VERSION = { major: 1, minor: 10, revision: 7 };
+const VERSION = { major: 1, minor: 10, revision: 8 };
 const SITE_VERSION = `${VERSION.major}.${VERSION.minor}.${VERSION.revision}`;
-const LAST_UPDATED = "January 22nd, 2024";
+const LAST_UPDATED = "March 28th, 2024";
 const DISCORD_INVITE_LINK = "https://discord.gg/mPRBrU2kYT";
 const DATA_REPO =
   "https://raw.githubusercontent.com/DiabloTools/d4data/master/json";
