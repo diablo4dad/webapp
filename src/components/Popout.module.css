@@ -1,0 +1,14 @@
+.Popout {
+    position: relative;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.PopoutContent {
+    position: absolute;
+    margin-top: 0.25rem;
+}
+
+.PopoutContentRight {
+    right: 0;
+}

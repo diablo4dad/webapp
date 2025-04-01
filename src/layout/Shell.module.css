@@ -15,6 +15,10 @@
     background-color: #1e2126;
 }
 
+.SettingsBar {
+    background-color: #1e2126;
+}
+
 .StickyTop {
     position: sticky;
     top: 0;
@@ -61,6 +65,10 @@
     }
 
     .Header {
+        border-bottom: 1px solid #303640;
+    }
+
+    .SettingsBar {
         box-shadow: 0 1px 3px rgba(17, 17, 17, 0.5);
         border-bottom: 1px solid #303640;
     }
@@ -81,7 +89,6 @@
         display: flex;
         flex-direction: column;
         width: 50rem;
-        height: calc(100vh - 6rem);
         overflow-y: auto;
 
         background-color: #252930;

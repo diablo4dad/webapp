@@ -1,4 +1,6 @@
 .Btn {
+    display: flex;
+    align-items: center;
     position: relative;
     border: 1px solid #39404d;
     padding: 0.5rem;
@@ -39,10 +41,24 @@
     box-shadow: none;
 }
 
+.BtnSmall {
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+}
+
+.BtnSmall svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
 .BtnDark {
     border: 1px solid #2D3239;
     background-color: #23272e;
     fill: #6F7D8C;
+}
+
+.BtnGrey {
+    color: #fff;
 }
 
 .BtnGrey svg {

@@ -1,0 +1,19 @@
+.Block {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 0.5rem 2rem;
+}
+
+.BlockLeftSide {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.BlockRightSide {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}

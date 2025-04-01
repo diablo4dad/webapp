@@ -50,6 +50,14 @@ function createNumberSelected(
   };
 }
 
+export function getOptionGroup(label: string): OptionWidgetGroup {
+  const g = groups.find((g) => g.label === label);
+  if (g === undefined) {
+    throw new Error(`Option group "${label}" does not exist.`);
+  }
+  return g;
+}
+
 export const groups: ReadonlyArray<OptionWidgetGroup> = [
   {
     label: "Categories",

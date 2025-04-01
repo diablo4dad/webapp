@@ -10,6 +10,7 @@ import i18n from "../i18n";
 import logo from "../image/logo/d4ico_x1.png";
 import MobileHeader from "../layout/MobileHeader";
 import MobileMenu from "../layout/MobileMenu";
+import { ConfigMenu } from "../settings/ConfigMenu";
 
 import styles from "./Root.module.css";
 import ConfigSidebar from "../settings/ConfigSidebar";
@@ -176,6 +177,7 @@ function Root(): ReactElement<HTMLDivElement> {
           </div>
         </header>
       }
+      settingsBar={<ConfigMenu />}
       sidebar={
         <>
           {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
