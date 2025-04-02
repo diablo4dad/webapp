@@ -16,6 +16,7 @@ export type Widget = {
 export type ToggleWidget = Widget & {
   type: WidgetType.TOGGLE;
   action: (e: ChangeEvent<HTMLInputElement>) => SettingsAction;
+  actionFrom: (settings: Settings) => SettingsAction;
   checked: (settings: Settings) => boolean;
 };
 

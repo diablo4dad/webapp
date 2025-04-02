@@ -1,0 +1,12 @@
+.CheckBox {
+}
+
+.CheckBoxInput {
+    margin-right: 0.25rem;
+}
+
+.CheckBoxLabel {
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
+}
