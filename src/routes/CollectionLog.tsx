@@ -1,12 +1,8 @@
-import EmptyCollection from "../collection/EmptyCollection";
-import Ledger from "../collection/Ledger";
+import { Layout } from "../collection/Layout";
 import LedgerSkeleton from "../collection/LedgerSkeleton";
-import { toggleValueInArray } from "../common/arrays";
-import { Collection, CollectionItem, DadDb } from "../data";
-import { MasterGroup, SideBarType } from "../common";
-import React, { Suspense, useEffect, useState } from "react";
-import { countAllItemsDabDb } from "../data/aggregate";
-import { getViewModel, saveViewModel } from "../store/local";
+import { DadDb } from "../data";
+import { MasterGroup } from "../common";
+import React, { Suspense, useEffect } from "react";
 import { Await, defer, useLoaderData } from "react-router-dom";
 import { useData } from "../data/context";
 import { hydrateDadDb } from "../data/factory";
@@ -65,11 +61,9 @@ export async function loader({ params }: Params) {
 
 export function CollectionView() {
   const { db: dbPromise, group } = useLoaderData() as LoaderPayload;
-  const { filteredDb, db, switchDb, setDb, setFocusItemId } = useData();
-  const [vm, setVm] = useState<ViewModel>(getViewModel());
+  const { db, switchDb, setDb } = useData();
 
   switchDb(group);
-  saveViewModel(vm);
 
   useEffect(() => {
     let cancelled = false;
@@ -85,31 +79,11 @@ export function CollectionView() {
     };
   }, [db, setDb, group, switchDb]);
 
-  function onClickItem(collectionItem: CollectionItem) {
-    setFocusItemId(collectionItem.id);
-    // setSideBar(SideBarType.ITEM);
-  }
-
   return (
     <>
       <Suspense fallback={<LedgerSkeleton />}>
         <Await resolve={dbPromise}>
-          <Ledger
-            collections={filteredDb}
-            openCollections={vm.openCollections}
-            onClickItem={onClickItem}
-            onCollectionChange={(collectionId, isOpen) => {
-              setVm((vm) => ({
-                ...vm,
-                openCollections: toggleValueInArray(
-                  vm.openCollections,
-                  collectionId,
-                  isOpen,
-                ),
-              }));
-            }}
-          />
-          {countAllItemsDabDb(filteredDb) === 0 && <EmptyCollection />}
+          <Layout />
         </Await>
       </Suspense>
     </>

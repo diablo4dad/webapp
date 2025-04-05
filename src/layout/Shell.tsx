@@ -26,10 +26,7 @@ function Shell({
       <div className={styles.Header}>{header}</div>
       <div className={styles.SettingsBar}>{settingsBar}</div>
       <div className={styles.StickyTop}>{stickyTop}</div>
-      <div className={styles.Content}>
-        <aside className={styles.Sidebar}>{sidebar}</aside>
-        <main className={styles.Main}>{main}</main>
-      </div>
+      {main}
       <div className={styles.StickyBottom}>{stickyBottom}</div>
       <footer className={styles.Footer}>{footer}</footer>
     </div>
