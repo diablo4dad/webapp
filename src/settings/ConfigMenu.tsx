@@ -1,22 +1,27 @@
-import { ChangeEvent } from "react";
+import classNames from "classnames";
+import { ChangeEvent, forwardRef, HTMLProps } from "react";
 import { OptionWidgetGroup, ToggleWidget, WidgetType } from "../common/widget";
 import Button from "../components/Button";
 import { CheckBox } from "../components/CheckBox";
 import { DropMenu, DropMenuItem } from "../components/DropMenu";
-import { CardView, Inverse, ListView } from "../components/Icons";
+import { CardView, Female, Inverse, ListView, Male } from "../components/Icons";
 import { Popout } from "../components/Popout";
 import Toggle from "../components/Toggle";
+import { CharacterClass, CharacterGender, classIconMap } from "../data";
+import i18n from "../i18n";
+import { getNumberValue } from "./accessor";
 import styles from "./ConfigMenu.module.css";
 import { SettingsAction, useSettings, useSettingsDispatch } from "./context";
 import {
   COLLECTED_OPTION,
-  EXCLUDED_OPTION,
   getOptionGroup,
   INVERSE_OPTION,
   LAYOUT_OPTION,
+  PREFERRED_CLASS_OPTION,
+  PREFERRED_GENDER_OPTION,
 } from "./menu";
-import { isLedgerView } from "./predicate";
-import { LedgerView, Settings } from "./type";
+import { isEnabled, isLedgerView } from "./predicate";
+import { LedgerView, Option, Settings } from "./type";
 
 type Props = {
   settings: Settings;
@@ -49,66 +54,131 @@ function DropMenuFromOptionGroup({ settings, options, onChange }: Props) {
   );
 }
 
-export function ConfigMenu() {
-  const settings = useSettings();
-  const dispatch = useSettingsDispatch();
+export const ConfigMenu = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
+  function ConfigMenu({ className, ...props }, ref) {
+    const settings = useSettings();
+    const dispatch = useSettingsDispatch();
 
-  return (
-    <div className={styles.Block}>
-      <div className={styles.BlockLeftSide}>
-        <DropMenuFromOptionGroup
-          settings={settings}
-          options={getOptionGroup("Items")}
-          onChange={dispatch}
-        />
-        <DropMenuFromOptionGroup
-          settings={settings}
-          options={getOptionGroup("Classes")}
-          onChange={dispatch}
-        />
-        <DropMenuFromOptionGroup
-          settings={settings}
-          options={getOptionGroup("Categories")}
-          onChange={dispatch}
-        />
-        <DropMenuFromOptionGroup
-          settings={settings}
-          options={getOptionGroup("Filters")}
-          onChange={dispatch}
-        />
-        <Button>Class</Button>
-        <Button>Gender</Button>
+    return (
+      <div className={classNames(styles.Block, className)} ref={ref} {...props}>
+        <div className={styles.BlockLeftSide}>
+          <div className={styles.Group}>
+            <div className={styles.GroupItem}>
+              <DropMenuFromOptionGroup
+                settings={settings}
+                options={getOptionGroup("Items")}
+                onChange={dispatch}
+              />
+            </div>
+            <div className={styles.GroupItem}>
+              <DropMenuFromOptionGroup
+                settings={settings}
+                options={getOptionGroup("Classes")}
+                onChange={dispatch}
+              />
+            </div>
+            <div className={styles.GroupItem}>
+              <DropMenuFromOptionGroup
+                settings={settings}
+                options={getOptionGroup("Categories")}
+                onChange={dispatch}
+              />
+            </div>
+            <div className={styles.GroupItem}>
+              <DropMenuFromOptionGroup
+                settings={settings}
+                options={getOptionGroup("Misc")}
+                onChange={dispatch}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={styles.BlockRightSide}>
+          <div className={styles.Group}>
+            <div className={styles.GroupItem}>
+              <Toggle
+                name={"collected"}
+                label={COLLECTED_OPTION.label}
+                checked={COLLECTED_OPTION.checked(settings)}
+                onChange={(e) => dispatch(COLLECTED_OPTION.action(e))}
+              />
+            </div>
+          </div>
+          <div className={styles.Group}>
+            <div className={styles.GroupItem}>
+              <span>Icon Set</span>
+            </div>
+            <div className={styles.GroupItem}>
+              <Button
+                size={"small"}
+                title={PREFERRED_GENDER_OPTION.label}
+                onClick={() =>
+                  dispatch(PREFERRED_GENDER_OPTION.actionRotate(settings))
+                }
+              >
+                {getNumberValue(settings, Option.PREFERRED_GENDER) ===
+                CharacterGender.MALE ? (
+                  <Male />
+                ) : (
+                  <Female />
+                )}
+              </Button>
+            </div>
+            <div className={styles.GroupItem}>
+              <Button
+                size={"small"}
+                onClick={() =>
+                  dispatch(PREFERRED_CLASS_OPTION.actionRotate(settings))
+                }
+              >
+                <img
+                  alt={
+                    i18n.characterClass[
+                      getNumberValue(
+                        settings,
+                        Option.PREFERRED_CLASS,
+                      ) as CharacterClass
+                    ]
+                  }
+                  src={classIconMap.get(
+                    getNumberValue(
+                      settings,
+                      Option.PREFERRED_CLASS,
+                    ) as CharacterClass,
+                  )}
+                />
+              </Button>
+            </div>
+          </div>
+          <div className={styles.Group}>
+            <div className={styles.GroupItem}>
+              <span>View</span>
+            </div>
+            <div className={styles.GroupItem}>
+              <Button
+                size="small"
+                onClick={() => dispatch(LAYOUT_OPTION.actionFrom(settings))}
+              >
+                {isLedgerView(settings, LedgerView.CARD) ? (
+                  <CardView />
+                ) : (
+                  <ListView />
+                )}
+              </Button>
+            </div>
+            <div className={styles.GroupItem}>
+              <Button
+                size="small"
+                onClick={() => dispatch(INVERSE_OPTION.actionFrom(settings))}
+                rotate={isEnabled(settings, Option.LEDGER_INVERSE)}
+                disabled={isLedgerView(settings, LedgerView.LIST)}
+              >
+                <Inverse />
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className={styles.BlockRightSide}>
-        <Toggle
-          name={"hidden"}
-          label={EXCLUDED_OPTION.label}
-          checked={EXCLUDED_OPTION.checked(settings)}
-          onChange={(e) => dispatch(EXCLUDED_OPTION.action(e))}
-        />
-        <Toggle
-          name={"collected"}
-          label={COLLECTED_OPTION.label}
-          checked={COLLECTED_OPTION.checked(settings)}
-          onChange={(e) => dispatch(COLLECTED_OPTION.action(e))}
-        />
-        <Button
-          size="small"
-          onClick={() => dispatch(LAYOUT_OPTION.actionFrom(settings))}
-        >
-          {isLedgerView(settings, LedgerView.CARD) ? (
-            <CardView />
-          ) : (
-            <ListView />
-          )}
-        </Button>
-        <Button
-          size="small"
-          onClick={() => dispatch(INVERSE_OPTION.actionFrom(settings))}
-        >
-          <Inverse />
-        </Button>
-      </div>
-    </div>
-  );
-}
+    );
+  },
+);

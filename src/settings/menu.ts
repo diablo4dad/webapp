@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-import { enumKeys } from "../common/enums";
+import { enumKeys, enumValues } from "../common/enums";
 import {
   DropdownWidget,
   OptionWidgetGroup,
@@ -47,6 +47,26 @@ function createChoiceAction(
     option: option,
     value: Number(e.target.value),
   });
+}
+
+export function createChoiceActionRotate(
+  option: NumberOption,
+  options: number[],
+): (settings: Settings) => SettingsAction {
+  return (settings: Settings) => ({
+    type: SettingsActionType.UPDATE,
+    option: option,
+    value: getNextOption(getNumberValue(settings, option), options),
+  });
+}
+
+function getNextOption(current: string | number, options: number[]) {
+  const i = options.findIndex((key) => key === current);
+  if (i === options.length - 1) {
+    return options[0];
+  } else {
+    return options[i + 1];
+  }
 }
 
 function createBooleanChecked(
@@ -124,6 +144,10 @@ export const PREFERRED_CLASS_OPTION: DropdownWidget = {
   option: Option.PREFERRED_CLASS,
   label: "Class Preference",
   action: createChoiceAction(Option.PREFERRED_CLASS),
+  actionRotate: createChoiceActionRotate(
+    Option.PREFERRED_CLASS,
+    enumValues(CharacterClass),
+  ),
   value: createNumberSelected(Option.PREFERRED_CLASS),
   default: CharacterClass.BARBARIAN,
   options: enumKeys(CharacterClass).map((k) => {
@@ -137,6 +161,10 @@ export const PREFERRED_GENDER_OPTION: DropdownWidget = {
   option: Option.PREFERRED_GENDER,
   label: "Gender Preference",
   action: createChoiceAction(Option.PREFERRED_GENDER),
+  actionRotate: createChoiceActionRotate(
+    Option.PREFERRED_GENDER,
+    enumValues(CharacterGender),
+  ),
   value: createNumberSelected(Option.PREFERRED_GENDER),
   default: CharacterGender.MALE,
   options: enumKeys(CharacterGender).map((k) => {
@@ -357,7 +385,7 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
     ],
   },
   {
-    label: "Filters",
+    label: "Misc",
     widgets: [
       {
         type: WidgetType.TOGGLE,

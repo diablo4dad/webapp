@@ -1,19 +1,32 @@
 .Block {
+    position: relative;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-
-    padding: 0.5rem 2rem;
+    font-size: 0.875rem;
+    color: #ccc;
+    transition: margin-top ease 400ms;
+    height: 3rem;
 }
 
 .BlockLeftSide {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    padding-left: 1.5rem;
 }
 
 .BlockRightSide {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
+    padding-right: 1.5rem;
+}
+
+.Group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}
+
+.GroupItem {
 }

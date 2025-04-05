@@ -5,40 +5,40 @@ import React, {
   useRef,
   useState,
 } from "react";
-import MobileCloseButton from "../components/MobileCloseButton";
-import i18n from "../i18n";
-import logo from "../image/logo/d4ico_x1.png";
-import MobileHeader from "../layout/MobileHeader";
-import MobileMenu from "../layout/MobileMenu";
-import { ConfigMenu } from "../settings/ConfigMenu";
-
-import styles from "./Root.module.css";
-import ConfigSidebar from "../settings/ConfigSidebar";
-import Progress from "../components/Progress";
-import { Gear, Hamburger } from "../components/Icons";
-import Button, { BtnColours } from "../components/Button";
-import Authenticate, { Orientation } from "../auth/Authenticate";
+import { Outlet } from "react-router-dom";
 
 import Account, { Direction } from "../auth/Account";
-import { ContentType, SideBarType } from "../common";
-import NavMenu from "../layout/NavMenu";
-import { selectItemOrDefault } from "../data/reducers";
-import { countAllItemsDabDb } from "../data/aggregate";
-import { useCollection } from "../collection/context";
+import Authenticate, { Orientation } from "../auth/Authenticate";
+import { useAuth } from "../auth/context";
 import {
   countItemInDbHidden,
   countItemInDbOwned,
 } from "../collection/aggregate";
-import placeholder from "../image/placeholder.webp";
-import Shell from "../layout/Shell";
-import { VersionInfo } from "../components/VersionPanel";
-import { DiscordInvite } from "../components/DiscordPanel";
-import { useData } from "../data/context";
-import ItemSidebarSkeleton from "../collection/ItemSidebarSkeleton";
-import { Outlet } from "react-router-dom";
+import { useCollection } from "../collection/context";
 import ItemSidebar from "../collection/ItemSidebar";
-import { useAuth } from "../auth/context";
+import ItemSidebarSkeleton from "../collection/ItemSidebarSkeleton";
+import { ContentType, SideBarType } from "../common";
+import Button, { BtnColours } from "../components/Button";
+import { DiscordInvite } from "../components/DiscordPanel";
+import { Gear, Hamburger } from "../components/Icons";
+import MobileCloseButton from "../components/MobileCloseButton";
+import Progress from "../components/Progress";
 import Search from "../components/Search";
+import { VersionInfo } from "../components/VersionPanel";
+import { countAllItemsDabDb } from "../data/aggregate";
+import { useData } from "../data/context";
+import { selectItemOrDefault } from "../data/reducers";
+import i18n from "../i18n";
+import logo from "../image/logo/d4ico_x1.png";
+import placeholder from "../image/placeholder.webp";
+import MobileHeader from "../layout/MobileHeader";
+import MobileMenu from "../layout/MobileMenu";
+import NavMenu from "../layout/NavMenu";
+import Shell from "../layout/Shell";
+import { ConfigMenu } from "../settings/ConfigMenu";
+import ConfigSidebar from "../settings/ConfigSidebar";
+
+import styles from "./Root.module.css";
 
 function Root(): ReactElement<HTMLDivElement> {
   const { countedDb, db, searchTerm, setSearchTerm, group, focusItemId } =
@@ -177,7 +177,11 @@ function Root(): ReactElement<HTMLDivElement> {
           </div>
         </header>
       }
-      settingsBar={<ConfigMenu />}
+      settingsBar={
+        <ConfigMenu
+          style={{ marginTop: sideBar !== SideBarType.CONFIG ? "-3rem" : "0" }}
+        />
+      }
       sidebar={
         <>
           {sideBar === SideBarType.CONFIG && <ConfigSidebar />}

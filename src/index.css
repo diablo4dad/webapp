@@ -61,6 +61,10 @@ a {
     color: orange;
 }
 
+button {
+    font-size: inherit;
+}
+
 a:hover {
     color: #cc8500;
 }

@@ -1,3 +1,10 @@
+import barbarian from "../image/classes/barbarian.webp";
+import druid from "../image/classes/druid.webp";
+import necromancer from "../image/classes/necromancer.webp";
+import rogue from "../image/classes/rogue.webp";
+import sorceress from "../image/classes/sorcerer.webp";
+import spiritborn from "../image/classes/spiritborn.webp";
+
 export enum CharacterGender {
   MALE,
   FEMALE,
@@ -164,6 +171,15 @@ const DEFAULT_COLLECTION: Collection = {
   collectionItems: [],
   subcollections: [],
 };
+
+export const classIconMap = new Map<CharacterClass, string>([
+  [CharacterClass.BARBARIAN, barbarian],
+  [CharacterClass.DRUID, druid],
+  [CharacterClass.ROGUE, rogue],
+  [CharacterClass.SORCERER, sorceress],
+  [CharacterClass.NECROMANCER, necromancer],
+  [CharacterClass.SPIRITBORN, spiritborn],
+]);
 
 export {
   DEFAULT_ITEM_TYPE,

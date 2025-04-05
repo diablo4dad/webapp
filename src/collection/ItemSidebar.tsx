@@ -1,19 +1,19 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 import { getIcon } from "../bucket";
-import {
-  CollectionActionType,
-  useCollection,
-  useCollectionDispatch,
-} from "./context";
-import { isItemCollected, isItemHidden } from "./predicate";
 import { enumKeys } from "../common/enums";
 import { hashCode } from "../common/hash";
 import { DiscordInvite } from "../components/DiscordPanel";
 import Toggle from "../components/Toggle";
 import { VersionInfo } from "../components/VersionPanel";
 import { DATA_REPO } from "../config";
-import { CharacterClass, CollectionItem, getDefaultItem, Zone } from "../data";
+import {
+  CharacterClass,
+  classIconMap,
+  CollectionItem,
+  getDefaultItem,
+  Zone,
+} from "../data";
 import {
   getClassIconVariant,
   getClassItemVariant,
@@ -29,12 +29,6 @@ import {
   isVesselOfHatredItem,
 } from "../data/predicates";
 import i18n, { getItemDescription } from "../i18n";
-import barbarian from "../image/classes/barbarian.webp";
-import druid from "../image/classes/druid.webp";
-import necromancer from "../image/classes/necromancer.webp";
-import rogue from "../image/classes/rogue.webp";
-import sorceress from "../image/classes/sorcerer.webp";
-import spiritborn from "../image/classes/spiritborn.webp";
 import expansion from "../image/logo/d4ico_x1.png";
 import unobtainable from "../image/miniico/mystery.webp";
 import premium from "../image/miniico/purse.webp";
@@ -42,17 +36,23 @@ import season from "../image/miniico/season.webp";
 import series from "../image/miniico/series.webp";
 import oor from "../image/miniico/skull.webp";
 import wardrobe from "../image/miniico/wardrobe.webp";
-import fracturedPeaks from "../image/region/fractured_peaks.webp";
 import drySteppes from "../image/region/dry_steppes.webp";
-import kehjistan from "../image/region/kehjistan.webp";
+import fracturedPeaks from "../image/region/fractured_peaks.webp";
 import hawezar from "../image/region/hawezar.webp";
-import scosglen from "../image/region/scosglen.webp";
+import kehjistan from "../image/region/kehjistan.webp";
 import nahantu from "../image/region/nahantu.webp";
-import styles from "./ItemSidebar.module.css";
+import scosglen from "../image/region/scosglen.webp";
 import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isEnabled } from "../settings/predicate";
 import { Option } from "../settings/type";
+import {
+  CollectionActionType,
+  useCollection,
+  useCollectionDispatch,
+} from "./context";
+import styles from "./ItemSidebar.module.css";
+import { isItemCollected, isItemHidden } from "./predicate";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
   return dci.items.some((di) => di.usableByClass?.[clazz] === 1 ?? false);
@@ -70,15 +70,6 @@ const classIconCssMap = new Map<CharacterClass, string>([
   [CharacterClass.SORCERER, styles.SorcererClassIcon],
   [CharacterClass.NECROMANCER, styles.NecromancerClassIcon],
   [CharacterClass.SPIRITBORN, styles.SpiritbornClassIcon],
-]);
-
-const classIconMap = new Map<CharacterClass, string>([
-  [CharacterClass.BARBARIAN, barbarian],
-  [CharacterClass.DRUID, druid],
-  [CharacterClass.ROGUE, rogue],
-  [CharacterClass.SORCERER, sorceress],
-  [CharacterClass.NECROMANCER, necromancer],
-  [CharacterClass.SPIRITBORN, spiritborn],
 ]);
 
 const regionIconMap = new Map<Zone, string>([

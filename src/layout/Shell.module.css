@@ -17,6 +17,7 @@
 
 .SettingsBar {
     background-color: #1e2126;
+    display: none;
 }
 
 .StickyTop {
@@ -71,6 +72,7 @@
     .SettingsBar {
         box-shadow: 0 1px 3px rgba(17, 17, 17, 0.5);
         border-bottom: 1px solid #303640;
+        display: block;
     }
 
     .StickyTop {

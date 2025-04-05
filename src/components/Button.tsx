@@ -15,6 +15,7 @@ type Props = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> & {
   colour?: BtnColours;
   showOnly?: "desktop" | "mobile";
   size?: "small" | "medium" | "large";
+  rotate?: boolean;
 };
 
 function Button({
@@ -22,6 +23,7 @@ function Button({
   colour = BtnColours.Grey,
   showOnly,
   size,
+  rotate,
   children,
   ...props
 }: Props) {
@@ -50,6 +52,7 @@ function Button({
       showOnly === "mobile" ? styles.BtnMobile : null,
       showOnly === "desktop" ? styles.BtnDesktop : null,
       size === "small" ? styles.BtnSmall : null,
+      rotate ? styles.BtnRotate180 : null,
     ]
       .filter((c) => c !== null)
       .join(" ");
