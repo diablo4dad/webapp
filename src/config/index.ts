@@ -1,6 +1,7 @@
-const VERSION = { major: 1, minor: 10, revision: 9 };
+const VERSION = { major: 1, minor: 10, revision: 10 };
 const SITE_VERSION = `${VERSION.major}.${VERSION.minor}.${VERSION.revision}`;
-const LAST_UPDATED = "March 29th, 2024";
+const LAST_UPDATED = "June 25th, 2025";
+const BITCOIN_WALLET = "bc1q6f9zjtsetdgf7v9ga6fxaw7228xgtplllxgw77";
 const DISCORD_INVITE_LINK = "https://discord.gg/mPRBrU2kYT";
 const DATA_REPO =
   "https://raw.githubusercontent.com/DiabloTools/d4data/master/json";
@@ -14,4 +15,5 @@ export {
   DISCORD_INVITE_LINK,
   DATA_REPO,
   ICON_BUCKET,
+  BITCOIN_WALLET,
 };

@@ -3,6 +3,36 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.10.10] - 2025-06-25
+
+### Added
+
+- Bane of Ahjad-Den (Unique Gloves)
+- Bands of Ichorous Rose (Unique Gloves)
+- Gathlen's Birthright (Unique Helm)
+- Hail of Verglas (Unique Helm)
+- Sanguivor, Blade of Zir (Unique Two-Handed Sword)
+- Belial's Boss Head (Monster Drop)
+- 2nd Anniversary (Limited Event)
+- Berserk (Limited Event)
+- March of the Goblins (Limited Event)
+- Lunar Awakening 2025 (Limited Event)
+- Fleshrot Overgrowth (Tejal's Gifts)
+- The Great Hunt (Tejal's Gifts)
+- Kehjistan Merchant (Tejal's Gifts)
+- Charge of the Devastator (Tejal's Gifts)
+- Season 8: Reliquaries (Seasons)
+- Season 8: Season Journey (Seasons)
+- Berserk Support a Streamer + Twitch Drops (Promotional)
+- Berserk Limited Release Bundles (Tejal's Shop)
+- 20+ Premium Bundles added in Season 8 (Tejal's Shop)
+- Death's Messenger Addon (Tejal's Shop)
+
+### Fixed
+
+- Removed duplicate Dorian from the Season 7 collection
+- Name of Mantle of Mountain's Fury, Unique Chest Armor
+
 ## [1.10.9] - 2025-03-29
 
 ### Added

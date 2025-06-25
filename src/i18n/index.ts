@@ -65,6 +65,8 @@ export function getItemDescription(item: CollectionItem): string {
     item.claimZone !== undefined ? I18N.region[item.claimZone] : "unknown zone";
 
   switch (item.claim) {
+    case "Reliquary":
+      return "Redeemed from a Reliquary.";
     case "Cash Shop":
       return "Purchased from the cash shop.";
     case "Accelerated Battle Pass":
