@@ -242,7 +242,9 @@
 .NecromancerClassIcon,
 .RogueClassIcon,
 .SorcererClassIcon,
-.SpiritbornClassIcon {
+.SpiritbornClassIcon,
+.PaladinClassIcon,
+.WarlockClassIcon {
     opacity: 0.15;
     transition: opacity 250ms;
 }
@@ -252,8 +254,15 @@
 .Necromancer .NecromancerClassIcon,
 .Rogue .RogueClassIcon,
 .Sorcerer .SorcererClassIcon,
-.Spiritborn .SpiritbornClassIcon {
+.Spiritborn .SpiritbornClassIcon,
+.Paladin .PaladinClassIcon,
+.Warlock .WarlockClassIcon {
     opacity: 1;
+}
+
+/* hide until expansion released */
+.WarlockClassIcon {
+    display: none;
 }
 
 /* All skeleton loading states here */

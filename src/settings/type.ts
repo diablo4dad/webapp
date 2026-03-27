@@ -22,6 +22,8 @@ export enum Option {
   SHOW_ROGUE = "show_rogue",
   SHOW_NECROMANCER = "show_necromancer",
   SHOW_SPIRITBORN = "show_spiritborn",
+  SHOW_PALADIN = "show_paladin",
+  SHOW_WARLOCK = "show_warlock",
   // filters
   SHOW_PREMIUM = "show_premium",
   SHOW_OUT_OF_ROTATION = "show_out_of_rotation",
@@ -69,6 +71,8 @@ export type Settings = {
   [Option.SHOW_ROGUE]: boolean;
   [Option.SHOW_NECROMANCER]: boolean;
   [Option.SHOW_SPIRITBORN]: boolean;
+  [Option.SHOW_PALADIN]: boolean;
+  [Option.SHOW_WARLOCK]: boolean;
   // filters
   [Option.SHOW_PREMIUM]: boolean;
   [Option.SHOW_OUT_OF_ROTATION]: boolean;

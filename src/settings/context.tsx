@@ -38,6 +38,8 @@ export const defaultSettings: Settings = {
   [Option.SHOW_ROGUE]: true,
   [Option.SHOW_NECROMANCER]: true,
   [Option.SHOW_SPIRITBORN]: true,
+  [Option.SHOW_PALADIN]: true,
+  [Option.SHOW_WARLOCK]: true,
   // filters
   [Option.SHOW_PREMIUM]: true,
   [Option.SHOW_OUT_OF_ROTATION]: true,

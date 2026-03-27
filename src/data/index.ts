@@ -9,6 +9,8 @@ export enum CharacterClass {
   ROGUE,
   NECROMANCER,
   SPIRITBORN,
+  PALADIN,
+  WARLOCK,
 }
 
 export enum MagicType {
@@ -141,7 +143,7 @@ const DEFAULT_ITEM: Item = {
   itemType: DEFAULT_ITEM_TYPE,
   icon: "/icons/0.webp",
   name: "missing",
-  usableByClass: [1, 1, 1, 1, 1],
+  usableByClass: [1, 1, 1, 1, 1, 1, 1],
   invImages: [
     [null, null],
     [null, null],

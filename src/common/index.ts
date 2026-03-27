@@ -73,6 +73,7 @@ const itemGroups = new Map([
       "Two-Handed Sword",
       "Quarterstaff",
       "Glaive",
+      "Flail",
     ],
   ],
   [ItemGroup.ARMOR, ["Chest Armor", "Boots", "Gloves", "Helm", "Pants"]],
@@ -129,7 +130,9 @@ function getEnabledClasses(settings: Settings): CharacterClass[] {
     .concat(safeGet(Option.SHOW_BARBARIAN, CharacterClass.BARBARIAN))
     .concat(safeGet(Option.SHOW_ROGUE, CharacterClass.ROGUE))
     .concat(safeGet(Option.SHOW_NECROMANCER, CharacterClass.NECROMANCER))
-    .concat(safeGet(Option.SHOW_SPIRITBORN, CharacterClass.SPIRITBORN));
+    .concat(safeGet(Option.SHOW_SPIRITBORN, CharacterClass.SPIRITBORN))
+    .concat(safeGet(Option.SHOW_PALADIN, CharacterClass.PALADIN))
+    .concat(safeGet(Option.SHOW_WARLOCK, CharacterClass.NECROMANCER));
 }
 
 export {

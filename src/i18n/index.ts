@@ -22,6 +22,8 @@ const I18N = {
     [CharacterClass.DRUID]: "Druid",
     [CharacterClass.NECROMANCER]: "Necromancer",
     [CharacterClass.SPIRITBORN]: "Spiritborn",
+    [CharacterClass.PALADIN]: "Paladin",
+    [CharacterClass.WARLOCK]: "Warlock",
   },
   region: {
     [Zone.FRACTURED_PEAKS]: "Fractured Peaks",

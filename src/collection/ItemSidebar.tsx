@@ -35,6 +35,8 @@ import necromancer from "../image/classes/necromancer.webp";
 import rogue from "../image/classes/rogue.webp";
 import sorceress from "../image/classes/sorcerer.webp";
 import spiritborn from "../image/classes/spiritborn.webp";
+import paladin from "../image/classes/paladin.png";
+import warlock from "../image/classes/barbarian.webp";
 import expansion from "../image/logo/d4ico_x1.png";
 import unobtainable from "../image/miniico/mystery.webp";
 import premium from "../image/miniico/purse.webp";
@@ -70,6 +72,8 @@ const classIconCssMap = new Map<CharacterClass, string>([
   [CharacterClass.SORCERER, styles.SorcererClassIcon],
   [CharacterClass.NECROMANCER, styles.NecromancerClassIcon],
   [CharacterClass.SPIRITBORN, styles.SpiritbornClassIcon],
+  [CharacterClass.PALADIN, styles.PaladinClassIcon],
+  [CharacterClass.WARLOCK, styles.WarlockClassIcon],
 ]);
 
 const classIconMap = new Map<CharacterClass, string>([
@@ -79,6 +83,8 @@ const classIconMap = new Map<CharacterClass, string>([
   [CharacterClass.SORCERER, sorceress],
   [CharacterClass.NECROMANCER, necromancer],
   [CharacterClass.SPIRITBORN, spiritborn],
+  [CharacterClass.PALADIN, paladin],
+  [CharacterClass.WARLOCK, warlock],
 ]);
 
 const regionIconMap = new Map<Zone, string>([
@@ -123,6 +129,8 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
     [styles.Rogue]: usableBy(CharacterClass.ROGUE, collectionItem),
     [styles.Sorcerer]: usableBy(CharacterClass.SORCERER, collectionItem),
     [styles.Spiritborn]: usableBy(CharacterClass.SPIRITBORN, collectionItem),
+    [styles.Paladin]: usableBy(CharacterClass.PALADIN, collectionItem),
+    [styles.Warlock]: usableBy(CharacterClass.WARLOCK, collectionItem),
     [className ?? ""]: true,
   });
 
@@ -162,7 +170,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
         </div>
         <div className={styles.ItemClasses}>
           {enumKeys(CharacterClass)
-            .sort()
+            .sort((a, b) => CharacterClass[a] - CharacterClass[b])
             .map((cc) => {
               const v = CharacterClass[cc];
               return (
