@@ -1,3 +1,4 @@
+import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
 import { Collection, CollectionItem, getDefaultItem, MagicType } from "../data";
 import { getItemDescription } from "../i18n";
 import styles from "./Ledger.module.css";
@@ -265,7 +266,7 @@ const LedgerInner = ({
                   )}
                   key={collectionItem.id}
                 >
-                  <LazyLoadImage
+                  <FallbackLazyImage
                     wrapperClassName={styles.ItemImageWrapper}
                     placeholderSrc={placeholder}
                     className={styles.ItemImage}

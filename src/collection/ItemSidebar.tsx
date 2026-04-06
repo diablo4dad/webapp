@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 import { getIcon } from "../bucket";
+import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
 import {
   CollectionActionType,
   useCollection,
@@ -157,7 +158,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
   return (
     <div className={classNameStr}>
       <div className={styles.SidebarContent}>
-        <img
+        <FallbackLazyImage
           className={styles.ItemImage}
           src={getIcon(focusIcon)}
           alt={getItemName(collectionItem, focusItem)}
