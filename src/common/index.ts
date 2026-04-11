@@ -132,7 +132,7 @@ function getEnabledClasses(settings: Settings): CharacterClass[] {
     .concat(safeGet(Option.SHOW_NECROMANCER, CharacterClass.NECROMANCER))
     .concat(safeGet(Option.SHOW_SPIRITBORN, CharacterClass.SPIRITBORN))
     .concat(safeGet(Option.SHOW_PALADIN, CharacterClass.PALADIN))
-    .concat(safeGet(Option.SHOW_WARLOCK, CharacterClass.NECROMANCER));
+    .concat(safeGet(Option.SHOW_WARLOCK, CharacterClass.WARLOCK));
 }
 
 export {

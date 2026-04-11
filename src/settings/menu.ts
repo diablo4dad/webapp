@@ -225,6 +225,13 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
         action: createBooleanAction(Option.SHOW_SPIRITBORN),
         checked: createBooleanChecked(Option.SHOW_SPIRITBORN),
       },
+      {
+        type: WidgetType.TOGGLE,
+        option: Option.SHOW_PALADIN,
+        label: "Show Paladin",
+        action: createBooleanAction(Option.SHOW_PALADIN),
+        checked: createBooleanChecked(Option.SHOW_PALADIN),
+      },
     ],
   },
   {
