@@ -3,6 +3,50 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [1.11.9] - 2026-04-13
+
+### Site General
+
+- New Paladin Class
+- New Flail Weapon Type
+
+### Essential
+
+- Added Azmodan World Boss drops
+- Added Season 9 Uniques
+- Added Season 10 Uniques
+- Added Season 11 Uniques
+- Added Flails
+- Added Paladin Shields
+- Added Paladin Weapons
+- Added Paladin Unique Armor
+- Added Lunar New Year 2026 Limit Event
+- Added Tejal's Gifts: Starcraft
+- Added Tejal's Gifts: Herald Of Hatred Pet Bundle
+- Added Tejal's Gifts: March of the Goblins
+- Added Software Purchase: Lord of Hatred
+- Added "Vermilion Stone Heart" to Tejals Returning Champion collection
+- Fixed missing Berserk Limited Event
+- Fixed missing 2nd Anniversary Limit Event
+
+### Seasons
+
+- Added Season 9: Season Infernal Chaos Collection
+- Added Season 10: Season of Divine Intervention Collection
+- Added Season 11: Season of Slaughter Collection
+
+### Promotions
+
+- Twitch Drops 8-13
+- Death's Head Crudgel from Blizzstore
+- Wow Midnight Expansion Transmogs
+- Diablo IV Expansion Transmogs
+- Added "Merchandise" and "Crossover" categories
+
+### Shop
+
+- Added 50+ shop bundles from the last 3 seasons
+
 ## [1.10.10] - 2025-06-25
 
 ### Added
