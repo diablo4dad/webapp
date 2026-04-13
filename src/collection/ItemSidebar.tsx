@@ -157,173 +157,164 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
 
   return (
     <div className={classNameStr}>
-      <div className={styles.SidebarContent}>
-        <FallbackLazyImage
-          className={styles.ItemImage}
-          src={getIcon(focusIcon)}
-          alt={getItemName(collectionItem, focusItem)}
+      <FallbackLazyImage
+        className={styles.ItemImage}
+        src={getIcon(focusIcon)}
+        alt={getItemName(collectionItem, focusItem)}
+      />
+      <div className={styles.ItemTitle}>
+        <span>{getItemName(collectionItem, focusItem)}</span>
+      </div>
+      <div className={styles.ItemType}>
+        <span>{getItemType(collectionItem, focusItem)}</span>
+      </div>
+      <div className={styles.ItemClasses}>
+        {enumKeys(CharacterClass)
+          .sort((a, b) => CharacterClass[a] - CharacterClass[b])
+          .map((cc) => {
+            const v = CharacterClass[cc];
+            return (
+              <span key={v} className={itemClassCss(v)}>
+                <img
+                  className={itemClassIconCss(v)}
+                  onClick={handleIconClick(v)}
+                  onMouseEnter={handleIconHover(v)}
+                  onMouseLeave={handleIconLeave}
+                  src={classIconMap.get(v) ?? ""}
+                  alt={i18n.characterClass[v] ?? ""}
+                />
+              </span>
+            );
+          })}
+      </div>
+      <div className={styles.ItemActions}>
+        <Toggle
+          className={styles.ItemAction}
+          name="collected"
+          checked={isItemCollected(log, itemIds)}
+          disabled={isItemHidden(log, itemIds)}
+          onChange={(e) =>
+            dispatcher({
+              type: CollectionActionType.COLLECT,
+              itemId: itemIds,
+              toggle: e.target.checked,
+            })
+          }
+          label={"Collected"}
         />
-        <div className={styles.ItemTitle}>
-          <span>{getItemName(collectionItem, focusItem)}</span>
-        </div>
-        <div className={styles.ItemType}>
-          <span>{getItemType(collectionItem, focusItem)}</span>
-        </div>
-        <div className={styles.ItemClasses}>
-          {enumKeys(CharacterClass)
-            .sort((a, b) => CharacterClass[a] - CharacterClass[b])
-            .map((cc) => {
-              const v = CharacterClass[cc];
-              return (
-                <span key={v} className={itemClassCss(v)}>
-                  <img
-                    className={itemClassIconCss(v)}
-                    onClick={handleIconClick(v)}
-                    onMouseEnter={handleIconHover(v)}
-                    onMouseLeave={handleIconLeave}
-                    src={classIconMap.get(v) ?? ""}
-                    alt={i18n.characterClass[v] ?? ""}
-                  />
-                </span>
-              );
-            })}
-        </div>
-        <div className={styles.ItemActions}>
-          <Toggle
-            className={styles.ItemAction}
-            name="collected"
-            checked={isItemCollected(log, itemIds)}
-            disabled={isItemHidden(log, itemIds)}
-            onChange={(e) =>
-              dispatcher({
-                type: CollectionActionType.COLLECT,
-                itemId: itemIds,
-                toggle: e.target.checked,
-              })
-            }
-            label={"Collected"}
-          />
-          <Toggle
-            className={styles.ItemAction}
-            name="hidden"
-            checked={isItemHidden(log, itemIds)}
-            color="red"
-            onChange={(e) =>
-              dispatcher({
-                type: CollectionActionType.HIDE,
-                itemId: itemIds,
-                toggle: e.target.checked,
-              })
-            }
-            label={"Excluded"}
-          />
-        </div>
-        <div className={styles.ItemLocations}>
-          <div className={styles.ItemLocation}>
-            <div className={styles.ItemLocationInfo}>
-              <div className={styles.ItemLocationDescription}>
-                <span>{getItemDescription(collectionItem)}</span>
-              </div>
-              <div className={styles.ItemLocationCategory}>
-                <span>{collectionItem.claim}</span>
-              </div>
+        <Toggle
+          className={styles.ItemAction}
+          name="hidden"
+          checked={isItemHidden(log, itemIds)}
+          color="red"
+          onChange={(e) =>
+            dispatcher({
+              type: CollectionActionType.HIDE,
+              itemId: itemIds,
+              toggle: e.target.checked,
+            })
+          }
+          label={"Excluded"}
+        />
+      </div>
+      <div className={styles.ItemLocations}>
+        <div className={styles.ItemLocation}>
+          <div className={styles.ItemLocationInfo}>
+            <div className={styles.ItemLocationDescription}>
+              <span>{getItemDescription(collectionItem)}</span>
             </div>
-            {collectionItem.claimZone !== undefined && (
-              <img
-                hidden={true}
-                className={styles.ItemLocationIcon}
-                src={regionIconMap.get(collectionItem.claimZone)}
-                alt={i18n.region[collectionItem.claimZone]}
-              />
-            )}
+            <div className={styles.ItemLocationCategory}>
+              <span>{collectionItem.claim}</span>
+            </div>
           </div>
-        </div>
-        <div className={styles.ItemTags}>
-          {collectionItem.items.some(isVesselOfHatredItem) && (
-            <div className={styles.ItemTag}>
-              <img className={styles.ItemTagIcon} src={expansion} />
-              <span>VoH Item</span>
-            </div>
-          )}
-          {collectionItem.season && (
-            <div className={styles.ItemTag}>
-              <img className={styles.ItemTagIcon} src={season} />
-              <span>Season {collectionItem.season}</span>
-            </div>
-          )}
-          {focusItem.series && (
-            <div className={styles.ItemTag}>
-              <img className={styles.ItemTagIcon} src={series} />
-              <span>{focusItem.series.replaceAll('"', "")}</span>
-            </div>
-          )}
-          {collectionItem.premium && (
-            <div className={styles.ItemTag}>
-              <img className={styles.ItemTagIcon} src={premium} />
-              <span>Premium</span>
-            </div>
-          )}
-          {collectionItem.items.some(doesHaveWardrobePlaceholder) && (
-            <div className={styles.ItemTag}>
-              <img className={styles.ItemTagIcon} src={wardrobe} />
-              <span>Wardrobe Icon</span>
-            </div>
-          )}
-          {collectionItem.outOfRotation && (
-            <div className={styles.ItemTag}>
-              <img className={styles.ItemTagIcon} src={oor} />
-              <span>Out of Rotation</span>
-            </div>
-          )}
-          {collectionItem.unobtainable && (
-            <div className={styles.ItemTag}>
-              <img className={styles.ItemTagIcon} src={unobtainable} />
-              <span>Unobtainable</span>
-            </div>
-          )}
-        </div>
-        <div className={styles.ItemMeta}>
-          <div>Item ID: {collectionItem.items.map((i) => i.id).join(", ")}</div>
-          {isEnabled(settings, Option.DEBUG) && (
-            <>
-              {collectionItem.items.length > 1 && (
-                <div>
-                  Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
-                </div>
-              )}
-              <div>Item Icon: {focusItem.icon.replace("icons/", "")}</div>
-              {collectionItem.items.map((i) => (
-                <div key={i.id}>
-                  <div>
-                    Datamined File:{" "}
-                    <a
-                      href={`${DATA_REPO}/${i.filename}.json`}
-                      target={"_blank"}
-                    >
-                      {i.filename?.replace("base/meta/", "")}
-                    </a>
-                  </div>
-                  {hasIconVariants(focusItem) && (
-                    <ul>
-                      {getIconVariants(focusItem, preferredGender).map(
-                        ([charClass, icon]) => (
-                          <li key={charClass}>
-                            {i18n.characterClass[charClass]} Icon: {icon}
-                          </li>
-                        ),
-                      )}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </>
+          {collectionItem.claimZone !== undefined && (
+            <img
+              hidden={true}
+              className={styles.ItemLocationIcon}
+              src={regionIconMap.get(collectionItem.claimZone)}
+              alt={i18n.region[collectionItem.claimZone]}
+            />
           )}
         </div>
       </div>
-      <footer className={styles.SidebarFooter}>
-        <DiscordInvite />
-        <VersionInfo />
-      </footer>
+      <div className={styles.ItemTags}>
+        {collectionItem.items.some(isVesselOfHatredItem) && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={expansion} />
+            <span>VoH Item</span>
+          </div>
+        )}
+        {collectionItem.season && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={season} />
+            <span>Season {collectionItem.season}</span>
+          </div>
+        )}
+        {focusItem.series && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={series} />
+            <span>{focusItem.series.replaceAll('"', "")}</span>
+          </div>
+        )}
+        {collectionItem.premium && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={premium} />
+            <span>Premium</span>
+          </div>
+        )}
+        {collectionItem.items.some(doesHaveWardrobePlaceholder) && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={wardrobe} />
+            <span>Wardrobe Icon</span>
+          </div>
+        )}
+        {collectionItem.outOfRotation && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={oor} />
+            <span>Out of Rotation</span>
+          </div>
+        )}
+        {collectionItem.unobtainable && (
+          <div className={styles.ItemTag}>
+            <img className={styles.ItemTagIcon} src={unobtainable} />
+            <span>Unobtainable</span>
+          </div>
+        )}
+      </div>
+      <div className={styles.ItemMeta}>
+        <div>Item ID: {collectionItem.items.map((i) => i.id).join(", ")}</div>
+        {isEnabled(settings, Option.DEBUG) && (
+          <>
+            {collectionItem.items.length > 1 && (
+              <div>
+                Item Hash: {hashCode(collectionItem.items.map((i) => i.id))}
+              </div>
+            )}
+            <div>Item Icon: {focusItem.icon.replace("icons/", "")}</div>
+            {collectionItem.items.map((i) => (
+              <div key={i.id}>
+                <div>
+                  Datamined File:{" "}
+                  <a href={`${DATA_REPO}/${i.filename}.json`} target={"_blank"}>
+                    {i.filename?.replace("base/meta/", "")}
+                  </a>
+                </div>
+                {hasIconVariants(focusItem) && (
+                  <ul>
+                    {getIconVariants(focusItem, preferredGender).map(
+                      ([charClass, icon]) => (
+                        <li key={charClass}>
+                          {i18n.characterClass[charClass]} Icon: {icon}
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -40,7 +40,7 @@ import { useAuth } from "../auth/context";
 import Search from "../components/Search";
 
 function Root(): ReactElement<HTMLDivElement> {
-  const { countedDb, db, searchTerm, setSearchTerm, group, focusItemId } =
+  const { countedDb, searchTerm, setSearchTerm, group, setSideBar, sideBar } =
     useData();
   const log = useCollection();
   const { user, signIn, signOut } = useAuth();
@@ -57,11 +57,8 @@ function Root(): ReactElement<HTMLDivElement> {
   const nav = createRef<HTMLDivElement>();
   const [navOpen, setNavOpen] = useState(false);
 
-  const [sideBar, setSideBar] = useState(SideBarType.ITEM);
   const [content, setContent] = useState(ContentType.LEDGER);
   const history = useRef([ContentType.LEDGER]);
-
-  const focusItem = selectItemOrDefault(db.collections, focusItemId);
 
   function onToggleConfig() {
     setSideBar(
@@ -175,17 +172,6 @@ function Root(): ReactElement<HTMLDivElement> {
             </div>
           </div>
         </header>
-      }
-      sidebar={
-        <>
-          {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
-          {sideBar === SideBarType.ITEM && focusItemId === -1 && (
-            <ItemSidebarSkeleton />
-          )}
-          {sideBar === SideBarType.ITEM && focusItemId !== -1 && (
-            <ItemSidebar collectionItem={focusItem} />
-          )}
-        </>
       }
       main={
         <>

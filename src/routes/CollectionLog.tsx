@@ -1,11 +1,19 @@
 import EmptyCollection from "../collection/EmptyCollection";
+import ItemSidebar from "../collection/ItemSidebar";
+import ItemSidebarSkeleton from "../collection/ItemSidebarSkeleton";
+import ConfigSidebar from "../settings/ConfigSidebar";
+import styles from "./CollectionLog.module.css";
 import Ledger from "../collection/Ledger";
 import LedgerSkeleton from "../collection/LedgerSkeleton";
 import { toggleValueInArray } from "../common/arrays";
-import { Collection, CollectionItem, DadDb } from "../data";
+import { DiscordInvite } from "../components/DiscordPanel";
+import { VersionInfo } from "../components/VersionPanel";
+import { CollectionItem, DadDb } from "../data";
 import { MasterGroup, SideBarType } from "../common";
 import React, { Suspense, useEffect, useState } from "react";
 import { countAllItemsDabDb } from "../data/aggregate";
+import { selectItemOrDefault } from "../data/reducers";
+import SidebarMain from "../layout/SidebarMain";
 import { getViewModel, saveViewModel } from "../store/local";
 import { Await, defer, useLoaderData } from "react-router-dom";
 import { useData } from "../data/context";
@@ -65,8 +73,17 @@ export async function loader({ params }: Params) {
 
 export function CollectionView() {
   const { db: dbPromise, group } = useLoaderData() as LoaderPayload;
-  const { filteredDb, db, switchDb, setDb, setFocusItemId } = useData();
+  const {
+    filteredDb,
+    db,
+    switchDb,
+    setDb,
+    setFocusItemId,
+    focusItemId,
+    sideBar,
+  } = useData();
   const [vm, setVm] = useState<ViewModel>(getViewModel());
+  const focusItem = selectItemOrDefault(db.collections, focusItemId);
 
   switchDb(group);
   saveViewModel(vm);
@@ -91,27 +108,50 @@ export function CollectionView() {
   }
 
   return (
-    <>
-      <Suspense fallback={<LedgerSkeleton />}>
-        <Await resolve={dbPromise}>
-          <Ledger
-            collections={filteredDb}
-            openCollections={vm.openCollections}
-            onClickItem={onClickItem}
-            onCollectionChange={(collectionId, isOpen) => {
-              setVm((vm) => ({
-                ...vm,
-                openCollections: toggleValueInArray(
-                  vm.openCollections,
-                  collectionId,
-                  isOpen,
-                ),
-              }));
-            }}
-          />
-          {countAllItemsDabDb(filteredDb) === 0 && <EmptyCollection />}
-        </Await>
-      </Suspense>
-    </>
+    <SidebarMain
+      sidebar={
+        <div className={styles.Sidebar}>
+          <div className={styles.SidebarContent}>
+            {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
+            {sideBar === SideBarType.ITEM && focusItemId === -1 && (
+              <ItemSidebarSkeleton />
+            )}
+            {sideBar === SideBarType.ITEM && focusItemId !== -1 && (
+              <ItemSidebar collectionItem={focusItem} />
+            )}
+          </div>
+          {sideBar === SideBarType.ITEM && (
+            <footer className={styles.SidebarFooter}>
+              <DiscordInvite />
+              <VersionInfo />
+            </footer>
+          )}
+        </div>
+      }
+      main={
+        <>
+          <Suspense fallback={<LedgerSkeleton />}>
+            <Await resolve={dbPromise}>
+              <Ledger
+                collections={filteredDb}
+                openCollections={vm.openCollections}
+                onClickItem={onClickItem}
+                onCollectionChange={(collectionId, isOpen) => {
+                  setVm((vm) => ({
+                    ...vm,
+                    openCollections: toggleValueInArray(
+                      vm.openCollections,
+                      collectionId,
+                      isOpen,
+                    ),
+                  }));
+                }}
+              />
+              {countAllItemsDabDb(filteredDb) === 0 && <EmptyCollection />}
+            </Await>
+          </Suspense>
+        </>
+      }
+    ></SidebarMain>
   );
 }

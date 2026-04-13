@@ -10,7 +10,7 @@ import { CollectionGroup, DadDb } from "./index";
 import { useCollection } from "../collection/context";
 import { useSettings } from "../settings/context";
 import { filterDb } from "./filters";
-import { MasterGroup } from "../common";
+import { MasterGroup, SideBarType } from "../common";
 import { useDebounceValue } from "usehooks-ts";
 
 const defaultDadDb: DadDb = {
@@ -22,6 +22,8 @@ const defaultDadDb: DadDb = {
 const defaultContext: DataContextType = {
   db: defaultDadDb,
   group: MasterGroup.GENERAL,
+  sideBar: SideBarType.ITEM,
+  setSideBar: () => undefined,
   setDb: () => undefined,
   switchDb: () => undefined,
   filteredDb: [],
@@ -35,6 +37,8 @@ const defaultContext: DataContextType = {
 export type DataContextType = {
   db: DadDb;
   group: MasterGroup;
+  sideBar: SideBarType;
+  setSideBar: (sideBar: SideBarType) => void;
   setDb: (dadDb: DadDb) => void;
   switchDb: (group: MasterGroup) => void;
   countedDb: CollectionGroup;
@@ -57,6 +61,7 @@ export function DataProvider({ children }: PropsWithChildren) {
 
   const [db, setDb] = useState<DadDb>(defaultDadDb);
   const [group, switchDb] = useState<MasterGroup>(MasterGroup.GENERAL);
+  const [sideBar, setSideBar] = useState(SideBarType.ITEM);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
   const [focusItemId, setFocusItemId] = useState(-1);
@@ -85,6 +90,8 @@ export function DataProvider({ children }: PropsWithChildren) {
     () => ({
       db,
       group,
+      sideBar,
+      setSideBar,
       setDb,
       switchDb,
       filteredDb,
@@ -94,7 +101,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       focusItemId,
       setFocusItemId,
     }),
-    [db, filteredDb, countedDb, group, searchTerm, focusItemId],
+    [db, filteredDb, sideBar, countedDb, group, searchTerm, focusItemId],
   );
 
   return (

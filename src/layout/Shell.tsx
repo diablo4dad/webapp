@@ -1,5 +1,5 @@
 import styles from "./Shell.module.css";
-import React, {HTMLProps, ReactNode} from "react";
+import React, { HTMLProps, ReactNode } from "react";
 
 type Props = HTMLProps<HTMLDivElement> & {
   header?: ReactNode;
@@ -23,10 +23,7 @@ function Shell({
     <div {...props} className={styles.Block}>
       <div className={styles.Header}>{header}</div>
       <div className={styles.StickyTop}>{stickyTop}</div>
-      <div className={styles.Content}>
-        <aside className={styles.Sidebar}>{sidebar}</aside>
-        <main className={styles.Main}>{main}</main>
-      </div>
+      <div className={styles.Content}>{main}</div>
       <div className={styles.StickyBottom}>{stickyBottom}</div>
       <footer className={styles.Footer}>{footer}</footer>
     </div>
