@@ -22,3 +22,11 @@ export function reduceItemIds(dadCollection: Collection): number[] {
     .flatMap((dci) => dci.items)
     .map((i) => i.id);
 }
+
+export function flattenCollectionItems(
+  collections: CollectionGroup,
+): CollectionItem[] {
+  return collections.flatMap((collection: Collection) =>
+    getAllCollectionItems(collection),
+  );
+}

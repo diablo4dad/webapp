@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 import { getIcon } from "../bucket";
+import Card from "../components/Card";
 import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
 import {
   CollectionActionType,
@@ -10,9 +11,7 @@ import {
 import { isItemCollected, isItemHidden } from "./predicate";
 import { enumKeys } from "../common/enums";
 import { hashCode } from "../common/hash";
-import { DiscordInvite } from "../components/DiscordPanel";
 import Toggle from "../components/Toggle";
-import { VersionInfo } from "../components/VersionPanel";
 import { DATA_REPO } from "../config";
 import { CharacterClass, CollectionItem, getDefaultItem, Zone } from "../data";
 import {
@@ -156,7 +155,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
   const handleIconLeave = () => setHoverClass(null);
 
   return (
-    <div className={classNameStr}>
+    <Card className={classNameStr}>
       <FallbackLazyImage
         className={styles.ItemImage}
         src={getIcon(focusIcon)}
@@ -315,7 +314,7 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
           </>
         )}
       </div>
-    </div>
+    </Card>
   );
 }
 

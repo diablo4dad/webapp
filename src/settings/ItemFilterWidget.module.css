@@ -1,0 +1,48 @@
+.Button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.125rem 0;
+    border: 0;
+    background: transparent;
+    color: #c2c6cb;
+    cursor: pointer;
+    transition: color 160ms ease, transform 160ms ease;
+}
+
+.Button:hover {
+    color: #f4f4f4;
+}
+
+.ButtonActive {
+    color: #f9a620;
+}
+
+.Label {
+    text-align: left;
+    font-size: 1.05rem;
+    line-height: 1.3;
+}
+
+.Count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background-color: #2d3239;
+    color: #aab2bc;
+    font-size: 0.95rem;
+}
+
+.Button:hover .Count,
+.ButtonActive .Count {
+    color: #f9a620;
+}
+
+.ButtonActive .Count {
+    background-color: rgba(139, 93, 32, 0.22);
+}

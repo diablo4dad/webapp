@@ -128,7 +128,7 @@
 
 .LedgerCards .LedgerRow {
     --grid-layout-gap: 10px;
-    --grid-column-count: 16;
+    --grid-column-count: 24;
     --grid-item--min-width: 96px;
 
     --gap-count: calc(var(--grid-column-count) - 1);

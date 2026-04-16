@@ -27,16 +27,21 @@ enum ItemGroup {
   PETS = "pets",
 }
 
-enum SideBarType {
-  ITEM = "item",
-  CONFIG = "config",
-}
-
 enum ContentType {
   MOBILE_MENU = "menu",
   LEDGER = "ledger",
   CONFIG = "config",
 }
+
+type SidebarVisibility = {
+  showItem: boolean;
+  showConfig: boolean;
+};
+
+const DEFAULT_SIDEBAR_VISIBILITY: SidebarVisibility = {
+  showItem: true,
+  showConfig: true,
+};
 
 const locale = {
   [MasterGroup.SHOP_ITEMS]: "Cash Shop",
@@ -136,7 +141,8 @@ function getEnabledClasses(settings: Settings): CharacterClass[] {
 }
 
 export {
-  SideBarType,
+  DEFAULT_SIDEBAR_VISIBILITY,
+  type SidebarVisibility,
   ItemGroup,
   ContentType,
   itemGroups,

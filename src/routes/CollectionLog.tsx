@@ -1,15 +1,15 @@
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import EmptyCollection from "../collection/EmptyCollection";
 import ItemSidebar from "../collection/ItemSidebar";
 import ItemSidebarSkeleton from "../collection/ItemSidebarSkeleton";
+import Overview from "../collection/Overview";
 import ConfigSidebar from "../settings/ConfigSidebar";
 import styles from "./CollectionLog.module.css";
 import Ledger from "../collection/Ledger";
 import LedgerSkeleton from "../collection/LedgerSkeleton";
 import { toggleValueInArray } from "../common/arrays";
-import { DiscordInvite } from "../components/DiscordPanel";
-import { VersionInfo } from "../components/VersionPanel";
 import { CollectionItem, DadDb } from "../data";
-import { MasterGroup, SideBarType } from "../common";
+import { MasterGroup } from "../common";
 import React, { Suspense, useEffect, useState } from "react";
 import { countAllItemsDabDb } from "../data/aggregate";
 import { selectItemOrDefault } from "../data/reducers";
@@ -48,11 +48,11 @@ const slugMapInverse: ReadonlyMap<string, MasterGroup> = new Map(
 );
 
 export function slugToGroup(slug: string): MasterGroup {
-  return slugMapInverse.get(slug) ?? MasterGroup.GENERAL;
+  return slugMapInverse.get(slug) ?? MasterGroup.UNIVERSAL;
 }
 
 export function groupToSlug(group: MasterGroup): string {
-  return slugMap.get(group) ?? "general";
+  return slugMap.get(group) ?? "universal";
 }
 
 export function generateUrl(group: MasterGroup): string {
@@ -60,7 +60,7 @@ export function generateUrl(group: MasterGroup): string {
 }
 
 export async function loader({ params }: Params) {
-  const group = slugToGroup(params.collectionId ?? "general");
+  const group = slugToGroup(params.collectionId ?? "universal");
   const db = fetch("/d4dad.json")
     .then((resp) => resp.json())
     .then(hydrateDadDb);
@@ -80,7 +80,7 @@ export function CollectionView() {
     setDb,
     setFocusItemId,
     focusItemId,
-    sideBar,
+    sidebarVisibility,
   } = useData();
   const [vm, setVm] = useState<ViewModel>(getViewModel());
   const focusItem = selectItemOrDefault(db.collections, focusItemId);
@@ -104,32 +104,33 @@ export function CollectionView() {
 
   function onClickItem(collectionItem: CollectionItem) {
     setFocusItemId(collectionItem.id);
-    // setSideBar(SideBarType.ITEM);
   }
 
   return (
     <SidebarMain
-      sidebar={
-        <div className={styles.Sidebar}>
-          <div className={styles.SidebarContent}>
-            {sideBar === SideBarType.CONFIG && <ConfigSidebar />}
-            {sideBar === SideBarType.ITEM && focusItemId === -1 && (
+      hero={<Overview />}
+      leftSidebar={
+        sidebarVisibility.showItem ? (
+          <div className={styles.MainSidebarPanel}>
+            {focusItemId === -1 ? (
               <ItemSidebarSkeleton />
-            )}
-            {sideBar === SideBarType.ITEM && focusItemId !== -1 && (
+            ) : (
               <ItemSidebar collectionItem={focusItem} />
             )}
           </div>
-          {sideBar === SideBarType.ITEM && (
-            <footer className={styles.SidebarFooter}>
-              <DiscordInvite />
-              <VersionInfo />
-            </footer>
-          )}
-        </div>
+        ) : undefined
+      }
+      rightSidebar={
+        sidebarVisibility.showConfig ? (
+          <div className={styles.Sidebar}>
+            <div className={styles.SidebarContent}>
+              <ConfigSidebar />
+            </div>
+          </div>
+        ) : undefined
       }
       main={
-        <>
+        <div className={styles.Content}>
           <Suspense fallback={<LedgerSkeleton />}>
             <Await resolve={dbPromise}>
               <Ledger
@@ -150,7 +151,7 @@ export function CollectionView() {
               {countAllItemsDabDb(filteredDb) === 0 && <EmptyCollection />}
             </Await>
           </Suspense>
-        </>
+        </div>
       }
     ></SidebarMain>
   );

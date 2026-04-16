@@ -10,7 +10,11 @@ import { CollectionGroup, DadDb } from "./index";
 import { useCollection } from "../collection/context";
 import { useSettings } from "../settings/context";
 import { filterDb } from "./filters";
-import { MasterGroup, SideBarType } from "../common";
+import {
+  DEFAULT_SIDEBAR_VISIBILITY,
+  MasterGroup,
+  SidebarVisibility,
+} from "../common";
 import { useDebounceValue } from "usehooks-ts";
 
 const defaultDadDb: DadDb = {
@@ -21,9 +25,9 @@ const defaultDadDb: DadDb = {
 
 const defaultContext: DataContextType = {
   db: defaultDadDb,
-  group: MasterGroup.GENERAL,
-  sideBar: SideBarType.ITEM,
-  setSideBar: () => undefined,
+  group: MasterGroup.UNIVERSAL,
+  sidebarVisibility: DEFAULT_SIDEBAR_VISIBILITY,
+  setSidebarVisibility: () => undefined,
   setDb: () => undefined,
   switchDb: () => undefined,
   filteredDb: [],
@@ -37,8 +41,8 @@ const defaultContext: DataContextType = {
 export type DataContextType = {
   db: DadDb;
   group: MasterGroup;
-  sideBar: SideBarType;
-  setSideBar: (sideBar: SideBarType) => void;
+  sidebarVisibility: SidebarVisibility;
+  setSidebarVisibility: (sidebarVisibility: SidebarVisibility) => void;
   setDb: (dadDb: DadDb) => void;
   switchDb: (group: MasterGroup) => void;
   countedDb: CollectionGroup;
@@ -60,8 +64,10 @@ export function DataProvider({ children }: PropsWithChildren) {
   const settings = useSettings();
 
   const [db, setDb] = useState<DadDb>(defaultDadDb);
-  const [group, switchDb] = useState<MasterGroup>(MasterGroup.GENERAL);
-  const [sideBar, setSideBar] = useState(SideBarType.ITEM);
+  const [group, switchDb] = useState<MasterGroup>(MasterGroup.UNIVERSAL);
+  const [sidebarVisibility, setSidebarVisibility] = useState<SidebarVisibility>(
+    DEFAULT_SIDEBAR_VISIBILITY,
+  );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
   const [focusItemId, setFocusItemId] = useState(-1);
@@ -90,8 +96,8 @@ export function DataProvider({ children }: PropsWithChildren) {
     () => ({
       db,
       group,
-      sideBar,
-      setSideBar,
+      sidebarVisibility,
+      setSidebarVisibility,
       setDb,
       switchDb,
       filteredDb,
@@ -101,7 +107,15 @@ export function DataProvider({ children }: PropsWithChildren) {
       focusItemId,
       setFocusItemId,
     }),
-    [db, filteredDb, sideBar, countedDb, group, searchTerm, focusItemId],
+    [
+      db,
+      filteredDb,
+      sidebarVisibility,
+      countedDb,
+      group,
+      searchTerm,
+      focusItemId,
+    ],
   );
 
   return (

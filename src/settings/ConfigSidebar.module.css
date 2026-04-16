@@ -1,16 +1,84 @@
 .Block {
     display: flex;
     flex-direction: column;
-    row-gap: 2rem;
-    padding: 2rem 1rem;
 }
 
 .Fieldset {
-    margin: 0;
+    border-bottom: 1px solid rgba(57, 64, 77, 0.45);
+}
+
+.FieldsetButton {
+    width: 100%;
+    padding: 0.25rem 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.FieldsetHeader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.FieldsetTitle {
+    color: #f4f4f4;
+    font-family: "PT Serif", serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-shadow: 1px 1px 2px #111;
+}
+
+.FieldsetIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.875rem;
+    height: 1.875rem;
+    color: #8f98a3;
+    transition: transform 220ms ease, color 220ms ease;
+}
+
+.FieldsetIcon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    fill: currentColor;
+}
+
+.FieldsetButton:hover .FieldsetTitle,
+.FieldsetButton[aria-expanded="true"] .FieldsetTitle {
+    color: #f9a620;
+}
+
+.FieldsetButton:hover .FieldsetIcon,
+.FieldsetButton[aria-expanded="true"] .FieldsetIcon {
+    color: #8f98a3;
+}
+
+.FieldsetButton[aria-expanded="true"] .FieldsetIcon {
+    transform: rotate(90deg);
+}
+
+.FieldsetContent {
+    overflow: hidden;
+}
+
+.FieldsetBody {
+    padding: 0.75rem 0 1.25rem;
+}
+
+.FieldsetBody > :global(.toggle):not(:last-child),
+.FieldsetBody > button:not(:last-child),
+.FieldsetBody > label:not(:last-child),
+.FieldsetBody > div:not(:last-child) {
+    margin-bottom: 0.25rem;
 }
 
 @media screen and (min-width: 1200px) {
     .Block {
-        padding: 2rem;
+        padding: 0 2rem;
     }
 }

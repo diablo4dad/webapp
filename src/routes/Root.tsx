@@ -1,5 +1,4 @@
 import React, {
-  createRef,
   ReactElement,
   useEffect,
   useRef,
@@ -14,14 +13,12 @@ import MobileMenu from "../layout/MobileMenu";
 import styles from "./Root.module.css";
 import ConfigSidebar from "../settings/ConfigSidebar";
 import Progress from "../components/Progress";
-import { Gear, Hamburger } from "../components/Icons";
+import { Hamburger, SidebarLeft, SidebarRight } from "../components/Icons";
 import Button, { BtnColours } from "../components/Button";
 import Authenticate, { Orientation } from "../auth/Authenticate";
 
 import Account, { Direction } from "../auth/Account";
-import { ContentType, SideBarType } from "../common";
-import NavMenu from "../layout/NavMenu";
-import { selectItemOrDefault } from "../data/reducers";
+import { ContentType } from "../common";
 import { countAllItemsDabDb } from "../data/aggregate";
 import { useCollection } from "../collection/context";
 import {
@@ -33,15 +30,18 @@ import Shell from "../layout/Shell";
 import { VersionInfo } from "../components/VersionPanel";
 import { DiscordInvite } from "../components/DiscordPanel";
 import { useData } from "../data/context";
-import ItemSidebarSkeleton from "../collection/ItemSidebarSkeleton";
 import { Outlet } from "react-router-dom";
-import ItemSidebar from "../collection/ItemSidebar";
 import { useAuth } from "../auth/context";
 import Search from "../components/Search";
 
 function Root(): ReactElement<HTMLDivElement> {
-  const { countedDb, searchTerm, setSearchTerm, group, setSideBar, sideBar } =
-    useData();
+  const {
+    countedDb,
+    searchTerm,
+    setSearchTerm,
+    setSidebarVisibility,
+    sidebarVisibility,
+  } = useData();
   const log = useCollection();
   const { user, signIn, signOut } = useAuth();
 
@@ -54,16 +54,21 @@ function Root(): ReactElement<HTMLDivElement> {
     new Image().src = placeholder;
   }, []);
 
-  const nav = createRef<HTMLDivElement>();
-  const [navOpen, setNavOpen] = useState(false);
-
   const [content, setContent] = useState(ContentType.LEDGER);
   const history = useRef([ContentType.LEDGER]);
 
+  function onToggleItemSidebar() {
+    setSidebarVisibility({
+      ...sidebarVisibility,
+      showItem: !sidebarVisibility.showItem,
+    });
+  }
+
   function onToggleConfig() {
-    setSideBar(
-      sideBar === SideBarType.CONFIG ? SideBarType.ITEM : SideBarType.CONFIG,
-    );
+    setSidebarVisibility({
+      ...sidebarVisibility,
+      showConfig: !sidebarVisibility.showConfig,
+    });
   }
 
   function onNavigate(content: ContentType) {
@@ -92,84 +97,70 @@ function Root(): ReactElement<HTMLDivElement> {
 
   return (
     <Shell
-      onClick={(e) => {
-        // @ts-ignore
-        if (!nav.current?.contains(e.target)) {
-          setNavOpen(false);
-        }
-      }}
       header={
         <header className={styles.Header}>
-          <div className={styles.HeaderLeft}>
-            <div className={styles.HeaderLeftContent}>
-              <img
-                className={styles.HeaderIcon}
-                src={logo}
-                alt={i18n.gameName}
-              />
-              <div className={styles.HeaderInfo}>
-                <div className={styles.HeaderInfoName}>{i18n.siteTitle}</div>
-                <div className={styles.HeaderInfoTagLine}>
-                  {i18n.siteTagLine}
-                </div>
-              </div>
-              <div className={styles.HeaderButtons}>
-                <Button
-                  onClick={onToggleConfig}
-                  pressed={sideBar === SideBarType.CONFIG}
-                  showOnly={"desktop"}
-                  colour={BtnColours.Dark}
-                >
-                  <Gear />
-                </Button>
-                <Button
-                  onClick={() =>
-                    setContent(
-                      content === ContentType.MOBILE_MENU
-                        ? popHistory()
-                        : pushHistory(ContentType.MOBILE_MENU),
-                    )
-                  }
-                  pressed={content === ContentType.MOBILE_MENU}
-                  showOnly={"mobile"}
-                >
-                  <Hamburger />
-                </Button>
+          <div className={styles.HeaderBrand}>
+            <img
+              className={styles.HeaderIcon}
+              src={logo}
+              alt={i18n.gameName}
+            />
+            <div className={styles.HeaderInfo}>
+              <div className={styles.HeaderInfoName}>{i18n.siteTitle}</div>
+              <div className={styles.HeaderInfoTagLine}>
+                {i18n.siteTagLine}
               </div>
             </div>
           </div>
-          <div className={styles.HeaderRight}>
-            <div className={styles.HeaderRightContent}>
-              <nav className={styles.HeaderNav}>
-                <NavMenu
-                  ref={nav}
-                  open={navOpen}
-                  setOpen={setNavOpen}
-                  activeGroup={group}
-                />
-              </nav>
-              <div className={styles.HeaderAccountWidgets}>
-                <Search
-                  value={searchTerm}
-                  onChange={setSearchTerm}
-                  onClear={() => setSearchTerm("")}
-                />
-                <Progress
-                  totalCollected={itemsCollected}
-                  collectionSize={itemsTotal}
-                />
-                {user === undefined && (
-                  <Authenticate orientation={Orientation.ROW} onAuth={signIn} />
-                )}
-                {user !== undefined && (
-                  <Account
-                    currentUser={user}
-                    onLogout={signOut}
-                    direction={Direction.ROW}
-                  />
-                )}
-              </div>
+          <div className={styles.HeaderSearch}>
+            <Search
+              value={searchTerm}
+              onChange={setSearchTerm}
+              onClear={() => setSearchTerm("")}
+            />
+            <div className={styles.HeaderButtons}>
+              <Button
+                onClick={onToggleItemSidebar}
+                pressed={sidebarVisibility.showItem}
+                showOnly={"desktop"}
+                colour={BtnColours.Dark}
+              >
+                <SidebarLeft />
+              </Button>
+              <Button
+                onClick={onToggleConfig}
+                pressed={sidebarVisibility.showConfig}
+                showOnly={"desktop"}
+                colour={BtnColours.Dark}
+              >
+                <SidebarRight />
+              </Button>
+              <Button
+                onClick={() =>
+                  setContent(
+                    content === ContentType.MOBILE_MENU
+                      ? popHistory()
+                      : pushHistory(ContentType.MOBILE_MENU),
+                  )
+                }
+                pressed={content === ContentType.MOBILE_MENU}
+                showOnly={"mobile"}
+              >
+                <Hamburger />
+              </Button>
             </div>
+          </div>
+          <div className={styles.HeaderAuth}>
+            {user === undefined && (
+              <Authenticate orientation={Orientation.ROW} onAuth={signIn} />
+            )}
+            {user !== undefined && (
+              <Account
+                currentUser={user}
+                onLogout={signOut}
+                direction={Direction.ROW}
+              />
+            )}
           </div>
         </header>
       }

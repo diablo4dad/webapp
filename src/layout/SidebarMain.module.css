@@ -1,9 +1,16 @@
+.Block {
+    --layout-padding: 2rem;
+    --layout-gap: 1rem;
+}
+
 .Content {
     display: flex;
     flex: 1;
+    flex-direction: column;
 }
 
-.Sidebar {
+.LeftSidebar,
+.RightSidebar {
     display: none;
 }
 
@@ -16,30 +23,58 @@
 }
 
 @media screen and (min-width: 1200px) {
-    .Content {
-        overflow: auto;
-        flex-direction: row;
+    .Block {
+        display: block;
+        flex: auto;
+        flex-direction: column;
     }
 
-    .Sidebar {
+    .Hero {
         position: sticky;
-        top: 0;
+    }
+
+    .Content {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: var(--layout-gap);
+        padding: 0 var(--layout-padding) var(--layout-padding);
+    }
+
+    .LeftSidebar,
+    .RightSidebar {
+        position: sticky;
+        top: 2rem;
+        align-self: start;
 
         display: flex;
         flex-direction: column;
-        width: 50rem;
-        height: calc(100vh - 6rem);
+        max-height: calc(100vh - 4rem);
         overflow-y: auto;
-
-        background-color: #252930;
-        border-right: 1px solid #1d2026;
-        border-bottom: none;
-
         z-index: 10;
     }
 
+    .LeftSidebar {
+        grid-column: span 1;
+    }
+
+    .RightSidebar {
+        grid-column: span 1;
+    }
+
     .Main {
-        display: block;
-        flex: auto;
+        min-width: 0;
+    }
+
+    .MainWithBothSidebars {
+        grid-column: span 4;
+    }
+
+    .MainWithLeftSidebar,
+    .MainWithRightSidebar {
+        grid-column: span 5;
+    }
+
+    .MainFullWidth {
+        grid-column: 1 / -1;
     }
 }

@@ -1,116 +1,63 @@
-@value ProgressBar, Progress from "../components/Progress.module.css";
 @value toggle from "../components/Toggle.module.css";
 @value Search from "../components/Search.module.css";
 
 .Header {
     width: 100%;
-    display: flex;
-    box-sizing: border-box;
-    align-items: center;
-    flex-direction: column;
-}
-
-.HeaderLeft {
-    width: 100%;
-}
-
-.HeaderLeftContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-}
-
-.HeaderRight {
-    display: none;
-    width: 100%;
-}
-
-.HeaderRightContent {
-    display: flex;
-    flex-direction: column;
-}
-
-.HeaderAccountWidgets {
-    display: flex;
+    display: grid;
     gap: 1rem;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-}
-
-.HeaderAccountWidgets .toggle {
-    font-size: 0.875rem;
-}
-
-.HeaderNav {
-    display: flex;
-    flex-direction: row;
-    margin-right: 1rem;
-}
-
-.HeaderNavItem {
-    flex-shrink: 0;
-    background-color: #303640;
-    border-top: 1px solid #39404d;
-    border-bottom: 1px solid #39404d;
-    border-left: 1px solid #39404d;
-    border-right: 1px solid #39404d;
-    box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
-}
-
-.HeaderNavItem button {
     padding: 1rem;
+    box-sizing: border-box;
 }
 
-.HeaderNavItem:first-child {
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
+.HeaderBrand {
+    display: flex;
+    align-items: center;
+    min-width: 0;
 }
 
-.HeaderNavItem:last-child {
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
+.HeaderSearch {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
 }
 
-.HeaderNavItemSelected {
-    border: 1px solid #1d2026;
-
-    background-color: #282c34;
-    box-shadow: none;
+.HeaderSearch > :global(.Search) {
+    flex: 1;
+    min-width: 0;
 }
 
-.HeaderNavItemSelected button:disabled {
-    color: #ccc;
-}
-
-.HeaderNavItemSelected {
-    border-left: 1px solid transparent;
-}
-
-.HeaderNavItem button {
-    font-size: 0.875rem;
-}
-
-.SidebarFooter {
+.HeaderAuth {
     display: none;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+}
+
+.HeaderAuth > * {
+    min-width: 0;
+}
+
+.HeaderButtons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
 }
 
 .HeaderIcon {
+    flex-shrink: 0;
     max-width: 4rem;
     height: auto;
-    float: left;
     margin-right: 1rem;
 }
 
 .HeaderInfo {
-    width: 100%;
-    margin-right: 1rem;
+    min-width: 0;
 }
 
 .HeaderInfoName {
     margin-bottom: 0.125rem;
-
     font-family: "PT Serif", serif;
     font-style: normal;
     font-size: 2rem;
@@ -123,57 +70,32 @@
     color: #ccc;
 }
 
-.HeaderButtons {
-    display: block;
+.SidebarFooter {
+    display: none;
 }
-
-.HeaderButton {
-    position: relative;
-    display: flex;
-    border: 1px solid #39404d;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    max-width: 5rem;
-    background-color: #303640;
-    cursor: pointer;
-    top: -1px;
-    box-shadow: 1px 2px 5px #111;
-}
-
-.HeaderButton svg {
-    fill: #6F7D8C;
-}
-
-.HeaderButton:hover svg,
-.HeaderButton:active svg {
-    fill: #ddd;
-}
-
-.HeaderButtonPressed {
-    top: 0;
-    box-shadow: none;
-}
-
-.HeaderButtonPressed svg {
-    fill: #ccc;
-}
-
 
 .Discord {
-    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0;
     text-align: center;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
+    margin: 0 0 1.5rem;
 }
 
 .DiscordIcon {
     width: 4rem;
     height: auto;
-    margin: 0 auto 0.5rem;
+    margin: 0;
 }
 
 .DiscordInfo {
-    /* nothing */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .DiscordInfoLink {
@@ -189,7 +111,7 @@
 
 .SiteVersion {
     font-size: 0.875rem;
-    padding: 0 1rem 2rem;
+    padding: 0;
     text-align: center;
     color: #ccc;
 }
@@ -200,41 +122,26 @@
 
 @media screen and (min-width: 1200px) {
     .Header {
-        flex-direction: row;
-    }
-
-    .HeaderLeft {
-        width: 50rem;
-    }
-
-    .HeaderLeftContent {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        align-items: center;
+        gap: 1rem;
         padding: 1rem 2rem;
     }
 
-    .HeaderRight {
-        display: block;
+    .HeaderBrand {
+        grid-column: 1 / span 2;
+        justify-self: start;
     }
 
-    .HeaderRight .Progress {
-        text-align: right;
-        justify-content: flex-end;
-    }
-
-    .HeaderRight .ProgressBar {
-        max-width: 20rem;
+    .HeaderSearch {
+        grid-column: 3 / span 2;
         width: 100%;
     }
 
-    .HeaderRightContent {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 1rem 2rem 1rem 0;
-    }
-
-    .HeaderRightContent > div:nth-child(1) {
-        max-width: 40%;
-        min-width: 20rem;
+    .HeaderAuth {
+        display: flex;
+        grid-column: 5 / span 2;
+        justify-self: end;
     }
 
     .SidebarFooter {
@@ -242,51 +149,30 @@
     }
 
     .Discord {
-        display: flex;
-        padding: 1rem 2rem;
-        text-align: left;
+        padding: 0;
+        text-align: center;
         margin: 0;
-        background-color: #303640;
     }
 
     .DiscordIcon {
-        margin: 0 1rem 0 0;
+        margin: 0;
     }
 
     .DiscordInfo {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        align-items: center;
     }
 
     .SiteVersion {
         display: flex;
-        flex-direction: row-reverse;
-        justify-content: flex-end;
-        gap: 1rem;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
         margin: 0;
-        padding: 1rem 2rem;
+        padding: 0;
     }
 
     .SiteVersion div:not(:last-child) {
         margin-bottom: 0;
-    }
-}
-
-@media screen and (min-width: 1600px) {
-    .HeaderRight .Progress {
-        width: 100%;
-    }
-}
-
-@media screen and (max-width: 1600px) {
-    .HeaderRight .ProgressBar {
-        display: none;
-    }
-}
-
-@media screen and (max-width: 1400px) {
-    .HeaderRight .Progress {
-        display: none;
     }
 }

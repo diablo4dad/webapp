@@ -1,5 +1,8 @@
 .Block {
-
+    position: relative;
+    overflow: hidden;
+    border-color: #303640;
+    background-color: #303640;
 }
 
 .PanelHeading {
@@ -33,11 +36,16 @@
     padding-bottom: 1rem;
     text-transform: uppercase;
     font-size: 0.875rem;
+    color: #b7bdc6;
 }
 
 
 .ItemClasses {
-    background-color: #1e2126;
+    position: relative;
+    z-index: 0;
+    background-color: rgba(30, 33, 38, 0.72);
+    border-top: 1px solid #303640;
+    border-bottom: 1px solid #303640;
     padding: 0.5rem 2rem;
     margin-bottom: 1rem;
 }
@@ -58,7 +66,7 @@
     left: calc(1.25rem - 0.25rem);
     width: 0.5rem;
     height: 0.5rem;
-    background-color: #2d3239;
+    background-color: #4b5360;
     border-radius: 0.5rem;
     content: '';
 }
@@ -72,11 +80,11 @@
 }
 
 .ItemClassActive:before {
-    background-color: #a7a7a7;
+    background-color: #f9a620;
 }
 
 .ItemClass:hover:before {
-    background-color: #3e885b;
+    background-color: #d0b07c;
 }
 
 .ItemClassIcon:not(:last-child) {
@@ -92,6 +100,7 @@
     padding-right: 2rem;
     margin-bottom: 1rem;
     font-size: 0.875rem;
+    color: #d5d8dd;
 }
 
 .ItemLocations {
@@ -107,7 +116,10 @@
     align-items: center;
     width: 100%;
     padding: 1rem 2rem;
-    background-color: #303640;
+    border-top: 1px solid #303640;
+    border-bottom: 1px solid #303640;
+    background:
+        linear-gradient(90deg, rgba(39, 44, 52, 0.96), rgba(48, 54, 64, 0.92));
 }
 
 .ItemLocationIcon {
@@ -121,12 +133,13 @@
 
 .ItemLocationDescription {
     margin-bottom: 0.5rem;
+    color: #d8d4cc;
 }
 
 .ItemLocationCategory {
     text-transform: uppercase;
     font-size: 0.875rem;
-    color: orange;
+    color: #f9a620;
 }
 
 .ItemCollectedBtn {
@@ -173,7 +186,7 @@
     padding-left: 2rem;
     padding-right: 2rem;
     font-size: 0.875rem;
-    color: #ccc;
+    color: #bfc4cb;
     margin-bottom: 1rem;
     justify-content: space-between;
 }
@@ -193,12 +206,13 @@
     margin-bottom: 0.5rem;
 
     padding: 0.5rem 1rem;
+    border: 1px solid rgba(143, 152, 163, 0.28);
     background-color: #2d3239;
     border-radius: 2rem;
 
     font-size: 0.875rem;
     font-weight: 300;
-    color: #ccc;
+    color: #d2d7de;
 }
 
 .ItemTag:last-child {

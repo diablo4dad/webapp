@@ -8,20 +8,99 @@ import {
 import { SettingsAction, SettingsActionType } from "./context";
 import { ChangeEvent } from "react";
 import { OptionWidgetGroup, WidgetType } from "../common/widget";
+import { ItemGroup, MasterGroup, itemGroups } from "../common";
 import { isEnabled, isLedgerView } from "./predicate";
 import { getNumberValue } from "./accessor";
 import { enumKeys } from "../common/enums";
-import { CharacterClass, CharacterGender } from "../data";
+import { CharacterClass, CharacterGender, CollectionGroup } from "../data";
 import i18n from "../i18n";
+import { CollectionLog } from "../collection/type";
+import { filterDb } from "../data/filters";
+import { countAllItemsDabDb } from "../data/aggregate";
+import GeneralIcon from "../image/icons/goblin.webp";
+import CashShopIcon from "../image/icons/purse.webp";
+import PromoIcon from "../image/icons/chest.webp";
+import SeasonIcon from "../image/icons/season.webp";
+import ChallengeIcon from "../image/icons/dungeon.webp";
+import GlobalIcon from "../image/icons/wardrobe.webp";
+
+const collectionMeta = new Map([
+  [MasterGroup.GENERAL, { label: "Essential Collection", icon: GeneralIcon }],
+  [MasterGroup.SEASONS, { label: "Seasons", icon: SeasonIcon }],
+  [MasterGroup.CHALLENGE, { label: "Challenges", icon: ChallengeIcon }],
+  [MasterGroup.SHOP_ITEMS, { label: "Tejal's Shop", icon: CashShopIcon }],
+  [MasterGroup.PROMOTIONAL, { label: "Promotional", icon: PromoIcon }],
+  [MasterGroup.UNIVERSAL, { label: "Universal", icon: GlobalIcon }],
+]);
+
+const itemOptions = [
+  Option.SHOW_MOUNTS,
+  Option.SHOW_HORSE_ARMOR,
+  Option.SHOW_TROPHIES,
+  Option.SHOW_BACK_TROPHIES,
+  Option.SHOW_ARMOR,
+  Option.SHOW_WEAPONS,
+  Option.SHOW_MARKINGS,
+  Option.SHOW_EMOTES,
+  Option.SHOW_PORTALS,
+  Option.SHOW_HEADSTONES,
+  Option.SHOW_EMBLEMS,
+  Option.SHOW_TITLES,
+  Option.SHOW_PETS,
+] as const satisfies ReadonlyArray<BooleanOption>;
+
+const classOptions = [
+  Option.SHOW_SORCERER,
+  Option.SHOW_DRUID,
+  Option.SHOW_BARBARIAN,
+  Option.SHOW_ROGUE,
+  Option.SHOW_NECROMANCER,
+  Option.SHOW_SPIRITBORN,
+  Option.SHOW_PALADIN,
+] as const satisfies ReadonlyArray<BooleanOption>;
+
+const itemOptionGroupMap = new Map<BooleanOption, ItemGroup>([
+  [Option.SHOW_MOUNTS, ItemGroup.MOUNTS],
+  [Option.SHOW_HORSE_ARMOR, ItemGroup.HORSE_ARMOR],
+  [Option.SHOW_TROPHIES, ItemGroup.TROPHIES],
+  [Option.SHOW_BACK_TROPHIES, ItemGroup.BACK_TROPHIES],
+  [Option.SHOW_ARMOR, ItemGroup.ARMOR],
+  [Option.SHOW_WEAPONS, ItemGroup.WEAPONS],
+  [Option.SHOW_MARKINGS, ItemGroup.BODY],
+  [Option.SHOW_EMOTES, ItemGroup.EMOTES],
+  [Option.SHOW_PORTALS, ItemGroup.TOWN_PORTALS],
+  [Option.SHOW_HEADSTONES, ItemGroup.HEADSTONES],
+  [Option.SHOW_EMBLEMS, ItemGroup.EMBLEMS],
+  [Option.SHOW_TITLES, ItemGroup.PLAYER_TITLES],
+  [Option.SHOW_PETS, ItemGroup.PETS],
+]);
+
+const classOptionMap = new Map<BooleanOption, CharacterClass>([
+  [Option.SHOW_SORCERER, CharacterClass.SORCERER],
+  [Option.SHOW_DRUID, CharacterClass.DRUID],
+  [Option.SHOW_BARBARIAN, CharacterClass.BARBARIAN],
+  [Option.SHOW_ROGUE, CharacterClass.ROGUE],
+  [Option.SHOW_NECROMANCER, CharacterClass.NECROMANCER],
+  [Option.SHOW_SPIRITBORN, CharacterClass.SPIRITBORN],
+  [Option.SHOW_PALADIN, CharacterClass.PALADIN],
+]);
 
 function createBooleanAction(
   option: BooleanOption,
 ): (e: ChangeEvent<HTMLInputElement>) => SettingsAction {
-  return (e: ChangeEvent<HTMLInputElement>) => ({
+  return (e: ChangeEvent<HTMLInputElement>) =>
+    createBooleanUpdateAction(option, e.target.checked);
+}
+
+function createBooleanUpdateAction(
+  option: BooleanOption,
+  value: boolean,
+): SettingsAction {
+  return {
     type: SettingsActionType.UPDATE,
-    option: option,
-    value: e.target.checked,
-  });
+    option,
+    value,
+  };
 }
 
 function createChoiceAction(
@@ -32,6 +111,13 @@ function createChoiceAction(
     option: option,
     value: Number(e.target.value),
   });
+}
+
+function createBooleanToggleAction(
+  option: BooleanOption,
+): (settings: Settings) => SettingsAction {
+  return (settings: Settings) =>
+    createBooleanUpdateAction(option, !isEnabled(settings, option));
 }
 
 function createBooleanChecked(
@@ -50,7 +136,108 @@ function createNumberSelected(
   };
 }
 
+function resetBooleanOptions(
+  settings: Settings,
+  options: readonly BooleanOption[],
+): Settings {
+  const nextSettings: Settings = { ...settings };
+
+  for (const option of options) {
+    nextSettings[option] = false;
+  }
+
+  return nextSettings;
+}
+
+function createItemTypeCount(
+  option: BooleanOption,
+): (
+  collections: CollectionGroup,
+  settings: Settings,
+  log: CollectionLog,
+  group: MasterGroup,
+) => number {
+  return (
+    collections: CollectionGroup,
+    settings: Settings,
+    log: CollectionLog,
+    group: MasterGroup,
+  ) => {
+    const isolatedSettings = resetBooleanOptions(settings, itemOptions);
+    const itemGroup = itemOptionGroupMap.get(option);
+
+    if (
+      itemGroup === undefined ||
+      (itemGroups.get(itemGroup) ?? []).length === 0
+    ) {
+      return 0;
+    }
+
+    const countedDb = filterDb(
+      collections,
+      {
+        ...isolatedSettings,
+        [option]: true,
+      },
+      log,
+      group,
+      null,
+      true,
+    );
+
+    return countAllItemsDabDb(countedDb);
+  };
+}
+
+function createClassTypeCount(
+  option: BooleanOption,
+): (
+  collections: CollectionGroup,
+  settings: Settings,
+  log: CollectionLog,
+  group: MasterGroup,
+) => number {
+  return (
+    collections: CollectionGroup,
+    settings: Settings,
+    log: CollectionLog,
+    group: MasterGroup,
+  ) => {
+    const isolatedSettings = resetBooleanOptions(settings, classOptions);
+    const characterClass = classOptionMap.get(option);
+
+    if (characterClass === undefined) {
+      return 0;
+    }
+
+    const countedDb = filterDb(
+      collections,
+      {
+        ...isolatedSettings,
+        [option]: true,
+      },
+      log,
+      group,
+      null,
+      true,
+    );
+
+    return countAllItemsDabDb(countedDb);
+  };
+}
+
 export const groups: ReadonlyArray<OptionWidgetGroup> = [
+  {
+    label: "Collections",
+    widgets: Array.from(collectionMeta.entries()).map(([group, meta]) => ({
+      type: WidgetType.COLLECTION_FILTER,
+      option: group,
+      group,
+      label: meta.label,
+      icon: meta.icon,
+      selected: (activeGroup: MasterGroup) => activeGroup === group,
+    })),
+  },
   {
     label: "Categories",
     widgets: [
@@ -88,95 +275,108 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
     label: "Items",
     widgets: [
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_MOUNTS,
         label: "Mounts",
-        action: createBooleanAction(Option.SHOW_MOUNTS),
+        action: createBooleanToggleAction(Option.SHOW_MOUNTS),
         checked: createBooleanChecked(Option.SHOW_MOUNTS),
+        count: createItemTypeCount(Option.SHOW_MOUNTS),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_HORSE_ARMOR,
         label: "Horse Armor",
-        action: createBooleanAction(Option.SHOW_HORSE_ARMOR),
+        action: createBooleanToggleAction(Option.SHOW_HORSE_ARMOR),
         checked: createBooleanChecked(Option.SHOW_HORSE_ARMOR),
+        count: createItemTypeCount(Option.SHOW_HORSE_ARMOR),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_TROPHIES,
         label: "Trophies",
-        action: createBooleanAction(Option.SHOW_TROPHIES),
+        action: createBooleanToggleAction(Option.SHOW_TROPHIES),
         checked: createBooleanChecked(Option.SHOW_TROPHIES),
+        count: createItemTypeCount(Option.SHOW_TROPHIES),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_BACK_TROPHIES,
         label: "Back Trophies",
-        action: createBooleanAction(Option.SHOW_BACK_TROPHIES),
+        action: createBooleanToggleAction(Option.SHOW_BACK_TROPHIES),
         checked: createBooleanChecked(Option.SHOW_BACK_TROPHIES),
+        count: createItemTypeCount(Option.SHOW_BACK_TROPHIES),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_ARMOR,
         label: "Armor",
-        action: createBooleanAction(Option.SHOW_ARMOR),
+        action: createBooleanToggleAction(Option.SHOW_ARMOR),
         checked: createBooleanChecked(Option.SHOW_ARMOR),
+        count: createItemTypeCount(Option.SHOW_ARMOR),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_WEAPONS,
         label: "Weapons",
-        action: createBooleanAction(Option.SHOW_WEAPONS),
+        action: createBooleanToggleAction(Option.SHOW_WEAPONS),
         checked: createBooleanChecked(Option.SHOW_WEAPONS),
+        count: createItemTypeCount(Option.SHOW_WEAPONS),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_MARKINGS,
         label: "Body Markings",
-        action: createBooleanAction(Option.SHOW_MARKINGS),
+        action: createBooleanToggleAction(Option.SHOW_MARKINGS),
         checked: createBooleanChecked(Option.SHOW_MARKINGS),
+        count: createItemTypeCount(Option.SHOW_MARKINGS),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_EMOTES,
         label: "Emotes",
-        action: createBooleanAction(Option.SHOW_EMOTES),
+        action: createBooleanToggleAction(Option.SHOW_EMOTES),
         checked: createBooleanChecked(Option.SHOW_EMOTES),
+        count: createItemTypeCount(Option.SHOW_EMOTES),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_PORTALS,
         label: "Town Portals",
-        action: createBooleanAction(Option.SHOW_PORTALS),
+        action: createBooleanToggleAction(Option.SHOW_PORTALS),
         checked: createBooleanChecked(Option.SHOW_PORTALS),
+        count: createItemTypeCount(Option.SHOW_PORTALS),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_HEADSTONES,
         label: "Headstones",
-        action: createBooleanAction(Option.SHOW_HEADSTONES),
+        action: createBooleanToggleAction(Option.SHOW_HEADSTONES),
         checked: createBooleanChecked(Option.SHOW_HEADSTONES),
+        count: createItemTypeCount(Option.SHOW_HEADSTONES),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_EMBLEMS,
         label: "Emblems",
-        action: createBooleanAction(Option.SHOW_EMBLEMS),
+        action: createBooleanToggleAction(Option.SHOW_EMBLEMS),
         checked: createBooleanChecked(Option.SHOW_EMBLEMS),
+        count: createItemTypeCount(Option.SHOW_EMBLEMS),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_TITLES,
         label: "Player Titles",
-        action: createBooleanAction(Option.SHOW_TITLES),
+        action: createBooleanToggleAction(Option.SHOW_TITLES),
         checked: createBooleanChecked(Option.SHOW_TITLES),
+        count: createItemTypeCount(Option.SHOW_TITLES),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_PETS,
         label: "Pets",
-        action: createBooleanAction(Option.SHOW_PETS),
+        action: createBooleanToggleAction(Option.SHOW_PETS),
         checked: createBooleanChecked(Option.SHOW_PETS),
+        count: createItemTypeCount(Option.SHOW_PETS),
       },
     ],
   },
@@ -184,53 +384,60 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
     label: "Classes",
     widgets: [
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_SORCERER,
-        label: "Show Sorcerer",
-        action: createBooleanAction(Option.SHOW_SORCERER),
+        label: "Sorcerer",
+        action: createBooleanToggleAction(Option.SHOW_SORCERER),
         checked: createBooleanChecked(Option.SHOW_SORCERER),
+        count: createClassTypeCount(Option.SHOW_SORCERER),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_DRUID,
-        label: "Show Druid",
-        action: createBooleanAction(Option.SHOW_DRUID),
+        label: "Druid",
+        action: createBooleanToggleAction(Option.SHOW_DRUID),
         checked: createBooleanChecked(Option.SHOW_DRUID),
+        count: createClassTypeCount(Option.SHOW_DRUID),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_BARBARIAN,
-        label: "Show Barbarian",
-        action: createBooleanAction(Option.SHOW_BARBARIAN),
+        label: "Barbarian",
+        action: createBooleanToggleAction(Option.SHOW_BARBARIAN),
         checked: createBooleanChecked(Option.SHOW_BARBARIAN),
+        count: createClassTypeCount(Option.SHOW_BARBARIAN),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_ROGUE,
-        label: "Show Rogue",
-        action: createBooleanAction(Option.SHOW_ROGUE),
+        label: "Rogue",
+        action: createBooleanToggleAction(Option.SHOW_ROGUE),
         checked: createBooleanChecked(Option.SHOW_ROGUE),
+        count: createClassTypeCount(Option.SHOW_ROGUE),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_NECROMANCER,
-        label: "Show Necromancer",
-        action: createBooleanAction(Option.SHOW_NECROMANCER),
+        label: "Necromancer",
+        action: createBooleanToggleAction(Option.SHOW_NECROMANCER),
         checked: createBooleanChecked(Option.SHOW_NECROMANCER),
+        count: createClassTypeCount(Option.SHOW_NECROMANCER),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_SPIRITBORN,
-        label: "Show Spiritborn",
-        action: createBooleanAction(Option.SHOW_SPIRITBORN),
+        label: "Spiritborn",
+        action: createBooleanToggleAction(Option.SHOW_SPIRITBORN),
         checked: createBooleanChecked(Option.SHOW_SPIRITBORN),
+        count: createClassTypeCount(Option.SHOW_SPIRITBORN),
       },
       {
-        type: WidgetType.TOGGLE,
+        type: WidgetType.ITEM_FILTER,
         option: Option.SHOW_PALADIN,
-        label: "Show Paladin",
-        action: createBooleanAction(Option.SHOW_PALADIN),
+        label: "Paladin",
+        action: createBooleanToggleAction(Option.SHOW_PALADIN),
         checked: createBooleanChecked(Option.SHOW_PALADIN),
+        count: createClassTypeCount(Option.SHOW_PALADIN),
       },
     ],
   },
@@ -282,7 +489,7 @@ export const groups: ReadonlyArray<OptionWidgetGroup> = [
     ],
   },
   {
-    label: "Display Options",
+    label: "Display",
     widgets: [
       {
         type: WidgetType.TOGGLE,

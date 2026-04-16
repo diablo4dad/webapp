@@ -1,0 +1,195 @@
+.Block {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+    background-color: #282c34;
+}
+
+.Welcome {
+    padding: 1.75rem 2rem;
+    border: 1px solid #303640;
+    background-color: #303640;
+    box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+}
+
+.Welcome h1 {
+    margin: 0 0 0.75rem;
+    color: #f9a620;
+    font-family: "PT Serif", serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.05;
+    text-shadow: 1px 1px 3px #111;
+}
+
+.Welcome p {
+    max-width: 42rem;
+    margin: 0;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.SeasonCard {
+    position: relative;
+    overflow: hidden;
+    padding: 1.75rem 2rem;
+    border: 1px solid #4f3d1c;
+    background-color: #342818;
+    box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+}
+
+.SeasonCard::after {
+    content: "";
+    position: absolute;
+    inset: auto -4rem -4rem auto;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(249, 166, 32, 0.22), transparent 70%);
+    pointer-events: none;
+}
+
+.SeasonEyebrow {
+    margin-bottom: 0.5rem;
+    color: #d0b07c;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.SeasonTitle {
+    margin-bottom: 0.25rem;
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.SeasonName {
+    margin-bottom: 0.75rem;
+    color: #f9a620;
+    font-family: "PT Serif", serif;
+    font-size: 1.125rem;
+    text-shadow: 1px 1px 3px #111;
+}
+
+.SeasonDescription {
+    position: relative;
+    z-index: 1;
+    max-width: 28rem;
+    margin: 0;
+    color: #d3d3d3;
+    line-height: 1.6;
+}
+
+.ProgressCard {
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    border: 1px solid #303640;
+    background-color: #303640;
+    box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+    transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.ProgressCard:hover {
+    transform: translateY(-2px);
+    border-color: #4b5461;
+    box-shadow: 3px 3px 5px rgba(17, 17, 17, 0.35);
+}
+
+.ProgressCardLabel {
+    margin-bottom: 0.75rem;
+    color: #8f98a3;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.ProgressCardTitle {
+    margin-bottom: 0.75rem;
+    color: #fff;
+    font-family: "PT Serif", serif;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    text-shadow: 1px 1px 2px #111;
+}
+
+.ProgressCardStats {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+    color: #d8dde3;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.ProgressCardCurrent {
+    color: #f9a620;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.ProgressCardDivider {
+    color: #8f98a3;
+}
+
+.ProgressCardComplete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.25rem;
+    color: #d8b35a;
+}
+
+.ProgressCardComplete svg {
+    width: 1.375rem;
+    height: 1.375rem;
+}
+
+.ProgressCardBar {
+    display: flex;
+    align-items: center;
+    height: 0.6rem;
+    margin-bottom: 0.85rem;
+    padding: 0.2rem;
+    border: 1px solid #303640;
+    background: #23272e;
+    border-radius: 999px;
+}
+
+.ProgressCardBarFill {
+    display: block;
+    width: 38%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #7d5a1f, #f9a620);
+    box-shadow: 0 0 12px rgba(249, 166, 32, 0.25);
+}
+
+.ProgressCardDetail {
+    margin: 0;
+    color: #b8bcc2;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+@media screen and (min-width: 900px) {
+    .Block {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .Welcome {
+        grid-column: span 4;
+    }
+
+    .SeasonCard {
+        grid-column: span 2;
+    }
+
+    .ProgressCard {
+        grid-column: span 1;
+    }
+}

@@ -1,3 +1,8 @@
+.View {
+    position: relative;
+    flex: 1;
+}
+
 .Sidebar {
     display: flex;
     flex-direction: column;
@@ -5,10 +10,85 @@
     flex: 1;
 }
 
-.SidebarContent {
-
+.Content {
+    position: relative;
+    min-width: 0;
 }
 
-.SidebarFooter {
+.StickyStack {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    background-color: #282c34;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 8px 16px rgba(17, 17, 17, 0.12);
+    display: none;
+}
 
+.MobileSidebarPanel {
+    border-bottom: 1px solid #1d2026;
+    background-color: #252930;
+    box-shadow: 0 1px 3px rgba(17, 17, 17, 0.2);
+}
+
+.NavMenu {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0 2rem;
+    background-color: #1e2126;
+    border-bottom: 1px solid #303640;
+}
+
+.NavMenuItem {
+    position: relative;
+    padding: 1.1rem 1.25rem 0.95rem;
+    border: 0;
+    background: transparent;
+    color: #8f98a3;
+    font-family: "PT Serif", serif;
+    font-size: 1rem;
+    text-shadow: 1px 1px 2px #111;
+    transition: color 160ms ease;
+    cursor: pointer;
+}
+
+.NavMenuItem:hover {
+    color: #d7dbe0;
+}
+
+.NavMenuItem:focus {
+    outline: none;
+}
+
+.NavMenuItem::after {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0;
+    height: 0.25rem;
+    border-radius: 999px 999px 0 0;
+    background: linear-gradient(90deg, #7d5a1f, #f9a620);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 160ms ease;
+}
+
+.NavMenuItemActive {
+    color: #f4f4f4;
+}
+
+.NavMenuItemActive::after {
+    transform: scaleX(1);
+}
+
+@media screen and (min-width: 1200px) {
+    .MobileSidebarPanel {
+        display: none;
+    }
+
+    .MainSidebarPanel {
+        position: sticky;
+        top: 2rem;
+    }
 }

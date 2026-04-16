@@ -23,9 +23,11 @@ function Shell({
     <div {...props} className={styles.Block}>
       <div className={styles.Header}>{header}</div>
       <div className={styles.StickyTop}>{stickyTop}</div>
-      <div className={styles.Content}>{main}</div>
+      <div className={styles.Main}>
+        <div className={styles.Content}>{main}</div>
+        <footer className={styles.Footer}>{footer}</footer>
+      </div>
       <div className={styles.StickyBottom}>{stickyBottom}</div>
-      <footer className={styles.Footer}>{footer}</footer>
     </div>
   );
 }

@@ -5,6 +5,7 @@
     border-radius: 0.5rem;
     max-width: 5rem;
     background-color: #303640;
+    color: #8f98a3;
     cursor: pointer;
     top: -1px;
     box-shadow: 1px 2px 5px #111;
@@ -31,6 +32,7 @@
 .Btn svg {
     width: 2rem;
     height: 2rem;
+    color: currentColor;
 }
 
 .Btn:active,
@@ -42,41 +44,51 @@
 .BtnDark {
     border: 1px solid #2D3239;
     background-color: #23272e;
-    fill: #6F7D8C;
+    color: #a7afb8;
 }
 
-.BtnGrey svg {
-    fill: #6F7D8C;
+.BtnDark:hover,
+.BtnDark:active,
+.BtnDark.BtnPressed {
+    color: #d7dbe0;
 }
 
-.BtnGrey:hover svg,
-.BtnGrey:active svg {
-    fill: #8394a6;
+.BtnGrey {
+    color: #6F7D8C;
 }
 
-.BtnDiscord svg {
-    fill: #7289da;
+.BtnGrey:hover,
+.BtnGrey:active,
+.BtnGrey.BtnPressed {
+    color: #8394a6;
 }
 
-.BtnDiscord:hover svg,
-.BtnDiscord:active svg {
-    fill: #7e97f2;
+.BtnDiscord {
+    color: #7289da;
 }
 
-.BtnBattleNet svg {
-    fill: #009AE4;
+.BtnDiscord:hover,
+.BtnDiscord:active,
+.BtnDiscord.BtnPressed {
+    color: #7e97f2;
 }
 
-.BtnBattleNet:hover svg,
-.BtnBattleNet:active svg {
-    fill: #00adfc;
+.BtnBattleNet {
+    color: #009AE4;
 }
 
-.BtnGreen svg {
-    fill: #3e885b;
+.BtnBattleNet:hover,
+.BtnBattleNet:active,
+.BtnBattleNet.BtnPressed {
+    color: #00adfc;
 }
 
-.BtnGreen:hover svg,
-.BtnGreen:active svg {
-    fill: #4aa16d;
+.BtnGreen {
+    color: #3e885b;
+}
+
+.BtnGreen:hover,
+.BtnGreen:active,
+.BtnGreen.BtnPressed {
+    color: #4aa16d;
 }

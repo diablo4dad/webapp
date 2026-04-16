@@ -21,6 +21,104 @@ function ChevronRight() {
   );
 }
 
+function ChevronLeft() {
+  return (
+    <svg
+      strokeWidth="0"
+      viewBox="0 0 20 20"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06L6.47 10.53a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+        clipRule="evenodd"
+      ></path>
+    </svg>
+  );
+}
+
+function ArrowUp() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4.5 15.75 12 8.25l7.5 7.5"
+      />
+    </svg>
+  );
+}
+
+function ArrowDown() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m19.5 8.25-7.5 7.5-7.5-7.5"
+      />
+    </svg>
+  );
+}
+
+function ReplyArrow() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 14.25 3.75 9 9 3.75"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.75 9H13.5A6.75 6.75 0 0 1 20.25 15.75V18"
+      />
+    </svg>
+  );
+}
+
+function Paperclip() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m18.375 12.739-6.316 6.317a4.5 4.5 0 0 1-6.364-6.364l7.2-7.2a3 3 0 1 1 4.243 4.243l-7.2 7.2a1.5 1.5 0 0 1-2.121-2.122l6.316-6.316"
+      />
+    </svg>
+  );
+}
+
 function Gear() {
   return (
     <svg viewBox="0 -256 1792 1792" width="100%" height="100%">
@@ -194,6 +292,151 @@ function SearchIcon() {
   );
 }
 
+function Heart({ useCssColour = false }: Props) {
+  return (
+    <svg
+      stroke={useCssColour ? "currentColor" : "currentColor"}
+      fill={useCssColour ? "currentColor" : "none"}
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m12 20.25-1.45-1.32C5.4 14.36 2 11.28 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09A6.04 6.04 0 0 1 16.5 2C19.58 2 22 4.42 22 7.5c0 3.78-3.4 6.86-8.55 11.43L12 20.25Z"
+      />
+    </svg>
+  );
+}
+
+function Play() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      strokeWidth="0"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M8 5.14v13.72a1 1 0 0 0 1.53.85l10.29-6.86a1 1 0 0 0 0-1.7L9.53 4.29A1 1 0 0 0 8 5.14Z"></path>
+    </svg>
+  );
+}
+
+function ImageIcon() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.75 5.25h16.5a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V6.75a1.5 1.5 0 0 1 1.5-1.5Z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m2.25 15.75 4.94-4.94a1.5 1.5 0 0 1 2.12 0l2.44 2.44 1.94-1.94a1.5 1.5 0 0 1 2.12 0l5.94 5.94"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.75 9a1.125 1.125 0 1 0 0-2.25 1.125 1.125 0 0 0 0 2.25Z"
+      />
+    </svg>
+  );
+}
+
+function SidebarLeft() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4.5 5.25h15a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.25V6.75a1.5 1.5 0 0 1 1.5-1.5Z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8.25 5.25v13.5"
+      />
+    </svg>
+  );
+}
+
+function SidebarRight() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4.5 5.25h15a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.25V6.75a1.5 1.5 0 0 1 1.5-1.5Z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.75 5.25v13.5"
+      />
+    </svg>
+  );
+}
+
+function Plus() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 5.25v13.5M5.25 12h13.5"
+      />
+    </svg>
+  );
+}
+
+function Star() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      strokeWidth="0"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="m12 17.27 6.18 3.73-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+    </svg>
+  );
+}
+
 export {
   Gear,
   Currency,
@@ -204,6 +447,18 @@ export {
   Hamburger,
   Close,
   Google,
+  ArrowUp,
+  ArrowDown,
+  ReplyArrow,
+  Paperclip,
+  Heart,
+  Play,
+  ImageIcon,
+  SidebarLeft,
+  SidebarRight,
+  Star,
+  Plus,
+  ChevronLeft,
   ChevronRight,
   SearchIcon,
 };
