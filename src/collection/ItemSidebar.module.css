@@ -1,8 +1,24 @@
 .Block {
     position: relative;
     overflow: hidden;
-    border-color: #303640;
-    background-color: #303640;
+    display: flex;
+    flex-direction: column;
+}
+
+.Block::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 15rem;
+    height: 15rem;
+    background:
+        radial-gradient(circle at 35% 35%, rgba(168, 178, 191, 0.1), transparent 50%),
+        radial-gradient(circle at 60% 55%, rgba(95, 104, 116, 0.1), transparent 66%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+    filter: blur(0.5rem);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .PanelHeading {
@@ -19,31 +35,32 @@
 }
 
 .ItemTitle {
-    padding-top: 2rem;
+    padding-top: 1rem;
     padding-left: 2rem;
     margin-bottom: 0.5rem;
-
-    color: orange;
+    color: #fff;
     font-family: "PT Serif", serif;
     font-size: 1.5rem;
-    font-style: normal;
     font-weight: 700;
-    text-shadow: 1px 1px 3px #111;
+    line-height: 1.2;
+    text-shadow: 1px 1px 2px #111;
 }
 
 .ItemType {
     padding-left: 2rem;
     padding-bottom: 1rem;
     text-transform: uppercase;
-    font-size: 0.875rem;
-    color: #b7bdc6;
+    color: #8f98a3;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
 }
 
 
 .ItemClasses {
     position: relative;
     z-index: 0;
-    background-color: rgba(30, 33, 38, 0.72);
+    background-color: #23272e;
     border-top: 1px solid #303640;
     border-bottom: 1px solid #303640;
     padding: 0.5rem 2rem;
@@ -83,10 +100,6 @@
     background-color: #f9a620;
 }
 
-.ItemClass:hover:before {
-    background-color: #d0b07c;
-}
-
 .ItemClassIcon:not(:last-child) {
     padding-right: 0.25rem;
 }
@@ -104,7 +117,6 @@
 }
 
 .ItemLocations {
-    margin-top: 1rem;
     margin-bottom: 1rem;
 }
 
@@ -118,8 +130,7 @@
     padding: 1rem 2rem;
     border-top: 1px solid #303640;
     border-bottom: 1px solid #303640;
-    background:
-        linear-gradient(90deg, rgba(39, 44, 52, 0.96), rgba(48, 54, 64, 0.92));
+    background-color: #23272e;
 }
 
 .ItemLocationIcon {
@@ -138,8 +149,10 @@
 
 .ItemLocationCategory {
     text-transform: uppercase;
-    font-size: 0.875rem;
-    color: #f9a620;
+    color: #8f98a3;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
 }
 
 .ItemCollectedBtn {
@@ -157,11 +170,11 @@
 .ItemImage {
     position: relative;
     z-index: 1;
-    float: right;
+    margin-top: 1rem;
+    margin-left: 2rem;
+    margin-bottom: 1rem;
     max-width: 5rem;
     height: auto;
-    top: 3rem;
-    right: 2rem;
 }
 
 .ItemZone {
@@ -207,7 +220,7 @@
 
     padding: 0.5rem 1rem;
     border: 1px solid rgba(143, 152, 163, 0.28);
-    background-color: #2d3239;
+    background-color: #303640;
     border-radius: 2rem;
 
     font-size: 0.875rem;

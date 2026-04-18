@@ -35,7 +35,7 @@
 
     .Content {
         display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(12, minmax(0, 1fr));
         gap: var(--layout-gap);
         padding: 0 var(--layout-padding) var(--layout-padding);
     }
@@ -48,17 +48,16 @@
 
         display: flex;
         flex-direction: column;
-        max-height: calc(100vh - 4rem);
         overflow-y: auto;
         z-index: 10;
     }
 
     .LeftSidebar {
-        grid-column: span 1;
+        grid-column: span 4;
     }
 
     .RightSidebar {
-        grid-column: span 1;
+        grid-column: span 4;
     }
 
     .Main {
@@ -71,10 +70,59 @@
 
     .MainWithLeftSidebar,
     .MainWithRightSidebar {
-        grid-column: span 5;
+        grid-column: span 8;
     }
 
     .MainFullWidth {
         grid-column: 1 / -1;
+    }
+}
+
+
+
+@media screen and (min-width: 1600px) {
+    .Content {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .MainWithBothSidebars {
+        grid-column: span 6;
+    }
+
+    .MainWithLeftSidebar,
+    .MainWithRightSidebar {
+        grid-column: span 9;
+    }
+
+    .LeftSidebar {
+        grid-column: span 3;
+    }
+
+    .RightSidebar {
+        grid-column: span 3;
+    }
+}
+
+
+@media screen and (min-width: 2600px) {
+    .Content {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .MainWithBothSidebars {
+        grid-column: span 8;
+    }
+
+    .MainWithLeftSidebar,
+    .MainWithRightSidebar {
+        grid-column: span 10;
+    }
+
+    .LeftSidebar {
+        grid-column: span 2;
+    }
+
+    .RightSidebar {
+        grid-column: span 2;
     }
 }

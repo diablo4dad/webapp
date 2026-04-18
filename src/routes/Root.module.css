@@ -10,6 +10,7 @@
 }
 
 .HeaderBrand {
+    position: relative;
     display: flex;
     align-items: center;
     min-width: 0;
@@ -23,14 +24,13 @@
 }
 
 .HeaderSearch > :global(.Search) {
-    flex: 1;
+    flex: 0 1 30rem;
+    max-width: 30rem;
     min-width: 0;
 }
 
 .HeaderAuth {
-    display: none;
     align-items: center;
-    justify-content: flex-end;
     min-width: 0;
 }
 
@@ -46,13 +46,14 @@
 }
 
 .HeaderIcon {
-    flex-shrink: 0;
-    max-width: 4rem;
-    height: auto;
-    margin-right: 1rem;
+    position: absolute;
+    top: -2.5rem;
+    width: auto;
+    height: 200%;
 }
 
 .HeaderInfo {
+    padding-left: 9rem;
     min-width: 0;
 }
 
@@ -62,7 +63,12 @@
     font-style: normal;
     font-size: 2rem;
     font-weight: 700;
-    text-shadow: 1px 1px 3px #111;
+    color: #f1ede4;
+    text-shadow: 3px 3px 3px #111;
+}
+
+.HeaderInfoNameAccent {
+    color: #b44a3f;
 }
 
 .HeaderInfoTagLine {
@@ -129,19 +135,20 @@
     }
 
     .HeaderBrand {
-        grid-column: 1 / span 2;
+        grid-column: 1 / span 3;
         justify-self: start;
     }
 
     .HeaderSearch {
-        grid-column: 3 / span 2;
+        grid-column: 4 / span 3;
         width: 100%;
+        justify-content: flex-end;
     }
 
     .HeaderAuth {
         display: flex;
-        grid-column: 5 / span 2;
-        justify-self: end;
+        justify-content: flex-end;
+        flex-shrink: 0;
     }
 
     .SidebarFooter {
@@ -176,3 +183,21 @@
         margin-bottom: 0;
     }
 }
+
+/*@media screen and (min-width: 2200px) {*/
+/*    .Header {*/
+/*        grid-template-columns: repeat(6, minmax(0, 1fr));*/
+/*    }*/
+
+/*    .HeaderBrand {*/
+/*        grid-column: 1 / span 2;*/
+/*    }*/
+
+/*    .HeaderSearch {*/
+/*        grid-column: 3 / span 2;*/
+/*    }*/
+
+/*    .HeaderAuth {*/
+/*        grid-column: 5 / span 2;*/
+/*    }*/
+/*}*/

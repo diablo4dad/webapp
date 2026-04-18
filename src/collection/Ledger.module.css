@@ -1,4 +1,9 @@
 .Ledger {
+    --card-border-top: #4b5461;
+    --card-border-bottom: #1d2026;
+    --card-surface: #303640;
+    --card-surface-muted: #23272e;
+    --card-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
     width: 100%;
 }
 
@@ -16,12 +21,12 @@
     box-sizing: border-box;
     width: 100%;
 
-    background-color: #303640;
-    border-top: 1px solid #23272e;
-    box-shadow: 0 3px 3px rgba(17, 17, 17, 0.25);
+    background-color: var(--card-surface);
+    border-top: 1px solid var(--card-border-top);
+    border-bottom: 1px solid var(--card-border-bottom);
+    box-shadow: var(--card-shadow);
     border-left: none;
     border-right: none;
-    border-bottom: none;
     padding: 1rem;
 
     text-align: left;
@@ -154,7 +159,7 @@
 }
 
 .LedgerSubCollection .LedgerButton {
-    background-color: hsl(218 14% 20% / 1);
+    background-color: #2a3038;
     /*height: 4rem;*/
     /*top: 11rem;*/
     /*z-index: 3;*/
@@ -296,8 +301,9 @@
     flex-direction: column;
     flex: 1;
     align-items: inherit;
-    background-color: #23272e;
-    border: 1px solid #23272e;
+    background-color: var(--card-surface-muted);
+    /*border-top: 1px solid var(--card-border-top);*/
+    /*border-bottom: 1px solid var(--card-border-bottom);*/
     padding: 0.5rem 0.5rem 0;
     opacity: 1;
 }
@@ -362,9 +368,10 @@
 
 .LedgerCards .ItemCollected,
 .LedgerCards .ItemHidden {
-    border: 1px solid #1d2026;
-    background-color: #303640;
-    box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+    background-color: var(--card-surface);
+    border-top: 1px solid var(--card-border-top);
+    border-bottom: 1px solid var(--card-border-bottom);
+    box-shadow: var(--card-shadow);
 }
 
 .LedgerCards .ItemIconCollection svg {
@@ -417,9 +424,10 @@
 /* modifiers */
 
 .LedgerCardsInverse .Item {
-    border: 1px solid #1d2026;
-    background-color: #303640;
-    box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+    background-color: var(--card-surface);
+    border-top: 1px solid var(--card-border-top);
+    border-bottom: 1px solid var(--card-border-bottom);
+    box-shadow: var(--card-shadow);
 
 }
 
@@ -437,8 +445,9 @@
 
 .LedgerCardsInverse .ItemCollected,
 .LedgerCardsInverse .ItemHidden {
-    background-color: #23272e;
-    border: 1px solid transparent;
+    background-color: var(--card-surface-muted);
+    border-top: none;
+    border-bottom: none;
     box-shadow: none;
     color: #ccc;
 }
@@ -491,7 +500,7 @@
 
 @keyframes glow {
     from {
-        box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+        box-shadow: var(--card-shadow);
     }
     to {
         box-shadow: 0 0 0.5rem 0.25rem rgba(101, 113, 128, 0.75);

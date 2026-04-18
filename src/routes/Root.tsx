@@ -1,12 +1,7 @@
-import React, {
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import MobileCloseButton from "../components/MobileCloseButton";
 import i18n from "../i18n";
-import logo from "../image/logo/d4ico_x1.png";
+import logo from "../image/logo-crop-2x.png";
 import MobileHeader from "../layout/MobileHeader";
 import MobileMenu from "../layout/MobileMenu";
 
@@ -100,16 +95,13 @@ function Root(): ReactElement<HTMLDivElement> {
       header={
         <header className={styles.Header}>
           <div className={styles.HeaderBrand}>
-            <img
-              className={styles.HeaderIcon}
-              src={logo}
-              alt={i18n.gameName}
-            />
+            <img className={styles.HeaderIcon} src={logo} alt={i18n.gameName} />
             <div className={styles.HeaderInfo}>
-              <div className={styles.HeaderInfoName}>{i18n.siteTitle}</div>
-              <div className={styles.HeaderInfoTagLine}>
-                {i18n.siteTagLine}
+              <div className={styles.HeaderInfoName}>
+                <span className={styles.HeaderInfoNameAccent}>Diablo IV</span>{" "}
+                <span>Dad</span>
               </div>
+              <div className={styles.HeaderInfoTagLine}>{i18n.siteTagLine}</div>
             </div>
           </div>
           <div className={styles.HeaderSearch}>
@@ -149,18 +141,18 @@ function Root(): ReactElement<HTMLDivElement> {
                 <Hamburger />
               </Button>
             </div>
-          </div>
-          <div className={styles.HeaderAuth}>
-            {user === undefined && (
-              <Authenticate orientation={Orientation.ROW} onAuth={signIn} />
-            )}
-            {user !== undefined && (
-              <Account
-                currentUser={user}
-                onLogout={signOut}
-                direction={Direction.ROW}
-              />
-            )}
+            <div className={styles.HeaderAuth}>
+              {user === undefined && (
+                <Authenticate orientation={Orientation.ROW} onAuth={signIn} />
+              )}
+              {user !== undefined && (
+                <Account
+                  currentUser={user}
+                  onLogout={signOut}
+                  direction={Direction.ROW}
+                />
+              )}
+            </div>
           </div>
         </header>
       }

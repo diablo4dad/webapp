@@ -1,5 +1,6 @@
 .Card {
-    border: 1px solid #1d2026;
-    background-color: #252930;
+    border-top: 1px solid #4b5461;
+    border-bottom: 1px solid #1d2026;
+    background-color: #303640;
     box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
 }

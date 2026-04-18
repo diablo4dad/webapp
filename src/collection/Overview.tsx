@@ -1,17 +1,28 @@
-import { flattenCollectionItems } from "../data/reducers";
-import styles from "./Overview.module.css";
-import { ItemGroup, itemGroups } from "../common";
+import { CSSProperties, useMemo } from "react";
 import { useCollection } from "../collection/context";
-import { isItemCollected } from "./predicate";
+import { ItemGroup, itemGroups } from "../common";
+import Card from "../components/Card";
+import { Discord, GitHub, Star } from "../components/Icons";
+import { DISCORD_INVITE_LINK } from "../config";
+import { CollectionGroup } from "../data";
 import { useData } from "../data/context";
-import { Collection, CollectionItem, CollectionGroup } from "../data";
-import { getAllCollectionItems, getItemIds } from "../data/getters";
-import { useMemo } from "react";
-import { Star } from "../components/Icons";
+import { getItemIds } from "../data/getters";
+import { flattenCollectionItems } from "../data/reducers";
+import mountIcon from "../image/mount.png";
+import petIcon from "../image/pet.png";
+import portalIcon from "../image/portal.png";
+import season12 from "../image/season12.png";
+import shakoIcon from "../image/shako.png";
+import wardrobe from "../image/wardrobe-crop.png";
+import backTrophyIcon from "../image/back-trophy.png";
+import emblemIcon from "../image/elblem.png";
+import styles from "./Overview.module.css";
+import { isItemCollected } from "./predicate";
 
 type ProgressCardConfig = {
   title: string;
   itemGroups: readonly ItemGroup[];
+  iconSrc?: string;
 };
 
 type ProgressCardProps = ProgressCardConfig & {
@@ -22,30 +33,36 @@ const progressCards: readonly ProgressCardConfig[] = [
   {
     title: "Armor & Weapons",
     itemGroups: [ItemGroup.ARMOR, ItemGroup.WEAPONS],
+    iconSrc: shakoIcon,
   },
   {
     title: "Mounts, Armor & Trophies",
     itemGroups: [ItemGroup.MOUNTS, ItemGroup.HORSE_ARMOR, ItemGroup.TROPHIES],
+    iconSrc: mountIcon,
   },
   {
     title: "Town Portals & Headstones",
     itemGroups: [ItemGroup.TOWN_PORTALS, ItemGroup.HEADSTONES],
+    iconSrc: portalIcon,
+  },
+  {
+    title: "Back Trophies",
+    itemGroups: [ItemGroup.BACK_TROPHIES],
+    iconSrc: backTrophyIcon,
   },
   {
     title: "Pets",
     itemGroups: [ItemGroup.PETS],
-  },
-  {
-    title: "Player Titles",
-    itemGroups: [ItemGroup.PLAYER_TITLES],
+    iconSrc: petIcon,
   },
   {
     title: "Other",
+    iconSrc: emblemIcon,
     itemGroups: [
-      ItemGroup.BACK_TROPHIES,
       ItemGroup.BODY,
       ItemGroup.EMOTES,
       ItemGroup.EMBLEMS,
+      ItemGroup.PLAYER_TITLES,
     ],
   },
 ] as const;
@@ -54,6 +71,7 @@ function CollectionProgressCard({
   title,
   itemGroups,
   collections,
+  iconSrc,
 }: ProgressCardProps) {
   const log = useCollection();
 
@@ -83,18 +101,18 @@ function CollectionProgressCard({
   const isComplete = total > 0 && collected === total;
 
   return (
-    <div className={styles.ProgressCard}>
+    <Card className={styles.ProgressCard}>
+      {iconSrc && (
+        <div className={styles.ProgressCardIcon}>
+          <img src={iconSrc} alt="" />
+        </div>
+      )}
       <div className={styles.ProgressCardLabel}>Collection</div>
       <div className={styles.ProgressCardTitle}>{title}</div>
       <div className={styles.ProgressCardStats}>
         <span className={styles.ProgressCardCurrent}>{collected}</span>
         <span className={styles.ProgressCardDivider}>/</span>
         <span>{total}</span>
-        {isComplete && (
-          <span className={styles.ProgressCardComplete}>
-            <Star />
-          </span>
-        )}
       </div>
       <div className={styles.ProgressCardBar}>
         <span
@@ -103,9 +121,16 @@ function CollectionProgressCard({
         />
       </div>
       <p className={styles.ProgressCardDetail}>
-        {collected} collected from {total} total
+        <span>
+          {collected} collected from {total} total
+        </span>
+        {isComplete && (
+          <span className={styles.ProgressCardComplete}>
+            <Star />
+          </span>
+        )}
       </p>
-    </div>
+    </Card>
   );
 }
 
@@ -116,14 +141,58 @@ const Overview = () => {
 
   return (
     <div className={styles.Block}>
-      <div className={styles.Welcome}>
-        <h1>Transmog collection</h1>
-        <p>
-          Track every armor set, weapon skin, mount, and cosmetic in Sanctuary.
-          Check off what you own, discover what you're missing.
-        </p>
+      <div
+        className={styles.Welcome}
+        style={{ "--welcome-image": `url(${wardrobe})` } as CSSProperties}
+      >
+        <div className={styles.WelcomeContent}>
+          <div className={styles.WelcomeCopy}>
+            <h1>Transmog Database</h1>
+            <p>
+              Track every transmog and pet in Sanctuary. Check off what you own,
+              discover what you're missing.
+            </p>
+          </div>
+          <p className={styles.WelcomeDiscord}>
+            <span className={styles.WelcomeDiscordIcon}>
+              <Discord />
+            </span>
+            <span className={styles.WelcomeDiscordCopy}>
+              Stay in the loop when transmogs drop.
+              <br />
+              <a
+                className={styles.WelcomeDiscordLink}
+                href={DISCORD_INVITE_LINK}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Join the Discord Server
+              </a>
+            </span>
+          </p>
+          <p className={styles.WelcomeDiscord}>
+            <span className={styles.WelcomeDiscordIcon}>
+              <GitHub />
+            </span>
+            <span className={styles.WelcomeDiscordCopy}>
+              Diablo IV Dad is an open source project.
+              <br />
+              <a
+                className={styles.WelcomeDiscordLink}
+                href="https://github.com/diablo4dad"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Contribute on GitHub
+              </a>
+            </span>
+          </p>
+        </div>
       </div>
-      <div className={styles.SeasonCard}>
+      <div
+        className={styles.SeasonCard}
+        style={{ "--season-card-image": `url(${season12})` } as CSSProperties}
+      >
         <div className={styles.SeasonEyebrow}>Current Season</div>
         <div className={styles.SeasonTitle}>Season 12</div>
         <div className={styles.SeasonName}>Season of Slaughter</div>
@@ -136,6 +205,7 @@ const Overview = () => {
         <CollectionProgressCard
           key={card.title}
           title={card.title}
+          iconSrc={card.iconSrc}
           itemGroups={card.itemGroups}
           collections={countedDb}
         />
