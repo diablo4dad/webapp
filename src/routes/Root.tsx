@@ -8,7 +8,12 @@ import MobileMenu from "../layout/MobileMenu";
 import styles from "./Root.module.css";
 import ConfigSidebar from "../settings/ConfigSidebar";
 import Progress from "../components/Progress";
-import { Hamburger, SidebarLeft, SidebarRight } from "../components/Icons";
+import {
+  Hamburger,
+  SearchIcon,
+  SidebarLeft,
+  SidebarRight,
+} from "../components/Icons";
 import Button, { BtnColours } from "../components/Button";
 import Authenticate, { Orientation } from "../auth/Authenticate";
 
@@ -71,7 +76,11 @@ function Root(): ReactElement<HTMLDivElement> {
   }
 
   function pushHistory(content: ContentType) {
-    if ([ContentType.CONFIG, ContentType.MOBILE_MENU].includes(content)) {
+    if (
+      [ContentType.CONFIG, ContentType.MOBILE_MENU, ContentType.SEARCH].includes(
+        content,
+      )
+    ) {
       return content;
     }
     if (
@@ -104,12 +113,15 @@ function Root(): ReactElement<HTMLDivElement> {
               <div className={styles.HeaderInfoTagLine}>{i18n.siteTagLine}</div>
             </div>
           </div>
-          <div className={styles.HeaderSearch}>
-            <Search
-              value={searchTerm}
-              onChange={setSearchTerm}
-              onClear={() => setSearchTerm("")}
-            />
+          <div className={styles.HeaderControls}>
+            <div className={styles.HeaderSearch}>
+              <Search
+                value={searchTerm}
+                onChange={setSearchTerm}
+                onClear={() => setSearchTerm("")}
+                placeholder={"Search transmogs"}
+              />
+            </div>
             <div className={styles.HeaderButtons}>
               <Button
                 onClick={onToggleItemSidebar}
@@ -126,6 +138,20 @@ function Root(): ReactElement<HTMLDivElement> {
                 colour={BtnColours.Dark}
               >
                 <SidebarRight />
+              </Button>
+              <Button
+                onClick={() =>
+                  setContent(
+                    content === ContentType.SEARCH
+                      ? popHistory()
+                      : pushHistory(ContentType.SEARCH),
+                  )
+                }
+                pressed={content === ContentType.SEARCH}
+                showOnly={"mobile"}
+                colour={BtnColours.Dark}
+              >
+                <SearchIcon />
               </Button>
               <Button
                 onClick={() =>
@@ -175,6 +201,21 @@ function Root(): ReactElement<HTMLDivElement> {
             <>
               <MobileHeader>Settings</MobileHeader>
               <ConfigSidebar />
+              <MobileCloseButton onClick={() => setContent(popHistory())} />
+            </>
+          )}
+          {content === ContentType.SEARCH && (
+            <>
+              <MobileHeader>Search</MobileHeader>
+              <div className={styles.MobileSearch}>
+                <Search
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  onClear={() => setSearchTerm("")}
+                  autoFocus={true}
+                  placeholder={"Search transmogs"}
+                />
+              </div>
               <MobileCloseButton onClick={() => setContent(popHistory())} />
             </>
           )}

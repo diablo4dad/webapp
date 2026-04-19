@@ -1,9 +1,8 @@
-import { CSSProperties, useMemo } from "react";
+import { useMemo } from "react";
 import { useCollection } from "../collection/context";
 import { ItemGroup, itemGroups } from "../common";
 import Card from "../components/Card";
-import { Discord, GitHub, Star } from "../components/Icons";
-import { DISCORD_INVITE_LINK } from "../config";
+import { Star } from "../components/Icons";
 import { CollectionGroup } from "../data";
 import { useData } from "../data/context";
 import { getItemIds } from "../data/getters";
@@ -11,12 +10,10 @@ import { flattenCollectionItems } from "../data/reducers";
 import mountIcon from "../image/mount.png";
 import petIcon from "../image/pet.png";
 import portalIcon from "../image/portal.png";
-import season12 from "../image/season12.png";
 import shakoIcon from "../image/shako.png";
-import wardrobe from "../image/wardrobe-crop.png";
 import backTrophyIcon from "../image/back-trophy.png";
 import emblemIcon from "../image/elblem.png";
-import styles from "./Overview.module.css";
+import styles from "./Progress.module.css";
 import { isItemCollected } from "./predicate";
 
 type ProgressCardConfig = {
@@ -108,11 +105,13 @@ function CollectionProgressCard({
         </div>
       )}
       <div className={styles.ProgressCardLabel}>Collection</div>
-      <div className={styles.ProgressCardTitle}>{title}</div>
-      <div className={styles.ProgressCardStats}>
-        <span className={styles.ProgressCardCurrent}>{collected}</span>
-        <span className={styles.ProgressCardDivider}>/</span>
-        <span>{total}</span>
+      <div className={styles.ProgressCardSummary}>
+        <div className={styles.ProgressCardTitle}>{title}</div>
+        <div className={styles.ProgressCardStats}>
+          <span className={styles.ProgressCardCurrent}>{collected}</span>
+          <span className={styles.ProgressCardDivider}>/</span>
+          <span>{total}</span>
+        </div>
       </div>
       <div className={styles.ProgressCardBar}>
         <span
@@ -136,71 +135,11 @@ function CollectionProgressCard({
 
 const itemGroupsMap = itemGroups;
 
-const Overview = () => {
+const Progress = () => {
   const { countedDb } = useData();
 
   return (
-    <div className={styles.Block}>
-      <div
-        className={styles.Welcome}
-        style={{ "--welcome-image": `url(${wardrobe})` } as CSSProperties}
-      >
-        <div className={styles.WelcomeContent}>
-          <div className={styles.WelcomeCopy}>
-            <h1>Transmog Database</h1>
-            <p>
-              Track every transmog and pet in Sanctuary. Check off what you own,
-              discover what you're missing.
-            </p>
-          </div>
-          <p className={styles.WelcomeDiscord}>
-            <span className={styles.WelcomeDiscordIcon}>
-              <Discord />
-            </span>
-            <span className={styles.WelcomeDiscordCopy}>
-              Stay in the loop when transmogs drop.
-              <br />
-              <a
-                className={styles.WelcomeDiscordLink}
-                href={DISCORD_INVITE_LINK}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Join the Discord Server
-              </a>
-            </span>
-          </p>
-          <p className={styles.WelcomeDiscord}>
-            <span className={styles.WelcomeDiscordIcon}>
-              <GitHub />
-            </span>
-            <span className={styles.WelcomeDiscordCopy}>
-              Diablo IV Dad is an open source project.
-              <br />
-              <a
-                className={styles.WelcomeDiscordLink}
-                href="https://github.com/diablo4dad"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Contribute on GitHub
-              </a>
-            </span>
-          </p>
-        </div>
-      </div>
-      <div
-        className={styles.SeasonCard}
-        style={{ "--season-card-image": `url(${season12})` } as CSSProperties}
-      >
-        <div className={styles.SeasonEyebrow}>Current Season</div>
-        <div className={styles.SeasonTitle}>Season 12</div>
-        <div className={styles.SeasonName}>Season of Slaughter</div>
-        <p className={styles.SeasonDescription}>
-          Follow the latest seasonal cosmetics, rewards, and limited-time
-          unlocks without losing track of your permanent collection goals.
-        </p>
-      </div>
+    <>
       {progressCards.map((card) => (
         <CollectionProgressCard
           key={card.title}
@@ -210,8 +149,8 @@ const Overview = () => {
           collections={countedDb}
         />
       ))}
-    </div>
+    </>
   );
 };
 
-export default Overview;
+export default Progress;

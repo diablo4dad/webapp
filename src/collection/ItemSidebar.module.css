@@ -9,13 +9,13 @@
     content: "";
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     width: 15rem;
     height: 15rem;
     background:
-        radial-gradient(circle at 35% 35%, rgba(168, 178, 191, 0.1), transparent 50%),
-        radial-gradient(circle at 60% 55%, rgba(95, 104, 116, 0.1), transparent 66%),
-        linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+        radial-gradient(circle at 65% 35%, rgba(168, 178, 191, 0.1), transparent 50%),
+        radial-gradient(circle at 40% 55%, rgba(95, 104, 116, 0.1), transparent 66%),
+        linear-gradient(215deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
     filter: blur(0.5rem);
     pointer-events: none;
     z-index: 0;
@@ -34,21 +34,36 @@
     padding-left: 1rem;
 }
 
+.ItemHeader {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: 1.5rem;
+    padding: 1rem 2rem 0.75rem;
+}
+
+.ItemHeading {
+    align-self: end;
+    min-width: 0;
+}
+
 .ItemTitle {
-    padding-top: 1rem;
-    padding-left: 2rem;
+    padding-top: 0;
+    padding-left: 0;
     margin-bottom: 0.5rem;
-    color: #fff;
+    color: #f9a620;
     font-family: "PT Serif", serif;
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.2;
-    text-shadow: 1px 1px 2px #111;
+    text-shadow: 1px 1px 3px #111;
 }
 
 .ItemType {
-    padding-left: 2rem;
-    padding-bottom: 1rem;
+    padding-left: 0;
+    padding-bottom: 0;
     text-transform: uppercase;
     color: #8f98a3;
     font-size: 0.75rem;
@@ -144,7 +159,7 @@
 
 .ItemLocationDescription {
     margin-bottom: 0.5rem;
-    color: #d8d4cc;
+    color: #c0c6ce;
 }
 
 .ItemLocationCategory {
@@ -170,9 +185,9 @@
 .ItemImage {
     position: relative;
     z-index: 1;
-    margin-top: 1rem;
-    margin-left: 2rem;
-    margin-bottom: 1rem;
+    align-self: end;
+    justify-self: end;
+    margin: 0;
     max-width: 5rem;
     height: auto;
 }
@@ -249,7 +264,6 @@
 
 @media screen and (min-width: 480px) {
     .ItemImage {
-        top: 1rem;
         max-width: 128px;
     }
 }

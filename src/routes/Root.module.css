@@ -4,6 +4,8 @@
 .Header {
     width: 100%;
     display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     gap: 1rem;
     padding: 1rem;
     box-sizing: border-box;
@@ -16,11 +18,16 @@
     min-width: 0;
 }
 
-.HeaderSearch {
+.HeaderControls {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     min-width: 0;
+    justify-content: flex-end;
+}
+
+.HeaderSearch {
+    display: none;
 }
 
 .HeaderSearch > :global(.Search) {
@@ -30,6 +37,7 @@
 }
 
 .HeaderAuth {
+    display: none;
     align-items: center;
     min-width: 0;
 }
@@ -43,6 +51,10 @@
     align-items: center;
     gap: 0.75rem;
     flex-shrink: 0;
+}
+
+.MobileSearch {
+    padding: 1rem;
 }
 
 .HeaderIcon {
@@ -139,16 +151,27 @@
         justify-self: start;
     }
 
-    .HeaderSearch {
+    .HeaderControls {
         grid-column: 4 / span 3;
         width: 100%;
+        display: flex;
         justify-content: flex-end;
+    }
+
+    .HeaderSearch {
+        display: flex;
+        align-items: center;
+        min-width: 0;
     }
 
     .HeaderAuth {
         display: flex;
         justify-content: flex-end;
         flex-shrink: 0;
+    }
+
+    .MobileSearch {
+        display: none;
     }
 
     .SidebarFooter {

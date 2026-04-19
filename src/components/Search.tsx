@@ -6,14 +6,24 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   onClear: () => void;
+  autoFocus?: boolean;
+  placeholder?: string;
 };
 
-function Search({ value, onChange, onClear }: Props) {
+function Search({
+  value,
+  onChange,
+  onClear,
+  autoFocus = false,
+  placeholder,
+}: Props) {
   return (
     <div className={styles.Search}>
       <input
         className={styles.Input}
         value={value}
+        autoFocus={autoFocus}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
       />
       <span

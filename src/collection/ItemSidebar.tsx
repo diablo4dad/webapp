@@ -156,16 +156,20 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
 
   return (
     <Card className={classNameStr}>
-      <FallbackLazyImage
-        className={styles.ItemImage}
-        src={getIcon(focusIcon)}
-        alt={getItemName(collectionItem, focusItem)}
-      />
-      <div className={styles.ItemTitle}>
-        <span>{getItemName(collectionItem, focusItem)}</span>
-      </div>
-      <div className={styles.ItemType}>
-        <span>{getItemType(collectionItem, focusItem)}</span>
+      <div className={styles.ItemHeader}>
+        <div className={styles.ItemHeading}>
+          <div className={styles.ItemTitle}>
+            <span>{getItemName(collectionItem, focusItem)}</span>
+          </div>
+          <div className={styles.ItemType}>
+            <span>{getItemType(collectionItem, focusItem)}</span>
+          </div>
+        </div>
+        <FallbackLazyImage
+          className={styles.ItemImage}
+          src={getIcon(focusIcon)}
+          alt={getItemName(collectionItem, focusItem)}
+        />
       </div>
       <div className={styles.ItemClasses}>
         {enumKeys(CharacterClass)

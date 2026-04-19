@@ -1,8 +1,10 @@
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import EmptyCollection from "../collection/EmptyCollection";
+import Welcome from "../collection/Welcome";
 import ItemSidebar from "../collection/ItemSidebar";
 import ItemSidebarSkeleton from "../collection/ItemSidebarSkeleton";
-import Overview from "../collection/Overview";
+import Progress from "../collection/Progress";
+import Season from "../collection/Season";
 import ConfigSidebar from "../settings/ConfigSidebar";
 import styles from "./CollectionLog.module.css";
 import Ledger from "../collection/Ledger";
@@ -108,7 +110,13 @@ export function CollectionView() {
 
   return (
     <SidebarMain
-      hero={<Overview />}
+      hero={
+        <div className={styles.HeroLayout}>
+          <Welcome />
+          <Season />
+          <Progress />
+        </div>
+      }
       leftSidebar={
         sidebarVisibility.showItem ? (
           <div className={styles.MainSidebarPanel}>

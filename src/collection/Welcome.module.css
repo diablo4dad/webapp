@@ -1,0 +1,147 @@
+.Welcome {
+    position: relative;
+    overflow: hidden;
+    padding: 1rem;
+    isolation: isolate;
+    background-color: #303640;
+}
+
+.Welcome::before,
+.Welcome::after {
+    display: none;
+}
+
+.WelcomeContent {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-width: 0;
+}
+
+.WelcomeCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.WelcomeCopy h1 {
+    margin: 0;
+    color: #f9a620;
+    font-family: "PT Serif", serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.05;
+    text-shadow: 1px 1px 3px #111;
+}
+
+.WelcomeCopy p {
+    max-width: 32rem;
+    margin: 0;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.WelcomeDiscord {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 38rem;
+    margin: 0;
+    color: #c7ccd3;
+    line-height: 1.6;
+}
+
+.WelcomeDiscordIcon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    color: #8f98a3;
+}
+
+.WelcomeDiscordIcon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.WelcomeDiscordCopy {
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+.WelcomeDiscordLink {
+    color: #d0b07c;
+    text-decoration: underline;
+    text-decoration-color: rgba(208, 176, 124, 0.55);
+    text-underline-offset: 0.18em;
+}
+
+.WelcomeDiscordLink:hover {
+    color: #f9a620;
+    text-decoration-color: rgba(249, 166, 32, 0.7);
+}
+
+@media screen and (min-width: 1200px) {
+    .Welcome {
+        grid-column: 1 / span 4;
+        overflow: visible;
+        padding: 2rem;
+        padding-right: clamp(12rem, 22vw, 16rem);
+        background-color: transparent;
+    }
+
+    .Welcome::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        inset: 0.75rem 4rem 0.75rem 0;
+        border-top: 1px solid #4b5461;
+        border-bottom: 1px solid #1d2026;
+        background:
+            linear-gradient(135deg, rgba(55, 62, 73, 0.78), rgba(48, 54, 64, 0.44)),
+            radial-gradient(circle at top left, rgba(143, 152, 163, 0.12), transparent 52%);
+        clip-path: polygon(0 0, 82% 0, 94% 100%, 0 100%);
+        pointer-events: none;
+        display: block;
+    }
+
+    .Welcome::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        inset: 0.5rem 0.5rem 0.5rem 38%;
+        background-image: var(--welcome-image);
+        background-repeat: no-repeat;
+        background-position: right 1.5rem center;
+        background-size: auto calc(90% - 2rem);
+        pointer-events: none;
+        display: block;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .Welcome {
+        grid-column: 1 / span 3;
+    }
+
+    .Welcome::after {
+        background-size: auto calc(100% - 2rem);
+    }
+}
+
+@media screen and (min-width: 2600px) {
+    .Welcome {
+        grid-column: 1 / span 2;
+    }
+
+    .Welcome::before {
+        inset: 0.5rem 5.5rem 0.5rem -0.25rem;
+    }
+
+    .Welcome::after {
+        inset: 0.5rem 0.5rem 0.5rem 30%;
+    }
+}

@@ -31,6 +31,7 @@ enum ContentType {
   MOBILE_MENU = "menu",
   LEDGER = "ledger",
   CONFIG = "config",
+  SEARCH = "search",
 }
 
 type SidebarVisibility = {
