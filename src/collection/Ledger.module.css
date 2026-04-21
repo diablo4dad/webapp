@@ -27,7 +27,7 @@
     box-shadow: var(--card-shadow);
     border-left: none;
     border-right: none;
-    padding: 1rem;
+    padding: 1rem 2rem;
 
     text-align: left;
 
@@ -174,7 +174,7 @@
     cursor: pointer;
     display: flex;
     flex-direction: row;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 2rem;
     align-items: center;
 }
 

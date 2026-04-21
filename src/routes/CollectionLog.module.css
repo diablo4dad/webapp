@@ -16,17 +16,11 @@
 }
 
 .HeroLayout {
-    padding: 0 0 1rem;
+    padding: 1rem 0;
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
     gap: 1rem;
     background-color: #282c34;
-}
-
-@media screen and (max-width: 900px) {
-    .HeroLayout {
-        gap: 0.5rem;
-    }
 }
 
 .StickyStack {
@@ -100,6 +94,7 @@
     .HeroLayout {
         padding: 2rem 2rem 1rem;
         grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1rem;
     }
 
     .MobileSidebarPanel {

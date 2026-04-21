@@ -1,15 +1,13 @@
 .SeasonCard {
     position: relative;
     overflow: hidden;
-    padding: 1.75rem 2rem;
-    border-top: 1px solid #4b5461;
-    border-bottom: 1px solid #1d2026;
+    padding: 1rem 2rem;
     background:
         linear-gradient(160deg, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.42) 42%, rgba(0, 0, 0, 0.62) 100%),
         radial-gradient(circle at 50% 20%, rgba(0, 0, 0, 0.08), transparent 38%),
         var(--season-card-image) center center / cover no-repeat,
         #23272e;
-    box-shadow: 3px 3px 5px rgba(8, 10, 13, 0.35);
+    box-shadow: none;
     align-self: start;
 }
 
@@ -36,7 +34,7 @@
 .SeasonTitle {
     margin-bottom: 0.25rem;
     color: #fff;
-    font-size: 1.75rem;
+    font-size: 1.45rem;
     font-weight: 700;
     text-shadow: 1px 1px 3px rgba(17, 17, 17, 0.8);
 }
@@ -52,10 +50,10 @@
 .SeasonDescription {
     position: relative;
     z-index: 1;
-    max-width: 28rem;
+    max-width: 32rem;
     margin: 0;
     color: #d3d3d3;
-    line-height: 1.6;
+    line-height: 1.5;
     text-shadow: 1px 1px 2px rgba(17, 17, 17, 0.8);
 }
 
@@ -63,6 +61,17 @@
     .SeasonCard {
         grid-column: 5 / span 2;
         align-self: center;
+        padding: 1.75rem 2rem;
+        box-shadow: 3px 3px 5px rgba(8, 10, 13, 0.35);
+    }
+
+    .SeasonTitle {
+        font-size: 1.75rem;
+    }
+
+    .SeasonDescription {
+        max-width: 28rem;
+        line-height: 1.6;
     }
 }
 

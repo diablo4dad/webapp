@@ -24,7 +24,7 @@ function Welcome() {
               <Discord />
             </span>
             <span className={styles.WelcomeDiscordCopy}>
-              Stay in the loop when transmogs drop.
+              Stay in the loop, never miss a transmog drop.
               <br />
               <a
                 className={styles.WelcomeDiscordLink}

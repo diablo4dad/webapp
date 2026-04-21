@@ -139,7 +139,7 @@ const Progress = () => {
   const { countedDb } = useData();
 
   return (
-    <>
+    <div className={styles.ProgressList}>
       {progressCards.map((card) => (
         <CollectionProgressCard
           key={card.title}
@@ -149,7 +149,7 @@ const Progress = () => {
           collections={countedDb}
         />
       ))}
-    </>
+    </div>
   );
 };
 
