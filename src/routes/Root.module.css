@@ -4,18 +4,30 @@
 .Header {
     width: 100%;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     gap: 1rem;
     padding: 0 1rem;
     box-sizing: border-box;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
 }
 
 .HeaderBrand {
-    position: relative;
+    display: contents;
+}
+
+.HeaderLogo {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: 0;
+    padding: 1rem 0;
+}
+
+.HeaderTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-width: 0;
     padding: 1rem 0;
 }
@@ -39,6 +51,12 @@
     min-width: 0;
 }
 
+.HeaderSpacer {
+    background-color: #303640;
+    padding: 1rem 1px 1rem 0;
+    display: none;
+}
+
 .HeaderAuth {
     display: none;
     align-items: center;
@@ -56,37 +74,239 @@
     flex-shrink: 0;
 }
 
-.MobileSearch {
+.HeaderSpacer {
+    display: none;
+}
+
+.HeaderTooltip {
+    background-color: #d8c29a;
+    color: #1b1e24;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    box-shadow: 2px 3px 8px rgba(8, 10, 13, 0.18);
+}
+
+.HeaderTooltip svg {
+    fill: #d8c29a;
+}
+
+.MobileDrawerOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5500;
+    display: flex;
+    justify-content: flex-end;
+    background: rgba(12, 14, 18, 0.48);
+    backdrop-filter: blur(0.2rem);
+    animation: drawer-backdrop-in 160ms ease-out;
+}
+
+.MobileSearchOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5500;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: rgba(11, 12, 16, 0.46);
+    backdrop-filter: blur(0.35rem);
+    animation: search-overlay-in 180ms ease-out;
+}
+
+.MobileSearchPanel {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1.75rem;
+    padding: 1.5rem 1.5rem 2rem;
+    box-sizing: border-box;
+    background:
+        linear-gradient(180deg, rgba(24, 28, 36, 0.96) 0%, rgba(22, 25, 32, 0.96) 100%),
+        radial-gradient(circle at top right, rgba(132, 48, 44, 0.28) 0%, rgba(132, 48, 44, 0) 36%),
+        radial-gradient(circle at bottom left, rgba(66, 88, 118, 0.22) 0%, rgba(66, 88, 118, 0) 42%);
+    animation: search-panel-in 200ms ease-out;
+}
+
+.MobileDrawer {
+    width: min(30rem, calc(100vw - 2rem));
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(30, 33, 38, 0.96);
+    border-left: 1px solid #303640;
+    box-shadow: -12px 0 32px rgba(8, 10, 13, 0.45);
+    animation: drawer-panel-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.MobileDrawerHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     padding: 1rem;
+    background-color: rgba(30, 33, 38, 0.96);
+    border-bottom: 1px solid #303640;
+}
+
+.MobileDrawerTitle {
+    color: #d0b07c;
+    font-family: "PT Serif", serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px #111;
+}
+
+.MobileDrawerSubtitle {
+    color: #b8c0ca;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.MobileDrawerClose {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #cfd5dc;
+    cursor: pointer;
+}
+
+.MobileDrawerClose svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: currentColor;
+}
+
+.MobileDrawerBody {
+    padding: 1rem;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.MobileDrawerContent {
+    flex: 1 0 auto;
+}
+
+.MobileDrawerFooter {
+    margin-top: auto;
+    padding-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.MobileDrawerFooter > * {
+    width: 100%;
+}
+
+.MobileSearchHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.MobileSearchHeading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.MobileSearchTitle {
+    color: #d0b07c;
+    font-family: "PT Serif", serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px #111;
+}
+
+.MobileSearchBody {
+    flex: 1 1 auto;
+}
+
+.MobileSearchField {
+    display: flex;
+    flex-direction: column;
+}
+
+.MobileSearchBody > :global(.Search) {
+    width: 100%;
+}
+
+.MobileSearchField > :global(.Search) {
+    width: 100%;
+}
+
+.MobileSearchActions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.MobileSearchAction,
+.MobileSearchActionPrimary {
+    min-width: 8rem;
+    min-height: 3rem;
+    justify-content: center;
+    padding: 0.8rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.MobileSearchActionPrimary {
+    background: linear-gradient(180deg, #8d433a 0%, #6d342e 100%);
+    border-color: #b16558;
+    box-shadow: 2px 3px 8px rgba(8, 10, 13, 0.35);
+}
+
+.MobileSearchAction {
+    background: linear-gradient(180deg, #45505e 0%, #353d48 100%);
+    border-color: #5b6877;
 }
 
 .HeaderIcon {
-    position: absolute;
-    /*top: -1.0875rem;*/
     width: auto;
-    height: 4.5rem;
+    height: 3rem;
 }
 
 .HeaderInfo {
-    padding-left: 6rem;
     min-width: 0;
+    text-align: center;
 }
 
 .HeaderInfoName {
     font-family: "PT Serif", serif;
     font-style: normal;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #f1ede4;
+    line-height: 1.1;
 }
 
 .HeaderInfoNameAccent {
-    color: #b44a3f;
+    color: var(--secondary-color);
     text-shadow: 1px 2px 5px #111;
 }
 
 .HeaderInfoTagLine {
-    display: none;
     font-size: 0.875rem;
     color: #ccc;
 }
@@ -141,6 +361,42 @@
     margin-bottom: 0.25rem;
 }
 
+@keyframes drawer-backdrop-in {
+    from {
+        background: rgba(12, 14, 18, 0);
+    }
+    to {
+        background: rgba(12, 14, 18, 0.48);
+    }
+}
+
+@keyframes drawer-panel-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes search-overlay-in {
+    from {
+        background: rgba(12, 14, 18, 0);
+    }
+    to {
+        background: rgba(11, 12, 16, 0.46);
+    }
+}
+
+@keyframes search-panel-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 @media screen and (min-width: 1200px) {
     .Header {
         grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -149,17 +405,28 @@
         padding: 0 2rem;
     }
 
-    .HeaderInfoName {
-        margin-bottom: 0.125rem;
-    }
-
     .HeaderInfoTagLine {
         display: block;
     }
 
     .HeaderBrand {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
         grid-column: 1 / span 3;
-        justify-self: start;
+        min-width: 0;
+    }
+
+    .HeaderLogo {
+        width: auto;
+        padding: 1rem 0;
+        flex: 0 0 auto;
+    }
+
+    .HeaderTitle {
+        padding: 1rem 0;
+        flex: 0 1 auto;
+        justify-content: flex-start;
     }
 
     .HeaderControls {
@@ -170,10 +437,28 @@
         justify-content: flex-end;
     }
 
+    .HeaderIcon {
+        height: 4.5rem;
+    }
+
+    .HeaderInfo {
+        text-align: left;
+    }
+
+    .HeaderInfoName {
+        font-size: 2rem;
+    }
+
     .HeaderSearch {
         display: flex;
         align-items: center;
         min-width: 0;
+    }
+
+    .HeaderSpacer {
+        display: block;
+        background-color: #303640;
+        padding: 1rem 1px 1rem 0;
     }
 
     .HeaderAuth {
@@ -182,7 +467,15 @@
         flex-shrink: 0;
     }
 
-    .MobileSearch {
+    .HeaderSpacer {
+        display: block;
+    }
+
+    .MobileSearchOverlay {
+        display: none;
+    }
+
+    .MobileDrawerOverlay {
         display: none;
     }
 

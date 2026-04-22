@@ -1,4 +1,8 @@
-import { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import {
+  ButtonHTMLAttributes,
+  forwardRef,
+  PropsWithChildren,
+} from "react";
 import styles from "./Button.module.css";
 
 enum BtnColours {
@@ -16,13 +20,17 @@ type Props = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> & {
   showOnly?: "desktop" | "mobile";
 };
 
-function Button({
-  pressed = false,
-  colour = BtnColours.Grey,
-  showOnly,
-  children,
-  ...props
-}: Props) {
+const Button = forwardRef<HTMLButtonElement, Props>(function Button(
+  {
+    pressed = false,
+    colour = BtnColours.Grey,
+    showOnly,
+    className,
+    children,
+    ...props
+  },
+  ref,
+) {
   function getColour() {
     switch (colour) {
       case BtnColours.Discord:
@@ -47,17 +55,18 @@ function Button({
       getColour(),
       showOnly === "mobile" ? styles.BtnMobile : null,
       showOnly === "desktop" ? styles.BtnDesktop : null,
+      className ?? null,
     ]
       .filter((c) => c !== null)
       .join(" ");
   }
 
   return (
-    <button {...props} className={getClasses()}>
+    <button {...props} ref={ref} className={getClasses()}>
       {children}
     </button>
   );
-}
+});
 
 export { BtnColours };
 export default Button;

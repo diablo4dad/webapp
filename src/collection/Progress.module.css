@@ -170,7 +170,7 @@
     .ProgressCardTitle {
         margin-bottom: 0.75rem;
         flex: initial;
-        min-width: auto;
+        width: calc(100% - 4rem);
         font-size: 1.25rem;
         line-height: 1.2;
     }

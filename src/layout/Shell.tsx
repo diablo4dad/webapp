@@ -27,7 +27,6 @@ function Shell({
         <div className={styles.Content}>{main}</div>
         <footer className={styles.Footer}>{footer}</footer>
       </div>
-      <div className={styles.StickyBottom}>{stickyBottom}</div>
     </div>
   );
 }

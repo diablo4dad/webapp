@@ -1,11 +1,20 @@
 .Account {
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
 }
 
 .AccountText {
     color: #ccc;
     font-size: 0.875rem;
-    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    text-align: center;
 }
 
 .AccountLoginText {
@@ -20,20 +29,24 @@
     color: #cc8500;
 }
 
-.AccountIcons > button:not(:last-child) {
-    margin-right: 1rem;
+.AccountIcons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
 }
 
 .AccountRow {
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .AccountRow .AccountText {
-    text-align: right;
-    margin-right: 1rem;
     margin-bottom: 0;
+    align-items: start;
 }
 
 @media screen and (min-width: 1200px) {
