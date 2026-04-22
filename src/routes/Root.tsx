@@ -24,7 +24,7 @@ import { VersionInfo } from "../components/VersionPanel";
 import { countAllItemsDabDb } from "../data/aggregate";
 import { useData } from "../data/context";
 import i18n from "../i18n";
-import logo from "../image/logo-crop-2x.png";
+import logo from "../image/logo@1x.png";
 import placeholder from "../image/placeholder.webp";
 import Shell from "../layout/Shell";
 import ConfigSidebar from "../settings/ConfigSidebar";

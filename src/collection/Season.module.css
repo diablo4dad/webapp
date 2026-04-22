@@ -9,6 +9,7 @@
         #23272e;
     box-shadow: none;
     align-self: start;
+    min-height: 14rem;
 }
 
 .SeasonCard::after {
@@ -48,6 +49,7 @@
 }
 
 .SeasonDescription {
+    display: none;
     position: relative;
     z-index: 1;
     max-width: 32rem;

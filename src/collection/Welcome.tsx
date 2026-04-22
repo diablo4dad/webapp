@@ -1,7 +1,7 @@
 import { CSSProperties } from "react";
 import { Discord, GitHub } from "../components/Icons";
 import { DISCORD_INVITE_LINK } from "../config";
-import wardrobe from "../image/wardrobe-crop.png";
+import wardrobe from "../image/wardrobe@1x.png";
 import styles from "./Welcome.module.css";
 
 function Welcome() {

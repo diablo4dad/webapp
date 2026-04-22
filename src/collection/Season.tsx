@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import season12 from "../image/season12.png";
+import season12 from "../image/season12@1x.png";
 import styles from "./Season.module.css";
 
 function Season() {
@@ -12,8 +12,8 @@ function Season() {
       <div className={styles.SeasonTitle}>Season 12</div>
       <div className={styles.SeasonName}>Season of Slaughter</div>
       <p className={styles.SeasonDescription}>
-        Follow the latest seasonal cosmetics, rewards, and limited-time
-        unlocks without losing track of your permanent collection goals.
+        Follow the latest seasonal cosmetics, rewards, and limited-time unlocks
+        without losing track of your permanent collection goals.
       </p>
     </div>
   );

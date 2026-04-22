@@ -7,12 +7,12 @@ import { CollectionGroup } from "../data";
 import { useData } from "../data/context";
 import { getItemIds } from "../data/getters";
 import { flattenCollectionItems } from "../data/reducers";
-import mountIcon from "../image/mount.png";
-import petIcon from "../image/pet.png";
-import portalIcon from "../image/portal.png";
-import shakoIcon from "../image/shako.png";
-import backTrophyIcon from "../image/back-trophy.png";
-import emblemIcon from "../image/elblem.png";
+import mountIcon from "../image/mount@1x.png";
+import petIcon from "../image/pet@1x.png";
+import portalIcon from "../image/portal@1x.png";
+import shakoIcon from "../image/shako@1x.png";
+import backTrophyIcon from "../image/back-trophy@1x.png";
+import emblemIcon from "../image/emblem@1x.png";
 import styles from "./Progress.module.css";
 import { isItemCollected } from "./predicate";
 
