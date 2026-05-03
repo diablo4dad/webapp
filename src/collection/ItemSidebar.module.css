@@ -298,11 +298,6 @@
     opacity: 1;
 }
 
-/* hide until expansion released */
-.WarlockClassIcon {
-    display: none;
-}
-
 /* All skeleton loading states here */
 .Skeleton { }
 

@@ -36,7 +36,7 @@ import rogue from "../image/classes/rogue.webp";
 import sorceress from "../image/classes/sorcerer.webp";
 import spiritborn from "../image/classes/spiritborn.webp";
 import paladin from "../image/classes/paladin.png";
-import warlock from "../image/classes/barbarian.webp";
+import warlock from "../image/classes/warlock.webp";
 import expansion from "../image/logo/d4ico_x1.png";
 import unobtainable from "../image/miniico/mystery.webp";
 import premium from "../image/miniico/purse.webp";

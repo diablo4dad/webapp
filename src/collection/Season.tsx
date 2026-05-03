@@ -1,16 +1,16 @@
 import { CSSProperties } from "react";
-import season12 from "../image/season12@1x.png";
+import season13 from "../image/season13@1x.webp";
 import styles from "./Season.module.css";
 
 function Season() {
   return (
     <div
       className={styles.SeasonCard}
-      style={{ "--season-card-image": `url(${season12})` } as CSSProperties}
+      style={{ "--season-card-image": `url(${season13})` } as CSSProperties}
     >
       <div className={styles.SeasonEyebrow}>Current Season</div>
-      <div className={styles.SeasonTitle}>Season 12</div>
-      <div className={styles.SeasonName}>Season of Slaughter</div>
+      <div className={styles.SeasonTitle}>Season 13</div>
+      <div className={styles.SeasonName}>Season of Reckoning</div>
       <p className={styles.SeasonDescription}>
         Follow the latest seasonal cosmetics, rewards, and limited-time unlocks
         without losing track of your permanent collection goals.
