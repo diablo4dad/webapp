@@ -3,6 +3,53 @@
 A web app that allows Diablo IV players keep track of their Transmog
 collections.
 
+## [2.0.1] - 2026-05-04
+
+### Site General
+
+- Add Warlock class
+- Fixed many missing headstone, portal, emblem and marking icons
+
+### Essential
+
+- Updated Taiga Roan Steed to obtainable
+- Added DOOM event
+- Added DOOM reliquary
+- Added DOOM free gifts
+- Added April Fowls gifts
+
+### Promotional
+
+- Added Twitch Drops #14
+- Added Twitch Drops #15
+- Added Coca-Cola portal
+- Added Trolli #2
+
+### Tejals Shop
+
+Pets:
+- The Cyclopean Cackle
+- Souls of the Lost
+
+Cat Mount:
+- King of the Forge-Wings
+- The Null Bramble's Wildcats
+- Astride the Fell Horde
+
+Paladin:
+- Heretic for the Creatrix
+- Magmus Oathforge
+- The Holy Geist
+
+Barbarian:
+- Breakneck's Brawlers
+
+## [2.0.0] - 2026-04-22
+
+### Site General
+
+- New layout
+
 ## [1.11.9] - 2026-04-13
 
 ### Site General
