@@ -1,6 +1,6 @@
-const VERSION = { major: 2, minor: 0, revision: 0 };
+const VERSION = { major: 2, minor: 0, revision: 1 };
 const SITE_VERSION = `${VERSION.major}.${VERSION.minor}.${VERSION.revision}`;
-const LAST_UPDATED = "April 22nd, 2026";
+const LAST_UPDATED = "May 5th, 2026";
 const BITCOIN_WALLET = "bc1q6f9zjtsetdgf7v9ga6fxaw7228xgtplllxgw77";
 const DISCORD_INVITE_LINK = "https://discord.gg/mPRBrU2kYT";
 const DATA_REPO =
