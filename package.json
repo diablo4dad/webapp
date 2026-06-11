@@ -33,6 +33,9 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "export:catalog-seed": "node scripts/export-catalog-seed.cjs",
+    "set:editor-role": "node scripts/set-editor-role.cjs",
+    "upload:catalog-seed": "node scripts/upload-catalog-seed.cjs",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
