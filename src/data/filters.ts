@@ -164,10 +164,68 @@ function search(db: CollectionGroup, term: string): CollectionGroup {
   // return filterCollectionItems(db, (ci) => resultId.includes(ci.id));
 }
 
+type CollectionItemFilterOptions = {
+  isCount?: boolean;
+  itemTypes?: string[];
+};
+
+export function createCollectionItemSettingsFilter(
+  settings: Settings,
+  log?: CollectionLog,
+  options: CollectionItemFilterOptions = {},
+): (dci: CollectionItem) => boolean {
+  const filters = [
+    filterItemsByType(options.itemTypes ?? getEnabledItemTypes(settings)),
+    filterItemsByClass(getEnabledClasses(settings)),
+  ];
+
+  if (!isEnabled(settings, Option.SHOW_PREMIUM)) {
+    filters.push(filterPremiumItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_SHOP)) {
+    filters.push(filterShopItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_BATTLE_PASS)) {
+    filters.push(filterBattlePassItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_BATTLE_PASS_ACCELERATED)) {
+    filters.push(filterBattlePassAcceleratedItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_OUT_OF_ROTATION)) {
+    filters.push(filterOutOfRotationItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_PROMOTIONAL)) {
+    filters.push(filterPromotionalItems());
+  }
+
+  if (!isEnabled(settings, Option.SHOW_HIDDEN) && log) {
+    filters.push(filterHiddenItems(log));
+  }
+
+  if (!isEnabled(settings, Option.SHOW_UNOBTAINABLE)) {
+    filters.push(filterUnobtainableItems());
+  }
+
+  if (isEnabled(settings, Option.HIDE_COLLECTED) && !options.isCount && log) {
+    filters.push(filterCollectedItems(log));
+  }
+
+  if (isEnabled(settings, Option.SHOW_WARDROBE_ONLY)) {
+    filters.push(filterWardrobePlaceholderItems());
+  }
+
+  return (dci: CollectionItem) => filters.every((filter) => filter(dci));
+}
+
 export function filterDb(
   group: CollectionGroup,
   settings: Settings,
-  log: CollectionLog,
+  log: CollectionLog | undefined,
   category: MasterGroup,
   searchTerm: string | null = null,
   isCount: boolean = false,
@@ -178,53 +236,8 @@ export function filterDb(
   );
   db = filterCollectionItems(
     db,
-    filterItemsByType(getEnabledItemTypes(settings)),
+    createCollectionItemSettingsFilter(settings, log, { isCount }),
   );
-
-  db = filterCollectionItems(
-    db,
-    filterItemsByClass(getEnabledClasses(settings)),
-  );
-
-  if (!isEnabled(settings, Option.SHOW_PREMIUM)) {
-    db = filterCollectionItems(db, filterPremiumItems());
-  }
-
-  if (!isEnabled(settings, Option.SHOW_SHOP)) {
-    db = filterCollectionItems(db, filterShopItems());
-  }
-
-  if (!isEnabled(settings, Option.SHOW_BATTLE_PASS)) {
-    db = filterCollectionItems(db, filterBattlePassItems());
-  }
-
-  if (!isEnabled(settings, Option.SHOW_BATTLE_PASS_ACCELERATED)) {
-    db = filterCollectionItems(db, filterBattlePassAcceleratedItems());
-  }
-
-  if (!isEnabled(settings, Option.SHOW_OUT_OF_ROTATION)) {
-    db = filterCollectionItems(db, filterOutOfRotationItems());
-  }
-
-  if (!isEnabled(settings, Option.SHOW_PROMOTIONAL)) {
-    db = filterCollectionItems(db, filterPromotionalItems());
-  }
-
-  if (!isEnabled(settings, Option.SHOW_HIDDEN)) {
-    db = filterCollectionItems(db, filterHiddenItems(log));
-  }
-
-  if (!isEnabled(settings, Option.SHOW_UNOBTAINABLE)) {
-    db = filterCollectionItems(db, filterUnobtainableItems());
-  }
-
-  if (isEnabled(settings, Option.HIDE_COLLECTED) && !isCount) {
-    db = filterCollectionItems(db, filterCollectedItems(log));
-  }
-
-  if (isEnabled(settings, Option.SHOW_WARDROBE_ONLY)) {
-    db = filterCollectionItems(db, filterWardrobePlaceholderItems());
-  }
 
   if (searchTerm && !isCount) {
     db = search(db, searchTerm);

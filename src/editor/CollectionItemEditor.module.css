@@ -1,0 +1,464 @@
+.Overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 6500;
+  display: flex;
+  justify-content: stretch;
+  background: rgba(10, 12, 16, 0.55);
+  backdrop-filter: blur(0.2rem);
+}
+
+.Panel {
+  width: 100vw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: #1f232a;
+  color: #d7dce3;
+  box-shadow: -12px 0 32px rgba(8, 10, 13, 0.45);
+}
+
+.Form {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #343b46;
+  background-color: #252a32;
+}
+
+.HeaderText {
+  min-width: 0;
+}
+
+.Kicker {
+  margin-bottom: 0.25rem;
+  color: #c58f6d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.Title {
+  margin: 0;
+  color: #f0ede7;
+  font-family: "PT Serif", serif;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.CloseButton,
+.SelectedItem button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #cbd2da;
+  cursor: pointer;
+}
+
+.CloseButton svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  fill: currentColor;
+}
+
+.Body {
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.Preview {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  border: 1px solid #343b46;
+  background-color: #252a32;
+}
+
+.PreviewImage {
+  width: 100%;
+  height: 8.75rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #171a20;
+  border: 1px solid #303640;
+}
+
+.PreviewImage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.PreviewMeta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.PreviewName {
+  color: #f0ede7;
+  font-size: 1.35rem;
+  line-height: 1.2;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.PreviewType,
+.ResultType {
+  color: #9faab6;
+  text-transform: uppercase;
+}
+
+.PreviewTypeRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  color: #9faab6;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+.PreviewClasses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding-top: 0.125rem;
+}
+
+.PreviewClass,
+.PreviewClassActive {
+  width: 1.8rem;
+  height: 1.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.PreviewClass {
+  opacity: 0.2;
+}
+
+.PreviewClassActive {
+  opacity: 1;
+}
+
+.PreviewClass img,
+.PreviewClassActive img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.PreviewTags {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.PreviewTag {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #c5ccd4;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+.PreviewTag img {
+  width: auto;
+  height: 1.1rem;
+  flex: 0 0 auto;
+}
+
+.PreviewTag span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.Section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.FieldGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.FieldGrid > div {
+  min-width: 0;
+}
+
+.Label {
+  display: block;
+  color: #cfd5dc;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.Input,
+.TextArea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #46505e;
+  border-radius: 0.375rem;
+  background-color: #171a20;
+  color: #f0ede7;
+  font: inherit;
+  padding: 0.65rem 0.75rem;
+  outline: none;
+}
+
+.Input:focus,
+.TextArea:focus {
+  border-color: #a06458;
+  box-shadow: 0 0 0 2px rgba(160, 100, 88, 0.25);
+}
+
+.TextArea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+.Results {
+  max-height: 14rem;
+  overflow-y: auto;
+  border: 1px solid #343b46;
+  background-color: #1a1e24;
+}
+
+.Result {
+  width: 100%;
+  min-height: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.125rem;
+  padding: 0.55rem 0.75rem;
+  border: 0;
+  border-bottom: 1px solid #2b313a;
+  background: transparent;
+  color: #d7dce3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.Result:last-child {
+  border-bottom: 0;
+}
+
+.Result:hover,
+.Result:focus {
+  background-color: #2d3440;
+}
+
+.ResultName {
+  color: #f0ede7;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.SelectedItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2rem;
+}
+
+.SelectedItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  padding: 0.35rem 0.5rem 0.35rem 0.75rem;
+  border: 1px solid #48515e;
+  border-radius: 999px;
+  background-color: #303640;
+  color: #f0ede7;
+  font-size: 0.85rem;
+}
+
+.SelectedItem span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.SelectedItem svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+.ToggleGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.625rem;
+}
+
+.Toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem;
+  border: 1px solid #343b46;
+  background-color: #252a32;
+  color: #d7dce3;
+  cursor: pointer;
+}
+
+.Toggle input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #a06458;
+}
+
+.Actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-top: 1px solid #343b46;
+  background-color: #252a32;
+}
+
+.Error {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #ffb3a8;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.SecondaryButton,
+.SaveButton {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid #4f5968;
+  border-radius: 0.375rem;
+  color: #f0ede7;
+  font-weight: 700;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+}
+
+.SecondaryButton {
+  background-color: #303640;
+}
+
+.SaveButton {
+  background: linear-gradient(180deg, #8d433a 0%, #6d342e 100%);
+  border-color: #b16558;
+}
+
+.SaveButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.SaveIcon {
+  width: 1rem;
+  height: 1rem;
+  display: inline-flex;
+}
+
+.SaveIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media screen and (min-width: 720px) {
+  .FieldGrid,
+  .ToggleGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .Overlay {
+    justify-content: flex-end;
+  }
+
+  .Panel {
+    width: min(38rem, 100vw);
+    height: 100%;
+    border-left: 1px solid #343b46;
+    animation: panel-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .Preview {
+    grid-template-columns: 6rem minmax(0, 1fr);
+    padding: 1rem;
+  }
+
+  .PreviewImage {
+    width: 100%;
+    height: auto;
+  }
+
+  .PreviewName {
+    font-size: 1.45rem;
+  }
+
+  .PreviewTypeRow {
+    font-size: 0.95rem;
+  }
+
+  .PreviewClass,
+  .PreviewClassActive {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .PreviewTag {
+    font-size: 0.95rem;
+  }
+
+  .PreviewTag img {
+    height: 1.2rem;
+  }
+}
+
+@keyframes panel-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

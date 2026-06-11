@@ -38,6 +38,7 @@ import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { getIcon } from "../bucket";
 import { useEditor } from "../editor/context";
 import { Plus } from "../components/Icons";
+import { MasterGroup } from "../common";
 
 type Props = {
   collections: Collection[];
@@ -102,7 +103,7 @@ const LedgerInner = ({
   const settings = useSettings();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
-  const { isEditMode } = useEditor();
+  const { isEditMode, openCollectionItemEditor } = useEditor();
   const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
 
   // preferences
@@ -157,7 +158,10 @@ const LedgerInner = ({
   });
   const shouldRenderAddItemCard =
     isEditMode &&
-    (collection.collectionItems.length > 0 || collection.subcollections.length === 0);
+    collection.id !== 888 &&
+    collection.category !== MasterGroup.UNIVERSAL &&
+    (collection.collectionItems.length > 0 ||
+      collection.subcollections.length === 0);
 
   return (
     <AccordionItem
@@ -331,6 +335,7 @@ const LedgerInner = ({
               <button
                 type="button"
                 className={classNames(styles.Item, styles.ItemAdd)}
+                onClick={() => openCollectionItemEditor(collection)}
               >
                 <div className={styles.ItemAddVisual}>
                   <span className={styles.ItemAddIcon}>

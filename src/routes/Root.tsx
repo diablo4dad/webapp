@@ -29,6 +29,7 @@ import logo from "../image/logo@1x.png";
 import placeholder from "../image/placeholder.webp";
 import Shell from "../layout/Shell";
 import ConfigSidebar from "../settings/ConfigSidebar";
+import CollectionItemEditor from "../editor/CollectionItemEditor";
 import { useEditor } from "../editor/context";
 
 import styles from "./Root.module.css";
@@ -216,6 +217,7 @@ function Root(): ReactElement<HTMLDivElement> {
           {(content === ContentType.LEDGER ||
             content === ContentType.CONFIG ||
             content === ContentType.SEARCH) && <Outlet />}
+          <CollectionItemEditor />
           {content === ContentType.SEARCH && (
             <div
               className={styles.MobileSearchOverlay}

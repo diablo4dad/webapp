@@ -1,5 +1,12 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { CollectionRef, DadDbRef } from "../data";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import { CollectionItemRef, CollectionRef, DadDbRef } from "../data";
 
 const CATALOG_COLLECTION = "catalogs";
 const CATALOG_ID = "d4";
@@ -39,7 +46,10 @@ async function getCatalogFirestore() {
   return firestore;
 }
 
-function sortNodes<T extends { order: number; id: number }>(a: T, b: T): number {
+function sortNodes<T extends { order: number; id: number }>(
+  a: T,
+  b: T,
+): number {
   if (a.order !== b.order) {
     return a.order - b.order;
   }
@@ -110,7 +120,9 @@ export function buildCollectionTree(
 
   for (const root of roots) {
     if (root.category === undefined) {
-      throw new Error(`[Catalog] Root collection ${root.id} is missing category`);
+      throw new Error(
+        `[Catalog] Root collection ${root.id} is missing category`,
+      );
     }
   }
 
@@ -123,7 +135,9 @@ export async function fetchCatalogManifest(): Promise<CatalogManifest> {
   const snapshot = await getDoc(manifestRef);
 
   if (!snapshot.exists()) {
-    throw new Error(`[Catalog] Missing manifest document at ${CATALOG_COLLECTION}/${CATALOG_ID}`);
+    throw new Error(
+      `[Catalog] Missing manifest document at ${CATALOG_COLLECTION}/${CATALOG_ID}`,
+    );
   }
 
   return snapshot.data() as CatalogManifest;
@@ -170,6 +184,27 @@ export async function fetchCatalogCollectionNodes(
     .sort(sortNodes);
 }
 
+export async function addCatalogCollectionItem(
+  collectionId: number,
+  collectionItem: CollectionItemRef,
+): Promise<void> {
+  const firestore = await getCatalogFirestore();
+  const versionId = await resolveCatalogVersionId();
+  const collectionRef = doc(
+    firestore,
+    CATALOG_COLLECTION,
+    CATALOG_ID,
+    CATALOG_VERSION_COLLECTION,
+    versionId,
+    CATALOG_NODE_COLLECTION,
+    String(collectionId),
+  );
+
+  await updateDoc(collectionRef, {
+    collectionItems: arrayUnion(collectionItem),
+  });
+}
+
 export async function resolveCatalogVersionId(): Promise<string> {
   try {
     const manifest = await fetchCatalogManifest();
@@ -189,7 +224,9 @@ export async function resolveCatalogVersionId(): Promise<string> {
 export async function fetchStaticDadDbRef(): Promise<DadDbRef> {
   const response = await fetch("/d4dad.json");
   if (!response.ok) {
-    throw new Error(`[Catalog] Failed to load /d4dad.json (${response.status})`);
+    throw new Error(
+      `[Catalog] Failed to load /d4dad.json (${response.status})`,
+    );
   }
 
   return (await response.json()) as DadDbRef;
