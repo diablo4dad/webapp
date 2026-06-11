@@ -20,6 +20,7 @@ import { getViewModel, saveViewModel } from "../store/local";
 import { Await, defer, useLoaderData } from "react-router-dom";
 import { useData } from "../data/context";
 import { hydrateDadDb } from "../data/factory";
+import { fetchHybridDadDbRef } from "../store/catalog";
 
 export type ViewModel = {
   openCollections: number[];
@@ -63,9 +64,7 @@ export function generateUrl(group: MasterGroup): string {
 
 export async function loader({ params }: Params) {
   const group = slugToGroup(params.collectionId ?? "universal");
-  const db = fetch("/d4dad.json")
-    .then((resp) => resp.json())
-    .then(hydrateDadDb);
+  const db = fetchHybridDadDbRef().then(hydrateDadDb);
 
   return defer({
     db,
