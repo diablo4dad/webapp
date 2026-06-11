@@ -9,6 +9,7 @@ import { DataProvider } from "../data/context";
 import { AuthProvider } from "../auth/context";
 import { runLocalStorageMigrations } from "../migrations/localstorage";
 import { PersistenceLayer } from "../store/PersistenceLayer";
+import { EditorProvider } from "../editor/context";
 
 const router = createBrowserRouter([
   {
@@ -51,11 +52,13 @@ export function Application() {
       <CollectionProvider collection={collection}>
         <DataProvider>
           <AuthProvider>
-            <PersistenceLayer>
-              <SidebarProvider>
-                <RouterProvider router={router} />
-              </SidebarProvider>
-            </PersistenceLayer>
+            <EditorProvider>
+              <PersistenceLayer>
+                <SidebarProvider>
+                  <RouterProvider router={router} />
+                </SidebarProvider>
+              </PersistenceLayer>
+            </EditorProvider>
           </AuthProvider>
         </DataProvider>
       </CollectionProvider>

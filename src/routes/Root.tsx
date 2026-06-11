@@ -15,6 +15,7 @@ import { DiscordInvite } from "../components/DiscordPanel";
 import {
   Close,
   Hamburger,
+  Pencil,
   SidebarLeft,
   SidebarRight,
 } from "../components/Icons";
@@ -28,6 +29,7 @@ import logo from "../image/logo@1x.png";
 import placeholder from "../image/placeholder.webp";
 import Shell from "../layout/Shell";
 import ConfigSidebar from "../settings/ConfigSidebar";
+import { useEditor } from "../editor/context";
 
 import styles from "./Root.module.css";
 
@@ -41,6 +43,7 @@ function Root(): ReactElement<HTMLDivElement> {
   } = useData();
   const log = useCollection();
   const { user, signIn, signOut } = useAuth();
+  const { canEditCatalog, isEditMode, toggleEditMode } = useEditor();
 
   const itemsCollected = countItemInDbOwned(log, countedDb);
   const itemsTotal =
@@ -156,6 +159,28 @@ function Root(): ReactElement<HTMLDivElement> {
                     : "Show Settings Sidebar"}
                 </TooltipContent>
               </Tooltip>
+              {canEditCatalog && (
+                <Tooltip placement={"bottom"}>
+                  <TooltipTrigger asChild={true}>
+                    <Button
+                      onClick={toggleEditMode}
+                      pressed={isEditMode}
+                      showOnly={"desktop"}
+                      colour={BtnColours.Dark}
+                      aria-label={
+                        isEditMode
+                          ? "Disable editor mode"
+                          : "Enable editor mode"
+                      }
+                    >
+                      <Pencil />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className={styles.HeaderTooltip}>
+                    {isEditMode ? "Disable Editor Mode" : "Enable Editor Mode"}
+                  </TooltipContent>
+                </Tooltip>
+              )}
               <Button
                 onClick={() =>
                   setContent(
@@ -264,6 +289,30 @@ function Root(): ReactElement<HTMLDivElement> {
                   </button>
                 </div>
                 <div className={styles.MobileDrawerBody}>
+                  {canEditCatalog && (
+                    <div className={styles.MobileEditorSection}>
+                      <div className={styles.MobileEditorMeta}>
+                        <div className={styles.MobileEditorTitle}>
+                          Editor Mode
+                        </div>
+                      </div>
+                      <button
+                        className={
+                          isEditMode
+                            ? styles.MobileEditorToggleActive
+                            : styles.MobileEditorToggle
+                        }
+                        onClick={toggleEditMode}
+                        type="button"
+                        aria-pressed={isEditMode}
+                      >
+                        <span className={styles.MobileEditorToggleIcon}>
+                          <Pencil />
+                        </span>
+                        <span>{isEditMode ? "On" : "Off"}</span>
+                      </button>
+                    </div>
+                  )}
                   <div className={styles.MobileDrawerContent}>
                     <ConfigSidebar />
                   </div>

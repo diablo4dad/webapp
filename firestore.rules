@@ -2,13 +2,21 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function hasEditorRole() {
+      return request.auth != null && (
+        request.auth.token.role == "EDITOR" ||
+        request.auth.token.editor == true ||
+        (request.auth.token.roles is list && "EDITOR" in request.auth.token.roles)
+      );
+    }
+
     match /catalogs/{catalogId} {
       allow read: if true;
-      allow write: if false;
+      allow write: if hasEditorRole();
 
       match /{document=**} {
         allow read: if true;
-        allow write: if false;
+        allow write: if hasEditorRole();
       }
     }
 

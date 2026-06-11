@@ -1,7 +1,14 @@
-import {createContext, PropsWithChildren, useContext, useEffect, useMemo, useState} from "react";
-import {GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 import {auth} from "../config/firebase";
-import {DadUser} from "./type";
+import { DadUser, EDITOR_ROLE } from "./type";
 
 type AuthType = {
   user?: DadUser;
@@ -45,12 +52,38 @@ function signOut() {
   });
 }
 
-function userToDadUser(user: User): DadUser {
+function getUserRoles(user: User): Promise<string[]> {
+  return user.getIdTokenResult().then((tokenResult) => {
+    const roles = new Set<string>();
+
+    if (typeof tokenResult.claims.role === "string") {
+      roles.add(tokenResult.claims.role);
+    }
+
+    if (Array.isArray(tokenResult.claims.roles)) {
+      tokenResult.claims.roles
+        .filter((role): role is string => typeof role === "string")
+        .forEach((role) => roles.add(role));
+    }
+
+    if (tokenResult.claims.editor === true) {
+      roles.add(EDITOR_ROLE);
+    }
+
+    return Array.from(roles.values());
+  });
+}
+
+async function userToDadUser(user: User): Promise<DadUser> {
+  const roles = await getUserRoles(user);
+
   return {
     uid: user.uid,
     providerId: user.providerId,
     email: user.email ?? "unknown@traveller",
     registered: user.metadata.creationTime,
+    roles,
+    isEditor: roles.includes(EDITOR_ROLE),
   };
 }
 
@@ -62,9 +95,16 @@ export function AuthProvider({ children }: PropsWithChildren) {
     console.log("[Auth] Authenticating...");
 
     // add user state listener
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribe = auth.onIdTokenChanged(async (user) => {
       console.log("[Auth] State changed.", { ...user });
-      setUser(user ? userToDadUser(user) : undefined);
+
+      if (user === null) {
+        setUser(undefined);
+        return;
+      }
+
+      const dadUser = await userToDadUser(user);
+      setUser(dadUser);
     });
 
     return () => {

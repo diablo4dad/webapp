@@ -437,6 +437,30 @@ function Plus() {
   );
 }
 
+function Pencil() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m16.862 4.487 1.687-1.688a2.25 2.25 0 1 1 3.182 3.182l-9.193 9.193a4.5 4.5 0 0 1-1.897 1.13l-2.685.805.805-2.685a4.5 4.5 0 0 1 1.13-1.897l6.97-6.97m0 0 2.121 2.121"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 12v6.75A2.25 2.25 0 0 1 17.25 21H5.25A2.25 2.25 0 0 1 3 18.75V6.75A2.25 2.25 0 0 1 5.25 4.5H12"
+      />
+    </svg>
+  );
+}
+
 function Star() {
   return (
     <svg
@@ -474,6 +498,7 @@ export {
   SidebarRight,
   Star,
   Plus,
+  Pencil,
   ChevronLeft,
   ChevronRight,
   SearchIcon,

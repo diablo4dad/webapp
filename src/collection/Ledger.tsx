@@ -36,6 +36,8 @@ import btnStyles from "../components/Button.module.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
 import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { getIcon } from "../bucket";
+import { useEditor } from "../editor/context";
+import { Plus } from "../components/Icons";
 
 type Props = {
   collections: Collection[];
@@ -100,6 +102,7 @@ const LedgerInner = ({
   const settings = useSettings();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
+  const { isEditMode } = useEditor();
   const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
 
   // preferences
@@ -152,6 +155,9 @@ const LedgerInner = ({
     [styles.LedgerCards]: isLedgerView(settings, LedgerView.CARD),
     [styles.LedgerCardsInverse]: isLedgerInverse(settings),
   });
+  const shouldRenderAddItemCard =
+    isEditMode &&
+    (collection.collectionItems.length > 0 || collection.subcollections.length === 0);
 
   return (
     <AccordionItem
@@ -321,6 +327,21 @@ const LedgerInner = ({
                 </div>
               );
             })}
+            {shouldRenderAddItemCard && (
+              <button
+                type="button"
+                className={classNames(styles.Item, styles.ItemAdd)}
+              >
+                <div className={styles.ItemAddVisual}>
+                  <span className={styles.ItemAddIcon}>
+                    <Plus />
+                  </span>
+                </div>
+                <div className={styles.ItemAddInfo}>
+                  <div className={styles.ItemAddText}>Add Item</div>
+                </div>
+              </button>
+            )}
             <Ledger
               collections={collection.subcollections}
               parentCollection={collection}
