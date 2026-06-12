@@ -92,9 +92,6 @@ export function CollectionView() {
     focusCollectionId,
   );
 
-  switchDb(group);
-  saveViewModel(vm);
-
   useEffect(() => {
     let cancelled = false;
 
@@ -107,7 +104,15 @@ export function CollectionView() {
     return () => {
       cancelled = true;
     };
-  }, [db, setDb, group, switchDb]);
+  }, [dbPromise, setDb]);
+
+  useEffect(() => {
+    switchDb(group);
+  }, [group, switchDb]);
+
+  useEffect(() => {
+    saveViewModel(vm);
+  }, [vm]);
 
   function onClickItem(collectionItem: CollectionItem, collection: Collection) {
     setFocusItemId(collectionItem.id);
