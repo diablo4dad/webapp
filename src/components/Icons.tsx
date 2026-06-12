@@ -385,11 +385,7 @@ function SidebarLeft() {
         strokeLinejoin="round"
         d="M4.5 5.25h15a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.25V6.75a1.5 1.5 0 0 1 1.5-1.5Z"
       />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M8.25 5.25v13.5"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 5.25v13.5" />
     </svg>
   );
 }
@@ -409,11 +405,7 @@ function SidebarRight() {
         strokeLinejoin="round"
         d="M4.5 5.25h15a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.25V6.75a1.5 1.5 0 0 1 1.5-1.5Z"
       />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15.75 5.25v13.5"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5" />
     </svg>
   );
 }
@@ -461,6 +453,25 @@ function Pencil() {
   );
 }
 
+function GripVertical() {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      strokeWidth="1.5"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 6.75h.008v.008H9V6.75Zm0 5.25h.008v.008H9V12Zm0 5.25h.008v.008H9v-.008ZM15 6.75h.008v.008H15V6.75Zm0 5.25h.008v.008H15V12Zm0 5.25h.008v.008H15v-.008Z"
+      />
+    </svg>
+  );
+}
+
 function Star() {
   return (
     <svg
@@ -499,6 +510,7 @@ export {
   Star,
   Plus,
   Pencil,
+  GripVertical,
   ChevronLeft,
   ChevronRight,
   SearchIcon,

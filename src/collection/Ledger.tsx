@@ -1,9 +1,29 @@
 import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
-import { Collection, CollectionItem, getDefaultItem, MagicType } from "../data";
+import {
+  Collection,
+  CollectionItem,
+  DadDb,
+  getDefaultItem,
+  MagicType,
+} from "../data";
 import { getItemDescription } from "../i18n";
 import styles from "./Ledger.module.css";
-import React, { useRef } from "react";
-import { Close, Currency, Pencil, Tick, TickCircle } from "../components/Icons";
+import React, {
+  CSSProperties,
+  PointerEvent as ReactPointerEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  Close,
+  Currency,
+  GripVertical,
+  Pencil,
+  Tick,
+  TickCircle,
+} from "../components/Icons";
 import {
   getAllCollectionItems,
   getClassIconVariant,
@@ -40,6 +60,12 @@ import { useEditor } from "../editor/context";
 import { Plus } from "../components/Icons";
 import { MasterGroup } from "../common";
 import { useData } from "../data/context";
+import { selectCollectionById } from "../data/reducers";
+import {
+  fetchHybridDadDbRef,
+  updateCatalogCollectionItemOrder,
+} from "../store/catalog";
+import { hydrateDadDb } from "../data/factory";
 
 type Props = {
   collections: Collection[];
@@ -55,6 +81,184 @@ type Props = {
 type PropsInner = Props & {
   collection: Collection;
 };
+
+type ItemDragState = {
+  draggedItemId: number;
+  height: number;
+  insertIndex: number;
+  offsetX: number;
+  offsetY: number;
+  pointerX: number;
+  pointerY: number;
+  width: number;
+};
+
+function moveItemIdToIndex(
+  itemIds: number[],
+  itemId: number,
+  insertIndex: number,
+): number[] {
+  const nextItemIds = itemIds.filter((candidateId) => candidateId !== itemId);
+  const nextInsertIndex = Math.max(
+    0,
+    Math.min(insertIndex, nextItemIds.length),
+  );
+
+  nextItemIds.splice(nextInsertIndex, 0, itemId);
+
+  return nextItemIds;
+}
+
+function areItemOrdersEqual(a: number[], b: number[]): boolean {
+  return (
+    a.length === b.length && a.every((itemId, index) => itemId === b[index])
+  );
+}
+
+function reorderCollectionItemsById(
+  collectionItems: CollectionItem[],
+  orderedCollectionItemIds: number[],
+): CollectionItem[] {
+  const collectionItemsById = collectionItems.reduce(
+    (lookup, collectionItem) => {
+      const items = lookup.get(collectionItem.id) ?? [];
+      items.push(collectionItem);
+      lookup.set(collectionItem.id, items);
+
+      return lookup;
+    },
+    new Map<number, CollectionItem[]>(),
+  );
+
+  return orderedCollectionItemIds
+    .map((collectionItemId) =>
+      collectionItemsById.get(collectionItemId)?.shift(),
+    )
+    .filter((collectionItem): collectionItem is CollectionItem =>
+      Boolean(collectionItem),
+    );
+}
+
+function reorderCollectionItemsInCollections(
+  collections: Collection[],
+  collectionId: number,
+  orderedCollectionItemIds: number[],
+): { collections: Collection[]; didUpdate: boolean } {
+  let didUpdate = false;
+
+  const nextCollections = collections.map((collection) => {
+    if (!didUpdate && collection.id === collectionId) {
+      didUpdate = true;
+
+      return {
+        ...collection,
+        collectionItems: reorderCollectionItemsById(
+          collection.collectionItems,
+          orderedCollectionItemIds,
+        ),
+      };
+    }
+
+    if (didUpdate) {
+      return collection;
+    }
+
+    const subcollectionResult = reorderCollectionItemsInCollections(
+      collection.subcollections,
+      collectionId,
+      orderedCollectionItemIds,
+    );
+
+    if (!subcollectionResult.didUpdate) {
+      return collection;
+    }
+
+    didUpdate = true;
+
+    return {
+      ...collection,
+      subcollections: subcollectionResult.collections,
+    };
+  });
+
+  return {
+    collections: nextCollections,
+    didUpdate,
+  };
+}
+
+function reorderCollectionItemsInDb(
+  dadDb: DadDb,
+  collectionId: number,
+  orderedCollectionItemIds: number[],
+): DadDb {
+  const result = reorderCollectionItemsInCollections(
+    dadDb.collections,
+    collectionId,
+    orderedCollectionItemIds,
+  );
+
+  if (!result.didUpdate) {
+    return dadDb;
+  }
+
+  return {
+    ...dadDb,
+    collections: result.collections,
+  };
+}
+
+function getItemInsertIndexFromPointer(
+  container: HTMLElement,
+  pointerX: number,
+  pointerY: number,
+): number {
+  const items = Array.from(
+    container.querySelectorAll<HTMLElement>("[data-reorder-item='true']"),
+  );
+
+  if (items.length === 0) {
+    return 0;
+  }
+
+  const isGrid = window.getComputedStyle(container).display === "grid";
+  if (!isGrid) {
+    const targetIndex = items.findIndex((item) => {
+      const rect = item.getBoundingClientRect();
+
+      return pointerY < rect.top + rect.height / 2;
+    });
+
+    return targetIndex === -1 ? items.length : targetIndex;
+  }
+
+  let closestIndex = 0;
+  let closestDistance = Number.POSITIVE_INFINITY;
+  items.forEach((item, index) => {
+    const rect = item.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const distance =
+      Math.pow(pointerX - centerX, 2) + Math.pow(pointerY - centerY, 2);
+
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestIndex = index;
+    }
+  });
+
+  const closestRect = items[closestIndex].getBoundingClientRect();
+  const isAfterClosest =
+    pointerY > closestRect.top + closestRect.height / 2 ||
+    (pointerY >= closestRect.top &&
+      pointerY <= closestRect.bottom &&
+      pointerX > closestRect.left + closestRect.width / 2);
+
+  return Math.max(
+    0,
+    Math.min(closestIndex + (isAfterClosest ? 1 : 0), items.length),
+  );
+}
 
 const Ledger = ({
   collections,
@@ -139,7 +343,7 @@ const LedgerInner = ({
   const settings = useSettings();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
-  const { group } = useData();
+  const { db, group, searchTerm, setDb } = useData();
   const {
     isEditMode,
     openCollectionCreator,
@@ -147,10 +351,20 @@ const LedgerInner = ({
     openCollectionItemEditor,
   } = useEditor();
   const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
+  const itemListRef = useRef<HTMLDivElement>(null);
+  const dragStateRef = useRef<ItemDragState>();
+  const suppressItemClickRef = useRef(false);
+  const [dragState, setDragState] = useState<ItemDragState>();
+  const [isReordering, setIsReordering] = useState(false);
+  const [reorderError, setReorderError] = useState<string>();
 
   // preferences
   const preferredClass = getPreferredClass(settings);
   const preferredGender = getPreferredGender(settings);
+  const sourceCollection = useMemo(
+    () => selectCollectionById(db.collections, collection.id),
+    [db.collections, collection.id],
+  );
 
   const toggleItem = (dci: CollectionItem) => (collected: boolean) => {
     if (onToggleItem) {
@@ -215,6 +429,390 @@ const LedgerInner = ({
     !hasSubcollections &&
     group !== MasterGroup.UNIVERSAL;
   const canEditCollection = isEditableCatalogCollection;
+  const canReorderCollectionItems =
+    isEditableCatalogCollection &&
+    searchTerm.trim() === "" &&
+    sourceCollection !== undefined &&
+    collection.collectionItems.length > 1 &&
+    collection.collectionItems.length ===
+      sourceCollection.collectionItems.length;
+  const collectionItemsById = useMemo(
+    () =>
+      new Map(
+        collection.collectionItems.map((collectionItem) => [
+          collectionItem.id,
+          collectionItem,
+        ]),
+      ),
+    [collection.collectionItems],
+  );
+  const collectionItemIds = useMemo(
+    () => collection.collectionItems.map((collectionItem) => collectionItem.id),
+    [collection.collectionItems],
+  );
+  const renderedCollectionItemIds =
+    dragState && canReorderCollectionItems
+      ? moveItemIdToIndex(
+          collectionItemIds,
+          dragState.draggedItemId,
+          dragState.insertIndex,
+        )
+      : collectionItemIds;
+  const draggedCollectionItem =
+    dragState && canReorderCollectionItems
+      ? collectionItemsById.get(dragState.draggedItemId)
+      : undefined;
+
+  useEffect(() => {
+    dragStateRef.current = dragState;
+  }, [dragState]);
+
+  async function refreshDb() {
+    const dadDbRef = await fetchHybridDadDbRef();
+    setDb(hydrateDadDb(dadDbRef));
+  }
+
+  function beginItemReorder(
+    collectionItem: CollectionItem,
+    itemElement: HTMLElement,
+    pointerX: number,
+    pointerY: number,
+  ) {
+    const draggedIndex = collectionItemIds.indexOf(collectionItem.id);
+
+    if (draggedIndex === -1) {
+      return;
+    }
+
+    const rect = itemElement.getBoundingClientRect();
+    const nextDragState = {
+      draggedItemId: collectionItem.id,
+      height: rect.height,
+      insertIndex: draggedIndex,
+      offsetX: pointerX - rect.left,
+      offsetY: pointerY - rect.top,
+      pointerX,
+      pointerY,
+      width: rect.width,
+    };
+
+    setReorderError(undefined);
+    suppressItemClickRef.current = true;
+    dragStateRef.current = nextDragState;
+    setDragState(nextDragState);
+  }
+
+  function startItemReorder(
+    event: ReactPointerEvent<HTMLElement>,
+    collectionItem: CollectionItem,
+  ) {
+    if (!canReorderCollectionItems || isReordering || event.button !== 0) {
+      return;
+    }
+
+    const itemElement = event.currentTarget.closest<HTMLElement>(
+      "[data-reorder-item='true']",
+    );
+
+    if (itemElement === null) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    beginItemReorder(collectionItem, itemElement, event.clientX, event.clientY);
+  }
+
+  function queueItemReorder(
+    event: ReactPointerEvent<HTMLDivElement>,
+    collectionItem: CollectionItem,
+  ) {
+    if (
+      !canReorderCollectionItems ||
+      isReordering ||
+      event.button !== 0 ||
+      event.pointerType === "touch" ||
+      (event.target as HTMLElement).closest("button")
+    ) {
+      return;
+    }
+
+    const itemElement = event.currentTarget;
+    const pointerId = event.pointerId;
+    const startX = event.clientX;
+    const startY = event.clientY;
+
+    function cleanup() {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+    }
+
+    function onPointerMove(pointerEvent: PointerEvent) {
+      if (pointerEvent.pointerId !== pointerId) {
+        return;
+      }
+
+      const distance = Math.hypot(
+        pointerEvent.clientX - startX,
+        pointerEvent.clientY - startY,
+      );
+
+      if (distance < 6) {
+        return;
+      }
+
+      pointerEvent.preventDefault();
+      cleanup();
+      beginItemReorder(
+        collectionItem,
+        itemElement,
+        pointerEvent.clientX,
+        pointerEvent.clientY,
+      );
+    }
+
+    function onPointerUp(pointerEvent: PointerEvent) {
+      if (pointerEvent.pointerId !== pointerId) {
+        return;
+      }
+
+      cleanup();
+    }
+
+    window.addEventListener("pointermove", onPointerMove, { passive: false });
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+  }
+
+  async function commitItemReorder(committedDragState: ItemDragState) {
+    if (!canReorderCollectionItems || !sourceCollection || isReordering) {
+      dragStateRef.current = undefined;
+      setDragState(undefined);
+      return;
+    }
+
+    const sourceItemIds = sourceCollection.collectionItems.map(
+      (collectionItem) => collectionItem.id,
+    );
+    const nextItemIds = moveItemIdToIndex(
+      sourceItemIds,
+      committedDragState.draggedItemId,
+      committedDragState.insertIndex,
+    );
+    dragStateRef.current = undefined;
+    setDragState(undefined);
+
+    if (areItemOrdersEqual(sourceItemIds, nextItemIds)) {
+      return;
+    }
+
+    const previousDb = db;
+    setDb(reorderCollectionItemsInDb(previousDb, collection.id, nextItemIds));
+    setIsReordering(true);
+    setReorderError(undefined);
+
+    try {
+      await updateCatalogCollectionItemOrder(collection.id, nextItemIds);
+    } catch (error) {
+      setDb(previousDb);
+      setReorderError(
+        error instanceof Error
+          ? error.message
+          : "Failed to reorder collection items.",
+      );
+      setIsReordering(false);
+      return;
+    }
+
+    try {
+      await refreshDb();
+    } catch (error) {
+      setReorderError(
+        error instanceof Error
+          ? `Saved order, but failed to refresh database: ${error.message}`
+          : "Saved order, but failed to refresh database.",
+      );
+    } finally {
+      setIsReordering(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!dragState) {
+      return;
+    }
+
+    const previousUserSelect = document.body.style.userSelect;
+    const previousCursor = document.body.style.cursor;
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "grabbing";
+
+    function onPointerMove(event: PointerEvent) {
+      const currentDragState = dragStateRef.current;
+      if (!currentDragState) {
+        return;
+      }
+
+      event.preventDefault();
+      const insertIndex = itemListRef.current
+        ? getItemInsertIndexFromPointer(
+            itemListRef.current,
+            event.clientX,
+            event.clientY,
+          )
+        : currentDragState.insertIndex;
+
+      const nextDragState = {
+        ...currentDragState,
+        insertIndex,
+        pointerX: event.clientX,
+        pointerY: event.clientY,
+      };
+
+      dragStateRef.current = nextDragState;
+      setDragState(nextDragState);
+    }
+
+    function onPointerUp(event: PointerEvent) {
+      const currentDragState = dragStateRef.current;
+      if (!currentDragState) {
+        return;
+      }
+
+      event.preventDefault();
+      void commitItemReorder(currentDragState);
+    }
+
+    function onPointerCancel() {
+      dragStateRef.current = undefined;
+      setDragState(undefined);
+    }
+
+    window.addEventListener("pointermove", onPointerMove, { passive: false });
+    window.addEventListener("pointerup", onPointerUp, { passive: false });
+    window.addEventListener("pointercancel", onPointerCancel);
+
+    return () => {
+      document.body.style.userSelect = previousUserSelect;
+      document.body.style.cursor = previousCursor;
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerCancel);
+    };
+  }, [dragState?.draggedItemId]);
+
+  function getCollectionItemView(collectionItem: CollectionItem) {
+    const item =
+      getClassItemVariant(collectionItem, preferredClass) ??
+      getDefaultItem(collectionItem);
+    const icon =
+      getClassIconVariant(item, preferredClass, preferredGender) ?? item.icon;
+    const itemIds = getItemIds(collectionItem);
+    const isCollected = isItemCollected(log, itemIds);
+    const isHidden = isItemHidden(log, itemIds);
+    const showCollected =
+      isCollected && !isHidden && !collectionItem.unobtainable;
+    const showExcluded = isHidden || collectionItem.unobtainable;
+
+    return {
+      icon,
+      isCollected,
+      item,
+      showCollected,
+      showExcluded,
+    };
+  }
+
+  function getCollectionItemClassName(
+    collectionItem: CollectionItem,
+    item: ReturnType<typeof getCollectionItemView>["item"],
+    options: { isGhost?: boolean } = {},
+  ) {
+    return classNames({
+      [styles.Item]: true,
+      [styles.ItemDragReady]:
+        canReorderCollectionItems && !options.isGhost && !dragState,
+      [styles.ItemDragGhost]: options.isGhost,
+      [styles.ItemReorderSaving]: isReordering && !options.isGhost,
+      [styles.ItemCollected]:
+        getCollectionItemView(collectionItem).showCollected,
+      [styles.ItemHidden]: getCollectionItemView(collectionItem).showExcluded,
+      [styles.ItemPremium]: collectionItem.premium,
+      [styles.ItemUnique]: item.magicType === MagicType.UNIQUE,
+      [styles.ItemMythic]: item.magicType === MagicType.MYTHIC,
+    });
+  }
+
+  function renderCollectionItemContent(
+    collectionItem: CollectionItem,
+    item: ReturnType<typeof getCollectionItemView>["item"],
+    icon: string,
+    showDragHandle: boolean,
+  ) {
+    return (
+      <>
+        {showDragHandle && canReorderCollectionItems && (
+          <button
+            type="button"
+            className={styles.ItemDragHandle}
+            aria-label={`Reorder ${getItemName(collectionItem, item)}`}
+            title="Reorder item"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+            onMouseDown={(event) => event.stopPropagation()}
+            onPointerDown={(event) => startItemReorder(event, collectionItem)}
+            onTouchStart={(event) => event.stopPropagation()}
+          >
+            <GripVertical />
+          </button>
+        )}
+        <FallbackLazyImage
+          wrapperClassName={styles.ItemImageWrapper}
+          placeholderSrc={placeholder}
+          className={styles.ItemImage}
+          src={getIcon(icon)}
+          alt={getItemName(collectionItem, item)}
+        />
+        <div className={styles.ItemInfo}>
+          <div className={styles.ItemName}>
+            {getItemName(collectionItem, item)}
+          </div>
+          <div className={styles.ItemType}>
+            <span>
+              {getItemType(collectionItem, item)} | {collectionItem.claim}
+            </span>
+            <span
+              className={styles.ItemIconPremiumTitle}
+              hidden={!collectionItem.premium}
+            >
+              <Currency />
+            </span>
+          </div>
+          <div className={styles.ItemClaimDescription}>
+            {getItemDescription(collectionItem)}
+          </div>
+        </div>
+        <div className={styles.ItemIcons}>
+          <span className={styles.ItemIcon + " " + styles.ItemIconPremium}>
+            <Currency></Currency>
+          </span>
+          {getCollectionItemView(collectionItem).isCollected && (
+            <span className={styles.ItemIcon + " " + styles.ItemIconCollection}>
+              <TickCircle></TickCircle>
+            </span>
+          )}
+          {getCollectionItemView(collectionItem).showExcluded && (
+            <span className={styles.ItemIcon + " " + styles.ItemIconHidden}>
+              <Close></Close>
+            </span>
+          )}
+        </div>
+      </>
+    );
+  }
 
   return (
     <AccordionItem
@@ -307,100 +905,103 @@ const LedgerInner = ({
 
         return (
           <div
+            ref={itemListRef}
             className={
               collection.subcollections.length
                 ? styles.LedgerSubCollection
                 : styles.LedgerRow
             }
           >
-            {collection.collectionItems.map((collectionItem) => {
-              const item =
-                getClassItemVariant(collectionItem, preferredClass) ??
-                getDefaultItem(collectionItem);
-              const icon =
-                getClassIconVariant(item, preferredClass, preferredGender) ??
-                item.icon;
-              const itemIds = getItemIds(collectionItem);
-              const isCollected = isItemCollected(log, itemIds);
-              const isHidden = isItemHidden(log, itemIds);
-              const showCollected =
-                isCollected && !isHidden && !collectionItem.unobtainable;
-              const showExcluded = isHidden || collectionItem.unobtainable;
+            {renderedCollectionItemIds.map((collectionItemId) => {
+              if (dragState?.draggedItemId === collectionItemId) {
+                return (
+                  <div
+                    key={`drop-placeholder-${collectionItemId}`}
+                    className={classNames(
+                      styles.Item,
+                      styles.ItemDropPlaceholder,
+                    )}
+                    aria-hidden="true"
+                  >
+                    <div className={styles.ItemDropPlaceholderVisual} />
+                    <div className={styles.ItemDropPlaceholderInfo} />
+                  </div>
+                );
+              }
 
-              const className = classNames({
-                [styles.Item]: true,
-                [styles.ItemCollected]: showCollected,
-                [styles.ItemHidden]: showExcluded,
-                [styles.ItemPremium]: collectionItem.premium,
-                [styles.ItemUnique]: item.magicType === MagicType.UNIQUE,
-                [styles.ItemMythic]: item.magicType === MagicType.MYTHIC,
-              });
+              const collectionItem = collectionItemsById.get(collectionItemId);
+              if (!collectionItem) {
+                return null;
+              }
+
+              const itemView = getCollectionItemView(collectionItem);
 
               return (
                 <div
-                  className={className}
-                  onClick={() => onClickItem(collectionItem, collection)}
-                  onDoubleClick={() => toggleItem(collectionItem)(!isCollected)}
+                  className={getCollectionItemClassName(
+                    collectionItem,
+                    itemView.item,
+                  )}
+                  data-reorder-item="true"
+                  onPointerDown={(event) =>
+                    queueItemReorder(event, collectionItem)
+                  }
+                  onClick={() => {
+                    if (suppressItemClickRef.current) {
+                      suppressItemClickRef.current = false;
+                      return;
+                    }
+
+                    if (!dragState) {
+                      onClickItem(collectionItem, collection);
+                    }
+                  }}
+                  onDoubleClick={() =>
+                    toggleItem(collectionItem)(!itemView.isCollected)
+                  }
                   onTouchStart={onTouchStart(() =>
-                    toggleItem(collectionItem)(!isCollected),
+                    toggleItem(collectionItem)(!itemView.isCollected),
                   )}
                   key={collectionItem.id}
                 >
-                  <FallbackLazyImage
-                    wrapperClassName={styles.ItemImageWrapper}
-                    placeholderSrc={placeholder}
-                    className={styles.ItemImage}
-                    src={getIcon(icon)}
-                    alt={getItemName(collectionItem, item)}
-                  />
-                  <div className={styles.ItemInfo}>
-                    <div className={styles.ItemName}>
-                      {getItemName(collectionItem, item)}
-                    </div>
-                    <div className={styles.ItemType}>
-                      <span>
-                        {getItemType(collectionItem, item)} |{" "}
-                        {collectionItem.claim}
-                      </span>
-                      <span
-                        className={styles.ItemIconPremiumTitle}
-                        hidden={!collectionItem.premium}
-                      >
-                        <Currency />
-                      </span>
-                    </div>
-                    <div className={styles.ItemClaimDescription}>
-                      {getItemDescription(collectionItem)}
-                    </div>
-                  </div>
-                  <div className={styles.ItemIcons}>
-                    <span
-                      className={styles.ItemIcon + " " + styles.ItemIconPremium}
-                    >
-                      <Currency></Currency>
-                    </span>
-                    {isCollected && (
-                      <span
-                        className={
-                          styles.ItemIcon + " " + styles.ItemIconCollection
-                        }
-                      >
-                        <TickCircle></TickCircle>
-                      </span>
-                    )}
-                    {showExcluded && (
-                      <span
-                        className={
-                          styles.ItemIcon + " " + styles.ItemIconHidden
-                        }
-                      >
-                        <Close></Close>
-                      </span>
-                    )}
-                  </div>
+                  {renderCollectionItemContent(
+                    collectionItem,
+                    itemView.item,
+                    itemView.icon,
+                    true,
+                  )}
                 </div>
               );
             })}
+            {dragState && draggedCollectionItem && (
+              <div
+                className={getCollectionItemClassName(
+                  draggedCollectionItem,
+                  getCollectionItemView(draggedCollectionItem).item,
+                  { isGhost: true },
+                )}
+                style={
+                  {
+                    "--drag-ghost-height": `${dragState.height}px`,
+                    "--drag-ghost-width": `${dragState.width}px`,
+                    height: dragState.height,
+                    left: dragState.pointerX - dragState.offsetX,
+                    top: dragState.pointerY - dragState.offsetY,
+                    width: dragState.width,
+                  } as CSSProperties
+                }
+              >
+                {renderCollectionItemContent(
+                  draggedCollectionItem,
+                  getCollectionItemView(draggedCollectionItem).item,
+                  getCollectionItemView(draggedCollectionItem).icon,
+                  false,
+                )}
+              </div>
+            )}
+            {reorderError && (
+              <div className={styles.ItemReorderError}>{reorderError}</div>
+            )}
             {shouldRenderAddItemCard && (
               <button
                 type="button"

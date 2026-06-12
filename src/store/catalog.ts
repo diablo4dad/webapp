@@ -392,6 +392,78 @@ export async function deleteCatalogCollectionItem(
   });
 }
 
+export function reorderCatalogCollectionItems(
+  collectionItems: CollectionItemRef[],
+  orderedCollectionItemIds: number[],
+): CollectionItemRef[] {
+  if (collectionItems.length !== orderedCollectionItemIds.length) {
+    throw new Error(
+      "[Catalog] Reordered collection item ids must match the existing collection item count.",
+    );
+  }
+
+  const collectionItemsById = collectionItems.reduce(
+    (lookup, collectionItem) => {
+      const items = lookup.get(collectionItem.id) ?? [];
+      items.push(collectionItem);
+      lookup.set(collectionItem.id, items);
+
+      return lookup;
+    },
+    new Map<number, CollectionItemRef[]>(),
+  );
+
+  const reorderedCollectionItems = orderedCollectionItemIds.map(
+    (collectionItemId) => {
+      const items = collectionItemsById.get(collectionItemId);
+      const collectionItem = items?.shift();
+
+      if (collectionItem === undefined) {
+        throw new Error(
+          `[Catalog] Collection item ${collectionItemId} was not found in the current collection order.`,
+        );
+      }
+
+      return collectionItem;
+    },
+  );
+
+  const hasUnorderedItems = Array.from(collectionItemsById.values()).some(
+    (items) => items.length > 0,
+  );
+
+  if (hasUnorderedItems) {
+    throw new Error(
+      "[Catalog] Reordered collection item ids omitted existing collection items.",
+    );
+  }
+
+  return reorderedCollectionItems;
+}
+
+export async function updateCatalogCollectionItemOrder(
+  collectionId: number,
+  orderedCollectionItemIds: number[],
+): Promise<void> {
+  const collectionRef = await getCatalogCollectionNodeRef(collectionId);
+  const snapshot = await getDoc(collectionRef);
+
+  if (!snapshot.exists()) {
+    throw new Error(`[Catalog] Missing collection node ${collectionId}.`);
+  }
+
+  const data = snapshot.data() as CatalogCollectionDoc;
+  const collectionItems = data.collectionItems ?? [];
+  const nextCollectionItems = reorderCatalogCollectionItems(
+    collectionItems,
+    orderedCollectionItemIds,
+  );
+
+  await updateDoc(collectionRef, {
+    collectionItems: nextCollectionItems,
+  });
+}
+
 export async function resolveCatalogVersionId(): Promise<string> {
   try {
     const manifest = await fetchCatalogManifest();

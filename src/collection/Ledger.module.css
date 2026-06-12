@@ -181,6 +181,89 @@
   align-items: center;
 }
 
+.ItemDragHandle {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.75rem;
+  border: 1px solid #596472;
+  border-radius: 0.375rem;
+  background-color: rgba(22, 25, 31, 0.65);
+  color: #c6ced8;
+  cursor: grab;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ItemDragHandle:hover {
+  border-color: #738296;
+  color: #e2e8ef;
+}
+
+.ItemDragHandle:active {
+  cursor: grabbing;
+}
+
+.ItemDragHandle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.ItemReorderSaving {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.ItemDragGhost {
+  position: fixed !important;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.92 !important;
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.35);
+  transform: scale(1.01);
+}
+
+.ItemDragGhost .ItemImage {
+  filter: brightness(125%) !important;
+}
+
+.ItemDragGhost .ItemInfo {
+  opacity: 1;
+}
+
+.ItemDropPlaceholder {
+  min-height: 7rem;
+  border: 1px dashed #738296;
+  background: rgba(20, 23, 29, 0.72) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(104, 114, 126, 0.16),
+    inset 0 0 1.25rem rgba(0, 0, 0, 0.24);
+  cursor: default;
+}
+
+.ItemDropPlaceholderVisual {
+  width: 4rem;
+  height: 6rem;
+  border: 1px dashed rgba(115, 130, 150, 0.45);
+  border-radius: 0.375rem;
+  background-color: rgba(22, 25, 31, 0.55);
+  flex-shrink: 0;
+}
+
+.ItemDropPlaceholderInfo {
+  flex: 1;
+}
+
+.ItemReorderError {
+  padding: 0.75rem 2rem;
+  background-color: rgba(166, 38, 57, 0.16);
+  border-top: 1px solid rgba(166, 38, 57, 0.35);
+  border-bottom: 1px solid rgba(166, 38, 57, 0.35);
+  color: #f1b4bd;
+  font-size: 0.875rem;
+}
+
 .Item:hover {
   opacity: 1;
 }
@@ -401,6 +484,44 @@
   /*border-bottom: 1px solid var(--card-border-bottom);*/
   padding: 0.5rem 0.5rem 0;
   opacity: 1;
+}
+
+.LedgerCards .ItemDragHandle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  width: 1.875rem;
+  height: 1.875rem;
+  margin-right: 0;
+  background-color: rgba(22, 25, 31, 0.82);
+}
+
+.LedgerCards .ItemDragGhost {
+  height: var(--drag-ghost-height) !important;
+  width: var(--drag-ghost-width) !important;
+}
+
+.LedgerCards .ItemDropPlaceholder {
+  min-height: 0;
+  border-style: dashed;
+  justify-content: flex-start;
+  padding: 0.5rem 0.5rem 0;
+}
+
+.LedgerCards .ItemDropPlaceholderVisual {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+}
+
+.LedgerCards .ItemDropPlaceholderInfo {
+  width: 100%;
+  min-height: 2.5rem;
+}
+
+.LedgerCards .ItemReorderError {
+  grid-column: 1 / -1;
 }
 
 .LedgerCards .ItemAdd {
