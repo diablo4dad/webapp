@@ -5,6 +5,9 @@ import {
   doc,
   getDoc,
   getDocs,
+  getDocsFromCache,
+  loadBundle,
+  namedQuery,
   setDoc,
   updateDoc,
   writeBatch,
@@ -16,8 +19,17 @@ const CATALOG_ID = "d4";
 const CATALOG_VERSION_COLLECTION = "versions";
 const CATALOG_NODE_COLLECTION = "collectionNodes";
 const DEFAULT_CATALOG_VERSION_ID = "v1";
+const CATALOG_COLLECTION_NODE_BUNDLE_ENDPOINT =
+  "/api/catalog/collectionNodes.bundle";
 
 type StaticItemData = Pick<DadDbRef, "itemTypes" | "items">;
+export type CatalogCollectionNodeSource = "bundle" | "firestore";
+
+export type FetchCatalogCollectionNodesOptions = {
+  source?: CatalogCollectionNodeSource;
+};
+
+export type FetchHybridDadDbRefOptions = FetchCatalogCollectionNodesOptions;
 
 export type CatalogManifest = {
   activeVersionId: string;
@@ -79,6 +91,18 @@ function getCatalogCollectionNodeCollectionRef(
   );
 }
 
+export function getCatalogCollectionNodesBundleName(versionId: string): string {
+  return `catalog-${CATALOG_ID}-${versionId}-${CATALOG_NODE_COLLECTION}`;
+}
+
+export function getCatalogCollectionNodesBundleUrl(versionId: string): string {
+  const params = new URLSearchParams({
+    versionId,
+  });
+
+  return `${CATALOG_COLLECTION_NODE_BUNDLE_ENDPOINT}?${params.toString()}`;
+}
+
 async function getCatalogCollectionNodeRef(collectionId: number) {
   const firestore = await getCatalogFirestore();
   const versionId = await resolveCatalogVersionId();
@@ -112,6 +136,14 @@ function toCollectionRef(node: CatalogCollectionDoc): BuiltCollectionRef {
     ...collection,
     subcollections: [],
   };
+}
+
+function toCatalogCollectionDocs(snapshot: {
+  docs: Array<{ data: () => unknown }>;
+}): CatalogCollectionDoc[] {
+  return snapshot.docs
+    .map((node) => node.data() as CatalogCollectionDoc)
+    .sort(sortNodes);
 }
 
 export function buildCollectionTree(
@@ -364,7 +396,7 @@ export async function fetchCatalogVersion(
   return snapshot.data() as CatalogVersion;
 }
 
-export async function fetchCatalogCollectionNodes(
+export async function fetchCatalogCollectionNodesFromFirestore(
   versionId: string,
 ): Promise<CatalogCollectionDoc[]> {
   const firestore = await getCatalogFirestore();
@@ -374,9 +406,53 @@ export async function fetchCatalogCollectionNodes(
   );
   const snapshot = await getDocs(nodeCollectionRef);
 
-  return snapshot.docs
-    .map((node) => node.data() as CatalogCollectionDoc)
-    .sort(sortNodes);
+  return toCatalogCollectionDocs(snapshot);
+}
+
+export async function fetchCatalogCollectionNodesFromBundle(
+  versionId: string,
+): Promise<CatalogCollectionDoc[]> {
+  const firestore = await getCatalogFirestore();
+  const response = await fetch(getCatalogCollectionNodesBundleUrl(versionId));
+
+  if (!response.ok) {
+    throw new Error(
+      `[Catalog] Failed to load bundled collection nodes for version "${versionId}" (${response.status}).`,
+    );
+  }
+
+  const bundleData = response.body ?? (await response.arrayBuffer());
+  await loadBundle(firestore, bundleData);
+
+  const bundleName = getCatalogCollectionNodesBundleName(versionId);
+  const cachedQuery = await namedQuery(firestore, bundleName);
+
+  if (!cachedQuery) {
+    throw new Error(`[Catalog] Bundle did not contain query "${bundleName}".`);
+  }
+
+  const snapshot = await getDocsFromCache(cachedQuery);
+
+  return toCatalogCollectionDocs(snapshot);
+}
+
+export async function fetchCatalogCollectionNodes(
+  versionId: string,
+  options: FetchCatalogCollectionNodesOptions = {},
+): Promise<CatalogCollectionDoc[]> {
+  if (options.source === "bundle") {
+    try {
+      return await fetchCatalogCollectionNodesFromBundle(versionId);
+    } catch (error) {
+      console.warn(
+        error instanceof Error
+          ? `${error.message} Falling back to Firestore.`
+          : "[Catalog] Failed to load bundled collection nodes. Falling back to Firestore.",
+      );
+    }
+  }
+
+  return fetchCatalogCollectionNodesFromFirestore(versionId);
 }
 
 export async function addCatalogCollectionNode(
@@ -718,11 +794,13 @@ export async function fetchStaticItemData(): Promise<StaticItemData> {
   };
 }
 
-export async function fetchHybridDadDbRef(): Promise<DadDbRef> {
+export async function fetchHybridDadDbRef(
+  options: FetchHybridDadDbRefOptions = {},
+): Promise<DadDbRef> {
   const staticData = await fetchStaticItemData();
   const versionId = await resolveCatalogVersionId();
   const version = await fetchCatalogVersion(versionId);
-  const nodes = await fetchCatalogCollectionNodes(versionId);
+  const nodes = await fetchCatalogCollectionNodes(versionId, options);
 
   if (nodes.length === 0) {
     throw new Error(

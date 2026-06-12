@@ -10,17 +10,19 @@ import styles from "./CollectionLog.module.css";
 import Ledger from "../collection/Ledger";
 import LedgerSkeleton from "../collection/LedgerSkeleton";
 import { toggleValueInArray } from "../common/arrays";
-import { Collection, CollectionItem, DadDb } from "../data";
+import { Collection, CollectionItem } from "../data";
 import { MasterGroup } from "../common";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { countAllItemsDabDb } from "../data/aggregate";
 import { selectCollectionById, selectItemOrDefault } from "../data/reducers";
 import SidebarMain from "../layout/SidebarMain";
 import { getViewModel, saveViewModel } from "../store/local";
-import { Await, defer, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { useData } from "../data/context";
 import { hydrateDadDb } from "../data/factory";
 import { fetchHybridDadDbRef } from "../store/catalog";
+import { useAuth } from "../auth/context";
+import { useEditor } from "../editor/context";
 
 export type ViewModel = {
   openCollections: number[];
@@ -33,7 +35,6 @@ export type Params = {
 };
 
 export type LoaderPayload = {
-  db: Promise<DadDb>;
   group: MasterGroup;
 };
 
@@ -64,16 +65,14 @@ export function generateUrl(group: MasterGroup): string {
 
 export async function loader({ params }: Params) {
   const group = slugToGroup(params.collectionId ?? "general");
-  const db = fetchHybridDadDbRef().then(hydrateDadDb);
 
-  return defer({
-    db,
+  return {
     group,
-  });
+  };
 }
 
 export function CollectionView() {
-  const { db: dbPromise, group } = useLoaderData() as LoaderPayload;
+  const { group } = useLoaderData() as LoaderPayload;
   const {
     filteredDb,
     db,
@@ -85,7 +84,11 @@ export function CollectionView() {
     focusItemId,
     sidebarVisibility,
   } = useData();
+  const { isLoading: isAuthLoading } = useAuth();
+  const { canEditCatalog } = useEditor();
   const [vm, setVm] = useState<ViewModel>(getViewModel());
+  const [isCatalogLoading, setIsCatalogLoading] = useState(false);
+  const [catalogError, setCatalogError] = useState<string>();
   const focusItem = selectItemOrDefault(db.collections, focusItemId);
   const focusCollection = selectCollectionById(
     db.collections,
@@ -93,18 +96,46 @@ export function CollectionView() {
   );
 
   useEffect(() => {
+    if (isAuthLoading) {
+      return;
+    }
+
     let cancelled = false;
 
-    dbPromise.then((resolvedDb) => {
-      if (!cancelled) {
-        setDb(resolvedDb);
+    setIsCatalogLoading(true);
+    setCatalogError(undefined);
+
+    async function fetchCatalog() {
+      try {
+        const dadDbRef = await fetchHybridDadDbRef({
+          source: canEditCatalog ? "firestore" : "bundle",
+        });
+        const resolvedDb = hydrateDadDb(dadDbRef);
+
+        if (!cancelled) {
+          setDb(resolvedDb);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setCatalogError(
+            error instanceof Error
+              ? error.message
+              : "Failed to load catalogue.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsCatalogLoading(false);
+        }
       }
-    });
+    }
+
+    void fetchCatalog();
 
     return () => {
       cancelled = true;
     };
-  }, [dbPromise, setDb]);
+  }, [canEditCatalog, isAuthLoading, setDb]);
 
   useEffect(() => {
     switchDb(group);
@@ -153,8 +184,12 @@ export function CollectionView() {
       }
       main={
         <div className={styles.Content}>
-          <Suspense fallback={<LedgerSkeleton />}>
-            <Await resolve={dbPromise}>
+          {isAuthLoading || isCatalogLoading ? (
+            <LedgerSkeleton />
+          ) : catalogError ? (
+            <div className={styles.LoadError}>{catalogError}</div>
+          ) : (
+            <>
               <Ledger
                 collections={filteredDb}
                 openCollections={vm.openCollections}
@@ -171,8 +206,8 @@ export function CollectionView() {
                 }}
               />
               {countAllItemsDabDb(filteredDb) === 0 && <EmptyCollection />}
-            </Await>
-          </Suspense>
+            </>
+          )}
         </div>
       }
     ></SidebarMain>

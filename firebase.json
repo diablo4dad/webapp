@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "source": "functions"
+  },
   "hosting": {
     "public": "build",
     "ignore": [
@@ -8,6 +11,10 @@
       "icons/**"
     ],
     "rewrites": [
+      {
+        "source": "/api/catalog/collectionNodes.bundle",
+        "function": "catalogCollectionNodesBundle"
+      },
       {
         "source": "**",
         "destination": "/index.html"

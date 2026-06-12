@@ -1,9 +1,25 @@
 import {
   buildCollectionTree,
   CatalogCollectionDoc,
+  getCatalogCollectionNodesBundleName,
+  getCatalogCollectionNodesBundleUrl,
   reorderCatalogCollectionNodes,
   reorderCatalogCollectionItems,
 } from "./catalog";
+
+describe("catalog collection node bundle helpers", () => {
+  test("builds a stable named query for a catalog version", () => {
+    expect(getCatalogCollectionNodesBundleName("v1")).toBe(
+      "catalog-d4-v1-collectionNodes",
+    );
+  });
+
+  test("builds the collection node bundle endpoint URL", () => {
+    expect(getCatalogCollectionNodesBundleUrl("v1")).toBe(
+      "/api/catalog/collectionNodes.bundle?versionId=v1",
+    );
+  });
+});
 
 describe("buildCollectionTree", () => {
   test("builds a root and one level of subcollections", () => {

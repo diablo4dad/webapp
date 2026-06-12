@@ -15,6 +15,14 @@
     min-width: 0;
 }
 
+.LoadError {
+    padding: 1rem 2rem;
+    background-color: rgba(166, 38, 57, 0.16);
+    border-top: 1px solid rgba(166, 38, 57, 0.35);
+    border-bottom: 1px solid rgba(166, 38, 57, 0.35);
+    color: #f1b4bd;
+}
+
 .HeroLayout {
     padding: 1rem 0;
     display: grid;

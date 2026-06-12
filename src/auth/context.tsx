@@ -7,26 +7,27 @@ import {
   useState,
 } from "react";
 import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
-import {auth} from "../config/firebase";
+import { auth } from "../config/firebase";
 import { DadUser, EDITOR_ROLE } from "./type";
 
 type AuthType = {
   user?: DadUser;
-  signIn: () => void,
-  signOut: () => void,
-}
+  isLoading: boolean;
+  signIn: () => void;
+  signOut: () => void;
+};
 
 const defaultAuth: AuthType = {
+  isLoading: true,
   signIn: () => undefined,
   signOut: () => undefined,
-}
+};
 
 export function useAuth() {
   return useContext(AuthContext);
 }
 
-export const AuthContext =
-  createContext<AuthType>(defaultAuth);
+export const AuthContext = createContext<AuthType>(defaultAuth);
 
 function signIn() {
   const provider = new GoogleAuthProvider();
@@ -89,6 +90,7 @@ async function userToDadUser(user: User): Promise<DadUser> {
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<DadUser>();
+  const [isLoading, setIsLoading] = useState(true);
 
   // auth effect
   useEffect(() => {
@@ -97,14 +99,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
     // add user state listener
     const unsubscribe = auth.onIdTokenChanged(async (user) => {
       console.log("[Auth] State changed.", { ...user });
+      setIsLoading(true);
 
-      if (user === null) {
+      try {
+        if (user === null) {
+          setUser(undefined);
+          return;
+        }
+
+        const dadUser = await userToDadUser(user);
+        setUser(dadUser);
+      } catch (error) {
+        console.error("[Auth] Failed to resolve user claims.", error);
         setUser(undefined);
-        return;
+      } finally {
+        setIsLoading(false);
       }
-
-      const dadUser = await userToDadUser(user);
-      setUser(dadUser);
     });
 
     return () => {
@@ -113,11 +123,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
-  const contextValue = useMemo(() => ({user, signIn, signOut}), [user]);
+  const contextValue = useMemo(
+    () => ({ user, isLoading, signIn, signOut }),
+    [isLoading, user],
+  );
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
