@@ -130,6 +130,148 @@ type CollectionDragController = {
   collectionReordering: boolean;
 };
 
+type DragScrollTarget = HTMLElement | Window;
+
+const DRAG_AUTO_SCROLL_EDGE_SIZE = 96;
+const DRAG_AUTO_SCROLL_MAX_SPEED = 14;
+
+function getDragScrollTarget(element: HTMLElement): DragScrollTarget {
+  let candidate = element.parentElement;
+
+  while (candidate) {
+    const { overflowY } = window.getComputedStyle(candidate);
+    const canScroll =
+      ["auto", "scroll", "overlay"].includes(overflowY) &&
+      candidate.scrollHeight > candidate.clientHeight;
+
+    if (canScroll) {
+      return candidate;
+    }
+
+    candidate = candidate.parentElement;
+  }
+
+  return window;
+}
+
+function getDragScrollMetrics(scrollTarget: DragScrollTarget) {
+  if (scrollTarget === window) {
+    const scrollingElement =
+      document.scrollingElement ?? document.documentElement;
+
+    return {
+      bottom: window.innerHeight,
+      maxScrollTop: Math.max(
+        0,
+        scrollingElement.scrollHeight - window.innerHeight,
+      ),
+      scrollTop: window.scrollY,
+      top: 0,
+    };
+  }
+
+  const element = scrollTarget as HTMLElement;
+  const rect = element.getBoundingClientRect();
+
+  return {
+    bottom: rect.bottom,
+    maxScrollTop: Math.max(0, element.scrollHeight - element.clientHeight),
+    scrollTop: element.scrollTop,
+    top: rect.top,
+  };
+}
+
+function getDragAutoScrollVelocity(
+  scrollTarget: DragScrollTarget,
+  pointerY: number,
+): number {
+  const { bottom, maxScrollTop, scrollTop, top } =
+    getDragScrollMetrics(scrollTarget);
+
+  if (maxScrollTop <= 0) {
+    return 0;
+  }
+
+  const topDistance = pointerY - top;
+  if (topDistance < DRAG_AUTO_SCROLL_EDGE_SIZE && scrollTop > 0) {
+    const intensity =
+      (DRAG_AUTO_SCROLL_EDGE_SIZE - Math.max(0, topDistance)) /
+      DRAG_AUTO_SCROLL_EDGE_SIZE;
+
+    return -Math.ceil(intensity * DRAG_AUTO_SCROLL_MAX_SPEED);
+  }
+
+  const bottomDistance = bottom - pointerY;
+  if (bottomDistance < DRAG_AUTO_SCROLL_EDGE_SIZE && scrollTop < maxScrollTop) {
+    const intensity =
+      (DRAG_AUTO_SCROLL_EDGE_SIZE - Math.max(0, bottomDistance)) /
+      DRAG_AUTO_SCROLL_EDGE_SIZE;
+
+    return Math.ceil(intensity * DRAG_AUTO_SCROLL_MAX_SPEED);
+  }
+
+  return 0;
+}
+
+function scrollDragTargetBy(
+  scrollTarget: DragScrollTarget,
+  scrollDelta: number,
+) {
+  if (scrollTarget === window) {
+    window.scrollBy(0, scrollDelta);
+    return;
+  }
+
+  (scrollTarget as HTMLElement).scrollTop += scrollDelta;
+}
+
+function createDragAutoScroller(
+  scrollTarget: DragScrollTarget | undefined,
+  onAutoScroll?: () => void,
+) {
+  let frameId: number | undefined;
+  let isActive = true;
+  let pointerY = 0;
+
+  function schedule() {
+    if (frameId === undefined) {
+      frameId = window.requestAnimationFrame(tick);
+    }
+  }
+
+  function tick() {
+    frameId = undefined;
+
+    if (!isActive || !scrollTarget) {
+      return;
+    }
+
+    const velocity = getDragAutoScrollVelocity(scrollTarget, pointerY);
+    if (velocity === 0) {
+      return;
+    }
+
+    scrollDragTargetBy(scrollTarget, velocity);
+    onAutoScroll?.();
+    schedule();
+  }
+
+  return {
+    stop() {
+      isActive = false;
+
+      if (frameId !== undefined) {
+        window.cancelAnimationFrame(frameId);
+        frameId = undefined;
+      }
+    },
+    update(nextPointerY: number) {
+      pointerY = nextPointerY;
+      schedule();
+    },
+  };
+}
+
 function moveItemIdToIndex(
   itemIds: number[],
   itemId: number,
@@ -551,6 +693,7 @@ const Ledger = ({
   const { db, group, searchTerm, setDb } = useData();
   const { isEditMode, openCollectionCreator } = useEditor();
   const collectionDragStateRef = useRef<CollectionDragState>();
+  const collectionDragScrollTargetRef = useRef<DragScrollTarget>();
   const [collectionDragState, setCollectionDragState] =
     useState<CollectionDragState>();
   const [collectionReordering, setCollectionReordering] = useState(false);
@@ -668,6 +811,7 @@ const Ledger = ({
     };
 
     setCollectionDragError(undefined);
+    collectionDragScrollTargetRef.current = getDragScrollTarget(element);
     collectionDragStateRef.current = nextDragState;
     setCollectionDragState(nextDragState);
   }
@@ -682,6 +826,7 @@ const Ledger = ({
     );
 
     collectionDragStateRef.current = undefined;
+    collectionDragScrollTargetRef.current = undefined;
     setCollectionDragState(undefined);
 
     if (
@@ -745,27 +890,23 @@ const Ledger = ({
     document.body.style.userSelect = "none";
     document.body.style.cursor = "grabbing";
 
-    function onPointerMove(event: PointerEvent) {
+    function updateCollectionDragPosition(pointerX: number, pointerY: number) {
       const currentDragState = collectionDragStateRef.current;
       if (!currentDragState) {
         return;
       }
 
-      event.preventDefault();
-      const hitElement = document.elementFromPoint(
-        event.clientX,
-        event.clientY,
-      );
+      const hitElement = document.elementFromPoint(pointerX, pointerY);
       const collectionElement = hitElement?.closest<HTMLElement>(
         "[data-collection-reorder-item='true']",
       );
-      const listElement = document
-        .elementFromPoint(event.clientX, event.clientY)
-        ?.closest<HTMLElement>("[data-collection-drop-list='true']");
+      const listElement = hitElement?.closest<HTMLElement>(
+        "[data-collection-drop-list='true']",
+      );
       const nextDragState: CollectionDragState = {
         ...currentDragState,
-        pointerX: event.clientX,
-        pointerY: event.clientY,
+        pointerX,
+        pointerY,
       };
       const targetCollectionId = collectionElement
         ? Number(collectionElement.dataset.collectionId)
@@ -777,8 +918,8 @@ const Ledger = ({
       if (collectionElement && targetCollection) {
         const rect = collectionElement.getBoundingClientRect();
         const isHeaderCenterBand =
-          event.clientY > rect.top + rect.height * 0.25 &&
-          event.clientY < rect.bottom - rect.height * 0.25;
+          pointerY > rect.top + rect.height * 0.25 &&
+          pointerY < rect.bottom - rect.height * 0.25;
 
         if (
           isHeaderCenterBand &&
@@ -814,7 +955,7 @@ const Ledger = ({
           nextDragState.targetParentId = normalizedTargetParentId;
           nextDragState.targetIndex = getCollectionInsertIndexFromPointer(
             listElement,
-            event.clientY,
+            pointerY,
           );
           nextDragState.targetSiblingIds =
             getCollectionIdsForDropList(listElement);
@@ -825,18 +966,42 @@ const Ledger = ({
       setCollectionDragState(nextDragState);
     }
 
+    const autoScroller = createDragAutoScroller(
+      collectionDragScrollTargetRef.current,
+      () => {
+        const currentDragState = collectionDragStateRef.current;
+
+        if (currentDragState) {
+          updateCollectionDragPosition(
+            currentDragState.pointerX,
+            currentDragState.pointerY,
+          );
+        }
+      },
+    );
+
+    function onPointerMove(event: PointerEvent) {
+      event.preventDefault();
+      autoScroller.update(event.clientY);
+      updateCollectionDragPosition(event.clientX, event.clientY);
+    }
+
     function onPointerUp(event: PointerEvent) {
       const currentDragState = collectionDragStateRef.current;
       if (!currentDragState) {
+        autoScroller.stop();
         return;
       }
 
       event.preventDefault();
+      autoScroller.stop();
       void commitCollectionReorder(currentDragState);
     }
 
     function onPointerCancel() {
+      autoScroller.stop();
       collectionDragStateRef.current = undefined;
+      collectionDragScrollTargetRef.current = undefined;
       setCollectionDragState(undefined);
     }
 
@@ -847,6 +1012,8 @@ const Ledger = ({
     return () => {
       document.body.style.userSelect = previousUserSelect;
       document.body.style.cursor = previousCursor;
+      autoScroller.stop();
+      collectionDragScrollTargetRef.current = undefined;
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerCancel);
@@ -1024,6 +1191,7 @@ const LedgerInner = ({
   const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
   const itemListRef = useRef<HTMLDivElement>(null);
   const dragStateRef = useRef<ItemDragState>();
+  const itemDragScrollTargetRef = useRef<DragScrollTarget>();
   const suppressItemClickRef = useRef(false);
   const [dragState, setDragState] = useState<ItemDragState>();
   const [isReordering, setIsReordering] = useState(false);
@@ -1205,6 +1373,7 @@ const LedgerInner = ({
 
     setReorderError(undefined);
     suppressItemClickRef.current = true;
+    itemDragScrollTargetRef.current = getDragScrollTarget(itemElement);
     dragStateRef.current = nextDragState;
     setDragState(nextDragState);
   }
@@ -1295,6 +1464,7 @@ const LedgerInner = ({
   async function commitItemReorder(committedDragState: ItemDragState) {
     if (!canReorderCollectionItems || !sourceCollection || isReordering) {
       dragStateRef.current = undefined;
+      itemDragScrollTargetRef.current = undefined;
       setDragState(undefined);
       return;
     }
@@ -1308,6 +1478,7 @@ const LedgerInner = ({
       committedDragState.insertIndex,
     );
     dragStateRef.current = undefined;
+    itemDragScrollTargetRef.current = undefined;
     setDragState(undefined);
 
     if (areItemOrdersEqual(sourceItemIds, nextItemIds)) {
@@ -1355,44 +1526,63 @@ const LedgerInner = ({
     document.body.style.userSelect = "none";
     document.body.style.cursor = "grabbing";
 
-    function onPointerMove(event: PointerEvent) {
+    function updateItemDragPosition(pointerX: number, pointerY: number) {
       const currentDragState = dragStateRef.current;
       if (!currentDragState) {
         return;
       }
 
-      event.preventDefault();
       const insertIndex = itemListRef.current
-        ? getItemInsertIndexFromPointer(
-            itemListRef.current,
-            event.clientX,
-            event.clientY,
-          )
+        ? getItemInsertIndexFromPointer(itemListRef.current, pointerX, pointerY)
         : currentDragState.insertIndex;
 
       const nextDragState = {
         ...currentDragState,
         insertIndex,
-        pointerX: event.clientX,
-        pointerY: event.clientY,
+        pointerX,
+        pointerY,
       };
 
       dragStateRef.current = nextDragState;
       setDragState(nextDragState);
     }
 
+    const autoScroller = createDragAutoScroller(
+      itemDragScrollTargetRef.current,
+      () => {
+        const currentDragState = dragStateRef.current;
+
+        if (currentDragState) {
+          updateItemDragPosition(
+            currentDragState.pointerX,
+            currentDragState.pointerY,
+          );
+        }
+      },
+    );
+
+    function onPointerMove(event: PointerEvent) {
+      event.preventDefault();
+      autoScroller.update(event.clientY);
+      updateItemDragPosition(event.clientX, event.clientY);
+    }
+
     function onPointerUp(event: PointerEvent) {
       const currentDragState = dragStateRef.current;
       if (!currentDragState) {
+        autoScroller.stop();
         return;
       }
 
       event.preventDefault();
+      autoScroller.stop();
       void commitItemReorder(currentDragState);
     }
 
     function onPointerCancel() {
+      autoScroller.stop();
       dragStateRef.current = undefined;
+      itemDragScrollTargetRef.current = undefined;
       setDragState(undefined);
     }
 
@@ -1403,6 +1593,8 @@ const LedgerInner = ({
     return () => {
       document.body.style.userSelect = previousUserSelect;
       document.body.style.cursor = previousCursor;
+      autoScroller.stop();
+      itemDragScrollTargetRef.current = undefined;
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerCancel);
