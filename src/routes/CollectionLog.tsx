@@ -51,11 +51,11 @@ const slugMapInverse: ReadonlyMap<string, MasterGroup> = new Map(
 );
 
 export function slugToGroup(slug: string): MasterGroup {
-  return slugMapInverse.get(slug) ?? MasterGroup.UNIVERSAL;
+  return slugMapInverse.get(slug) ?? MasterGroup.GENERAL;
 }
 
 export function groupToSlug(group: MasterGroup): string {
-  return slugMap.get(group) ?? "universal";
+  return slugMap.get(group) ?? "general";
 }
 
 export function generateUrl(group: MasterGroup): string {
@@ -63,7 +63,7 @@ export function generateUrl(group: MasterGroup): string {
 }
 
 export async function loader({ params }: Params) {
-  const group = slugToGroup(params.collectionId ?? "universal");
+  const group = slugToGroup(params.collectionId ?? "general");
   const db = fetchHybridDadDbRef().then(hydrateDadDb);
 
   return defer({
