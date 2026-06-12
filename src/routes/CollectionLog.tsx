@@ -10,11 +10,11 @@ import styles from "./CollectionLog.module.css";
 import Ledger from "../collection/Ledger";
 import LedgerSkeleton from "../collection/LedgerSkeleton";
 import { toggleValueInArray } from "../common/arrays";
-import { CollectionItem, DadDb } from "../data";
+import { Collection, CollectionItem, DadDb } from "../data";
 import { MasterGroup } from "../common";
 import React, { Suspense, useEffect, useState } from "react";
 import { countAllItemsDabDb } from "../data/aggregate";
-import { selectItemOrDefault } from "../data/reducers";
+import { selectCollectionById, selectItemOrDefault } from "../data/reducers";
 import SidebarMain from "../layout/SidebarMain";
 import { getViewModel, saveViewModel } from "../store/local";
 import { Await, defer, useLoaderData } from "react-router-dom";
@@ -79,12 +79,18 @@ export function CollectionView() {
     db,
     switchDb,
     setDb,
+    setFocusCollectionId,
     setFocusItemId,
+    focusCollectionId,
     focusItemId,
     sidebarVisibility,
   } = useData();
   const [vm, setVm] = useState<ViewModel>(getViewModel());
   const focusItem = selectItemOrDefault(db.collections, focusItemId);
+  const focusCollection = selectCollectionById(
+    db.collections,
+    focusCollectionId,
+  );
 
   switchDb(group);
   saveViewModel(vm);
@@ -103,8 +109,9 @@ export function CollectionView() {
     };
   }, [db, setDb, group, switchDb]);
 
-  function onClickItem(collectionItem: CollectionItem) {
+  function onClickItem(collectionItem: CollectionItem, collection: Collection) {
     setFocusItemId(collectionItem.id);
+    setFocusCollectionId(collection.id);
   }
 
   return (
@@ -122,7 +129,10 @@ export function CollectionView() {
             {focusItemId === -1 ? (
               <ItemSidebarSkeleton />
             ) : (
-              <ItemSidebar collectionItem={focusItem} />
+              <ItemSidebar
+                collectionItem={focusItem}
+                collection={focusCollection}
+              />
             )}
           </div>
         ) : undefined

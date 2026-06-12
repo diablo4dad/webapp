@@ -7,7 +7,9 @@ import React, {
 } from "react";
 import {
   addCatalogCollectionItem,
+  deleteCatalogCollectionItem,
   fetchHybridDadDbRef,
+  updateCatalogCollectionItem,
 } from "../store/catalog";
 import {
   CharacterClass,
@@ -47,6 +49,9 @@ import series from "../image/miniico/series.webp";
 import oor from "../image/miniico/skull.webp";
 import wardrobe from "../image/miniico/wardrobe.webp";
 import placeholder from "../image/placeholder.webp";
+import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
+import Toggle from "../components/Toggle";
+import { flattenDadDb } from "../data/transforms";
 import styles from "./CollectionItemEditor.module.css";
 
 type FormState = {
@@ -157,14 +162,20 @@ function getGeneratedName(items: Item[]): string {
   return items.map((item) => item.name).join(", ");
 }
 
+type EditorInitialState = {
+  form: FormState;
+  selectedItems: Item[];
+};
+
 function buildCollectionItemRef(
   form: FormState,
   selectedItems: Item[],
+  existingId?: number,
 ): CollectionItemRef {
   const name = getGeneratedName(selectedItems);
   const claimDescription = form.claimDescription.trim();
   const collectionItem: CollectionItemRef = {
-    id: hashCollectionItemId(`${name}${claimDescription}`),
+    id: existingId ?? hashCollectionItemId(`${name}${claimDescription}`),
     name,
     claim: form.claim.trim(),
     outOfRotation: form.outOfRotation,
@@ -206,6 +217,54 @@ function buildCollectionItem(
     ...buildCollectionItemRef(form, selectedItems),
     items: selectedItems,
   };
+}
+
+function createInitialState(
+  collectionItem?: CollectionItem,
+): EditorInitialState {
+  if (!collectionItem) {
+    return {
+      form: initialForm,
+      selectedItems: [],
+    };
+  }
+
+  return {
+    form: {
+      claim: collectionItem.claim ?? "",
+      claimDescription: collectionItem.claimDescription ?? "",
+      claimZone:
+        collectionItem.claimZone === undefined
+          ? ""
+          : String(collectionItem.claimZone),
+      claimChest:
+        collectionItem.claimChest === undefined
+          ? ""
+          : String(collectionItem.claimChest),
+      claimMonster: collectionItem.claimMonster ?? "",
+      season:
+        collectionItem.season === undefined
+          ? ""
+          : String(collectionItem.season),
+      outOfRotation: collectionItem.outOfRotation ?? false,
+      premium: collectionItem.premium ?? false,
+      promotional: collectionItem.promotional ?? false,
+      unobtainable: collectionItem.unobtainable ?? false,
+    },
+    selectedItems: collectionItem.items,
+  };
+}
+
+function hasEditorChanges(
+  initialState: EditorInitialState,
+  form: FormState,
+  selectedItems: Item[],
+): boolean {
+  return (
+    JSON.stringify(initialState.form) !== JSON.stringify(form) ||
+    initialState.selectedItems.map((item) => item.id).join(",") !==
+      selectedItems.map((item) => item.id).join(",")
+  );
 }
 
 const itemGroupLabels = new Map<ItemGroup, string>([
@@ -297,23 +356,36 @@ function getPreviewTags(
 
 function CollectionItemEditor() {
   const { db, setDb } = useData();
-  const { activeCollection, closeCollectionItemEditor } = useEditor();
+  const { activeCollectionItemEditor, closeCollectionItemEditor } = useEditor();
   const settings = useSettings();
   const [form, setForm] = useState<FormState>(initialForm);
   const [itemGroup, setItemGroup] = useState<ItemGroup | "">("");
   const [itemSearch, setItemSearch] = useState("");
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+  const [initialState, setInitialState] = useState<EditorInitialState>({
+    form: initialForm,
+    selectedItems: [],
+  });
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [error, setError] = useState<string>();
+  const activeCollection = activeCollectionItemEditor?.collection;
+  const activeCollectionItem = activeCollectionItemEditor?.collectionItem;
+  const isEditingExisting = activeCollectionItemEditor?.mode === "edit";
 
   useEffect(() => {
-    setForm(initialForm);
+    const nextInitialState = createInitialState(activeCollectionItem);
+    setInitialState(nextInitialState);
+    setForm(nextInitialState.form);
     setItemGroup("");
     setItemSearch("");
-    setSelectedItems([]);
+    setSelectedItems(nextInitialState.selectedItems);
     setError(undefined);
     setSaving(false);
-  }, [activeCollection?.id]);
+    setDeleting(false);
+    setDeleteModalOpen(false);
+  }, [activeCollection?.id, activeCollectionItem?.id]);
 
   const itemGroupOptions = useMemo(
     () =>
@@ -333,6 +405,17 @@ function CollectionItemEditor() {
   }, [itemGroup, itemGroupOptions]);
   const zoneOptions = useMemo(() => enumOptions(Zone), []);
   const chestOptions = useMemo(() => enumOptions(Chest), []);
+  const claimOptions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          flattenDadDb(db.collections)
+            .map((collectionItem) => collectionItem.claim)
+            .filter((claim) => claim.trim().length > 0),
+        ),
+      ).sort((a, b) => a.localeCompare(b)),
+    [db.collections],
+  );
   const normalizedSearch = itemSearch.trim().toLowerCase();
   const matchingItems = useMemo(() => {
     const collectionItemFilter = createCollectionItemSettingsFilter(
@@ -366,6 +449,8 @@ function CollectionItemEditor() {
       : undefined;
   const previewTags = getPreviewTags(previewCollectionItem, previewItem);
   const canSave = selectedItems.length > 0 && form.claim.trim().length > 0;
+  const canUndo =
+    isEditingExisting && hasEditorChanges(initialState, form, selectedItems);
 
   const updateTextField =
     (field: TextField) =>
@@ -412,6 +497,17 @@ function CollectionItemEditor() {
     );
   }
 
+  async function refreshDb() {
+    const dadDbRef = await fetchHybridDadDbRef();
+    setDb(hydrateDadDb(dadDbRef));
+  }
+
+  function undoChanges() {
+    setForm(initialState.form);
+    setSelectedItems(initialState.selectedItems);
+    setError(undefined);
+  }
+
   async function saveCollectionItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -423,10 +519,21 @@ function CollectionItemEditor() {
     setError(undefined);
 
     try {
-      const collectionItem = buildCollectionItemRef(form, selectedItems);
-      await addCatalogCollectionItem(activeCollection.id, collectionItem);
-      const dadDbRef = await fetchHybridDadDbRef();
-      setDb(hydrateDadDb(dadDbRef));
+      const collectionItem = buildCollectionItemRef(
+        form,
+        selectedItems,
+        activeCollectionItem?.id,
+      );
+      if (isEditingExisting && activeCollectionItem) {
+        await updateCatalogCollectionItem(
+          activeCollection.id,
+          activeCollectionItem.id,
+          collectionItem,
+        );
+      } else {
+        await addCatalogCollectionItem(activeCollection.id, collectionItem);
+      }
+      await refreshDb();
       closeCollectionItemEditor();
     } catch (saveError) {
       setError(
@@ -436,6 +543,33 @@ function CollectionItemEditor() {
       );
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function deleteCollectionItem() {
+    if (!activeCollection || !activeCollectionItem) {
+      return;
+    }
+
+    setDeleting(true);
+    setError(undefined);
+
+    try {
+      await deleteCatalogCollectionItem(
+        activeCollection.id,
+        activeCollectionItem.id,
+      );
+      await refreshDb();
+      setDeleteModalOpen(false);
+      closeCollectionItemEditor();
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Failed to delete collection item.",
+      );
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -452,7 +586,9 @@ function CollectionItemEditor() {
         <form className={styles.Form} onSubmit={saveCollectionItem}>
           <header className={styles.Header}>
             <div className={styles.HeaderText}>
-              <div className={styles.Kicker}>Add Item</div>
+              <div className={styles.Kicker}>
+                {isEditingExisting ? "Edit Item" : "Add Item"}
+              </div>
               <h2 className={styles.Title}>{activeCollection.name}</h2>
             </div>
             <button
@@ -526,71 +662,76 @@ function CollectionItemEditor() {
               </div>
             </div>
 
-            <section className={styles.Section}>
-              <label className={styles.Label} htmlFor="collection-item-group">
-                Item Group
-              </label>
-              <select
-                id="collection-item-group"
-                className={styles.Input}
-                value={itemGroup}
-                onChange={(event) =>
-                  setItemGroup(event.target.value as ItemGroup | "")
-                }
-              >
-                <option value="">All item groups</option>
-                {itemGroupOptions.map((option: ItemGroupOption) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+            {!isEditingExisting && (
+              <section className={styles.Section}>
+                <label className={styles.Label} htmlFor="collection-item-group">
+                  Item Group
+                </label>
+                <select
+                  id="collection-item-group"
+                  className={styles.Input}
+                  value={itemGroup}
+                  onChange={(event) =>
+                    setItemGroup(event.target.value as ItemGroup | "")
+                  }
+                >
+                  <option value="">All item groups</option>
+                  {itemGroupOptions.map((option: ItemGroupOption) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
 
-              <label className={styles.Label} htmlFor="collection-item-search">
-                Item
-              </label>
-              <input
-                id="collection-item-search"
-                className={styles.Input}
-                value={itemSearch}
-                onChange={(event) => setItemSearch(event.target.value)}
-                placeholder="Search items"
-                autoComplete="off"
-              />
+                <label
+                  className={styles.Label}
+                  htmlFor="collection-item-search"
+                >
+                  Item
+                </label>
+                <input
+                  id="collection-item-search"
+                  className={styles.Input}
+                  value={itemSearch}
+                  onChange={(event) => setItemSearch(event.target.value)}
+                  placeholder="Search items"
+                  autoComplete="off"
+                />
 
-              <div className={styles.Results}>
-                {matchingItems.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className={styles.Result}
-                    onClick={() => selectItem(item)}
-                  >
-                    <span className={styles.ResultName}>
-                      {getItemDisplayName(item)}
-                    </span>
-                    <span className={styles.ResultType}>
-                      {item.itemType.name}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              <div className={styles.SelectedItems}>
-                {selectedItems.map((item) => (
-                  <span key={item.id} className={styles.SelectedItem}>
-                    <span>{getItemDisplayName(item)}</span>
+                <div className={styles.Results}>
+                  {matchingItems.map((item) => (
                     <button
+                      key={item.id}
                       type="button"
-                      onClick={() => removeSelectedItem(item.id)}
-                      aria-label={`Remove ${getItemDisplayName(item)}`}
+                      className={styles.Result}
+                      onClick={() => selectItem(item)}
                     >
-                      <Close />
+                      <span className={styles.ResultName}>
+                        {getItemDisplayName(item)}
+                      </span>
+                      <span className={styles.ResultType}>
+                        {item.itemType.name}
+                      </span>
                     </button>
-                  </span>
-                ))}
-              </div>
-            </section>
+                  ))}
+                </div>
+
+                <div className={styles.SelectedItems}>
+                  {selectedItems.map((item) => (
+                    <span key={item.id} className={styles.SelectedItem}>
+                      <span>{getItemDisplayName(item)}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeSelectedItem(item.id)}
+                        aria-label={`Remove ${getItemDisplayName(item)}`}
+                      >
+                        <Close />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
 
             <section className={styles.Section}>
               <label className={styles.Label} htmlFor="collection-item-claim">
@@ -601,8 +742,14 @@ function CollectionItemEditor() {
                 className={styles.Input}
                 value={form.claim}
                 onChange={updateTextField("claim")}
+                list="collection-item-claim-options"
                 required
               />
+              <datalist id="collection-item-claim-options">
+                {claimOptions.map((claim) => (
+                  <option key={claim} value={claim} />
+                ))}
+              </datalist>
 
               <label
                 className={styles.Label}
@@ -664,90 +811,136 @@ function CollectionItemEditor() {
                 </div>
               </div>
 
-              <label
-                className={styles.Label}
-                htmlFor="collection-item-claim-monster"
-              >
-                Claim Monster
-              </label>
-              <input
-                id="collection-item-claim-monster"
-                className={styles.Input}
-                value={form.claimMonster}
-                onChange={updateTextField("claimMonster")}
-              />
+              <div className={styles.FieldGrid}>
+                <div>
+                  <label
+                    className={styles.Label}
+                    htmlFor="collection-item-claim-monster"
+                  >
+                    Claim Monster
+                  </label>
+                  <input
+                    id="collection-item-claim-monster"
+                    className={styles.Input}
+                    value={form.claimMonster}
+                    onChange={updateTextField("claimMonster")}
+                  />
+                </div>
 
-              <label className={styles.Label} htmlFor="collection-item-season">
-                Season
-              </label>
-              <input
-                id="collection-item-season"
-                className={styles.Input}
-                type="number"
-                min="0"
-                value={form.season}
-                onChange={updateTextField("season")}
-              />
+                <div>
+                  <label
+                    className={styles.Label}
+                    htmlFor="collection-item-season"
+                  >
+                    Season
+                  </label>
+                  <input
+                    id="collection-item-season"
+                    className={styles.Input}
+                    type="number"
+                    min="0"
+                    value={form.season}
+                    onChange={updateTextField("season")}
+                  />
+                </div>
+              </div>
             </section>
 
             <section className={styles.ToggleGrid}>
-              <label className={styles.Toggle}>
-                <input
-                  type="checkbox"
-                  checked={form.outOfRotation}
-                  onChange={updateBooleanField("outOfRotation")}
-                />
-                <span>Out of Rotation</span>
-              </label>
-              <label className={styles.Toggle}>
-                <input
-                  type="checkbox"
-                  checked={form.premium}
-                  onChange={updateBooleanField("premium")}
-                />
-                <span>Premium</span>
-              </label>
-              <label className={styles.Toggle}>
-                <input
-                  type="checkbox"
-                  checked={form.promotional}
-                  onChange={updateBooleanField("promotional")}
-                />
-                <span>Promotional</span>
-              </label>
-              <label className={styles.Toggle}>
-                <input
-                  type="checkbox"
-                  checked={form.unobtainable}
-                  onChange={updateBooleanField("unobtainable")}
-                />
-                <span>Unobtainable</span>
-              </label>
+              <Toggle
+                className={styles.Toggle}
+                name="collection-item-out-of-rotation"
+                label="Out of Rotation"
+                flip={true}
+                checked={form.outOfRotation}
+                onChange={updateBooleanField("outOfRotation")}
+              />
+              <Toggle
+                className={styles.Toggle}
+                name="collection-item-premium"
+                label="Premium"
+                flip={true}
+                checked={form.premium}
+                onChange={updateBooleanField("premium")}
+              />
+              <Toggle
+                className={styles.Toggle}
+                name="collection-item-promotional"
+                label="Promotional"
+                flip={true}
+                checked={form.promotional}
+                onChange={updateBooleanField("promotional")}
+              />
+              <Toggle
+                className={styles.Toggle}
+                name="collection-item-unobtainable"
+                label="Unobtainable"
+                flip={true}
+                checked={form.unobtainable}
+                onChange={updateBooleanField("unobtainable")}
+              />
             </section>
           </div>
 
           <footer className={styles.Actions}>
-            {error && <div className={styles.Error}>{error}</div>}
-            <button
-              type="button"
-              className={styles.SecondaryButton}
-              onClick={closeCollectionItemEditor}
-            >
-              Close
-            </button>
-            <button
-              type="submit"
-              className={styles.SaveButton}
-              disabled={!canSave || saving}
-            >
-              <span className={styles.SaveIcon}>
-                <Plus />
-              </span>
-              <span>{saving ? "Saving" : "Save"}</span>
-            </button>
+            <div className={styles.ActionLeft}>
+              {isEditingExisting && (
+                <button
+                  type="button"
+                  className={styles.DeleteButton}
+                  onClick={() => setDeleteModalOpen(true)}
+                  disabled={saving || deleting}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+            <div className={styles.ActionRight}>
+              {error && <div className={styles.Error}>{error}</div>}
+              {isEditingExisting && (
+                <button
+                  type="button"
+                  className={styles.SecondaryButton}
+                  onClick={undoChanges}
+                  disabled={!canUndo || saving || deleting}
+                >
+                  Undo
+                </button>
+              )}
+              <button
+                type="button"
+                className={styles.SecondaryButton}
+                onClick={closeCollectionItemEditor}
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                className={styles.SaveButton}
+                disabled={!canSave || saving || deleting}
+              >
+                <span className={styles.SaveIcon}>
+                  <Plus />
+                </span>
+                <span>{saving ? "Saving" : "Save"}</span>
+              </button>
+            </div>
           </footer>
         </form>
       </aside>
+      {isDeleteModalOpen && activeCollectionItem && (
+        <DeleteConfirmationModal
+          title="Delete item"
+          description="This will permanently remove this item from the catalogue collection."
+          subject={getPreviewName(
+            activeCollectionItem,
+            activeCollectionItem.items[0],
+          )}
+          isDeleting={deleting}
+          onCancel={() => setDeleteModalOpen(false)}
+          onConfirm={deleteCollectionItem}
+        />
+      )}
     </div>
   );
 }

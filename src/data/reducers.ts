@@ -17,6 +17,25 @@ export function selectItemOrDefault(
   );
 }
 
+export function selectCollectionById(
+  collections: CollectionGroup,
+  selectedCollectionId: number,
+): Collection | undefined {
+  for (const collection of collections) {
+    if (collection.id === selectedCollectionId) {
+      return collection;
+    }
+
+    const subcollection = selectCollectionById(
+      collection.subcollections,
+      selectedCollectionId,
+    );
+    if (subcollection) {
+      return subcollection;
+    }
+  }
+}
+
 export function reduceItemIds(dadCollection: Collection): number[] {
   return getAllCollectionItems(dadCollection)
     .flatMap((dci) => dci.items)

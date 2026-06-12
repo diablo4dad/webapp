@@ -1,277 +1,301 @@
 .Block {
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .Block::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 15rem;
-    height: 15rem;
-    background:
-        radial-gradient(circle at 65% 35%, rgba(168, 178, 191, 0.1), transparent 50%),
-        radial-gradient(circle at 40% 55%, rgba(95, 104, 116, 0.1), transparent 66%),
-        linear-gradient(215deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
-    filter: blur(0.5rem);
-    pointer-events: none;
-    z-index: 0;
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 15rem;
+  height: 15rem;
+  background: radial-gradient(
+      circle at 65% 35%,
+      rgba(168, 178, 191, 0.1),
+      transparent 50%
+    ),
+    radial-gradient(circle at 40% 55%, rgba(95, 104, 116, 0.1), transparent 66%),
+    linear-gradient(215deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+  filter: blur(0.5rem);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.EditButton {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 5;
+  min-height: 2rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid #5b6877;
+  border-radius: 0.25rem;
+  background-color: rgba(35, 39, 46, 0.94);
+  color: #f0ede7;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 1px 2px 5px rgba(8, 10, 13, 0.45);
+  cursor: pointer;
+}
+
+.EditButton:hover {
+  border-color: #8f98a3;
+  color: #ffffff;
 }
 
 .PanelHeading {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .PanelHeadingDesc {
-    width: 100%;
+  width: 100%;
 }
 
 .PanelHeadingImg {
-    padding-left: 1rem;
+  padding-left: 1rem;
 }
 
 .ItemHeader {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    column-gap: 1.5rem;
-    padding: 1rem 2rem 0.75rem;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: 1.5rem;
+  padding: 1rem 2rem 0.75rem;
 }
 
 .ItemHeading {
-    align-self: end;
-    min-width: 0;
+  align-self: end;
+  min-width: 0;
 }
 
 .ItemTitle {
-    padding-top: 0;
-    padding-left: 0;
-    margin-bottom: 0.5rem;
-    color: #f9a620;
-    font-family: "PT Serif", serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-    text-shadow: 1px 1px 3px #111;
+  padding-top: 0;
+  padding-left: 0;
+  margin-bottom: 0.5rem;
+  color: #f9a620;
+  font-family: "PT Serif", serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-shadow: 1px 1px 3px #111;
 }
 
 .ItemType {
-    padding-left: 0;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    color: #8f98a3;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
+  padding-left: 0;
+  padding-bottom: 0;
+  text-transform: uppercase;
+  color: #8f98a3;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
 }
 
-
 .ItemClasses {
-    position: relative;
-    z-index: 0;
-    background-color: #23272e;
-    border-top: 1px solid #303640;
-    border-bottom: 1px solid #303640;
-    padding: 0.5rem 2rem;
-    margin-bottom: 1rem;
+  position: relative;
+  z-index: 0;
+  background-color: #23272e;
+  border-top: 1px solid #303640;
+  border-bottom: 1px solid #303640;
+  padding: 0.5rem 2rem;
+  margin-bottom: 1rem;
 }
 
 .ItemClassIcon {
-    max-width: 2.5rem;
-    height: auto;
+  max-width: 2.5rem;
+  height: auto;
 }
 
 .ItemClass {
-    position: relative;
+  position: relative;
 }
 
 .ItemClass:before {
-    display: none;
-    position: absolute;
-    top: 1rem;
-    left: calc(1.25rem - 0.25rem);
-    width: 0.5rem;
-    height: 0.5rem;
-    background-color: #4b5360;
-    border-radius: 0.5rem;
-    content: '';
+  display: none;
+  position: absolute;
+  top: 1rem;
+  left: calc(1.25rem - 0.25rem);
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #4b5360;
+  border-radius: 0.5rem;
+  content: "";
 }
 
 .ItemClassVariant {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .ItemClassVariant:before {
-    display: block;
+  display: block;
 }
 
 .ItemClassActive:before {
-    background-color: #f9a620;
+  background-color: #f9a620;
 }
 
 .ItemClassIcon:not(:last-child) {
-    padding-right: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 .ItemActions {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    column-gap: 1rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-    color: #d5d8dd;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  column-gap: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #d5d8dd;
 }
 
 .ItemLocations {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .ItemLocation {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    column-gap: 1rem;
-    align-items: center;
-    width: 100%;
-    padding: 1rem 2rem;
-    border-top: 1px solid #303640;
-    border-bottom: 1px solid #303640;
-    background-color: #23272e;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  column-gap: 1rem;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 2rem;
+  border-top: 1px solid #303640;
+  border-bottom: 1px solid #303640;
+  background-color: #23272e;
 }
 
 .ItemLocationIcon {
-    width: 3em;
-    height: auto;
+  width: 3em;
+  height: auto;
 }
 
 .ItemLocationInfo {
-    width: 100%;
+  width: 100%;
 }
 
 .ItemLocationDescription {
-    margin-bottom: 0.5rem;
-    color: #c0c6ce;
+  margin-bottom: 0.5rem;
+  color: #c0c6ce;
 }
 
 .ItemLocationCategory {
-    text-transform: uppercase;
-    color: #8f98a3;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8f98a3;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
 }
 
 .ItemCollectedBtn {
-
 }
 
 .ItemDescription {
-    font-style: italic;
-    font-size: 0.8rem;
-    margin-bottom: 1rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .ItemImage {
-    position: relative;
-    z-index: 1;
-    align-self: end;
-    justify-self: end;
-    margin: 0;
-    max-width: 5rem;
-    height: auto;
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  justify-self: end;
+  margin: 0;
+  max-width: 5rem;
+  height: auto;
 }
 
 .ItemZone {
-    display: flex;
-    align-items: center;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    margin: 1rem 0;
-    gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin: 1rem 0;
+  gap: 0.5rem;
 }
 
 .ItemZoneIcon {
-    max-width: 3rem;
-    height: auto;
+  max-width: 3rem;
+  height: auto;
 }
 
 .ItemZoneInfo {
-    color: #ccc;
+  color: #ccc;
 }
 
 .ItemMeta {
-    padding-left: 2rem;
-    padding-right: 2rem;
-    font-size: 0.875rem;
-    color: #bfc4cb;
-    margin-bottom: 1rem;
-    justify-content: space-between;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  font-size: 0.875rem;
+  color: #bfc4cb;
+  margin-bottom: 1rem;
+  justify-content: space-between;
 }
 
 .ItemMeta > div {
-    margin-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .ItemTags {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .ItemTag {
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
 
-    padding: 0.5rem 1rem;
-    border: 1px solid rgba(143, 152, 163, 0.28);
-    background-color: #303640;
-    border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(143, 152, 163, 0.28);
+  background-color: #303640;
+  border-radius: 2rem;
 
-    font-size: 0.875rem;
-    font-weight: 300;
-    color: #d2d7de;
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: #d2d7de;
 }
 
 .ItemTag:last-child {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
-
 .ItemTag:not(:last-child) {
-    margin-right: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .ItemTagIcon {
-    width: auto;
-    height: 1.5rem;
-    margin-right: 0.5rem;
+  width: auto;
+  height: 1.5rem;
+  margin-right: 0.5rem;
 }
 
 .ItemTag:not(:last-child) {
-    margin-right: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 @media screen and (min-width: 480px) {
-    .ItemImage {
-        max-width: 128px;
-    }
+  .ItemImage {
+    max-width: 128px;
+  }
 }
 
 @media screen and (min-width: 1200px) {
-    /*.Panel {*/
-    /*    display: block;*/
-    /*}*/
+  /*.Panel {*/
+  /*    display: block;*/
+  /*}*/
 }
 
 /* Class Specific Modifiers */
@@ -283,8 +307,8 @@
 .SpiritbornClassIcon,
 .PaladinClassIcon,
 .WarlockClassIcon {
-    opacity: 0.15;
-    transition: opacity 250ms;
+  opacity: 0.15;
+  transition: opacity 250ms;
 }
 
 .Barbarian .BarbarianClassIcon,
@@ -295,11 +319,12 @@
 .Spiritborn .SpiritbornClassIcon,
 .Paladin .PaladinClassIcon,
 .Warlock .WarlockClassIcon {
-    opacity: 1;
+  opacity: 1;
 }
 
 /* All skeleton loading states here */
-.Skeleton { }
+.Skeleton {
+}
 
 .Skeleton .ItemTitle span,
 .Skeleton .ItemType span,
@@ -307,7 +332,7 @@
 .Skeleton .ItemLocationCategory span,
 .Skeleton .ItemAction input,
 .Skeleton .ItemAction label {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .Skeleton .ItemTitle,
@@ -315,7 +340,7 @@
 .Skeleton .ItemClassIcon,
 .Skeleton .ItemLocationDescription,
 .Skeleton .ItemLocationCategory {
-    position: relative;
+  position: relative;
 }
 
 .Skeleton .ItemTitle:after,
@@ -323,15 +348,15 @@
 .Skeleton .ItemClassIcon:after,
 .Skeleton .ItemLocationDescription:after,
 .Skeleton .ItemLocationCategory:after {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    background-repeat: no-repeat;
-    animation: skeleton-loading 0.75s linear infinite alternate;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  animation: skeleton-loading 0.75s linear infinite alternate;
 }
 
 .Skeleton .ItemTitle:after,
@@ -341,48 +366,48 @@
 .Skeleton .ItemClassIcon,
 .Skeleton .ItemImage,
 .Skeleton .ItemAction {
-    animation: skeleton-loading 0.75s linear infinite alternate;
+  animation: skeleton-loading 0.75s linear infinite alternate;
 }
 
 .Skeleton .ItemTitle:after {
-    background-image: linear-gradient(#cccccc 2rem, transparent 0);
-    background-size: 50% 2rem;
-    background-position: 2rem 2rem;
+  background-image: linear-gradient(#cccccc 2rem, transparent 0);
+  background-size: 50% 2rem;
+  background-position: 2rem 2rem;
 }
 
 .Skeleton .ItemType:after {
-    background-image: linear-gradient(#cccccc 1rem, transparent 0);
-    background-size: 25% 1rem;
-    background-position: 2rem 0;
+  background-image: linear-gradient(#cccccc 1rem, transparent 0);
+  background-size: 25% 1rem;
+  background-position: 2rem 0;
 }
 
 .Skeleton .ItemLocationDescription:after {
-    background-image: linear-gradient(#cccccc 1rem, transparent 0);
-    background-size: 50% 1rem;
-    background-position: 0 0;
+  background-image: linear-gradient(#cccccc 1rem, transparent 0);
+  background-size: 50% 1rem;
+  background-position: 0 0;
 }
 
 .Skeleton .ItemLocationCategory:after {
-    background-image: linear-gradient(#cccccc 1rem, transparent 0);
-    background-size: 25% 1rem;
-    background-position: 0 0;
+  background-image: linear-gradient(#cccccc 1rem, transparent 0);
+  background-size: 25% 1rem;
+  background-position: 0 0;
 }
 
 .Skeleton .ItemAction,
 .Skeleton .ItemImage {
-    background-color: #cccccc;
+  background-color: #cccccc;
 }
 
 .Skeleton .ItemTags,
 .Skeleton .ItemMeta {
-    display: none;
+  display: none;
 }
 
 @keyframes skeleton-loading {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0.5;
-    }
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }

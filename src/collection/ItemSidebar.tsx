@@ -13,7 +13,13 @@ import { enumKeys } from "../common/enums";
 import { hashCode } from "../common/hash";
 import Toggle from "../components/Toggle";
 import { DATA_REPO } from "../config";
-import { CharacterClass, CollectionItem, getDefaultItem, Zone } from "../data";
+import {
+  CharacterClass,
+  Collection,
+  CollectionItem,
+  getDefaultItem,
+  Zone,
+} from "../data";
 import {
   getClassIconVariant,
   getClassItemVariant,
@@ -55,6 +61,9 @@ import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isEnabled } from "../settings/predicate";
 import { Option } from "../settings/type";
+import { useEditor } from "../editor/context";
+import { useData } from "../data/context";
+import { MasterGroup } from "../common";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
   return dci.items.some((di) => di.usableByClass?.[clazz] === 1 ?? false);
@@ -62,6 +71,7 @@ function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
 
 type ItemProps = {
   className?: string;
+  collection?: Collection;
   collectionItem: CollectionItem;
 };
 
@@ -96,10 +106,12 @@ const regionIconMap = new Map<Zone, string>([
   [Zone.NAHANTU, nahantu],
 ]);
 
-function ItemSidebar({ collectionItem, className }: ItemProps) {
+function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
   const log = useCollection();
   const dispatcher = useCollectionDispatch();
   const settings = useSettings();
+  const { group } = useData();
+  const { canEditCatalog, isEditMode, openCollectionItemEditor } = useEditor();
 
   // preferences
   const preferredClass = getPreferredClass(settings);
@@ -120,6 +132,12 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
   const hasClassVariation = (characterClass: CharacterClass) =>
     hasItemVariation(collectionItem, characterClass) ||
     hasIconVariants(focusItem);
+  const shouldShowEditButton =
+    canEditCatalog &&
+    isEditMode &&
+    group !== MasterGroup.UNIVERSAL &&
+    collection !== undefined &&
+    collectionItem.id !== -1;
 
   const classNameStr = classNames({
     [styles.Block]: true,
@@ -156,6 +174,15 @@ function ItemSidebar({ collectionItem, className }: ItemProps) {
 
   return (
     <Card className={classNameStr}>
+      {shouldShowEditButton && collection && (
+        <button
+          type="button"
+          className={styles.EditButton}
+          onClick={() => openCollectionItemEditor(collection, collectionItem)}
+        >
+          Edit
+        </button>
+      )}
       <div className={styles.ItemHeader}>
         <div className={styles.ItemHeading}>
           <div className={styles.ItemTitle}>

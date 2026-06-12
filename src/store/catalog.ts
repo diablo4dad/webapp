@@ -46,6 +46,21 @@ async function getCatalogFirestore() {
   return firestore;
 }
 
+async function getCatalogCollectionNodeRef(collectionId: number) {
+  const firestore = await getCatalogFirestore();
+  const versionId = await resolveCatalogVersionId();
+
+  return doc(
+    firestore,
+    CATALOG_COLLECTION,
+    CATALOG_ID,
+    CATALOG_VERSION_COLLECTION,
+    versionId,
+    CATALOG_NODE_COLLECTION,
+    String(collectionId),
+  );
+}
+
 function sortNodes<T extends { order: number; id: number }>(
   a: T,
   b: T,
@@ -188,20 +203,69 @@ export async function addCatalogCollectionItem(
   collectionId: number,
   collectionItem: CollectionItemRef,
 ): Promise<void> {
-  const firestore = await getCatalogFirestore();
-  const versionId = await resolveCatalogVersionId();
-  const collectionRef = doc(
-    firestore,
-    CATALOG_COLLECTION,
-    CATALOG_ID,
-    CATALOG_VERSION_COLLECTION,
-    versionId,
-    CATALOG_NODE_COLLECTION,
-    String(collectionId),
-  );
+  const collectionRef = await getCatalogCollectionNodeRef(collectionId);
 
   await updateDoc(collectionRef, {
     collectionItems: arrayUnion(collectionItem),
+  });
+}
+
+export async function updateCatalogCollectionItem(
+  collectionId: number,
+  originalCollectionItemId: number,
+  collectionItem: CollectionItemRef,
+): Promise<void> {
+  const collectionRef = await getCatalogCollectionNodeRef(collectionId);
+  const snapshot = await getDoc(collectionRef);
+
+  if (!snapshot.exists()) {
+    throw new Error(`[Catalog] Missing collection node ${collectionId}.`);
+  }
+
+  const data = snapshot.data() as CatalogCollectionDoc;
+  const collectionItems = data.collectionItems ?? [];
+  const itemIndex = collectionItems.findIndex(
+    (item) => item.id === originalCollectionItemId,
+  );
+
+  if (itemIndex === -1) {
+    throw new Error(
+      `[Catalog] Collection item ${originalCollectionItemId} was not found in collection ${collectionId}.`,
+    );
+  }
+
+  await updateDoc(collectionRef, {
+    collectionItems: collectionItems.map((item, index) =>
+      index === itemIndex ? collectionItem : item,
+    ),
+  });
+}
+
+export async function deleteCatalogCollectionItem(
+  collectionId: number,
+  collectionItemId: number,
+): Promise<void> {
+  const collectionRef = await getCatalogCollectionNodeRef(collectionId);
+  const snapshot = await getDoc(collectionRef);
+
+  if (!snapshot.exists()) {
+    throw new Error(`[Catalog] Missing collection node ${collectionId}.`);
+  }
+
+  const data = snapshot.data() as CatalogCollectionDoc;
+  const collectionItems = data.collectionItems ?? [];
+  const nextCollectionItems = collectionItems.filter(
+    (item) => item.id !== collectionItemId,
+  );
+
+  if (nextCollectionItems.length === collectionItems.length) {
+    throw new Error(
+      `[Catalog] Collection item ${collectionItemId} was not found in collection ${collectionId}.`,
+    );
+  }
+
+  await updateDoc(collectionRef, {
+    collectionItems: nextCollectionItems,
   });
 }
 

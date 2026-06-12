@@ -36,6 +36,8 @@ const defaultContext: DataContextType = {
   setSearchTerm: () => undefined,
   focusItemId: -1,
   setFocusItemId: () => undefined,
+  focusCollectionId: -1,
+  setFocusCollectionId: () => undefined,
 };
 
 export type DataContextType = {
@@ -51,6 +53,8 @@ export type DataContextType = {
   setSearchTerm: (value: string) => void;
   focusItemId: number;
   setFocusItemId: (itemId: number) => void;
+  focusCollectionId: number;
+  setFocusCollectionId: (collectionId: number) => void;
 };
 
 export const DataContext = createContext<DataContextType>(defaultContext);
@@ -71,6 +75,7 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
   const [focusItemId, setFocusItemId] = useState(-1);
+  const [focusCollectionId, setFocusCollectionId] = useState(-1);
   const filteredDb = useMemo(() => {
     const filteredDb = filterDb(
       db.collections,
@@ -106,6 +111,8 @@ export function DataProvider({ children }: PropsWithChildren) {
       setSearchTerm,
       focusItemId,
       setFocusItemId,
+      focusCollectionId,
+      setFocusCollectionId,
     }),
     [
       db,
@@ -115,6 +122,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       group,
       searchTerm,
       focusItemId,
+      focusCollectionId,
     ],
   );
 

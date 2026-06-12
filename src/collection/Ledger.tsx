@@ -43,7 +43,7 @@ import { MasterGroup } from "../common";
 type Props = {
   collections: Collection[];
   parentCollection?: Collection;
-  onClickItem: (item: CollectionItem) => void;
+  onClickItem: (item: CollectionItem, collection: Collection) => void;
   onToggleItem?: (item: CollectionItem) => void;
   onToggleCollection?: (collection: Collection) => void;
   onCollectionChange: (collectionId: number, isOpen: boolean) => void;
@@ -269,7 +269,7 @@ const LedgerInner = ({
               return (
                 <div
                   className={className}
-                  onClick={() => onClickItem(collectionItem)}
+                  onClick={() => onClickItem(collectionItem, collection)}
                   onDoubleClick={() => toggleItem(collectionItem)(!isCollected)}
                   onTouchStart={onTouchStart(() =>
                     toggleItem(collectionItem)(!isCollected),

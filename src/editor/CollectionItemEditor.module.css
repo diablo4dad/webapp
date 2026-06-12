@@ -41,7 +41,7 @@
 
 .Kicker {
   margin-bottom: 0.25rem;
-  color: #c58f6d;
+  color: var(--secondary-color);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -50,7 +50,7 @@
 
 .Title {
   margin: 0;
-  color: #f0ede7;
+  color: #d0b07c;
   font-family: "PT Serif", serif;
   font-size: 1.35rem;
   line-height: 1.2;
@@ -221,7 +221,7 @@
 
 .Label {
   display: block;
-  color: #cfd5dc;
+  color: #d0b07c;
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -330,28 +330,39 @@
 .Toggle {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
   padding: 0.75rem;
   border: 1px solid #343b46;
   background-color: #252a32;
   color: #d7dce3;
-  cursor: pointer;
 }
 
-.Toggle input {
-  width: 1rem;
-  height: 1rem;
-  accent-color: #a06458;
+.Toggle label {
+  width: 100%;
 }
 
 .Actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 0.75rem;
   padding: 1rem;
   border-top: 1px solid #343b46;
   background-color: #252a32;
+}
+
+.ActionLeft,
+.ActionRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.ActionRight {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
 }
 
 .Error {
@@ -363,6 +374,7 @@
 }
 
 .SecondaryButton,
+.DeleteButton,
 .SaveButton {
   min-height: 2.75rem;
   display: inline-flex;
@@ -381,11 +393,18 @@
   background-color: #303640;
 }
 
-.SaveButton {
-  background: linear-gradient(180deg, #8d433a 0%, #6d342e 100%);
-  border-color: #b16558;
+.DeleteButton {
+  border-color: #8c4a43;
+  background-color: #3a2424;
 }
 
+.SaveButton {
+  background: linear-gradient(180deg, #3e885b 0%, #2f6f49 100%);
+  border-color: #4aa16d;
+}
+
+.SecondaryButton:disabled,
+.DeleteButton:disabled,
 .SaveButton:disabled {
   opacity: 0.55;
   cursor: not-allowed;
