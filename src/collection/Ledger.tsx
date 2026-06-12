@@ -3,7 +3,7 @@ import { Collection, CollectionItem, getDefaultItem, MagicType } from "../data";
 import { getItemDescription } from "../i18n";
 import styles from "./Ledger.module.css";
 import React, { useRef } from "react";
-import { Close, Currency, Tick, TickCircle } from "../components/Icons";
+import { Close, Currency, Pencil, Tick, TickCircle } from "../components/Icons";
 import {
   getAllCollectionItems,
   getClassIconVariant,
@@ -39,6 +39,7 @@ import { getIcon } from "../bucket";
 import { useEditor } from "../editor/context";
 import { Plus } from "../components/Icons";
 import { MasterGroup } from "../common";
+import { useData } from "../data/context";
 
 type Props = {
   collections: Collection[];
@@ -48,6 +49,7 @@ type Props = {
   onToggleCollection?: (collection: Collection) => void;
   onCollectionChange: (collectionId: number, isOpen: boolean) => void;
   openCollections: number[];
+  depth?: number;
 };
 
 type PropsInner = Props & {
@@ -62,37 +64,71 @@ const Ledger = ({
   onToggleCollection,
   onCollectionChange,
   openCollections,
+  depth = 0,
 }: Props) => {
+  const { group, searchTerm } = useData();
+  const { isEditMode, openCollectionCreator } = useEditor();
+  const canAddRootCollection = depth === 0;
+  const canAddSubcollectionToParent =
+    depth === 1 &&
+    parentCollection !== undefined &&
+    parentCollection.collectionItems.length === 0 &&
+    parentCollection.subcollections.length > 0;
+  const canAddCollection =
+    isEditMode &&
+    searchTerm.trim() === "" &&
+    group !== MasterGroup.UNIVERSAL &&
+    (canAddRootCollection || canAddSubcollectionToParent);
+  const addCollectionLabel =
+    depth === 0 ? "Add Collection" : "Add Subcollection";
+  const addCollectionParent = depth === 0 ? undefined : parentCollection;
+
   return (
-    <Accordion
-      transition
-      transitionTimeout={250}
-      allowMultiple
-      onStateChange={(e) => {
-        if (e.current.isResolved) {
-          onCollectionChange(Number(e.key), e.current.isEnter);
-        }
-      }}
-    >
-      {collections.map((collection) => (
-        <LedgerInner
-          key={collection.id}
-          collection={collection}
-          collections={collections}
-          parentCollection={parentCollection}
-          openCollections={openCollections}
-          onCollectionChange={onCollectionChange}
-          onClickItem={onClickItem}
-          onToggleItem={onToggleItem}
-          onToggleCollection={onToggleCollection}
-        />
-      ))}
-    </Accordion>
+    <>
+      <Accordion
+        transition
+        transitionTimeout={250}
+        allowMultiple
+        onStateChange={(e) => {
+          if (e.current.isResolved) {
+            onCollectionChange(Number(e.key), e.current.isEnter);
+          }
+        }}
+      >
+        {collections.map((collection) => (
+          <LedgerInner
+            key={collection.id}
+            collection={collection}
+            collections={collections}
+            depth={depth}
+            parentCollection={parentCollection}
+            openCollections={openCollections}
+            onCollectionChange={onCollectionChange}
+            onClickItem={onClickItem}
+            onToggleItem={onToggleItem}
+            onToggleCollection={onToggleCollection}
+          />
+        ))}
+      </Accordion>
+      {canAddCollection && (
+        <button
+          type="button"
+          className={styles.CollectionAdd}
+          onClick={() => openCollectionCreator(addCollectionParent, group)}
+        >
+          <span className={styles.CollectionAddIcon}>
+            <Plus />
+          </span>
+          <span>{addCollectionLabel}</span>
+        </button>
+      )}
+    </>
   );
 };
 
 const LedgerInner = ({
   collection,
+  depth = 0,
   parentCollection,
   onClickItem,
   onToggleItem,
@@ -103,7 +139,13 @@ const LedgerInner = ({
   const settings = useSettings();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
-  const { isEditMode, openCollectionItemEditor } = useEditor();
+  const { group } = useData();
+  const {
+    isEditMode,
+    openCollectionCreator,
+    openCollectionEditor,
+    openCollectionItemEditor,
+  } = useEditor();
   const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
 
   // preferences
@@ -156,16 +198,27 @@ const LedgerInner = ({
     [styles.LedgerCards]: isLedgerView(settings, LedgerView.CARD),
     [styles.LedgerCardsInverse]: isLedgerInverse(settings),
   });
-  const shouldRenderAddItemCard =
+  const isEditableCatalogCollection =
     isEditMode &&
     collection.id !== 888 &&
     collection.category !== MasterGroup.UNIVERSAL &&
-    (collection.collectionItems.length > 0 ||
-      collection.subcollections.length === 0);
+    parentCollection?.category !== MasterGroup.UNIVERSAL;
+  const hasCollectionItems = collection.collectionItems.length > 0;
+  const hasSubcollections = collection.subcollections.length > 0;
+  const canAddCollectionItems =
+    isEditableCatalogCollection && !hasSubcollections;
+  const canAddSubcollections =
+    isEditableCatalogCollection && depth === 0 && !hasCollectionItems;
+  const shouldRenderAddItemCard = canAddCollectionItems;
+  const shouldRenderAddSubcollectionCard =
+    canAddSubcollections &&
+    !hasSubcollections &&
+    group !== MasterGroup.UNIVERSAL;
+  const canEditCollection = isEditableCatalogCollection;
 
   return (
     <AccordionItem
-      hidden={isCollectionEmpty(collection)}
+      hidden={!isEditMode && isCollectionEmpty(collection)}
       initialEntered={ledgerIsOpen || collection.id === 888}
       itemKey={collection.id}
       className={className}
@@ -190,6 +243,23 @@ const LedgerInner = ({
             <div className={styles.LedgerDescription}>{descriptionLabel}</div>
           </div>
           <span className={styles.LedgerActions}>
+            {canEditCollection && (
+              <Tooltip placement={"left"}>
+                <TooltipTrigger asChild={true}>
+                  <span
+                    className={classNames(btnStyles.Btn, btnStyles.BtnGrey)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openCollectionEditor(collection, parentCollection);
+                    }}
+                    aria-label="Edit collection"
+                  >
+                    <Pencil />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>Edit collection</TooltipContent>
+              </Tooltip>
+            )}
             <Tooltip placement={"left"}>
               <TooltipTrigger asChild={true}>
                 <span
@@ -347,6 +417,22 @@ const LedgerInner = ({
                 </div>
               </button>
             )}
+            {shouldRenderAddSubcollectionCard && (
+              <button
+                type="button"
+                className={classNames(styles.Item, styles.ItemAdd)}
+                onClick={() => openCollectionCreator(collection, group)}
+              >
+                <div className={styles.ItemAddVisual}>
+                  <span className={styles.ItemAddIcon}>
+                    <Plus />
+                  </span>
+                </div>
+                <div className={styles.ItemAddInfo}>
+                  <div className={styles.ItemAddText}>Add Subcollection</div>
+                </div>
+              </button>
+            )}
             <Ledger
               collections={collection.subcollections}
               parentCollection={collection}
@@ -355,6 +441,7 @@ const LedgerInner = ({
               onToggleCollection={onToggleCollection}
               onCollectionChange={onCollectionChange}
               openCollections={openCollections}
+              depth={depth + 1}
             />
           </div>
         );

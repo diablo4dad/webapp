@@ -29,6 +29,7 @@ import logo from "../image/logo@1x.png";
 import placeholder from "../image/placeholder.webp";
 import Shell from "../layout/Shell";
 import ConfigSidebar from "../settings/ConfigSidebar";
+import CollectionEditor from "../editor/CollectionEditor";
 import CollectionItemEditor from "../editor/CollectionItemEditor";
 import { useEditor } from "../editor/context";
 
@@ -217,6 +218,7 @@ function Root(): ReactElement<HTMLDivElement> {
           {(content === ContentType.LEDGER ||
             content === ContentType.CONFIG ||
             content === ContentType.SEARCH) && <Outlet />}
+          <CollectionEditor />
           <CollectionItemEditor />
           {content === ContentType.SEARCH && (
             <div

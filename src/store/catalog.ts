@@ -1,10 +1,13 @@
 import {
   arrayUnion,
   collection,
+  deleteField,
   doc,
   getDoc,
   getDocs,
+  setDoc,
   updateDoc,
+  writeBatch,
 } from "firebase/firestore";
 import { CollectionItemRef, CollectionRef, DadDbRef } from "../data";
 
@@ -41,9 +44,32 @@ type BuiltCollectionRef = CollectionRef & {
   subcollections: CollectionRef[];
 };
 
+export type CatalogCollectionWrite = {
+  category?: string;
+  collectionItems?: CollectionItemRef[];
+  description?: string;
+  id: number;
+  name: string;
+  parentId: number | null;
+};
+
 async function getCatalogFirestore() {
   const { firestore } = await import("../config/firebase");
   return firestore;
+}
+
+function getCatalogCollectionNodeCollectionRef(
+  firestore: Awaited<ReturnType<typeof getCatalogFirestore>>,
+  versionId: string,
+) {
+  return collection(
+    firestore,
+    CATALOG_COLLECTION,
+    CATALOG_ID,
+    CATALOG_VERSION_COLLECTION,
+    versionId,
+    CATALOG_NODE_COLLECTION,
+  );
 }
 
 async function getCatalogCollectionNodeRef(collectionId: number) {
@@ -184,19 +210,116 @@ export async function fetchCatalogCollectionNodes(
   versionId: string,
 ): Promise<CatalogCollectionDoc[]> {
   const firestore = await getCatalogFirestore();
-  const nodeCollectionRef = collection(
+  const nodeCollectionRef = getCatalogCollectionNodeCollectionRef(
     firestore,
-    CATALOG_COLLECTION,
-    CATALOG_ID,
-    CATALOG_VERSION_COLLECTION,
     versionId,
-    CATALOG_NODE_COLLECTION,
   );
   const snapshot = await getDocs(nodeCollectionRef);
 
   return snapshot.docs
     .map((node) => node.data() as CatalogCollectionDoc)
     .sort(sortNodes);
+}
+
+export async function addCatalogCollectionNode(
+  collectionNode: CatalogCollectionWrite,
+): Promise<void> {
+  const firestore = await getCatalogFirestore();
+  const versionId = await resolveCatalogVersionId();
+  const nodes = await fetchCatalogCollectionNodes(versionId);
+  const siblingOrders = nodes
+    .filter((node) => node.parentId === collectionNode.parentId)
+    .map((node) => node.order);
+  const order = siblingOrders.length === 0 ? 1 : Math.max(...siblingOrders) + 1;
+  const collectionRef = doc(
+    firestore,
+    CATALOG_COLLECTION,
+    CATALOG_ID,
+    CATALOG_VERSION_COLLECTION,
+    versionId,
+    CATALOG_NODE_COLLECTION,
+    String(collectionNode.id),
+  );
+  const existingCollection = await getDoc(collectionRef);
+
+  if (existingCollection.exists()) {
+    throw new Error(
+      `[Catalog] Collection node ${collectionNode.id} already exists.`,
+    );
+  }
+
+  const writeData: CatalogCollectionDoc = {
+    collectionItems: collectionNode.collectionItems ?? [],
+    id: collectionNode.id,
+    name: collectionNode.name,
+    order,
+    parentId: collectionNode.parentId,
+    ...(collectionNode.description
+      ? { description: collectionNode.description }
+      : {}),
+    ...(collectionNode.parentId === null && collectionNode.category
+      ? { category: collectionNode.category }
+      : {}),
+  };
+
+  await setDoc(collectionRef, writeData);
+}
+
+export async function updateCatalogCollectionNode(
+  collectionId: number,
+  collectionNode: Pick<CatalogCollectionWrite, "description" | "name">,
+): Promise<void> {
+  const collectionRef = await getCatalogCollectionNodeRef(collectionId);
+  const snapshot = await getDoc(collectionRef);
+
+  if (!snapshot.exists()) {
+    throw new Error(`[Catalog] Missing collection node ${collectionId}.`);
+  }
+
+  await updateDoc(collectionRef, {
+    description: collectionNode.description?.trim()
+      ? collectionNode.description.trim()
+      : deleteField(),
+    name: collectionNode.name,
+  });
+}
+
+export async function deleteCatalogCollectionNode(
+  collectionId: number,
+): Promise<void> {
+  const firestore = await getCatalogFirestore();
+  const versionId = await resolveCatalogVersionId();
+  const nodes = await fetchCatalogCollectionNodes(versionId);
+  const target = nodes.find((node) => node.id === collectionId);
+
+  if (!target) {
+    throw new Error(`[Catalog] Missing collection node ${collectionId}.`);
+  }
+
+  const deleteIds = new Set<number>([collectionId]);
+  if (target.parentId === null) {
+    for (const node of nodes) {
+      if (node.parentId === collectionId) {
+        deleteIds.add(node.id);
+      }
+    }
+  }
+
+  const batch = writeBatch(firestore);
+  for (const deleteId of deleteIds) {
+    const collectionRef = doc(
+      firestore,
+      CATALOG_COLLECTION,
+      CATALOG_ID,
+      CATALOG_VERSION_COLLECTION,
+      versionId,
+      CATALOG_NODE_COLLECTION,
+      String(deleteId),
+    );
+    batch.delete(collectionRef);
+  }
+
+  await batch.commit();
 }
 
 export async function addCatalogCollectionItem(

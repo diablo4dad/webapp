@@ -17,12 +17,31 @@ export type CollectionItemEditorSession = {
   mode: CollectionItemEditorMode;
 };
 
+export type CollectionEditorMode = "add" | "edit";
+
+export type CollectionEditorSession = {
+  category?: string;
+  collection?: Collection;
+  mode: CollectionEditorMode;
+  parentCollection?: Collection;
+};
+
 type EditorContextType = {
   activeCollection?: Collection;
+  activeCollectionEditor?: CollectionEditorSession;
   activeCollectionItemEditor?: CollectionItemEditorSession;
   canEditCatalog: boolean;
+  closeCollectionEditor: () => void;
   closeCollectionItemEditor: () => void;
   isEditMode: boolean;
+  openCollectionCreator: (
+    parentCollection: Collection | undefined,
+    category: string,
+  ) => void;
+  openCollectionEditor: (
+    collection: Collection,
+    parentCollection?: Collection,
+  ) => void;
   openCollectionItemEditor: (
     collection: Collection,
     collectionItem?: CollectionItem,
@@ -33,10 +52,14 @@ type EditorContextType = {
 
 const defaultContext: EditorContextType = {
   activeCollection: undefined,
+  activeCollectionEditor: undefined,
   activeCollectionItemEditor: undefined,
   canEditCatalog: false,
+  closeCollectionEditor: () => undefined,
   closeCollectionItemEditor: () => undefined,
   isEditMode: false,
+  openCollectionCreator: () => undefined,
+  openCollectionEditor: () => undefined,
   openCollectionItemEditor: () => undefined,
   setEditMode: () => undefined,
   toggleEditMode: () => undefined,
@@ -51,6 +74,8 @@ export function useEditor() {
 export function EditorProvider({ children }: PropsWithChildren) {
   const { user } = useAuth();
   const [isEditMode, setEditMode] = useState(false);
+  const [activeCollectionEditor, setActiveCollectionEditor] =
+    useState<CollectionEditorSession>();
   const [activeCollectionItemEditor, setActiveCollectionItemEditor] =
     useState<CollectionItemEditorSession>();
   const canEditCatalog = user?.isEditor === true;
@@ -58,6 +83,7 @@ export function EditorProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     if (!canEditCatalog) {
       setEditMode(false);
+      setActiveCollectionEditor(undefined);
       setActiveCollectionItemEditor(undefined);
     }
   }, [canEditCatalog]);
@@ -65,15 +91,44 @@ export function EditorProvider({ children }: PropsWithChildren) {
   const contextValue = useMemo(
     () => ({
       activeCollection: activeCollectionItemEditor?.collection,
+      activeCollectionEditor,
       activeCollectionItemEditor,
       canEditCatalog,
+      closeCollectionEditor: () => setActiveCollectionEditor(undefined),
       closeCollectionItemEditor: () => setActiveCollectionItemEditor(undefined),
       isEditMode: canEditCatalog && isEditMode,
+      openCollectionCreator: (
+        parentCollection: Collection | undefined,
+        category: string,
+      ) => {
+        if (canEditCatalog && isEditMode) {
+          setActiveCollectionItemEditor(undefined);
+          setActiveCollectionEditor({
+            category,
+            mode: "add",
+            parentCollection,
+          });
+        }
+      },
+      openCollectionEditor: (
+        collection: Collection,
+        parentCollection?: Collection,
+      ) => {
+        if (canEditCatalog && isEditMode) {
+          setActiveCollectionItemEditor(undefined);
+          setActiveCollectionEditor({
+            collection,
+            mode: "edit",
+            parentCollection,
+          });
+        }
+      },
       openCollectionItemEditor: (
         collection: Collection,
         collectionItem?: CollectionItem,
       ) => {
         if (canEditCatalog && isEditMode) {
+          setActiveCollectionEditor(undefined);
           setActiveCollectionItemEditor({
             collection,
             collectionItem,
@@ -84,6 +139,7 @@ export function EditorProvider({ children }: PropsWithChildren) {
       setEditMode: (enabled: boolean) => {
         const nextEnabled = canEditCatalog && enabled;
         if (!nextEnabled) {
+          setActiveCollectionEditor(undefined);
           setActiveCollectionItemEditor(undefined);
         }
         setEditMode(nextEnabled);
@@ -92,12 +148,18 @@ export function EditorProvider({ children }: PropsWithChildren) {
         setEditMode((enabled) => {
           const nextEnabled = !enabled && canEditCatalog;
           if (!nextEnabled) {
+            setActiveCollectionEditor(undefined);
             setActiveCollectionItemEditor(undefined);
           }
           return nextEnabled;
         }),
     }),
-    [activeCollectionItemEditor, canEditCatalog, isEditMode],
+    [
+      activeCollectionEditor,
+      activeCollectionItemEditor,
+      canEditCatalog,
+      isEditMode,
+    ],
   );
 
   return (

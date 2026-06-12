@@ -1,0 +1,39 @@
+.ListHeading {
+  margin: 0;
+  color: #d0b07c;
+  font-family: "PT Serif", serif;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.ReadOnlyList {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #343b46;
+  background-color: #1a1e24;
+}
+
+.ListItem,
+.EmptyListItem {
+  padding: 0.75rem;
+}
+
+.ListItem:not(:last-child),
+.EmptyListItem:not(:last-child) {
+  border-bottom: 1px solid #2b313a;
+}
+
+.ListItemName {
+  margin-bottom: 0.25rem;
+  color: #f0ede7;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.ListItemDescription,
+.EmptyListItem {
+  color: #9faab6;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
