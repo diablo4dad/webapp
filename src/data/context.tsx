@@ -1,7 +1,9 @@
 import {
   createContext,
   PropsWithChildren,
+  useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -12,8 +14,11 @@ import { useSettings } from "../settings/context";
 import { filterDb } from "./filters";
 import {
   DEFAULT_SIDEBAR_VISIBILITY,
+  DUAL_SIDEBAR_MIN_WIDTH,
   MasterGroup,
   SidebarVisibility,
+  constrainSidebarVisibility,
+  getSidebarVisibilityPreference,
 } from "../common";
 import { useDebounceValue } from "usehooks-ts";
 import { useEditor } from "../editor/context";
@@ -23,6 +28,16 @@ const defaultDadDb: DadDb = {
   items: [],
   itemTypes: [],
 };
+
+const dualSidebarMediaQuery = `(min-width: ${DUAL_SIDEBAR_MIN_WIDTH}px)`;
+
+function canShowDualSidebars(): boolean {
+  return (
+    typeof window === "undefined" ||
+    !window.matchMedia ||
+    window.matchMedia(dualSidebarMediaQuery).matches
+  );
+}
 
 const defaultContext: DataContextType = {
   db: defaultDadDb,
@@ -71,8 +86,27 @@ export function DataProvider({ children }: PropsWithChildren) {
 
   const [db, setDb] = useState<DadDb>(defaultDadDb);
   const [group, switchDb] = useState<MasterGroup>(MasterGroup.UNIVERSAL);
-  const [sidebarVisibility, setSidebarVisibility] = useState<SidebarVisibility>(
-    DEFAULT_SIDEBAR_VISIBILITY,
+  const [sidebarVisibility, setRawSidebarVisibility] =
+    useState<SidebarVisibility>(() =>
+      constrainSidebarVisibility(
+        DEFAULT_SIDEBAR_VISIBILITY,
+        canShowDualSidebars(),
+      ),
+    );
+  const setSidebarVisibility = useCallback(
+    (nextSidebarVisibility: SidebarVisibility) => {
+      setRawSidebarVisibility((currentSidebarVisibility) =>
+        constrainSidebarVisibility(
+          nextSidebarVisibility,
+          canShowDualSidebars(),
+          getSidebarVisibilityPreference(
+            currentSidebarVisibility,
+            nextSidebarVisibility,
+          ),
+        ),
+      );
+    },
+    [],
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
@@ -100,6 +134,40 @@ export function DataProvider({ children }: PropsWithChildren) {
     [db, settings, log, group],
   );
 
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return;
+    }
+
+    const mediaQueryList = window.matchMedia(dualSidebarMediaQuery);
+    const enforceCurrentBreakpoint = (canShowBoth: boolean) => {
+      if (!canShowBoth) {
+        setRawSidebarVisibility((currentSidebarVisibility) =>
+          constrainSidebarVisibility(currentSidebarVisibility, false),
+        );
+      }
+    };
+    const onBreakpointChange = (event: MediaQueryListEvent) => {
+      enforceCurrentBreakpoint(event.matches);
+    };
+
+    enforceCurrentBreakpoint(mediaQueryList.matches);
+
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", onBreakpointChange);
+
+      return () => {
+        mediaQueryList.removeEventListener("change", onBreakpointChange);
+      };
+    }
+
+    mediaQueryList.addListener(onBreakpointChange);
+
+    return () => {
+      mediaQueryList.removeListener(onBreakpointChange);
+    };
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       db,
@@ -121,6 +189,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       db,
       filteredDb,
       sidebarVisibility,
+      setSidebarVisibility,
       countedDb,
       group,
       searchTerm,
