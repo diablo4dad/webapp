@@ -63,12 +63,14 @@ import { useData } from "../data/context";
 import { selectCollectionById } from "../data/reducers";
 import {
   fetchHybridDadDbRef,
+  updateCatalogCollectionNodeOrder,
   updateCatalogCollectionItemOrder,
 } from "../store/catalog";
 import { hydrateDadDb } from "../data/factory";
 
 type Props = {
   collections: Collection[];
+  collectionDragController?: CollectionDragController;
   parentCollection?: Collection;
   onClickItem: (item: CollectionItem, collection: Collection) => void;
   onToggleItem?: (item: CollectionItem) => void;
@@ -80,6 +82,8 @@ type Props = {
 
 type PropsInner = Props & {
   collection: Collection;
+  collectionIndex: number;
+  collectionSiblingIds: number[];
 };
 
 type ItemDragState = {
@@ -91,6 +95,39 @@ type ItemDragState = {
   pointerX: number;
   pointerY: number;
   width: number;
+};
+
+type CollectionParentId = number | null;
+
+type CollectionDragState = {
+  category: MasterGroup;
+  collectionId: number;
+  height: number;
+  offsetX: number;
+  offsetY: number;
+  pointerX: number;
+  pointerY: number;
+  sourceParentId: CollectionParentId;
+  sourceSiblingIds: number[];
+  targetIndex: number;
+  targetParentId: CollectionParentId;
+  targetSiblingIds: number[];
+  width: number;
+};
+
+type CollectionDragController = {
+  beginCollectionReorder: (
+    collection: Collection,
+    parentCollection: Collection | undefined,
+    sourceIndex: number,
+    sourceSiblingIds: number[],
+    element: HTMLElement,
+    pointerX: number,
+    pointerY: number,
+  ) => void;
+  collectionDragError?: string;
+  collectionDragState?: CollectionDragState;
+  collectionReordering: boolean;
 };
 
 function moveItemIdToIndex(
@@ -208,6 +245,199 @@ function reorderCollectionItemsInDb(
   };
 }
 
+function removeCollectionFromTree(
+  collections: Collection[],
+  collectionId: number,
+): { collections: Collection[]; removed?: Collection } {
+  let removed: Collection | undefined;
+  const nextCollections: Collection[] = [];
+
+  for (const collection of collections) {
+    if (collection.id === collectionId) {
+      removed = collection;
+      continue;
+    }
+
+    const subcollectionResult = removeCollectionFromTree(
+      collection.subcollections,
+      collectionId,
+    );
+
+    if (subcollectionResult.removed) {
+      removed = subcollectionResult.removed;
+      nextCollections.push({
+        ...collection,
+        subcollections: subcollectionResult.collections,
+      });
+      continue;
+    }
+
+    nextCollections.push(collection);
+  }
+
+  return {
+    collections: nextCollections,
+    removed,
+  };
+}
+
+function reorderCollectionsById(
+  collections: Collection[],
+  orderedCollectionIds: number[],
+): Collection[] {
+  const collectionsById = new Map(
+    collections.map((collection) => [collection.id, collection]),
+  );
+
+  return orderedCollectionIds
+    .map((collectionId) => collectionsById.get(collectionId))
+    .filter((collection): collection is Collection => Boolean(collection));
+}
+
+function replaceCategoryRoots(
+  collections: Collection[],
+  category: MasterGroup,
+  orderedCategoryRoots: Collection[],
+): Collection[] {
+  const orderedRootIds = new Set(
+    orderedCategoryRoots.map((collection) => collection.id),
+  );
+  const nextCollections: Collection[] = [];
+  let didInsertOrderedRoots = false;
+
+  for (const collection of collections) {
+    const isCategoryRoot =
+      collection.category === category || orderedRootIds.has(collection.id);
+
+    if (isCategoryRoot) {
+      if (!didInsertOrderedRoots) {
+        nextCollections.push(...orderedCategoryRoots);
+        didInsertOrderedRoots = true;
+      }
+
+      continue;
+    }
+
+    nextCollections.push(collection);
+  }
+
+  if (!didInsertOrderedRoots) {
+    nextCollections.push(...orderedCategoryRoots);
+  }
+
+  return nextCollections;
+}
+
+function insertCollectionIntoParent(
+  collections: Collection[],
+  parentId: number,
+  movedCollection: Collection,
+  orderedSiblingIds: number[],
+): { collections: Collection[]; didInsert: boolean } {
+  let didInsert = false;
+
+  const nextCollections = collections.map((collection) => {
+    if (collection.id === parentId) {
+      didInsert = true;
+      const siblings = [
+        ...collection.subcollections,
+        {
+          ...movedCollection,
+          category: undefined,
+        },
+      ];
+
+      return {
+        ...collection,
+        subcollections: reorderCollectionsById(siblings, orderedSiblingIds),
+      };
+    }
+
+    const result = insertCollectionIntoParent(
+      collection.subcollections,
+      parentId,
+      movedCollection,
+      orderedSiblingIds,
+    );
+
+    if (!result.didInsert) {
+      return collection;
+    }
+
+    didInsert = true;
+
+    return {
+      ...collection,
+      subcollections: result.collections,
+    };
+  });
+
+  return {
+    collections: nextCollections,
+    didInsert,
+  };
+}
+
+function moveCollectionInDb(
+  dadDb: DadDb,
+  collectionId: number,
+  targetParentId: CollectionParentId,
+  orderedSiblingIds: number[],
+  category: MasterGroup,
+): DadDb {
+  const removeResult = removeCollectionFromTree(
+    dadDb.collections,
+    collectionId,
+  );
+
+  if (!removeResult.removed) {
+    return dadDb;
+  }
+
+  if (targetParentId === null) {
+    const movedRoot: Collection = {
+      ...removeResult.removed,
+      category,
+    };
+    const categoryRoots = removeResult.collections
+      .filter((collection) => collection.category === category)
+      .concat(movedRoot);
+    const orderedCategoryRoots = reorderCollectionsById(
+      categoryRoots,
+      orderedSiblingIds,
+    );
+
+    return {
+      ...dadDb,
+      collections: replaceCategoryRoots(
+        removeResult.collections,
+        category,
+        orderedCategoryRoots,
+      ),
+    };
+  }
+
+  const movedSubcollection: Collection = {
+    ...removeResult.removed,
+    category: undefined,
+  };
+  const insertResult = insertCollectionIntoParent(
+    removeResult.collections,
+    targetParentId,
+    movedSubcollection,
+    orderedSiblingIds,
+  );
+
+  if (!insertResult.didInsert) {
+    return dadDb;
+  }
+
+  return {
+    ...dadDb,
+    collections: insertResult.collections,
+  };
+}
+
 function getItemInsertIndexFromPointer(
   container: HTMLElement,
   pointerX: number,
@@ -260,8 +490,56 @@ function getItemInsertIndexFromPointer(
   );
 }
 
+function getCollectionInsertIndexFromPointer(
+  container: HTMLElement,
+  pointerY: number,
+): number {
+  const items = Array.from(
+    container.querySelectorAll<HTMLElement>(
+      "[data-collection-reorder-item='true']",
+    ),
+  ).filter(
+    (item) => item.closest("[data-collection-drop-list='true']") === container,
+  );
+
+  if (items.length === 0) {
+    return 0;
+  }
+
+  const targetIndex = items.findIndex((item) => {
+    const rect = item.getBoundingClientRect();
+
+    return pointerY < rect.top + rect.height / 2;
+  });
+
+  return targetIndex === -1 ? items.length : targetIndex;
+}
+
+function getCollectionListIds(collections: Collection[]): number[] {
+  return collections.map((collection) => collection.id);
+}
+
+function moveCollectionIdToIndex(
+  collectionIds: number[],
+  collectionId: number,
+  insertIndex: number,
+): number[] {
+  const nextCollectionIds = collectionIds.filter(
+    (candidateId) => candidateId !== collectionId,
+  );
+  const nextInsertIndex = Math.max(
+    0,
+    Math.min(insertIndex, nextCollectionIds.length),
+  );
+
+  nextCollectionIds.splice(nextInsertIndex, 0, collectionId);
+
+  return nextCollectionIds;
+}
+
 const Ledger = ({
   collections,
+  collectionDragController,
   parentCollection,
   onClickItem,
   onToggleItem,
@@ -270,8 +548,18 @@ const Ledger = ({
   openCollections,
   depth = 0,
 }: Props) => {
-  const { group, searchTerm } = useData();
+  const { db, group, searchTerm, setDb } = useData();
   const { isEditMode, openCollectionCreator } = useEditor();
+  const collectionDragStateRef = useRef<CollectionDragState>();
+  const [collectionDragState, setCollectionDragState] =
+    useState<CollectionDragState>();
+  const [collectionReordering, setCollectionReordering] = useState(false);
+  const [collectionDragError, setCollectionDragError] = useState<string>();
+  const isCollectionDragRoot = collectionDragController === undefined;
+  const draggedCollection =
+    collectionDragState && isCollectionDragRoot
+      ? selectCollectionById(db.collections, collectionDragState.collectionId)
+      : undefined;
   const canAddRootCollection = depth === 0;
   const canAddSubcollectionToParent =
     depth === 1 &&
@@ -287,8 +575,327 @@ const Ledger = ({
     depth === 0 ? "Add Collection" : "Add Subcollection";
   const addCollectionParent = depth === 0 ? undefined : parentCollection;
 
+  useEffect(() => {
+    collectionDragStateRef.current = collectionDragState;
+  }, [collectionDragState]);
+
+  function isCollectionDropAllowed(
+    dragState: CollectionDragState,
+    targetParentId: CollectionParentId,
+  ): boolean {
+    if (targetParentId === null) {
+      return true;
+    }
+
+    if (targetParentId === dragState.collectionId) {
+      return false;
+    }
+
+    const draggedCollection = selectCollectionById(
+      db.collections,
+      dragState.collectionId,
+    );
+    const targetParent = selectCollectionById(db.collections, targetParentId);
+
+    if (!draggedCollection || !targetParent) {
+      return false;
+    }
+
+    if (targetParent.category !== group) {
+      return false;
+    }
+
+    if (targetParent.collectionItems.length > 0) {
+      return false;
+    }
+
+    return draggedCollection.subcollections.length === 0;
+  }
+
+  function getCollectionIdsForDropList(listElement: HTMLElement): number[] {
+    return Array.from(
+      listElement.querySelectorAll<HTMLElement>(
+        "[data-collection-reorder-item='true']",
+      ),
+    )
+      .filter(
+        (itemElement) =>
+          itemElement.closest("[data-collection-drop-list='true']") ===
+          listElement,
+      )
+      .map((itemElement) => Number(itemElement.dataset.collectionId))
+      .filter((collectionId) => !Number.isNaN(collectionId));
+  }
+
+  async function refreshDb() {
+    const dadDbRef = await fetchHybridDadDbRef();
+    setDb(hydrateDadDb(dadDbRef));
+  }
+
+  function beginCollectionReorder(
+    collection: Collection,
+    sourceParentCollection: Collection | undefined,
+    sourceIndex: number,
+    sourceSiblingIds: number[],
+    element: HTMLElement,
+    pointerX: number,
+    pointerY: number,
+  ) {
+    if (
+      collectionReordering ||
+      searchTerm.trim() !== "" ||
+      group === MasterGroup.UNIVERSAL
+    ) {
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const sourceParentId = sourceParentCollection?.id ?? null;
+    const nextDragState: CollectionDragState = {
+      category: group,
+      collectionId: collection.id,
+      height: rect.height,
+      offsetX: pointerX - rect.left,
+      offsetY: pointerY - rect.top,
+      pointerX,
+      pointerY,
+      sourceParentId,
+      sourceSiblingIds,
+      targetIndex: sourceIndex,
+      targetParentId: sourceParentId,
+      targetSiblingIds: sourceSiblingIds,
+      width: rect.width,
+    };
+
+    setCollectionDragError(undefined);
+    collectionDragStateRef.current = nextDragState;
+    setCollectionDragState(nextDragState);
+  }
+
+  async function commitCollectionReorder(
+    committedDragState: CollectionDragState,
+  ) {
+    const orderedSiblingIds = moveCollectionIdToIndex(
+      committedDragState.targetSiblingIds,
+      committedDragState.collectionId,
+      committedDragState.targetIndex,
+    );
+
+    collectionDragStateRef.current = undefined;
+    setCollectionDragState(undefined);
+
+    if (
+      committedDragState.sourceParentId === committedDragState.targetParentId &&
+      areItemOrdersEqual(committedDragState.sourceSiblingIds, orderedSiblingIds)
+    ) {
+      return;
+    }
+
+    const previousDb = db;
+    setDb(
+      moveCollectionInDb(
+        previousDb,
+        committedDragState.collectionId,
+        committedDragState.targetParentId,
+        orderedSiblingIds,
+        committedDragState.category,
+      ),
+    );
+    setCollectionReordering(true);
+    setCollectionDragError(undefined);
+
+    try {
+      await updateCatalogCollectionNodeOrder({
+        category: committedDragState.category,
+        collectionId: committedDragState.collectionId,
+        orderedSiblingIds,
+        parentId: committedDragState.targetParentId,
+      });
+    } catch (error) {
+      setDb(previousDb);
+      setCollectionDragError(
+        error instanceof Error
+          ? error.message
+          : "Failed to reorder collections.",
+      );
+      setCollectionReordering(false);
+      return;
+    }
+
+    try {
+      await refreshDb();
+    } catch (error) {
+      setCollectionDragError(
+        error instanceof Error
+          ? `Saved order, but failed to refresh database: ${error.message}`
+          : "Saved order, but failed to refresh database.",
+      );
+    } finally {
+      setCollectionReordering(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!collectionDragState || !isCollectionDragRoot) {
+      return;
+    }
+
+    const previousUserSelect = document.body.style.userSelect;
+    const previousCursor = document.body.style.cursor;
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "grabbing";
+
+    function onPointerMove(event: PointerEvent) {
+      const currentDragState = collectionDragStateRef.current;
+      if (!currentDragState) {
+        return;
+      }
+
+      event.preventDefault();
+      const hitElement = document.elementFromPoint(
+        event.clientX,
+        event.clientY,
+      );
+      const collectionElement = hitElement?.closest<HTMLElement>(
+        "[data-collection-reorder-item='true']",
+      );
+      const listElement = document
+        .elementFromPoint(event.clientX, event.clientY)
+        ?.closest<HTMLElement>("[data-collection-drop-list='true']");
+      const nextDragState: CollectionDragState = {
+        ...currentDragState,
+        pointerX: event.clientX,
+        pointerY: event.clientY,
+      };
+      const targetCollectionId = collectionElement
+        ? Number(collectionElement.dataset.collectionId)
+        : Number.NaN;
+      const targetCollection = Number.isNaN(targetCollectionId)
+        ? undefined
+        : selectCollectionById(db.collections, targetCollectionId);
+
+      if (collectionElement && targetCollection) {
+        const rect = collectionElement.getBoundingClientRect();
+        const isHeaderCenterBand =
+          event.clientY > rect.top + rect.height * 0.25 &&
+          event.clientY < rect.bottom - rect.height * 0.25;
+
+        if (
+          isHeaderCenterBand &&
+          targetCollection.id !== currentDragState.collectionId &&
+          isCollectionDropAllowed(currentDragState, targetCollection.id)
+        ) {
+          nextDragState.targetParentId = targetCollection.id;
+          nextDragState.targetIndex = targetCollection.subcollections.length;
+          nextDragState.targetSiblingIds = getCollectionListIds(
+            targetCollection.subcollections,
+          );
+          collectionDragStateRef.current = nextDragState;
+          setCollectionDragState(nextDragState);
+          return;
+        }
+      }
+
+      if (
+        listElement &&
+        listElement.dataset.collectionCategory === currentDragState.category
+      ) {
+        const targetParentId =
+          listElement.dataset.collectionParentId === "root"
+            ? null
+            : Number(listElement.dataset.collectionParentId);
+        const normalizedTargetParentId = Number.isNaN(targetParentId)
+          ? null
+          : targetParentId;
+
+        if (
+          isCollectionDropAllowed(currentDragState, normalizedTargetParentId)
+        ) {
+          nextDragState.targetParentId = normalizedTargetParentId;
+          nextDragState.targetIndex = getCollectionInsertIndexFromPointer(
+            listElement,
+            event.clientY,
+          );
+          nextDragState.targetSiblingIds =
+            getCollectionIdsForDropList(listElement);
+        }
+      }
+
+      collectionDragStateRef.current = nextDragState;
+      setCollectionDragState(nextDragState);
+    }
+
+    function onPointerUp(event: PointerEvent) {
+      const currentDragState = collectionDragStateRef.current;
+      if (!currentDragState) {
+        return;
+      }
+
+      event.preventDefault();
+      void commitCollectionReorder(currentDragState);
+    }
+
+    function onPointerCancel() {
+      collectionDragStateRef.current = undefined;
+      setCollectionDragState(undefined);
+    }
+
+    window.addEventListener("pointermove", onPointerMove, { passive: false });
+    window.addEventListener("pointerup", onPointerUp, { passive: false });
+    window.addEventListener("pointercancel", onPointerCancel);
+
+    return () => {
+      document.body.style.userSelect = previousUserSelect;
+      document.body.style.cursor = previousCursor;
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerCancel);
+    };
+  }, [collectionDragState?.collectionId, isCollectionDragRoot]);
+
+  const activeCollectionDragController =
+    collectionDragController ??
+    ({
+      beginCollectionReorder,
+      collectionDragError,
+      collectionDragState,
+      collectionReordering,
+    } satisfies CollectionDragController);
+  const collectionParentId = parentCollection?.id ?? null;
+  const collectionIds = useMemo(
+    () => getCollectionListIds(collections),
+    [collections],
+  );
+  const collectionsById = useMemo(
+    () =>
+      new Map(
+        collections.map((collection) => [collection.id, collection] as const),
+      ),
+    [collections],
+  );
+  const renderedCollectionIds =
+    activeCollectionDragController.collectionDragState === undefined
+      ? collectionIds
+      : activeCollectionDragController.collectionDragState.targetParentId ===
+          collectionParentId
+        ? moveCollectionIdToIndex(
+            collectionIds,
+            activeCollectionDragController.collectionDragState.collectionId,
+            activeCollectionDragController.collectionDragState.targetIndex,
+          )
+        : collectionIds.filter(
+            (collectionId) =>
+              collectionId !==
+              activeCollectionDragController.collectionDragState?.collectionId,
+          );
+
   return (
-    <>
+    <div
+      className={styles.CollectionList}
+      data-collection-category={group}
+      data-collection-drop-list="true"
+      data-collection-parent-id={collectionParentId ?? "root"}
+    >
       <Accordion
         transition
         transitionTimeout={250}
@@ -299,20 +906,51 @@ const Ledger = ({
           }
         }}
       >
-        {collections.map((collection) => (
-          <LedgerInner
-            key={collection.id}
-            collection={collection}
-            collections={collections}
-            depth={depth}
-            parentCollection={parentCollection}
-            openCollections={openCollections}
-            onCollectionChange={onCollectionChange}
-            onClickItem={onClickItem}
-            onToggleItem={onToggleItem}
-            onToggleCollection={onToggleCollection}
-          />
-        ))}
+        {renderedCollectionIds.map((collectionId) => {
+          if (
+            activeCollectionDragController.collectionDragState?.collectionId ===
+              collectionId &&
+            activeCollectionDragController.collectionDragState
+              .targetParentId === collectionParentId
+          ) {
+            return (
+              <div
+                key={`collection-placeholder-${collectionId}`}
+                className={styles.CollectionDropPlaceholder}
+                style={
+                  {
+                    "--collection-placeholder-height": `${
+                      activeCollectionDragController.collectionDragState.height
+                    }px`,
+                  } as CSSProperties
+                }
+              />
+            );
+          }
+
+          const collection = collectionsById.get(collectionId);
+          if (!collection) {
+            return null;
+          }
+
+          return (
+            <LedgerInner
+              key={collection.id}
+              collection={collection}
+              collectionDragController={activeCollectionDragController}
+              collectionIndex={collectionIds.indexOf(collection.id)}
+              collectionSiblingIds={collectionIds}
+              collections={collections}
+              depth={depth}
+              parentCollection={parentCollection}
+              openCollections={openCollections}
+              onCollectionChange={onCollectionChange}
+              onClickItem={onClickItem}
+              onToggleItem={onToggleItem}
+              onToggleCollection={onToggleCollection}
+            />
+          );
+        })}
       </Accordion>
       {canAddCollection && (
         <button
@@ -326,12 +964,45 @@ const Ledger = ({
           <span>{addCollectionLabel}</span>
         </button>
       )}
-    </>
+      {isCollectionDragRoot && collectionDragError && (
+        <div className={styles.CollectionReorderError}>
+          {collectionDragError}
+        </div>
+      )}
+      {isCollectionDragRoot && collectionDragState && draggedCollection && (
+        <div
+          className={styles.CollectionDragGhost}
+          style={{
+            height: collectionDragState.height,
+            left: collectionDragState.pointerX - collectionDragState.offsetX,
+            top: collectionDragState.pointerY - collectionDragState.offsetY,
+            width: collectionDragState.width,
+          }}
+        >
+          <span className={styles.CollectionDragHandle}>
+            <GripVertical />
+          </span>
+          <div>
+            <h1 className={styles.LedgerTitle}>
+              <span className={styles.LedgerCollectionName}>
+                {draggedCollection.name}
+              </span>
+            </h1>
+            <div className={styles.LedgerDescription}>
+              {draggedCollection.description}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
 const LedgerInner = ({
   collection,
+  collectionDragController,
+  collectionIndex,
+  collectionSiblingIds,
   depth = 0,
   parentCollection,
   onClickItem,
@@ -429,6 +1100,11 @@ const LedgerInner = ({
     !hasSubcollections &&
     group !== MasterGroup.UNIVERSAL;
   const canEditCollection = isEditableCatalogCollection;
+  const canReorderCollections =
+    canEditCollection &&
+    searchTerm.trim() === "" &&
+    collectionDragController !== undefined &&
+    group !== MasterGroup.UNIVERSAL;
   const canReorderCollectionItems =
     isEditableCatalogCollection &&
     searchTerm.trim() === "" &&
@@ -462,6 +1138,37 @@ const LedgerInner = ({
     dragState && canReorderCollectionItems
       ? collectionItemsById.get(dragState.draggedItemId)
       : undefined;
+
+  function startCollectionReorder(event: ReactPointerEvent<HTMLElement>) {
+    if (
+      !canReorderCollections ||
+      !collectionDragController ||
+      collectionDragController.collectionReordering ||
+      event.button !== 0
+    ) {
+      return;
+    }
+
+    const element = event.currentTarget.closest<HTMLElement>(
+      "[data-collection-reorder-item='true']",
+    );
+
+    if (!element) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    collectionDragController.beginCollectionReorder(
+      collection,
+      parentCollection,
+      collectionIndex,
+      collectionSiblingIds,
+      element,
+      event.clientX,
+      event.clientY,
+    );
+  }
 
   useEffect(() => {
     dragStateRef.current = dragState;
@@ -824,13 +1531,36 @@ const LedgerInner = ({
         className: styles.LedgerHeader,
       }}
       buttonProps={{
-        className: styles.LedgerButton,
+        className: classNames(styles.LedgerButton, {
+          [styles.CollectionReorderSaving]:
+            collectionDragController?.collectionReordering,
+        }),
       }}
       contentProps={{
         className: styles.LedgerContent,
       }}
       header={
-        <>
+        <span
+          className={styles.LedgerHeaderContent}
+          data-collection-id={collection.id}
+          data-collection-reorder-item="true"
+        >
+          {canReorderCollections && (
+            <span
+              className={styles.CollectionDragHandle}
+              aria-label={`Reorder ${collection.name}`}
+              role="button"
+              tabIndex={0}
+              title="Reorder collection"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+              }}
+              onPointerDown={startCollectionReorder}
+            >
+              <GripVertical />
+            </span>
+          )}
           <div>
             <h1 className={styles.LedgerTitle}>
               <span className={styles.LedgerCollectionName}>
@@ -894,7 +1624,7 @@ const LedgerInner = ({
               <TooltipContent>Hold down to toggle</TooltipContent>
             </Tooltip>
           </span>
-        </>
+        </span>
       }
     >
       {({ state }) => {
@@ -1036,6 +1766,7 @@ const LedgerInner = ({
             )}
             <Ledger
               collections={collection.subcollections}
+              collectionDragController={collectionDragController}
               parentCollection={collection}
               onClickItem={onClickItem}
               onToggleItem={onToggleItem}

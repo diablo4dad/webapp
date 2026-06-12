@@ -34,6 +34,90 @@
   cursor: pointer;
 }
 
+.LedgerHeaderContent {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.LedgerHeaderContent > div:first-of-type {
+  flex: 1;
+}
+
+.CollectionList {
+  width: 100%;
+}
+
+.CollectionDragHandle {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 1rem;
+  border: 1px solid #596472;
+  border-radius: 0.375rem;
+  background-color: rgba(22, 25, 31, 0.65);
+  color: #c6ced8;
+  cursor: grab;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.CollectionDragHandle:hover {
+  border-color: #738296;
+  color: #e2e8ef;
+}
+
+.CollectionDragHandle:active {
+  cursor: grabbing;
+}
+
+.CollectionDragHandle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.CollectionDropPlaceholder {
+  min-height: var(--collection-placeholder-height, 5rem);
+  border: 1px dashed #738296;
+  background: rgba(20, 23, 29, 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(104, 114, 126, 0.16),
+    inset 0 0 1.25rem rgba(0, 0, 0, 0.24);
+}
+
+.CollectionDragGhost {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 1rem 2rem;
+  background-color: var(--card-surface);
+  border-top: 1px solid var(--card-border-top);
+  border-bottom: 1px solid var(--card-border-bottom);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.35);
+  opacity: 0.94;
+}
+
+.CollectionDragGhost .CollectionDragHandle {
+  cursor: grabbing;
+}
+
+.CollectionReorderSaving {
+  opacity: 0.6;
+}
+
+.CollectionReorderError {
+  padding: 0.75rem 2rem;
+  background-color: rgba(166, 38, 57, 0.16);
+  border-top: 1px solid rgba(166, 38, 57, 0.35);
+  border-bottom: 1px solid rgba(166, 38, 57, 0.35);
+  color: #f1b4bd;
+  font-size: 0.875rem;
+}
+
 .LedgerTitle {
   display: inline-block;
   margin: 0 0.5rem 0.25rem 0;

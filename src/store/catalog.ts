@@ -53,6 +53,13 @@ export type CatalogCollectionWrite = {
   parentId: number | null;
 };
 
+export type CatalogCollectionNodeMove = {
+  category: string;
+  collectionId: number;
+  orderedSiblingIds: number[];
+  parentId: number | null;
+};
+
 async function getCatalogFirestore() {
   const { firestore } = await import("../config/firebase");
   return firestore;
@@ -170,6 +177,157 @@ export function buildCollectionTree(
   return roots;
 }
 
+function getNodeCategory(
+  nodesById: Map<number, CatalogCollectionDoc>,
+  node: CatalogCollectionDoc,
+): string | undefined {
+  if (node.parentId === null) {
+    return node.category;
+  }
+
+  const parent = nodesById.get(node.parentId);
+
+  return parent?.category;
+}
+
+function assertSameIds(
+  actualIds: number[],
+  expectedIds: number[],
+  label: string,
+) {
+  if (actualIds.length !== expectedIds.length) {
+    throw new Error(
+      `[Catalog] ${label} must contain the same collection nodes.`,
+    );
+  }
+
+  const actualSet = new Set(actualIds);
+  const expectedSet = new Set(expectedIds);
+
+  if (
+    actualSet.size !== actualIds.length ||
+    expectedSet.size !== expectedIds.length ||
+    actualIds.some((id) => !expectedSet.has(id)) ||
+    expectedIds.some((id) => !actualSet.has(id))
+  ) {
+    throw new Error(
+      `[Catalog] ${label} must contain the same collection nodes.`,
+    );
+  }
+}
+
+export function reorderCatalogCollectionNodes(
+  nodes: CatalogCollectionDoc[],
+  move: CatalogCollectionNodeMove,
+): CatalogCollectionDoc[] {
+  const nodesById = new Map<number, CatalogCollectionDoc>(
+    nodes.map((node) => [node.id, node]),
+  );
+  const target = nodesById.get(move.collectionId);
+
+  if (!target) {
+    throw new Error(`[Catalog] Missing collection node ${move.collectionId}.`);
+  }
+
+  const sourceCategory = getNodeCategory(nodesById, target);
+  if (sourceCategory !== move.category) {
+    throw new Error(
+      "[Catalog] Collection nodes cannot move across categories.",
+    );
+  }
+
+  if (move.parentId === move.collectionId) {
+    throw new Error("[Catalog] Collection node cannot be its own parent.");
+  }
+
+  if (move.parentId !== null) {
+    const parent = nodesById.get(move.parentId);
+
+    if (!parent) {
+      throw new Error(
+        `[Catalog] Collection node ${move.collectionId} references missing parent ${move.parentId}.`,
+      );
+    }
+
+    if (parent.parentId !== null) {
+      throw new Error(
+        `[Catalog] Collection node ${move.collectionId} exceeds supported depth of 1.`,
+      );
+    }
+
+    if (getNodeCategory(nodesById, parent) !== move.category) {
+      throw new Error(
+        "[Catalog] Collection nodes cannot move across categories.",
+      );
+    }
+
+    if ((parent.collectionItems ?? []).length > 0) {
+      throw new Error(
+        `[Catalog] Collection node ${move.parentId} contains collection items and cannot receive subcollections.`,
+      );
+    }
+
+    if (nodes.some((node) => node.parentId === move.collectionId)) {
+      throw new Error(
+        `[Catalog] Collection node ${move.collectionId} has subcollections and cannot become a subcollection.`,
+      );
+    }
+  }
+
+  const expectedSiblingIds = nodes
+    .filter((node) => {
+      const nextParentId =
+        node.id === move.collectionId ? move.parentId : node.parentId;
+
+      if (nextParentId !== move.parentId) {
+        return false;
+      }
+
+      if (move.parentId === null) {
+        const nextCategory =
+          node.id === move.collectionId ? move.category : node.category;
+
+        return nextCategory === move.category;
+      }
+
+      return true;
+    })
+    .map((node) => node.id);
+
+  assertSameIds(
+    move.orderedSiblingIds,
+    expectedSiblingIds,
+    "Ordered sibling ids",
+  );
+
+  return nodes.map((node) => {
+    const orderIndex = move.orderedSiblingIds.indexOf(node.id);
+
+    if (node.id !== move.collectionId) {
+      return orderIndex === -1
+        ? node
+        : {
+            ...node,
+            order: orderIndex + 1,
+          };
+    }
+
+    const nextNode: CatalogCollectionDoc = {
+      ...node,
+      order: orderIndex + 1,
+      parentId: move.parentId,
+    };
+
+    if (move.parentId === null) {
+      nextNode.category = move.category;
+    } else {
+      delete nextNode.category;
+    }
+
+    return nextNode;
+  });
+}
+
 export async function fetchCatalogManifest(): Promise<CatalogManifest> {
   const firestore = await getCatalogFirestore();
   const manifestRef = doc(firestore, CATALOG_COLLECTION, CATALOG_ID);
@@ -282,6 +440,66 @@ export async function updateCatalogCollectionNode(
       : deleteField(),
     name: collectionNode.name,
   });
+}
+
+export async function updateCatalogCollectionNodeOrder(
+  move: CatalogCollectionNodeMove,
+): Promise<void> {
+  const firestore = await getCatalogFirestore();
+  const versionId = await resolveCatalogVersionId();
+  const nodes = await fetchCatalogCollectionNodes(versionId);
+  const previousNodesById = new Map<number, CatalogCollectionDoc>(
+    nodes.map((node) => [node.id, node]),
+  );
+  const nextNodes = reorderCatalogCollectionNodes(nodes, move);
+  const batch = writeBatch(firestore);
+  let hasUpdates = false;
+
+  for (const nextNode of nextNodes) {
+    const previousNode = previousNodesById.get(nextNode.id);
+    if (!previousNode) {
+      continue;
+    }
+
+    const updateData: {
+      category?: string | ReturnType<typeof deleteField>;
+      order?: number;
+      parentId?: number | null;
+    } = {};
+    if (previousNode.order !== nextNode.order) {
+      updateData.order = nextNode.order;
+    }
+
+    if (previousNode.parentId !== nextNode.parentId) {
+      updateData.parentId = nextNode.parentId;
+    }
+
+    if (previousNode.category !== nextNode.category) {
+      updateData.category = nextNode.category ?? deleteField();
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      continue;
+    }
+
+    const collectionRef = doc(
+      firestore,
+      CATALOG_COLLECTION,
+      CATALOG_ID,
+      CATALOG_VERSION_COLLECTION,
+      versionId,
+      CATALOG_NODE_COLLECTION,
+      String(nextNode.id),
+    );
+    batch.update(collectionRef, updateData);
+    hasUpdates = true;
+  }
+
+  if (!hasUpdates) {
+    return;
+  }
+
+  await batch.commit();
 }
 
 export async function deleteCatalogCollectionNode(
