@@ -16,6 +16,7 @@ import {
   SidebarVisibility,
 } from "../common";
 import { useDebounceValue } from "usehooks-ts";
+import { useEditor } from "../editor/context";
 
 const defaultDadDb: DadDb = {
   collections: [],
@@ -66,6 +67,7 @@ export function useData() {
 export function DataProvider({ children }: PropsWithChildren) {
   const log = useCollection();
   const settings = useSettings();
+  const { isEditMode } = useEditor();
 
   const [db, setDb] = useState<DadDb>(defaultDadDb);
   const [group, switchDb] = useState<MasterGroup>(MasterGroup.UNIVERSAL);
@@ -84,6 +86,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       group,
       debouncedSearchTerm,
       false,
+      isEditMode,
     );
 
     if (focusItemId === -1) {
@@ -91,7 +94,7 @@ export function DataProvider({ children }: PropsWithChildren) {
     }
 
     return filteredDb;
-  }, [db, settings, log, group, debouncedSearchTerm]);
+  }, [db, settings, log, group, debouncedSearchTerm, isEditMode]);
   const countedDb = useMemo(
     () => filterDb(db.collections, settings, log, group, null, true),
     [db, settings, log, group],

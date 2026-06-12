@@ -26,6 +26,7 @@ function filterCollectionCategory(
 function filterCollectionItems(
   group: CollectionGroup,
   filter: (dci: CollectionItem) => boolean,
+  includeEmptySubcollections: boolean = false,
 ): CollectionGroup {
   function applyFilter(dc: Collection): Collection {
     return {
@@ -33,7 +34,12 @@ function filterCollectionItems(
       collectionItems: dc.collectionItems.filter(filter),
       subcollections: dc.subcollections
         .map(applyFilter)
-        .filter((sc) => sc.collectionItems.length),
+        .filter(
+          (sc) =>
+            includeEmptySubcollections ||
+            sc.collectionItems.length > 0 ||
+            sc.subcollections.length > 0,
+        ),
     };
   }
 
@@ -229,6 +235,7 @@ export function filterDb(
   category: MasterGroup,
   searchTerm: string | null = null,
   isCount: boolean = false,
+  includeEmptySubcollections: boolean = false,
 ): CollectionGroup {
   let db = filterCollectionCategory(
     group,
@@ -237,6 +244,7 @@ export function filterDb(
   db = filterCollectionItems(
     db,
     createCollectionItemSettingsFilter(settings, log, { isCount }),
+    includeEmptySubcollections,
   );
 
   if (searchTerm && !isCount) {

@@ -50,17 +50,17 @@ export function Application() {
   return (
     <SettingsProvider settings={settings}>
       <CollectionProvider collection={collection}>
-        <DataProvider>
-          <AuthProvider>
-            <EditorProvider>
+        <AuthProvider>
+          <EditorProvider>
+            <DataProvider>
               <PersistenceLayer>
                 <SidebarProvider>
                   <RouterProvider router={router} />
                 </SidebarProvider>
               </PersistenceLayer>
-            </EditorProvider>
-          </AuthProvider>
-        </DataProvider>
+            </DataProvider>
+          </EditorProvider>
+        </AuthProvider>
       </CollectionProvider>
     </SettingsProvider>
   );
