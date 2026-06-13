@@ -73,9 +73,6 @@ export type ItemType = Entity & {
 };
 
 type CollectionItemRef = {
-  id: number;
-  name: string; // debug only
-
   claim: string;
   claimDescription?: string;
   claimZone?: Zone;
@@ -92,6 +89,7 @@ type CollectionItemRef = {
 };
 
 export type CollectionItem = Omit<CollectionItemRef, "items"> & {
+  id: number;
   items: Item[];
 };
 
@@ -156,7 +154,6 @@ const DEFAULT_ITEM: Item = {
 
 const DEFAULT_COLLECTION_ITEM: CollectionItem = {
   id: -1,
-  name: "missing",
   claim: "missing",
   items: [],
 };

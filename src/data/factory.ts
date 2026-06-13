@@ -14,15 +14,65 @@ import {
   ItemType,
 } from "./index";
 import { createGlobalCollection } from "./transforms";
+import { hashCodeFromString } from "../common/hash";
+
+type CollectionItemRefWithTransientId = CollectionItemRef & {
+  id: number;
+};
+
+type LegacyCollectionItemRef = CollectionItemRef & {
+  id?: number;
+  name?: string;
+};
 
 function hydrateImage(iconId: number): string {
   return `icons/${iconId}.webp`;
 }
 
+function createTransientCollectionItemId(
+  collectionId: string,
+  itemIndex: number,
+): number {
+  return hashCodeFromString(`${collectionId}:${itemIndex}`);
+}
+
+function withUniqueTransientId(
+  item: LegacyCollectionItemRef,
+  collectionId: string,
+  itemIndex: number,
+  usedIds: Set<number>,
+): CollectionItemRefWithTransientId {
+  let id = createTransientCollectionItemId(collectionId, itemIndex);
+
+  while (usedIds.has(id)) {
+    id += 1;
+  }
+
+  usedIds.add(id);
+
+  const { id: _legacyId, name: _debugName, ...collectionItem } = item;
+
+  return {
+    ...collectionItem,
+    id,
+  };
+}
+
+function assignTransientCollectionItemIds(
+  collectionId: string,
+  collectionItems: LegacyCollectionItemRef[],
+): CollectionItemRefWithTransientId[] {
+  const usedIds = new Set<number>();
+
+  return collectionItems.map((item, itemIndex) =>
+    withUniqueTransientId(item, collectionId, itemIndex, usedIds),
+  );
+}
+
 function hydrateCollectionItem(
   items: Map<number, Item>,
-): (_: CollectionItemRef) => CollectionItem {
-  return (collectionItem: CollectionItemRef) => ({
+): (_: CollectionItemRefWithTransientId) => CollectionItem {
+  return (collectionItem: CollectionItemRefWithTransientId) => ({
     ...collectionItem,
     items: collectionItem.items.map((i) => items.get(i) ?? DEFAULT_ITEM),
   });
@@ -34,9 +84,10 @@ function hydrateCollection(
   return (collection: CollectionRef) => ({
     ...collection,
     id: collection.id,
-    collectionItems: collection.collectionItems.map(
-      hydrateCollectionItem(items),
-    ),
+    collectionItems: assignTransientCollectionItemIds(
+      collection.id,
+      collection.collectionItems,
+    ).map(hydrateCollectionItem(items)),
     subcollections:
       collection.subcollections?.map(hydrateCollection(items)) ?? [],
   });
@@ -94,4 +145,9 @@ function hydrateDadDb(dadDb: DadDbRef): DadDb {
   };
 }
 
-export { hydrateItem, hydrateCollection, hydrateDadDb };
+export {
+  assignTransientCollectionItemIds,
+  hydrateItem,
+  hydrateCollection,
+  hydrateDadDb,
+};

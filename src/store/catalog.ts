@@ -1,5 +1,4 @@
 import {
-  arrayUnion,
   collection,
   deleteField,
   doc,
@@ -15,6 +14,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { CollectionItemRef, CollectionRef, DadDbRef } from "../data";
+import { assignTransientCollectionItemIds } from "../data/factory";
 
 const CATALOG_COLLECTION = "catalogs";
 const CATALOG_ID = "d4";
@@ -693,9 +693,17 @@ export async function addCatalogCollectionItem(
   collectionItem: CollectionItemRef,
 ): Promise<void> {
   const collectionRef = await getCatalogCollectionNodeRef(collectionId);
+  const snapshot = await getDoc(collectionRef);
+
+  if (!snapshot.exists()) {
+    throw new Error(`[Catalog] Missing collection node ${collectionId}.`);
+  }
+
+  const data = snapshot.data() as CatalogCollectionDoc;
+  const collectionItems = data.collectionItems ?? [];
 
   await updateDoc(collectionRef, {
-    collectionItems: arrayUnion(collectionItem),
+    collectionItems: [...collectionItems, collectionItem],
   });
 }
 
@@ -713,7 +721,11 @@ export async function updateCatalogCollectionItem(
 
   const data = snapshot.data() as CatalogCollectionDoc;
   const collectionItems = data.collectionItems ?? [];
-  const itemIndex = collectionItems.findIndex(
+  const collectionItemsWithTransientIds = assignTransientCollectionItemIds(
+    collectionId,
+    collectionItems,
+  );
+  const itemIndex = collectionItemsWithTransientIds.findIndex(
     (item) => item.id === originalCollectionItemId,
   );
 
@@ -743,22 +755,27 @@ export async function deleteCatalogCollectionItem(
 
   const data = snapshot.data() as CatalogCollectionDoc;
   const collectionItems = data.collectionItems ?? [];
-  const nextCollectionItems = collectionItems.filter(
-    (item) => item.id !== collectionItemId,
+  const collectionItemsWithTransientIds = assignTransientCollectionItemIds(
+    collectionId,
+    collectionItems,
+  );
+  const itemIndex = collectionItemsWithTransientIds.findIndex(
+    (item) => item.id === collectionItemId,
   );
 
-  if (nextCollectionItems.length === collectionItems.length) {
+  if (itemIndex === -1) {
     throw new Error(
       `[Catalog] Collection item ${collectionItemId} was not found in collection ${collectionId}.`,
     );
   }
 
   await updateDoc(collectionRef, {
-    collectionItems: nextCollectionItems,
+    collectionItems: collectionItems.filter((_, index) => index !== itemIndex),
   });
 }
 
 export function reorderCatalogCollectionItems(
+  collectionId: string,
   collectionItems: CollectionItemRef[],
   orderedCollectionItemIds: number[],
 ): CollectionItemRef[] {
@@ -768,10 +785,14 @@ export function reorderCatalogCollectionItems(
     );
   }
 
-  const collectionItemsById = collectionItems.reduce(
-    (lookup, collectionItem) => {
+  const collectionItemsWithTransientIds = assignTransientCollectionItemIds(
+    collectionId,
+    collectionItems,
+  );
+  const collectionItemsById = collectionItemsWithTransientIds.reduce(
+    (lookup, collectionItem, itemIndex) => {
       const items = lookup.get(collectionItem.id) ?? [];
-      items.push(collectionItem);
+      items.push(collectionItems[itemIndex]);
       lookup.set(collectionItem.id, items);
 
       return lookup;
@@ -821,6 +842,7 @@ export async function updateCatalogCollectionItemOrder(
   const data = snapshot.data() as CatalogCollectionDoc;
   const collectionItems = data.collectionItems ?? [];
   const nextCollectionItems = reorderCatalogCollectionItems(
+    collectionId,
     collectionItems,
     orderedCollectionItemIds,
   );

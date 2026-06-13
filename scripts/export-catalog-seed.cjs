@@ -141,8 +141,16 @@ function stripSubcollections(collection) {
 
   return {
     ...node,
-    collectionItems: node.collectionItems ?? [],
+    collectionItems: (node.collectionItems ?? []).map(
+      stripCollectionItemDebugFields,
+    ),
   };
+}
+
+function stripCollectionItemDebugFields(collectionItem) {
+  const { id: _id, name: _name, ...item } = collectionItem;
+
+  return item;
 }
 
 function createFirestoreAutoId(usedIds) {

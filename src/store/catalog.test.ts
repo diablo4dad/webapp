@@ -6,6 +6,7 @@ import {
   reorderCatalogCollectionNodes,
   reorderCatalogCollectionItems,
 } from "./catalog";
+import { assignTransientCollectionItemIds } from "../data/factory";
 
 describe("catalog collection node bundle helpers", () => {
   test("builds a stable named query for a catalog version", () => {
@@ -147,41 +148,58 @@ describe("buildCollectionTree", () => {
 });
 
 describe("reorderCatalogCollectionItems", () => {
+  const collectionId = "collection";
   const collectionItems = [
     {
-      id: 1,
       name: "One",
       claim: "World Drop",
       items: [101],
     },
     {
-      id: 2,
       name: "Two",
       claim: "Dungeon",
       items: [102],
     },
     {
-      id: 3,
       name: "Three",
       claim: "Quest",
       items: [103],
     },
   ];
+  const transientIds = assignTransientCollectionItemIds(
+    collectionId,
+    collectionItems,
+  ).map((item) => item.id);
 
   test("reorders collection items by id", () => {
-    const result = reorderCatalogCollectionItems(collectionItems, [3, 1, 2]);
+    const result = reorderCatalogCollectionItems(
+      collectionId,
+      collectionItems,
+      [transientIds[2], transientIds[0], transientIds[1]],
+    );
 
-    expect(result.map((item) => item.id)).toEqual([3, 1, 2]);
+    expect(result).toEqual([
+      collectionItems[2],
+      collectionItems[0],
+      collectionItems[1],
+    ]);
     expect(result[0]).toBe(collectionItems[2]);
   });
 
   test("throws when the reordered ids do not match the current items", () => {
     expect(() =>
-      reorderCatalogCollectionItems(collectionItems, [3, 1]),
+      reorderCatalogCollectionItems(collectionId, collectionItems, [
+        transientIds[2],
+        transientIds[0],
+      ]),
     ).toThrow("must match the existing collection item count");
 
     expect(() =>
-      reorderCatalogCollectionItems(collectionItems, [3, 1, 99]),
+      reorderCatalogCollectionItems(collectionId, collectionItems, [
+        transientIds[2],
+        transientIds[0],
+        99,
+      ]),
     ).toThrow("was not found in the current collection order");
   });
 });
@@ -311,8 +329,6 @@ describe("reorderCatalogCollectionNodes", () => {
         category: "General",
         collectionItems: [
           {
-            id: 100,
-            name: "Item",
             claim: "Quest",
             items: [1000],
           },

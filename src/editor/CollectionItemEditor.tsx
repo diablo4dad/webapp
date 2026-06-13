@@ -121,13 +121,6 @@ const classIconMap = new Map<CharacterClass, string>([
   [CharacterClass.WARLOCK, warlock],
 ]);
 
-function hashCollectionItemId(input: string): number {
-  return input.split("").reduce((hash, char) => {
-    const nextHash = (hash << 5) - hash + char.charCodeAt(0);
-    return nextHash & nextHash;
-  }, 0);
-}
-
 function labelFromEnumKey(key: string): string {
   return key
     .toLowerCase()
@@ -158,10 +151,6 @@ function isPlayerTitle(item: Item): boolean {
   );
 }
 
-function getGeneratedName(items: Item[]): string {
-  return items.map((item) => item.name).join(", ");
-}
-
 type EditorInitialState = {
   form: FormState;
   selectedItems: Item[];
@@ -170,13 +159,9 @@ type EditorInitialState = {
 function buildCollectionItemRef(
   form: FormState,
   selectedItems: Item[],
-  existingId?: number,
 ): CollectionItemRef {
-  const name = getGeneratedName(selectedItems);
   const claimDescription = form.claimDescription.trim();
   const collectionItem: CollectionItemRef = {
-    id: existingId ?? hashCollectionItemId(`${name}${claimDescription}`),
-    name,
     claim: form.claim.trim(),
     outOfRotation: form.outOfRotation,
     premium: form.premium,
@@ -215,6 +200,7 @@ function buildCollectionItem(
 ): CollectionItem {
   return {
     ...buildCollectionItemRef(form, selectedItems),
+    id: -1,
     items: selectedItems,
   };
 }
@@ -538,11 +524,7 @@ function CollectionItemEditor() {
     setError(undefined);
 
     try {
-      const collectionItem = buildCollectionItemRef(
-        form,
-        selectedItems,
-        activeCollectionItem?.id,
-      );
+      const collectionItem = buildCollectionItemRef(form, selectedItems);
       if (isEditingExisting && activeCollectionItem) {
         await updateCatalogCollectionItem(
           activeCollection.id,

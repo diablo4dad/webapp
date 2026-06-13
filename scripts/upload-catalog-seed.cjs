@@ -171,6 +171,10 @@ function validateDocumentEntry(entry, index) {
     );
   }
 
+  if (isCollectionNodeDocument(entry.path)) {
+    validateCollectionItems(entry, index);
+  }
+
   if (
     isCollectionNodeDocument(entry.path) &&
     entry.data.parentId !== null &&
@@ -200,6 +204,38 @@ function validateDocumentEntry(entry, index) {
       `Document ${index} (${entry.path}) has unsupported rootCategory "${entry.data.rootCategory}"`,
     );
   }
+}
+
+function validateCollectionItems(entry, index) {
+  if (!Array.isArray(entry.data.collectionItems)) {
+    throw new Error(
+      `Document ${index} (${entry.path}) is missing a valid collectionItems array`,
+    );
+  }
+
+  entry.data.collectionItems.forEach((collectionItem, itemIndex) => {
+    if (
+      !collectionItem ||
+      typeof collectionItem !== "object" ||
+      Array.isArray(collectionItem)
+    ) {
+      throw new Error(
+        `Document ${index} (${entry.path}) collectionItems[${itemIndex}] is not an object`,
+      );
+    }
+
+    if (collectionItem.id !== undefined) {
+      throw new Error(
+        `Document ${index} (${entry.path}) collectionItems[${itemIndex}] must not include legacy id data`,
+      );
+    }
+
+    if (collectionItem.name !== undefined) {
+      throw new Error(
+        `Document ${index} (${entry.path}) collectionItems[${itemIndex}] must not include debug name data`,
+      );
+    }
+  });
 }
 
 function loadDocuments(documentsPath) {
