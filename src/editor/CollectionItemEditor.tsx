@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import classNames from "classnames";
 import {
   addCatalogCollectionItem,
   deleteCatalogCollectionItem,
@@ -21,6 +22,7 @@ import {
 } from "../data";
 import { Close, Plus } from "../components/Icons";
 import { getIcon } from "../bucket";
+import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
 import { hydrateDadDb } from "../data/factory";
 import { useData } from "../data/context";
 import { useEditor } from "./context";
@@ -32,6 +34,11 @@ import {
   isVesselOfHatredItem,
 } from "../data/predicates";
 import { useSettings } from "../settings/context";
+import {
+  canSelectCollectionItem,
+  isPlayerTitle,
+  selectCollectionItem,
+} from "./collectionItemSelection";
 import i18n from "../i18n";
 import barbarian from "../image/classes/barbarian.webp";
 import druid from "../image/classes/druid.webp";
@@ -142,13 +149,6 @@ function enumOptions(enumValue: Record<string, string | number>): EnumOption[] {
 
 function getItemDisplayName(item: Item): string {
   return item.transmogName ?? item.name;
-}
-
-function isPlayerTitle(item: Item): boolean {
-  return (
-    item.itemType.name === "Player Title" ||
-    item.itemType.name.startsWith("Player Title ")
-  );
 }
 
 type EditorInitialState = {
@@ -284,13 +284,16 @@ function sortItems(a: Item, b: Item): number {
   return getItemDisplayName(a).localeCompare(getItemDisplayName(b));
 }
 
-function usableBy(
-  characterClass: CharacterClass,
-  collectionItem: CollectionItem,
-): boolean {
-  return collectionItem.items.some(
-    (item) => item.usableByClass?.[characterClass] === 1,
-  );
+function itemUsableBy(characterClass: CharacterClass, item: Item): boolean {
+  return item.usableByClass?.[characterClass] === 1;
+}
+
+function getSingleUsableClass(item: Item): CharacterClass | undefined {
+  const usableClasses = enumKeys(CharacterClass)
+    .map((characterClassKey) => CharacterClass[characterClassKey])
+    .filter((characterClass) => itemUsableBy(characterClass, item));
+
+  return usableClasses.length === 1 ? usableClasses[0] : undefined;
 }
 
 function getPreviewName(
@@ -308,33 +311,15 @@ function getPreviewName(
   return getItemDisplayName(focusItem);
 }
 
-function getPreviewType(
-  collectionItem: CollectionItem | undefined,
-  focusItem: Item | undefined,
-): string {
-  if (!collectionItem || !focusItem) {
-    return "Select an item";
-  }
-
-  if (collectionItem.items.length > 1 && isPlayerTitle(focusItem)) {
-    return "Player Title";
-  }
-
-  return focusItem.itemType.name;
-}
-
-function getPreviewTags(
-  collectionItem: CollectionItem | undefined,
-  focusItem: Item | undefined,
-): PreviewTag[] {
-  if (!collectionItem || !focusItem) {
+function getItemPreviewTags(item: Item | undefined): PreviewTag[] {
+  if (!item) {
     return [];
   }
 
   const tags: PreviewTag[] = [];
 
-  if (focusItem.series) {
-    tags.push({ icon: series, label: focusItem.series.replaceAll('"', "") });
+  if (item.series) {
+    tags.push({ icon: series, label: item.series.replaceAll('"', "") });
   }
 
   return tags;
@@ -415,6 +400,7 @@ function CollectionItemEditor() {
         collectionItemFilter(buildCandidateCollectionItem(form, item)),
       )
       .filter((item) => item.name !== "")
+      .filter((item) => canSelectCollectionItem(selectedItems, item))
       .filter((item) => {
         if (normalizedSearch.length === 0) {
           return true;
@@ -426,17 +412,19 @@ function CollectionItemEditor() {
         );
       })
       .sort(sortItems);
-  }, [db.items, form, normalizedSearch, selectedItemTypes, settings]);
+  }, [
+    db.items,
+    form,
+    normalizedSearch,
+    selectedItems,
+    selectedItemTypes,
+    settings,
+  ]);
 
-  const previewItem = selectedItems[0];
-  const previewCollectionItem =
-    selectedItems.length > 0
-      ? buildCollectionItem(form, selectedItems)
-      : undefined;
-  const previewTags = getPreviewTags(previewCollectionItem, previewItem);
   const canSave = selectedItems.length > 0 && form.claim.trim().length > 0;
   const canUndo =
     isEditingExisting && hasEditorChanges(initialState, form, selectedItems);
+  const isCompactPreview = selectedItems.length > 1;
 
   const updateTextField =
     (field: TextField) =>
@@ -460,21 +448,7 @@ function CollectionItemEditor() {
     };
 
   function selectItem(item: Item) {
-    setSelectedItems((current) => {
-      if (!isPlayerTitle(item)) {
-        return [item];
-      }
-
-      if (current.some((selectedItem) => selectedItem.id === item.id)) {
-        return current;
-      }
-
-      if (current.length === 0 || current.every(isPlayerTitle)) {
-        return [...current, item].slice(-2);
-      }
-
-      return [item];
-    });
+    setSelectedItems((current) => selectCollectionItem(current, item));
   }
 
   function removeSelectedItem(itemId: number) {
@@ -603,64 +577,134 @@ function CollectionItemEditor() {
           </header>
 
           <div className={styles.Body}>
-            <div className={styles.Preview}>
-              <div className={styles.PreviewImage}>
-                <img
-                  src={previewItem ? getIcon(previewItem.icon) : placeholder}
-                  alt={previewItem ? getItemDisplayName(previewItem) : ""}
-                />
-              </div>
-              <div className={styles.PreviewMeta}>
-                <div className={styles.PreviewName}>
-                  {getPreviewName(previewCollectionItem, previewItem)}
-                </div>
-                <div className={styles.PreviewTypeRow}>
-                  <span className={styles.PreviewType}>
-                    {getPreviewType(previewCollectionItem, previewItem)}
-                  </span>
-                  {previewTags.length > 0 && (
-                    <span className={styles.PreviewTags}>
-                      {previewTags.map((tag) => (
-                        <span key={tag.label} className={styles.PreviewTag}>
-                          <img src={tag.icon} alt="" />
-                          <span>{tag.label}</span>
-                        </span>
-                      ))}
-                    </span>
-                  )}
-                </div>
-                {previewCollectionItem && (
-                  <div className={styles.PreviewClasses}>
-                    {enumKeys(CharacterClass)
-                      .sort((a, b) => CharacterClass[a] - CharacterClass[b])
-                      .map((characterClassKey) => {
-                        const characterClass =
-                          CharacterClass[characterClassKey];
-                        const isUsable = usableBy(
-                          characterClass,
-                          previewCollectionItem,
-                        );
-
-                        return (
-                          <span
-                            key={characterClass}
-                            className={
-                              isUsable
-                                ? styles.PreviewClassActive
-                                : styles.PreviewClass
-                            }
-                            title={i18n.characterClass[characterClass] ?? ""}
-                          >
-                            <img
-                              src={classIconMap.get(characterClass) ?? ""}
-                              alt={i18n.characterClass[characterClass] ?? ""}
-                            />
-                          </span>
-                        );
-                      })}
+            <div
+              className={classNames(styles.PreviewList, {
+                [styles.PreviewListCompact]: isCompactPreview,
+              })}
+            >
+              {selectedItems.length === 0 ? (
+                <div className={styles.Preview}>
+                  <div className={styles.PreviewImage}>
+                    <FallbackLazyImage
+                      wrapperClassName={styles.PreviewImageWrapper}
+                      className={styles.PreviewImageAsset}
+                      src={placeholder}
+                      placeholderSrc={placeholder}
+                      alt=""
+                    />
                   </div>
-                )}
-              </div>
+                  <div className={styles.PreviewMeta}>
+                    <div className={styles.PreviewName}>No item selected</div>
+                    <div className={styles.PreviewTypeRow}>
+                      <span className={styles.PreviewType}>Select an item</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                selectedItems.map((item) => {
+                  const previewTags = getItemPreviewTags(item);
+                  const compactCharacterClass = isCompactPreview
+                    ? getSingleUsableClass(item)
+                    : undefined;
+
+                  return (
+                    <div
+                      key={item.id}
+                      className={classNames(styles.Preview, {
+                        [styles.PreviewCompact]: isCompactPreview,
+                      })}
+                    >
+                      <div className={styles.PreviewImage}>
+                        <FallbackLazyImage
+                          wrapperClassName={styles.PreviewImageWrapper}
+                          className={styles.PreviewImageAsset}
+                          placeholderSrc={placeholder}
+                          src={getIcon(item.icon)}
+                          alt={getItemDisplayName(item)}
+                        />
+                      </div>
+                      <div className={styles.PreviewMeta}>
+                        <div className={styles.PreviewName}>
+                          {getItemDisplayName(item)}
+                        </div>
+                        <div className={styles.PreviewTypeRow}>
+                          <span className={styles.PreviewType}>
+                            {item.itemType.name}
+                          </span>
+                          {previewTags.length > 0 && (
+                            <span className={styles.PreviewTags}>
+                              {previewTags.map((tag) => (
+                                <span
+                                  key={tag.label}
+                                  className={styles.PreviewTag}
+                                >
+                                  <img src={tag.icon} alt="" />
+                                  <span>{tag.label}</span>
+                                </span>
+                              ))}
+                            </span>
+                          )}
+                        </div>
+                        {!isCompactPreview && (
+                          <div className={styles.PreviewClasses}>
+                            {enumKeys(CharacterClass)
+                              .sort(
+                                (a, b) => CharacterClass[a] - CharacterClass[b],
+                              )
+                              .map((characterClassKey) => {
+                                const characterClass =
+                                  CharacterClass[characterClassKey];
+                                const isUsable = itemUsableBy(
+                                  characterClass,
+                                  item,
+                                );
+
+                                return (
+                                  <span
+                                    key={characterClass}
+                                    className={
+                                      isUsable
+                                        ? styles.PreviewClassActive
+                                        : styles.PreviewClass
+                                    }
+                                    title={
+                                      i18n.characterClass[characterClass] ?? ""
+                                    }
+                                  >
+                                    <img
+                                      src={
+                                        classIconMap.get(characterClass) ?? ""
+                                      }
+                                      alt={
+                                        i18n.characterClass[characterClass] ??
+                                        ""
+                                      }
+                                    />
+                                  </span>
+                                );
+                              })}
+                          </div>
+                        )}
+                      </div>
+                      {compactCharacterClass !== undefined && (
+                        <span
+                          className={styles.PreviewCompactClassIcon}
+                          title={
+                            i18n.characterClass[compactCharacterClass] ?? ""
+                          }
+                        >
+                          <img
+                            src={classIconMap.get(compactCharacterClass) ?? ""}
+                            alt={
+                              i18n.characterClass[compactCharacterClass] ?? ""
+                            }
+                          />
+                        </span>
+                      )}
+                    </div>
+                  );
+                })
+              )}
             </div>
 
             {!isEditingExisting && (
