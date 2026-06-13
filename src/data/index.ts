@@ -96,12 +96,13 @@ export type CollectionItem = Omit<CollectionItemRef, "items"> & {
 };
 
 type CollectionRef = {
-  id: number;
+  id: string;
   name: string;
   season?: number;
   outOfRotation?: boolean;
   description?: string;
   category?: string;
+  rootCategory?: string;
   premium?: boolean;
   promotional?: boolean;
   claim?: string;
@@ -161,7 +162,7 @@ const DEFAULT_COLLECTION_ITEM: CollectionItem = {
 };
 
 const DEFAULT_COLLECTION: Collection = {
-  id: -1,
+  id: "-1",
   name: "missing",
   collectionItems: [],
   subcollections: [],

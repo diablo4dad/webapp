@@ -11,7 +11,7 @@ type ViewState = {
 };
 
 type Selection = {
-  collectionId: number;
+  collectionId: string;
   itemId: number;
 };
 

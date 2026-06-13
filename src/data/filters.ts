@@ -159,7 +159,7 @@ function search(db: CollectionGroup, term: string): CollectionGroup {
 
   return [
     {
-      id: 888,
+      id: "888",
       name: "Search Results",
       description: `Transmogs that match term "${term}"...`,
       collectionItems: result.map((r) => r.item),

@@ -9,9 +9,18 @@ const CATALOG_VERSION_COLLECTION = "versions";
 const CATALOG_NODE_COLLECTION = "collectionNodes";
 const DEFAULT_CATALOG_VERSION_ID = "v1";
 const CACHE_CONTROL = "public, max-age=300, s-maxage=300";
+const CATALOG_CATEGORIES = new Set([
+  "General",
+  "Shop",
+  "Promotional",
+  "Season",
+  "Challenge",
+]);
 
-function getCatalogCollectionNodesBundleName(versionId) {
-  return `catalog-${CATALOG_ID}-${versionId}-${CATALOG_NODE_COLLECTION}`;
+function getCatalogCollectionNodesBundleName(versionId, category) {
+  return category
+    ? `catalog-${CATALOG_ID}-${versionId}-${category}-${CATALOG_NODE_COLLECTION}`
+    : `catalog-${CATALOG_ID}-${versionId}-${CATALOG_NODE_COLLECTION}`;
 }
 
 function getRequestedVersionId(request) {
@@ -30,6 +39,22 @@ function getRequestedVersionId(request) {
   return versionId;
 }
 
+function getRequestedCategory(request) {
+  const category = Array.isArray(request.query.category)
+    ? request.query.category[0]
+    : request.query.category;
+
+  if (category === undefined || category === "") {
+    return undefined;
+  }
+
+  if (typeof category !== "string" || !CATALOG_CATEGORIES.has(category)) {
+    throw new Error("Invalid catalog category.");
+  }
+
+  return category;
+}
+
 exports.catalogCollectionNodesBundle = functions.https.onRequest(
   async (request, response) => {
     if (request.method !== "GET" && request.method !== "HEAD") {
@@ -38,10 +63,12 @@ exports.catalogCollectionNodesBundle = functions.https.onRequest(
       return;
     }
 
+    let category;
     let versionId;
 
     try {
       versionId = getRequestedVersionId(request);
+      category = getRequestedCategory(request);
     } catch (error) {
       response.status(400).send(error.message);
       return;
@@ -51,11 +78,18 @@ exports.catalogCollectionNodesBundle = functions.https.onRequest(
 
     try {
       const firestore = admin.firestore();
-      const query = firestore.collection(
+      let query = firestore.collection(
         `${CATALOG_COLLECTION}/${CATALOG_ID}/${CATALOG_VERSION_COLLECTION}/${versionId}/${CATALOG_NODE_COLLECTION}`,
       );
+      if (category) {
+        query = query.where("rootCategory", "==", category);
+      }
+
       const snapshot = await query.get();
-      const bundleName = getCatalogCollectionNodesBundleName(versionId);
+      const bundleName = getCatalogCollectionNodesBundleName(
+        versionId,
+        category,
+      );
       bundleBuffer = firestore
         .bundle(`${bundleName}-bundle`)
         .add(bundleName, snapshot)
@@ -64,6 +98,7 @@ exports.catalogCollectionNodesBundle = functions.https.onRequest(
       functions.logger.error(
         "Failed to build catalog collection node bundle.",
         {
+          category,
           error,
           versionId,
         },

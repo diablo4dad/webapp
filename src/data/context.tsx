@@ -12,11 +12,13 @@ import { CollectionGroup, DadDb } from "./index";
 import { useCollection } from "../collection/context";
 import { useSettings } from "../settings/context";
 import { filterDb } from "./filters";
+import { createGlobalCollection } from "./transforms";
 import {
   DEFAULT_SIDEBAR_VISIBILITY,
   DUAL_SIDEBAR_MIN_WIDTH,
   MasterGroup,
   SidebarVisibility,
+  catalogGroups,
   constrainSidebarVisibility,
   getSidebarVisibilityPreference,
 } from "../common";
@@ -31,6 +33,16 @@ const defaultDadDb: DadDb = {
 
 const dualSidebarMediaQuery = `(min-width: ${DUAL_SIDEBAR_MIN_WIDTH}px)`;
 
+export type CatalogGroupSource = "bundle" | "firestore";
+type CatalogCollectionsByGroup = Partial<Record<MasterGroup, CollectionGroup>>;
+type CatalogGroupSources = Partial<Record<MasterGroup, CatalogGroupSource>>;
+
+type CatalogDataState = {
+  db: DadDb;
+  collectionsByGroup: CatalogCollectionsByGroup;
+  groupSources: CatalogGroupSources;
+};
+
 function canShowDualSidebars(): boolean {
   return (
     typeof window === "undefined" ||
@@ -39,10 +51,61 @@ function canShowDualSidebars(): boolean {
   );
 }
 
+function isCatalogGroup(value?: string): value is MasterGroup {
+  return catalogGroups.some((category) => category === value);
+}
+
+function getCatalogCollectionsByGroup(
+  collections: CollectionGroup,
+): CatalogCollectionsByGroup {
+  return collections.reduce<CatalogCollectionsByGroup>(
+    (collectionsByGroup, collection) => {
+      if (!isCatalogGroup(collection.category)) {
+        return collectionsByGroup;
+      }
+
+      return {
+        ...collectionsByGroup,
+        [collection.category]: [
+          ...(collectionsByGroup[collection.category] ?? []),
+          collection,
+        ],
+      };
+    },
+    {},
+  );
+}
+
+function mergeCatalogCollections(
+  collectionsByGroup: CatalogCollectionsByGroup,
+): CollectionGroup {
+  return catalogGroups.flatMap(
+    (category) => collectionsByGroup[category] ?? [],
+  );
+}
+
+function rebuildDadDbFromCatalogCache(
+  dadDb: DadDb,
+  collectionsByGroup: CatalogCollectionsByGroup,
+): DadDb {
+  const collections = mergeCatalogCollections(collectionsByGroup);
+
+  return {
+    ...dadDb,
+    collections: [
+      ...collections,
+      ...createGlobalCollection(dadDb.itemTypes, collections),
+    ],
+  };
+}
+
 const defaultContext: DataContextType = {
+  catalogGroupSources: {},
   db: defaultDadDb,
   group: MasterGroup.UNIVERSAL,
+  loadedCatalogGroups: [],
   sidebarVisibility: DEFAULT_SIDEBAR_VISIBILITY,
+  setCatalogCategoryDb: () => undefined,
   setSidebarVisibility: () => undefined,
   setDb: () => undefined,
   switchDb: () => undefined,
@@ -52,14 +115,21 @@ const defaultContext: DataContextType = {
   setSearchTerm: () => undefined,
   focusItemId: -1,
   setFocusItemId: () => undefined,
-  focusCollectionId: -1,
+  focusCollectionId: undefined,
   setFocusCollectionId: () => undefined,
 };
 
 export type DataContextType = {
+  catalogGroupSources: CatalogGroupSources;
   db: DadDb;
   group: MasterGroup;
+  loadedCatalogGroups: MasterGroup[];
   sidebarVisibility: SidebarVisibility;
+  setCatalogCategoryDb: (
+    category: MasterGroup,
+    dadDb: DadDb,
+    source: CatalogGroupSource,
+  ) => void;
   setSidebarVisibility: (sidebarVisibility: SidebarVisibility) => void;
   setDb: (dadDb: DadDb) => void;
   switchDb: (group: MasterGroup) => void;
@@ -69,8 +139,8 @@ export type DataContextType = {
   setSearchTerm: (value: string) => void;
   focusItemId: number;
   setFocusItemId: (itemId: number) => void;
-  focusCollectionId: number;
-  setFocusCollectionId: (collectionId: number) => void;
+  focusCollectionId?: string;
+  setFocusCollectionId: (collectionId: string | undefined) => void;
 };
 
 export const DataContext = createContext<DataContextType>(defaultContext);
@@ -84,7 +154,67 @@ export function DataProvider({ children }: PropsWithChildren) {
   const settings = useSettings();
   const { isEditMode } = useEditor();
 
-  const [db, setDb] = useState<DadDb>(defaultDadDb);
+  const [catalogData, setCatalogData] = useState<CatalogDataState>({
+    collectionsByGroup: {},
+    db: defaultDadDb,
+    groupSources: {},
+  });
+  const db = catalogData.db;
+  const catalogGroupSources = catalogData.groupSources;
+  const loadedCatalogGroups = useMemo(
+    () =>
+      catalogGroups.filter(
+        (category) => catalogData.collectionsByGroup[category] !== undefined,
+      ),
+    [catalogData.collectionsByGroup],
+  );
+  const setDb = useCallback((dadDb: DadDb) => {
+    setCatalogData((current) => {
+      const groupedCollections = getCatalogCollectionsByGroup(
+        dadDb.collections,
+      );
+
+      if (Object.keys(groupedCollections).length === 0) {
+        return {
+          ...current,
+          db: dadDb,
+        };
+      }
+
+      const collectionsByGroup = {
+        ...current.collectionsByGroup,
+        ...groupedCollections,
+      };
+
+      return {
+        ...current,
+        collectionsByGroup,
+        db: rebuildDadDbFromCatalogCache(dadDb, collectionsByGroup),
+      };
+    });
+  }, []);
+  const setCatalogCategoryDb = useCallback(
+    (category: MasterGroup, dadDb: DadDb, source: CatalogGroupSource) => {
+      setCatalogData((current) => {
+        const collectionsByGroup = {
+          ...current.collectionsByGroup,
+          [category]: dadDb.collections.filter(
+            (collection) => collection.category === category,
+          ),
+        };
+
+        return {
+          collectionsByGroup,
+          db: rebuildDadDbFromCatalogCache(dadDb, collectionsByGroup),
+          groupSources: {
+            ...current.groupSources,
+            [category]: source,
+          },
+        };
+      });
+    },
+    [],
+  );
   const [group, switchDb] = useState<MasterGroup>(MasterGroup.UNIVERSAL);
   const [sidebarVisibility, setRawSidebarVisibility] =
     useState<SidebarVisibility>(() =>
@@ -111,7 +241,7 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [debouncedSearchTerm] = useDebounceValue(searchTerm, 300);
   const [focusItemId, setFocusItemId] = useState(-1);
-  const [focusCollectionId, setFocusCollectionId] = useState(-1);
+  const [focusCollectionId, setFocusCollectionId] = useState<string>();
   const filteredDb = useMemo(() => {
     const filteredDb = filterDb(
       db.collections,
@@ -170,9 +300,12 @@ export function DataProvider({ children }: PropsWithChildren) {
 
   const contextValue = useMemo(
     () => ({
+      catalogGroupSources,
       db,
       group,
+      loadedCatalogGroups,
       sidebarVisibility,
+      setCatalogCategoryDb,
       setSidebarVisibility,
       setDb,
       switchDb,
@@ -186,10 +319,14 @@ export function DataProvider({ children }: PropsWithChildren) {
       setFocusCollectionId,
     }),
     [
+      catalogGroupSources,
       db,
       filteredDb,
+      loadedCatalogGroups,
       sidebarVisibility,
+      setCatalogCategoryDb,
       setSidebarVisibility,
+      setDb,
       countedDb,
       group,
       searchTerm,

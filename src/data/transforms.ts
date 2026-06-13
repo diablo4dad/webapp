@@ -43,7 +43,7 @@ export function createGlobalCollection(
       filteredTypes.map((it) => [
         it.name,
         {
-          id: it.id,
+          id: String(it.id),
           name: it.name,
           description: `${it.name} collection`,
           category: MasterGroup.UNIVERSAL,

@@ -48,6 +48,14 @@ const DEFAULT_SIDEBAR_VISIBILITY: SidebarVisibility = {
   showConfig: true,
 };
 
+const catalogGroups = [
+  MasterGroup.GENERAL,
+  MasterGroup.SHOP_ITEMS,
+  MasterGroup.PROMOTIONAL,
+  MasterGroup.SEASONS,
+  MasterGroup.CHALLENGE,
+] as const;
+
 const locale = {
   [MasterGroup.SHOP_ITEMS]: "Cash Shop",
   [MasterGroup.GENERAL]: "General",
@@ -201,6 +209,7 @@ export {
   type SidebarPanel,
   ItemGroup,
   ContentType,
+  catalogGroups,
   itemGroups,
   wardrobeIcons,
   MasterGroup,

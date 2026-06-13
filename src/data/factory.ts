@@ -33,6 +33,7 @@ function hydrateCollection(
 ): (_: CollectionRef) => Collection {
   return (collection: CollectionRef) => ({
     ...collection,
+    id: collection.id,
     collectionItems: collection.collectionItems.map(
       hydrateCollectionItem(items),
     ),

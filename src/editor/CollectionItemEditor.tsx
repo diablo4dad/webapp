@@ -24,7 +24,7 @@ import { getIcon } from "../bucket";
 import { hydrateDadDb } from "../data/factory";
 import { useData } from "../data/context";
 import { useEditor } from "./context";
-import { ItemGroup, itemGroups } from "../common";
+import { ItemGroup, MasterGroup, catalogGroups, itemGroups } from "../common";
 import { enumKeys } from "../common/enums";
 import { createCollectionItemSettingsFilter } from "../data/filters";
 import {
@@ -355,7 +355,7 @@ function getPreviewTags(
 }
 
 function CollectionItemEditor() {
-  const { db, setDb } = useData();
+  const { db, setCatalogCategoryDb } = useData();
   const { activeCollectionItemEditor, closeCollectionItemEditor } = useEditor();
   const settings = useSettings();
   const [form, setForm] = useState<FormState>(initialForm);
@@ -497,9 +497,28 @@ function CollectionItemEditor() {
     );
   }
 
+  function getActiveCatalogGroup(): MasterGroup {
+    const targetGroup = catalogGroups.find(
+      (catalogGroup) =>
+        catalogGroup ===
+        (activeCollection?.rootCategory ?? activeCollection?.category),
+    );
+
+    if (!targetGroup) {
+      throw new Error("[Catalog] Unable to resolve collection category.");
+    }
+
+    return targetGroup;
+  }
+
   async function refreshDb() {
-    const dadDbRef = await fetchHybridDadDbRef();
-    setDb(hydrateDadDb(dadDbRef));
+    const targetGroup = getActiveCatalogGroup();
+    const dadDbRef = await fetchHybridDadDbRef({
+      category: targetGroup,
+      source: "firestore",
+    });
+
+    setCatalogCategoryDb(targetGroup, hydrateDadDb(dadDbRef), "firestore");
   }
 
   function undoChanges() {

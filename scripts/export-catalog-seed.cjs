@@ -2,11 +2,22 @@
 
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const DEFAULT_INPUT = path.join("public", "d4dad.json");
 const DEFAULT_OUTPUT_ROOT = path.join("tmp", "catalog-seed");
 const DEFAULT_CATALOG_ID = "d4";
 const DEFAULT_SCHEMA_VERSION = 1;
+const FIRESTORE_AUTO_ID_LENGTH = 20;
+const FIRESTORE_AUTO_ID_ALPHABET =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const MASTER_GROUP_CATEGORIES = new Set([
+  "General",
+  "Shop",
+  "Promotional",
+  "Season",
+  "Challenge",
+]);
 
 function getDefaultVersionId() {
   return new Date().toISOString().slice(0, 10);
@@ -126,7 +137,7 @@ function hasMeaningfulUnsupportedData(collection) {
 }
 
 function stripSubcollections(collection) {
-  const { subcollections, ...node } = collection;
+  const { id: _id, subcollections, ...node } = collection;
 
   return {
     ...node,
@@ -134,15 +145,50 @@ function stripSubcollections(collection) {
   };
 }
 
+function createFirestoreAutoId(usedIds) {
+  let documentId = "";
+
+  do {
+    documentId = Array.from({ length: FIRESTORE_AUTO_ID_LENGTH }, () =>
+      FIRESTORE_AUTO_ID_ALPHABET.charAt(
+        crypto.randomInt(FIRESTORE_AUTO_ID_ALPHABET.length),
+      ),
+    ).join("");
+  } while (usedIds.has(documentId));
+
+  usedIds.add(documentId);
+
+  return documentId;
+}
+
 function flattenCollectionsForSeed(collections, options) {
   const nodes = [];
+  const usedDocumentIds = new Set();
   const warnings = [];
 
   collections.forEach((root, rootIndex) => {
+    if (typeof root.category !== "string" || root.category.length === 0) {
+      throw new Error(
+        `Root collection ${root.name ?? root.id} is missing a category.`,
+      );
+    }
+
+    const rootCategory = root.category;
+
+    if (!MASTER_GROUP_CATEGORIES.has(rootCategory)) {
+      throw new Error(
+        `Root collection ${root.name ?? root.id} has unsupported category "${rootCategory}".`,
+      );
+    }
+
+    const rootDocumentId = createFirestoreAutoId(usedDocumentIds);
+
     nodes.push({
+      documentId: rootDocumentId,
       ...stripSubcollections(root),
       parentId: null,
       order: rootIndex,
+      rootCategory,
     });
 
     (root.subcollections ?? []).forEach((child, childIndex) => {
@@ -173,10 +219,14 @@ function flattenCollectionsForSeed(collections, options) {
         );
       }
 
+      const childDocumentId = createFirestoreAutoId(usedDocumentIds);
+
       nodes.push({
+        documentId: childDocumentId,
         ...stripSubcollections(child),
-        parentId: root.id,
+        parentId: rootDocumentId,
         order: childIndex,
+        rootCategory,
       });
     });
   });
@@ -184,7 +234,19 @@ function flattenCollectionsForSeed(collections, options) {
   return { nodes, warnings };
 }
 
-function buildFirestoreDocuments(catalogId, versionId, manifest, version, nodes) {
+function toFirestoreCollectionNodeData(node) {
+  const { documentId, ...data } = node;
+
+  return data;
+}
+
+function buildFirestoreDocuments(
+  catalogId,
+  versionId,
+  manifest,
+  version,
+  nodes,
+) {
   const documents = [
     {
       path: `catalogs/${catalogId}`,
@@ -198,12 +260,20 @@ function buildFirestoreDocuments(catalogId, versionId, manifest, version, nodes)
 
   nodes.forEach((node) => {
     documents.push({
-      path: `catalogs/${catalogId}/versions/${versionId}/collectionNodes/${node.id}`,
-      data: node,
+      path: `catalogs/${catalogId}/versions/${versionId}/collectionNodes/${node.documentId}`,
+      data: toFirestoreCollectionNodeData(node),
     });
   });
 
   return documents;
+}
+
+function getCategoryCounts(nodes) {
+  return nodes.reduce((counts, node) => {
+    counts[node.rootCategory] = (counts[node.rootCategory] ?? 0) + 1;
+
+    return counts;
+  }, {});
 }
 
 function createSeedPayload(db, options) {
@@ -213,7 +283,10 @@ function createSeedPayload(db, options) {
 
   const generatedAt = new Date().toISOString();
   const sourcePath = path.resolve(options.input);
-  const { nodes, warnings } = flattenCollectionsForSeed(db.collections, options);
+  const { nodes, warnings } = flattenCollectionsForSeed(
+    db.collections,
+    options,
+  );
   const manifest = {
     activeVersionId: options.versionId,
     schemaVersion: options.schemaVersion,
@@ -236,6 +309,7 @@ function createSeedPayload(db, options) {
     manifest,
     version,
     collectionNodes: nodes,
+    categoryCounts: getCategoryCounts(nodes),
     warnings,
     firestoreDocuments: buildFirestoreDocuments(
       options.catalogId,
@@ -258,18 +332,16 @@ function writeSeedPayload(seed, options) {
     path.join(outputDir, "firestore-documents.json"),
     seed.firestoreDocuments,
   );
-  writeJson(
-    path.join(outputDir, "catalog-seed.json"),
-    {
-      catalogId: seed.catalogId,
-      generatedAt: seed.generatedAt,
-      sourcePath: seed.sourcePath,
-      manifest: seed.manifest,
-      version: seed.version,
-      warnings: seed.warnings,
-      collectionNodeCount: seed.collectionNodes.length,
-    },
-  );
+  writeJson(path.join(outputDir, "catalog-seed.json"), {
+    catalogId: seed.catalogId,
+    generatedAt: seed.generatedAt,
+    sourcePath: seed.sourcePath,
+    manifest: seed.manifest,
+    version: seed.version,
+    warnings: seed.warnings,
+    categoryCounts: seed.categoryCounts,
+    collectionNodeCount: seed.collectionNodes.length,
+  });
 
   return outputDir;
 }
@@ -294,6 +366,7 @@ function main() {
         versionId: options.versionId,
         rootCollectionCount: db.collections.length,
         collectionNodeCount: seed.collectionNodes.length,
+        categoryCounts: seed.categoryCounts,
         prunedWarnings: seed.warnings,
       },
       null,

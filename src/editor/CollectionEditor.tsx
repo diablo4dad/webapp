@@ -5,6 +5,7 @@ import { getDefaultItem } from "../data";
 import { getItemName, getItemType } from "../data/getters";
 import { hydrateDadDb } from "../data/factory";
 import { useData } from "../data/context";
+import { MasterGroup, catalogGroups } from "../common";
 import {
   addCatalogCollectionNode,
   deleteCatalogCollectionNode,
@@ -25,13 +26,6 @@ const initialForm: FormState = {
   name: "",
 };
 
-function hashCollectionId(input: string): number {
-  return input.split("").reduce((hash, char) => {
-    const nextHash = (hash << 5) - hash + char.charCodeAt(0);
-    return nextHash & nextHash;
-  }, 0);
-}
-
 function createInitialForm(collection?: Collection): FormState {
   if (!collection) {
     return initialForm;
@@ -47,8 +41,12 @@ function hasChanges(initialState: FormState, form: FormState): boolean {
   return JSON.stringify(initialState) !== JSON.stringify(form);
 }
 
+function toCatalogGroup(category?: string): MasterGroup | undefined {
+  return catalogGroups.find((catalogGroup) => catalogGroup === category);
+}
+
 function CollectionEditor() {
-  const { setDb } = useData();
+  const { setCatalogCategoryDb } = useData();
   const { activeCollectionEditor, closeCollectionEditor } = useEditor();
   const [form, setForm] = useState<FormState>(initialForm);
   const [initialState, setInitialState] = useState<FormState>(initialForm);
@@ -78,9 +76,30 @@ function CollectionEditor() {
     setDeleteModalOpen(false);
   }, [collection?.id]);
 
+  function getActiveCatalogGroup(): MasterGroup {
+    const targetGroup = toCatalogGroup(
+      collection?.rootCategory ??
+        parentCollection?.rootCategory ??
+        activeCollectionEditor?.category ??
+        collection?.category ??
+        parentCollection?.category,
+    );
+
+    if (!targetGroup) {
+      throw new Error("[Catalog] Unable to resolve collection category.");
+    }
+
+    return targetGroup;
+  }
+
   async function refreshDb() {
-    const dadDbRef = await fetchHybridDadDbRef();
-    setDb(hydrateDadDb(dadDbRef));
+    const targetGroup = getActiveCatalogGroup();
+    const dadDbRef = await fetchHybridDadDbRef({
+      category: targetGroup,
+      source: "firestore",
+    });
+
+    setCatalogCategoryDb(targetGroup, hydrateDadDb(dadDbRef), "firestore");
   }
 
   function updateTextField(
@@ -119,13 +138,10 @@ function CollectionEditor() {
           name,
         });
       } else {
-        const parentName =
-          parentCollection?.name ?? activeCollectionEditor.category ?? "";
         await addCatalogCollectionNode({
           category: activeCollectionEditor.category,
           collectionItems: [],
           description,
-          id: hashCollectionId(`${parentName}${name}`),
           name,
           parentId: parentCollection?.id ?? null,
         });
@@ -153,7 +169,7 @@ function CollectionEditor() {
     setError(undefined);
 
     try {
-      await deleteCatalogCollectionNode(collection.id);
+      await deleteCatalogCollectionNode(collection.id, getActiveCatalogGroup());
       await refreshDb();
       setDeleteModalOpen(false);
       closeCollectionEditor();

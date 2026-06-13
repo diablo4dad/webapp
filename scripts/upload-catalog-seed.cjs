@@ -13,8 +13,16 @@ const DEFAULT_DOCUMENTS = path.join(
 );
 const DEFAULT_DATABASE_ID = "(default)";
 const DEFAULT_BATCH_SIZE = 200;
+const FIRESTORE_AUTO_ID_PATTERN = /^[A-Za-z0-9]{20}$/;
 const OAUTH_SCOPE = "https://www.googleapis.com/auth/datastore";
 const OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token";
+const MASTER_GROUP_CATEGORIES = new Set([
+  "General",
+  "Shop",
+  "Promotional",
+  "Season",
+  "Challenge",
+]);
 
 function parseArgs(argv) {
   const options = {
@@ -71,8 +79,14 @@ function parseArgs(argv) {
     }
   }
 
-  if (!Number.isInteger(options.batchSize) || options.batchSize < 1 || options.batchSize > 500) {
-    throw new Error(`Invalid --batch-size: ${options.batchSize}. Expected 1-500.`);
+  if (
+    !Number.isInteger(options.batchSize) ||
+    options.batchSize < 1 ||
+    options.batchSize > 500
+  ) {
+    throw new Error(
+      `Invalid --batch-size: ${options.batchSize}. Expected 1-500.`,
+    );
   }
 
   if (!options.documents) {
@@ -125,8 +139,66 @@ function validateDocumentEntry(entry, index) {
     throw new Error(`Document ${index} is missing a valid path`);
   }
 
-  if (!entry.data || typeof entry.data !== "object" || Array.isArray(entry.data)) {
+  if (
+    !entry.data ||
+    typeof entry.data !== "object" ||
+    Array.isArray(entry.data)
+  ) {
     throw new Error(`Document ${index} is missing a valid data object`);
+  }
+
+  if (
+    isCollectionNodeDocument(entry.path) &&
+    !FIRESTORE_AUTO_ID_PATTERN.test(getDocumentId(entry.path))
+  ) {
+    throw new Error(
+      `Document ${index} (${entry.path}) must use a Firestore-compatible auto id`,
+    );
+  }
+
+  if (isCollectionNodeDocument(entry.path) && entry.data.id !== undefined) {
+    throw new Error(
+      `Document ${index} (${entry.path}) must not include legacy id data`,
+    );
+  }
+
+  if (
+    isCollectionNodeDocument(entry.path) &&
+    entry.data.documentId !== undefined
+  ) {
+    throw new Error(
+      `Document ${index} (${entry.path}) must not include documentId data`,
+    );
+  }
+
+  if (
+    isCollectionNodeDocument(entry.path) &&
+    entry.data.parentId !== null &&
+    (typeof entry.data.parentId !== "string" ||
+      !FIRESTORE_AUTO_ID_PATTERN.test(entry.data.parentId))
+  ) {
+    throw new Error(
+      `Document ${index} (${entry.path}) has invalid parentId "${entry.data.parentId}"`,
+    );
+  }
+
+  if (
+    isCollectionNodeDocument(entry.path) &&
+    (typeof entry.data.rootCategory !== "string" ||
+      entry.data.rootCategory.length === 0)
+  ) {
+    throw new Error(
+      `Document ${index} (${entry.path}) is missing a valid rootCategory`,
+    );
+  }
+
+  if (
+    isCollectionNodeDocument(entry.path) &&
+    !MASTER_GROUP_CATEGORIES.has(entry.data.rootCategory)
+  ) {
+    throw new Error(
+      `Document ${index} (${entry.path}) has unsupported rootCategory "${entry.data.rootCategory}"`,
+    );
   }
 }
 
@@ -152,7 +224,10 @@ function loadServiceAccount(serviceAccountPath) {
 
   const requiredFields = ["project_id", "client_email", "private_key"];
   for (const field of requiredFields) {
-    if (typeof serviceAccount[field] !== "string" || serviceAccount[field].length === 0) {
+    if (
+      typeof serviceAccount[field] !== "string" ||
+      serviceAccount[field].length === 0
+    ) {
       throw new Error(`Service account is missing required field: ${field}`);
     }
   }
@@ -167,12 +242,28 @@ function isManifestDocument(documentPath) {
   return /^catalogs\/[^/]+$/.test(documentPath);
 }
 
+function isCollectionNodeDocument(documentPath) {
+  return /\/collectionNodes\/[^/]+$/.test(documentPath);
+}
+
+function getDocumentId(documentPath) {
+  const segments = documentPath.split("/");
+
+  return segments[segments.length - 1] ?? "";
+}
+
 function reorderDocumentsForUpload(documents, activate) {
-  const manifestDocuments = documents.filter((doc) => isManifestDocument(doc.path));
-  const otherDocuments = documents.filter((doc) => !isManifestDocument(doc.path));
+  const manifestDocuments = documents.filter((doc) =>
+    isManifestDocument(doc.path),
+  );
+  const otherDocuments = documents.filter(
+    (doc) => !isManifestDocument(doc.path),
+  );
 
   if (manifestDocuments.length > 1) {
-    throw new Error(`Expected at most one catalog manifest document, found ${manifestDocuments.length}`);
+    throw new Error(
+      `Expected at most one catalog manifest document, found ${manifestDocuments.length}`,
+    );
   }
 
   if (!activate) {
@@ -180,7 +271,9 @@ function reorderDocumentsForUpload(documents, activate) {
   }
 
   if (manifestDocuments.length === 0) {
-    throw new Error("Activation requested, but no catalog manifest document was found");
+    throw new Error(
+      "Activation requested, but no catalog manifest document was found",
+    );
   }
 
   return otherDocuments.concat(manifestDocuments);
@@ -395,10 +488,20 @@ async function commitBatch(projectId, databaseId, accessToken, documents) {
 }
 
 function buildSummary(documentsPath, orderedDocuments, options, projectId) {
-  const manifestCount = orderedDocuments.filter((doc) => isManifestDocument(doc.path)).length;
-  const nodeDocumentCount = orderedDocuments.filter(
-    (doc) => /\/collectionNodes\//.test(doc.path),
+  const manifestCount = orderedDocuments.filter((doc) =>
+    isManifestDocument(doc.path),
   ).length;
+  const nodeDocumentCount = orderedDocuments.filter((doc) =>
+    isCollectionNodeDocument(doc.path),
+  ).length;
+  const categoryCounts = orderedDocuments
+    .filter((doc) => isCollectionNodeDocument(doc.path))
+    .reduce((counts, doc) => {
+      const category = doc.data.rootCategory;
+      counts[category] = (counts[category] ?? 0) + 1;
+
+      return counts;
+    }, {});
 
   return {
     documentsPath,
@@ -410,12 +513,19 @@ function buildSummary(documentsPath, orderedDocuments, options, projectId) {
     documentCount: orderedDocuments.length,
     manifestCount,
     nodeDocumentCount,
+    categoryCounts,
     firstPath: orderedDocuments[0]?.path ?? null,
     lastPath: orderedDocuments[orderedDocuments.length - 1]?.path ?? null,
   };
 }
 
-async function uploadDocuments(projectId, databaseId, accessToken, documents, batchSize) {
+async function uploadDocuments(
+  projectId,
+  databaseId,
+  accessToken,
+  documents,
+  batchSize,
+) {
   const batches = chunkArray(documents, batchSize);
   let uploaded = 0;
 
@@ -434,7 +544,10 @@ async function uploadDocuments(projectId, databaseId, accessToken, documents, ba
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   const { path: documentsPath, documents } = loadDocuments(options.documents);
-  const orderedDocuments = reorderDocumentsForUpload(documents, options.activate);
+  const orderedDocuments = reorderDocumentsForUpload(
+    documents,
+    options.activate,
+  );
 
   let projectId = options.projectId;
   let accessToken = null;
@@ -448,7 +561,12 @@ async function main() {
   }
 
   projectId = projectId ?? "unknown";
-  const summary = buildSummary(documentsPath, orderedDocuments, options, projectId);
+  const summary = buildSummary(
+    documentsPath,
+    orderedDocuments,
+    options,
+    projectId,
+  );
 
   if (options.dryRun) {
     console.log(
@@ -511,6 +629,7 @@ if (require.main === module) {
 module.exports = {
   chunkArray,
   createWrite,
+  isCollectionNodeDocument,
   isManifestDocument,
   parseArgs,
   reorderDocumentsForUpload,

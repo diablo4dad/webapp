@@ -62,11 +62,9 @@ import { MasterGroup } from "../common";
 import { useData } from "../data/context";
 import { selectCollectionById } from "../data/reducers";
 import {
-  fetchHybridDadDbRef,
   updateCatalogCollectionNodeOrder,
   updateCatalogCollectionItemOrder,
 } from "../store/catalog";
-import { hydrateDadDb } from "../data/factory";
 
 type Props = {
   collections: Collection[];
@@ -75,15 +73,15 @@ type Props = {
   onClickItem: (item: CollectionItem, collection: Collection) => void;
   onToggleItem?: (item: CollectionItem) => void;
   onToggleCollection?: (collection: Collection) => void;
-  onCollectionChange: (collectionId: number, isOpen: boolean) => void;
-  openCollections: number[];
+  onCollectionChange: (collectionId: string, isOpen: boolean) => void;
+  openCollections: string[];
   depth?: number;
 };
 
 type PropsInner = Props & {
   collection: Collection;
   collectionIndex: number;
-  collectionSiblingIds: number[];
+  collectionSiblingIds: string[];
 };
 
 type ItemDragState = {
@@ -97,21 +95,21 @@ type ItemDragState = {
   width: number;
 };
 
-type CollectionParentId = number | null;
+type CollectionParentId = string | null;
 
 type CollectionDragState = {
   category: MasterGroup;
-  collectionId: number;
+  collectionId: string;
   height: number;
   offsetX: number;
   offsetY: number;
   pointerX: number;
   pointerY: number;
   sourceParentId: CollectionParentId;
-  sourceSiblingIds: number[];
+  sourceSiblingIds: string[];
   targetIndex: number;
   targetParentId: CollectionParentId;
-  targetSiblingIds: number[];
+  targetSiblingIds: string[];
   width: number;
 };
 
@@ -120,7 +118,7 @@ type CollectionDragController = {
     collection: Collection,
     parentCollection: Collection | undefined,
     sourceIndex: number,
-    sourceSiblingIds: number[],
+    sourceSiblingIds: string[],
     element: HTMLElement,
     pointerX: number,
     pointerY: number,
@@ -294,6 +292,13 @@ function areItemOrdersEqual(a: number[], b: number[]): boolean {
   );
 }
 
+function areCollectionOrdersEqual(a: string[], b: string[]): boolean {
+  return (
+    a.length === b.length &&
+    a.every((collectionId, index) => collectionId === b[index])
+  );
+}
+
 function reorderCollectionItemsById(
   collectionItems: CollectionItem[],
   orderedCollectionItemIds: number[],
@@ -320,7 +325,7 @@ function reorderCollectionItemsById(
 
 function reorderCollectionItemsInCollections(
   collections: Collection[],
-  collectionId: number,
+  collectionId: string,
   orderedCollectionItemIds: number[],
 ): { collections: Collection[]; didUpdate: boolean } {
   let didUpdate = false;
@@ -368,7 +373,7 @@ function reorderCollectionItemsInCollections(
 
 function reorderCollectionItemsInDb(
   dadDb: DadDb,
-  collectionId: number,
+  collectionId: string,
   orderedCollectionItemIds: number[],
 ): DadDb {
   const result = reorderCollectionItemsInCollections(
@@ -389,7 +394,7 @@ function reorderCollectionItemsInDb(
 
 function removeCollectionFromTree(
   collections: Collection[],
-  collectionId: number,
+  collectionId: string,
 ): { collections: Collection[]; removed?: Collection } {
   let removed: Collection | undefined;
   const nextCollections: Collection[] = [];
@@ -425,7 +430,7 @@ function removeCollectionFromTree(
 
 function reorderCollectionsById(
   collections: Collection[],
-  orderedCollectionIds: number[],
+  orderedCollectionIds: string[],
 ): Collection[] {
   const collectionsById = new Map(
     collections.map((collection) => [collection.id, collection]),
@@ -472,9 +477,9 @@ function replaceCategoryRoots(
 
 function insertCollectionIntoParent(
   collections: Collection[],
-  parentId: number,
+  parentId: string,
   movedCollection: Collection,
-  orderedSiblingIds: number[],
+  orderedSiblingIds: string[],
 ): { collections: Collection[]; didInsert: boolean } {
   let didInsert = false;
 
@@ -522,9 +527,9 @@ function insertCollectionIntoParent(
 
 function moveCollectionInDb(
   dadDb: DadDb,
-  collectionId: number,
+  collectionId: string,
   targetParentId: CollectionParentId,
-  orderedSiblingIds: number[],
+  orderedSiblingIds: string[],
   category: MasterGroup,
 ): DadDb {
   const removeResult = removeCollectionFromTree(
@@ -657,15 +662,15 @@ function getCollectionInsertIndexFromPointer(
   return targetIndex === -1 ? items.length : targetIndex;
 }
 
-function getCollectionListIds(collections: Collection[]): number[] {
+function getCollectionListIds(collections: Collection[]): string[] {
   return collections.map((collection) => collection.id);
 }
 
 function moveCollectionIdToIndex(
-  collectionIds: number[],
-  collectionId: number,
+  collectionIds: string[],
+  collectionId: string,
   insertIndex: number,
-): number[] {
+): string[] {
   const nextCollectionIds = collectionIds.filter(
     (candidateId) => candidateId !== collectionId,
   );
@@ -755,7 +760,7 @@ const Ledger = ({
     return draggedCollection.subcollections.length === 0;
   }
 
-  function getCollectionIdsForDropList(listElement: HTMLElement): number[] {
+  function getCollectionIdsForDropList(listElement: HTMLElement): string[] {
     return Array.from(
       listElement.querySelectorAll<HTMLElement>(
         "[data-collection-reorder-item='true']",
@@ -766,20 +771,15 @@ const Ledger = ({
           itemElement.closest("[data-collection-drop-list='true']") ===
           listElement,
       )
-      .map((itemElement) => Number(itemElement.dataset.collectionId))
-      .filter((collectionId) => !Number.isNaN(collectionId));
-  }
-
-  async function refreshDb() {
-    const dadDbRef = await fetchHybridDadDbRef();
-    setDb(hydrateDadDb(dadDbRef));
+      .map((itemElement) => itemElement.dataset.collectionId)
+      .filter((collectionId): collectionId is string => Boolean(collectionId));
   }
 
   function beginCollectionReorder(
     collection: Collection,
     sourceParentCollection: Collection | undefined,
     sourceIndex: number,
-    sourceSiblingIds: number[],
+    sourceSiblingIds: string[],
     element: HTMLElement,
     pointerX: number,
     pointerY: number,
@@ -831,7 +831,10 @@ const Ledger = ({
 
     if (
       committedDragState.sourceParentId === committedDragState.targetParentId &&
-      areItemOrdersEqual(committedDragState.sourceSiblingIds, orderedSiblingIds)
+      areCollectionOrdersEqual(
+        committedDragState.sourceSiblingIds,
+        orderedSiblingIds,
+      )
     ) {
       return;
     }
@@ -867,17 +870,7 @@ const Ledger = ({
       return;
     }
 
-    try {
-      await refreshDb();
-    } catch (error) {
-      setCollectionDragError(
-        error instanceof Error
-          ? `Saved order, but failed to refresh database: ${error.message}`
-          : "Saved order, but failed to refresh database.",
-      );
-    } finally {
-      setCollectionReordering(false);
-    }
+    setCollectionReordering(false);
   }
 
   useEffect(() => {
@@ -908,12 +901,11 @@ const Ledger = ({
         pointerX,
         pointerY,
       };
-      const targetCollectionId = collectionElement
-        ? Number(collectionElement.dataset.collectionId)
-        : Number.NaN;
-      const targetCollection = Number.isNaN(targetCollectionId)
-        ? undefined
-        : selectCollectionById(db.collections, targetCollectionId);
+      const targetCollectionId = collectionElement?.dataset.collectionId;
+      const targetCollection =
+        targetCollectionId === undefined
+          ? undefined
+          : selectCollectionById(db.collections, targetCollectionId);
 
       if (collectionElement && targetCollection) {
         const rect = collectionElement.getBoundingClientRect();
@@ -944,15 +936,10 @@ const Ledger = ({
         const targetParentId =
           listElement.dataset.collectionParentId === "root"
             ? null
-            : Number(listElement.dataset.collectionParentId);
-        const normalizedTargetParentId = Number.isNaN(targetParentId)
-          ? null
-          : targetParentId;
+            : listElement.dataset.collectionParentId ?? null;
 
-        if (
-          isCollectionDropAllowed(currentDragState, normalizedTargetParentId)
-        ) {
-          nextDragState.targetParentId = normalizedTargetParentId;
+        if (isCollectionDropAllowed(currentDragState, targetParentId)) {
+          nextDragState.targetParentId = targetParentId;
           nextDragState.targetIndex = getCollectionInsertIndexFromPointer(
             listElement,
             pointerY,
@@ -1069,7 +1056,7 @@ const Ledger = ({
         allowMultiple
         onStateChange={(e) => {
           if (e.current.isResolved) {
-            onCollectionChange(Number(e.key), e.current.isEnter);
+            onCollectionChange(String(e.key), e.current.isEnter);
           }
         }}
       >
@@ -1253,7 +1240,7 @@ const LedgerInner = ({
   });
   const isEditableCatalogCollection =
     isEditMode &&
-    collection.id !== 888 &&
+    collection.id !== "888" &&
     collection.category !== MasterGroup.UNIVERSAL &&
     parentCollection?.category !== MasterGroup.UNIVERSAL;
   const hasCollectionItems = collection.collectionItems.length > 0;
@@ -1341,11 +1328,6 @@ const LedgerInner = ({
   useEffect(() => {
     dragStateRef.current = dragState;
   }, [dragState]);
-
-  async function refreshDb() {
-    const dadDbRef = await fetchHybridDadDbRef();
-    setDb(hydrateDadDb(dadDbRef));
-  }
 
   function beginItemReorder(
     collectionItem: CollectionItem,
@@ -1503,17 +1485,7 @@ const LedgerInner = ({
       return;
     }
 
-    try {
-      await refreshDb();
-    } catch (error) {
-      setReorderError(
-        error instanceof Error
-          ? `Saved order, but failed to refresh database: ${error.message}`
-          : "Saved order, but failed to refresh database.",
-      );
-    } finally {
-      setIsReordering(false);
-    }
+    setIsReordering(false);
   }
 
   useEffect(() => {
@@ -1716,7 +1688,7 @@ const LedgerInner = ({
   return (
     <AccordionItem
       hidden={!isEditMode && isCollectionEmpty(collection)}
-      initialEntered={ledgerIsOpen || collection.id === 888}
+      initialEntered={ledgerIsOpen || collection.id === "888"}
       itemKey={collection.id}
       className={className}
       headingProps={{

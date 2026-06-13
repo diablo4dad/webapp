@@ -11,7 +11,7 @@ import Ledger from "../collection/Ledger";
 import LedgerSkeleton from "../collection/LedgerSkeleton";
 import { toggleValueInArray } from "../common/arrays";
 import { Collection, CollectionItem } from "../data";
-import { MasterGroup } from "../common";
+import { MasterGroup, catalogGroups } from "../common";
 import React, { useEffect, useState } from "react";
 import { countAllItemsDabDb } from "../data/aggregate";
 import { selectCollectionById, selectItemOrDefault } from "../data/reducers";
@@ -20,12 +20,12 @@ import { getViewModel, saveViewModel } from "../store/local";
 import { useLoaderData } from "react-router-dom";
 import { useData } from "../data/context";
 import { hydrateDadDb } from "../data/factory";
-import { fetchHybridDadDbRef } from "../store/catalog";
+import { fetchHybridDadDbRefsByCategory } from "../store/catalog";
 import { useAuth } from "../auth/context";
 import { useEditor } from "../editor/context";
 
 export type ViewModel = {
-  openCollections: number[];
+  openCollections: string[];
 };
 
 export type Params = {
@@ -77,12 +77,14 @@ export function CollectionView() {
     filteredDb,
     db,
     switchDb,
-    setDb,
+    setCatalogCategoryDb,
     setFocusCollectionId,
     setFocusItemId,
     focusCollectionId,
     focusItemId,
     sidebarVisibility,
+    loadedCatalogGroups,
+    catalogGroupSources,
   } = useData();
   const { isLoading: isAuthLoading } = useAuth();
   const { canEditCatalog } = useEditor();
@@ -101,19 +103,47 @@ export function CollectionView() {
     }
 
     let cancelled = false;
+    const source = canEditCatalog ? "firestore" : "bundle";
+    const targetGroups =
+      group === MasterGroup.UNIVERSAL ? catalogGroups : [group];
+    const groupsToFetch = targetGroups.filter((targetGroup) => {
+      if (!catalogGroups.some((category) => category === targetGroup)) {
+        return false;
+      }
+
+      if (source === "firestore") {
+        return catalogGroupSources[targetGroup] !== "firestore";
+      }
+
+      return !loadedCatalogGroups.includes(targetGroup);
+    });
+
+    if (groupsToFetch.length === 0) {
+      setIsCatalogLoading(false);
+      setCatalogError(undefined);
+      return;
+    }
 
     setIsCatalogLoading(true);
     setCatalogError(undefined);
 
     async function fetchCatalog() {
       try {
-        const dadDbRef = await fetchHybridDadDbRef({
-          source: canEditCatalog ? "firestore" : "bundle",
-        });
-        const resolvedDb = hydrateDadDb(dadDbRef);
+        const resolvedGroups = await fetchHybridDadDbRefsByCategory(
+          groupsToFetch,
+          {
+            source,
+          },
+        );
 
         if (!cancelled) {
-          setDb(resolvedDb);
+          resolvedGroups.forEach((resolvedGroup) => {
+            setCatalogCategoryDb(
+              resolvedGroup.category as MasterGroup,
+              hydrateDadDb(resolvedGroup.dadDbRef),
+              source,
+            );
+          });
         }
       } catch (error) {
         if (!cancelled) {
@@ -135,7 +165,14 @@ export function CollectionView() {
     return () => {
       cancelled = true;
     };
-  }, [canEditCatalog, isAuthLoading, setDb]);
+  }, [
+    canEditCatalog,
+    catalogGroupSources,
+    group,
+    isAuthLoading,
+    loadedCatalogGroups,
+    setCatalogCategoryDb,
+  ]);
 
   useEffect(() => {
     switchDb(group);

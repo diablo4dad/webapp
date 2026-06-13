@@ -19,8 +19,12 @@ export function selectItemOrDefault(
 
 export function selectCollectionById(
   collections: CollectionGroup,
-  selectedCollectionId: number,
+  selectedCollectionId?: string,
 ): Collection | undefined {
+  if (selectedCollectionId === undefined) {
+    return undefined;
+  }
+
   for (const collection of collections) {
     if (collection.id === selectedCollectionId) {
       return collection;
