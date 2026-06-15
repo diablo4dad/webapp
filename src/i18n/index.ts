@@ -32,6 +32,7 @@ const I18N = {
     [Zone.DRY_STEPPES]: "Dry Steppes",
     [Zone.HAWEZAR]: "Hawezar",
     [Zone.NAHANTU]: "Nahantu",
+    [Zone.SKOVOS]: "Skovos",
   },
   chest: {
     [Chest.HELLTIDE]: "Helltide Chests",

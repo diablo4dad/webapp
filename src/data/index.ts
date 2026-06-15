@@ -28,6 +28,7 @@ export enum Zone {
   DRY_STEPPES,
   HAWEZAR,
   NAHANTU,
+  SKOVOS,
 }
 
 export enum Chest {
