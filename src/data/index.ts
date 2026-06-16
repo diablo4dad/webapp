@@ -47,15 +47,19 @@ export type GenderImagesRef = [number, number];
 export type ItemRef = Entity & {
   icon: number;
   itemType: number;
-  magicType?: number;
-  isTransmog?: boolean;
-  vohItem?: boolean;
-  usableByClass?: number[];
-  invImages?: GenderImagesRef[];
   name: string;
   description?: string;
-  transmogName?: string;
   series?: string;
+  transmogName?: string;
+  magicType?: number;
+  preferredZone?: number;
+  vohItem?: boolean;
+  lohItem?: boolean;
+  salvageable?: boolean;
+  isTransmog?: boolean;
+  usableByClass?: number[];
+  invImages?: GenderImagesRef[];
+  similarItems?: number[];
 };
 
 export type GenderImages = [string | null, string | null];
@@ -67,6 +71,7 @@ export type Item = Omit<
   icon: string;
   invImages: GenderImages[];
   usableByClass: number[];
+  similarItemsRefs: Item[];
 };
 
 export type ItemType = Entity & {
@@ -144,6 +149,8 @@ const DEFAULT_ITEM: Item = {
   icon: "/icons/0.webp",
   name: "missing",
   usableByClass: [1, 1, 1, 1, 1, 1, 1],
+  similarItems: [],
+  similarItemsRefs: [],
   invImages: [
     [null, null],
     [null, null],

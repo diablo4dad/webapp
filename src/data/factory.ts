@@ -98,6 +98,7 @@ function hydrateItem(itemTypes: Map<number, ItemType>): (_: ItemRef) => Item {
     ...item,
     icon: hydrateImage(item.icon),
     itemType: itemTypes.get(item.itemType) ?? DEFAULT_ITEM_TYPE,
+    similarItemsRefs: [],
     invImages: item.invImages?.map((i) =>
       i.map((j) => (j ? hydrateImage(j) : null)),
     ) as GenderImages[],
@@ -134,6 +135,12 @@ function hydrateDadDb(dadDb: DadDbRef): DadDb {
   const collections = dadDb.collections
     .map(hydrateCollection(itemLookup))
     .map((c) => backFill(c));
+
+  for (const item of items) {
+    item.similarItemsRefs = (item.similarItems ?? []).map(
+      (i) => itemLookup.get(i) ?? DEFAULT_ITEM,
+    );
+  }
 
   const global = createGlobalCollection(dadDb.itemTypes, collections);
   collections.push(...global);

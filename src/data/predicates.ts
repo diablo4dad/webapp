@@ -9,6 +9,18 @@ export function isVesselOfHatredItem(item: Item): boolean {
   return !!item.vohItem;
 }
 
+export function isLordOfHatredItem(item: Item): boolean {
+  return !!item.lohItem;
+}
+
+export function hasPreferredZone(item: Item): boolean {
+  return (item.preferredZone ?? -1) !== -1;
+}
+
+export function hasSimilarItems(item: Item): boolean {
+  return !!item.similarItems?.length;
+}
+
 export function isCollectionEmpty(collection: Collection): boolean {
   return (
     collection.collectionItems.length === 0 &&
