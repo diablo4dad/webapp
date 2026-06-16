@@ -11,22 +11,23 @@ import {
 } from "./index";
 import { flattenDadDb } from "./transforms";
 
+function getDisplayItemName(ci: CollectionItem, item: Item): string {
+  return !ci.useBaseItemName && item.transmogName
+    ? item.transmogName
+    : item.name;
+}
+
 export function getItemName(ci: CollectionItem, item: Item): string {
   if (ci.items.length <= 1) {
-    // transmog name overrides base
-    if (item.transmogName) {
-      return item.transmogName;
-    }
-
-    return item.name;
+    return getDisplayItemName(ci, item);
   }
 
   switch (ci.items[0].itemType.name) {
     case "Player Title (Prefix)":
     case "Player Title (Suffix)":
-      return ci.items.map((i) => i.name).join(" ");
+      return ci.items.map((i) => getDisplayItemName(ci, i)).join(" ");
     default:
-      return item.name;
+      return getDisplayItemName(ci, item);
   }
 }
 

@@ -168,6 +168,32 @@
   overflow-wrap: anywhere;
 }
 
+.PreviewTransmogName {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #c5ccd4;
+  font-size: 0.95rem;
+  line-height: 1.25;
+}
+
+.PreviewTransmogName img {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.PreviewTransmogName span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.PreviewTypeSeparator {
+  color: #5f6977;
+}
+
 .PreviewType,
 .ResultType {
   color: #9faab6;

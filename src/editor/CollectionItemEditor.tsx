@@ -55,6 +55,7 @@ import season from "../image/miniico/season.webp";
 import series from "../image/miniico/series.webp";
 import oor from "../image/miniico/skull.webp";
 import wardrobe from "../image/miniico/wardrobe.webp";
+import transmog from "../image/icons/transmog.webp";
 import placeholder from "../image/placeholder.webp";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
 import Toggle from "../components/Toggle";
@@ -72,6 +73,7 @@ type FormState = {
   premium: boolean;
   promotional: boolean;
   unobtainable: boolean;
+  useBaseItemName: boolean;
 };
 
 type TextField =
@@ -86,7 +88,8 @@ type BooleanField =
   | "outOfRotation"
   | "premium"
   | "promotional"
-  | "unobtainable";
+  | "unobtainable"
+  | "useBaseItemName";
 
 type EnumOption = {
   label: string;
@@ -115,6 +118,7 @@ const initialForm: FormState = {
   premium: false,
   promotional: false,
   unobtainable: false,
+  useBaseItemName: false,
 };
 
 const classIconMap = new Map<CharacterClass, string>([
@@ -148,7 +152,7 @@ function enumOptions(enumValue: Record<string, string | number>): EnumOption[] {
 }
 
 function getItemDisplayName(item: Item): string {
-  return item.transmogName ?? item.name;
+  return item.name;
 }
 
 type EditorInitialState = {
@@ -167,6 +171,7 @@ function buildCollectionItemRef(
     premium: form.premium,
     promotional: form.promotional,
     unobtainable: form.unobtainable,
+    useBaseItemName: form.useBaseItemName,
     items: selectedItems.map((item) => item.id),
   };
 
@@ -236,6 +241,7 @@ function createInitialState(
       premium: collectionItem.premium ?? false,
       promotional: collectionItem.promotional ?? false,
       unobtainable: collectionItem.unobtainable ?? false,
+      useBaseItemName: collectionItem.useBaseItemName ?? false,
     },
     selectedItems: collectionItem.items,
   };
@@ -408,7 +414,7 @@ function CollectionItemEditor() {
 
         return (
           item.name.toLowerCase().includes(normalizedSearch) ||
-          getItemDisplayName(item).toLowerCase().includes(normalizedSearch)
+          (item.transmogName?.toLowerCase().includes(normalizedSearch) ?? false)
         );
       })
       .sort(sortItems);
@@ -425,6 +431,11 @@ function CollectionItemEditor() {
   const canUndo =
     isEditingExisting && hasEditorChanges(initialState, form, selectedItems);
   const isCompactPreview = selectedItems.length > 1;
+  const hasSelectedTransmogName = selectedItems.some(
+    (item) => (item.transmogName?.trim().length ?? 0) > 0,
+  );
+  const isBaseItemNameToggleDisabled =
+    !hasSelectedTransmogName && !form.useBaseItemName;
 
   const updateTextField =
     (field: TextField) =>
@@ -631,6 +642,17 @@ function CollectionItemEditor() {
                           <span className={styles.PreviewType}>
                             {item.itemType.name}
                           </span>
+                          {item.transmogName && (
+                            <>
+                              <span className={styles.PreviewTypeSeparator}>
+                                |
+                              </span>
+                              <span className={styles.PreviewTransmogName}>
+                                <img src={transmog} alt="" />
+                                <span>{item.transmogName}</span>
+                              </span>
+                            </>
+                          )}
                           {previewTags.length > 0 && (
                             <span className={styles.PreviewTags}>
                               {previewTags.map((tag) => (
@@ -923,6 +945,15 @@ function CollectionItemEditor() {
                 flip={true}
                 checked={form.unobtainable}
                 onChange={updateBooleanField("unobtainable")}
+              />
+              <Toggle
+                className={styles.Toggle}
+                name="collection-item-use-base-item-name"
+                label="Use Base Item Name"
+                flip={true}
+                checked={form.useBaseItemName}
+                disabled={isBaseItemNameToggleDisabled}
+                onChange={updateBooleanField("useBaseItemName")}
               />
             </section>
           </div>

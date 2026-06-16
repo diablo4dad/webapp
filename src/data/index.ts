@@ -90,6 +90,7 @@ type CollectionItemRef = {
   promotional?: boolean;
   season?: number;
   unobtainable?: boolean;
+  useBaseItemName?: boolean;
 
   items: number[];
 };
