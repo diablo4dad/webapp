@@ -25,6 +25,13 @@ const I18N = {
     [CharacterClass.PALADIN]: "Paladin",
     [CharacterClass.WARLOCK]: "Warlock",
   },
+  magicType: {
+    [MagicType.COMMON]: "Common",
+    [MagicType.LEGENDARY]: "Legendary",
+    [MagicType.UNIQUE]: "Unique",
+    [MagicType.MAGIC]: "Magic",
+    [MagicType.MYTHIC]: "Mythic",
+  },
   region: {
     [Zone.FRACTURED_PEAKS]: "Fractured Peaks",
     [Zone.SCOSGLEN]: "Scosglen",

@@ -196,6 +196,54 @@
   letter-spacing: 0.16em;
 }
 
+.ItemSalvageSources {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0 2rem;
+  margin-bottom: 1rem;
+  color: #c0c6ce;
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.ItemSalvageSource {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ItemSalvageSourceIcon {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.ItemMagicType {
+  font-weight: 700;
+}
+
+.ItemMagicTypeCommon {
+  color: #ffffff;
+}
+
+.ItemMagicTypeMagic {
+  color: #0080ff;
+}
+
+.ItemMagicTypeLegendary {
+  color: #e67e22;
+}
+
+.ItemMagicTypeUnique {
+  color: #deb887;
+}
+
+.ItemMagicTypeMythic {
+  color: #9b59b6;
+}
+
 .ItemCollectedBtn {
 }
 

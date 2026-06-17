@@ -17,6 +17,8 @@ import {
   CharacterClass,
   Collection,
   CollectionItem,
+  Item,
+  MagicType,
   getDefaultItem,
   Zone,
 } from "../data";
@@ -50,6 +52,7 @@ import season from "../image/miniico/season.webp";
 import series from "../image/miniico/series.webp";
 import oor from "../image/miniico/skull.webp";
 import wardrobe from "../image/miniico/wardrobe.webp";
+import salvage from "../image/icons/salvage.webp";
 import fracturedPeaks from "../image/region/fractured_peaks.webp";
 import drySteppes from "../image/region/dry_steppes.webp";
 import kehjistan from "../image/region/kehjistan.webp";
@@ -106,6 +109,71 @@ const regionIconMap = new Map<Zone, string>([
   [Zone.NAHANTU, nahantu],
 ]);
 
+const magicTypeCssMap = new Map<MagicType, string>([
+  [MagicType.COMMON, styles.ItemMagicTypeCommon],
+  [MagicType.MAGIC, styles.ItemMagicTypeMagic],
+  [MagicType.LEGENDARY, styles.ItemMagicTypeLegendary],
+  [MagicType.UNIQUE, styles.ItemMagicTypeUnique],
+  [MagicType.MYTHIC, styles.ItemMagicTypeMythic],
+]);
+
+const magicTypeSortOrder = new Map<MagicType, number>([
+  [MagicType.COMMON, 0],
+  [MagicType.MAGIC, 0],
+  [MagicType.LEGENDARY, 1],
+  [MagicType.UNIQUE, 2],
+  [MagicType.MYTHIC, 3],
+]);
+
+function getMagicTypeSortRank(item: Item): number {
+  return item.magicType === undefined
+    ? Number.MAX_SAFE_INTEGER
+    : magicTypeSortOrder.get(item.magicType as MagicType) ??
+        Number.MAX_SAFE_INTEGER;
+}
+
+function getMagicTypeClassName(magicType: MagicType): string {
+  return classNames(styles.ItemMagicType, magicTypeCssMap.get(magicType));
+}
+
+function renderMagicTypeLabel(magicType: MagicType): React.ReactNode {
+  if (magicType === MagicType.COMMON) {
+    return (
+      <span className={getMagicTypeClassName(MagicType.MAGIC)}>Magic</span>
+    );
+  }
+
+  return (
+    <span className={getMagicTypeClassName(magicType)}>
+      {i18n.magicType[magicType]}
+    </span>
+  );
+}
+
+function buildSalvageSourceItems(focusItem: Item): Item[] {
+  const seen = new Set<string>();
+  const hide = new Array<string>("(PH)", "[PH]", "[ph_", "(DNS)");
+
+  return [focusItem, ...focusItem.similarItemsRefs]
+    .filter((item) => item.salvageable === true)
+    .filter((item) => item.name.trim().length > 0)
+    .filter((item) => !hide.some((token) => item.name.includes(token)))
+    .filter((item) => {
+      const key = `${item.name}:${item.magicType ?? "none"}`;
+
+      if (seen.has(key)) {
+        return false;
+      }
+
+      seen.add(key);
+      return true;
+    })
+    .sort(
+      (leftItem, rightItem) =>
+        getMagicTypeSortRank(leftItem) - getMagicTypeSortRank(rightItem),
+    );
+}
+
 function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
   const log = useCollection();
   const dispatcher = useCollectionDispatch();
@@ -129,6 +197,7 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
   const focusIcon =
     getClassIconVariant(focusItem, hoverClass ?? focusClass, preferredGender) ??
     focusItem.icon;
+  const salvageSourceItems = buildSalvageSourceItems(focusItem);
   const hasClassVariation = (characterClass: CharacterClass) =>
     hasItemVariation(collectionItem, characterClass) ||
     hasIconVariants(focusItem);
@@ -267,6 +336,23 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
           )}
         </div>
       </div>
+      {salvageSourceItems.length > 0 && (
+        <div className={styles.ItemSalvageSources}>
+          {salvageSourceItems.map((item) => (
+            <div key={item.id} className={styles.ItemSalvageSource}>
+              <img
+                className={styles.ItemSalvageSourceIcon}
+                src={salvage}
+                alt=""
+              />
+              <span>
+                Salvaged from{" "}
+                {renderMagicTypeLabel(item.magicType as MagicType)} {item.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
       <div className={styles.ItemTags}>
         {collectionItem.items.some(isVesselOfHatredItem) && (
           <div className={styles.ItemTag}>
