@@ -8,6 +8,7 @@ import {
   loadBundle,
   namedQuery,
   query as firestoreQuery,
+  runTransaction,
   setDoc,
   updateDoc,
   where,
@@ -125,6 +126,14 @@ async function getCatalogCollectionNodeRef(collectionId: string) {
   const firestore = await getCatalogFirestore();
   const versionId = await resolveCatalogVersionId();
 
+  return getCatalogCollectionNodeDocRef(firestore, versionId, collectionId);
+}
+
+function getCatalogCollectionNodeDocRef(
+  firestore: Awaited<ReturnType<typeof getCatalogFirestore>>,
+  versionId: string,
+  collectionId: string,
+) {
   return doc(
     firestore,
     CATALOG_COLLECTION,
@@ -771,6 +780,106 @@ export async function deleteCatalogCollectionItem(
 
   await updateDoc(collectionRef, {
     collectionItems: collectionItems.filter((_, index) => index !== itemIndex),
+  });
+}
+
+export function moveCatalogCollectionItemRefs(
+  sourceCollectionId: string,
+  sourceCollectionItems: CollectionItemRef[],
+  targetCollectionItems: CollectionItemRef[],
+  originalCollectionItemId: number,
+  collectionItem: CollectionItemRef,
+): {
+  sourceCollectionItems: CollectionItemRef[];
+  targetCollectionItems: CollectionItemRef[];
+} {
+  const sourceCollectionItemsWithTransientIds =
+    assignTransientCollectionItemIds(sourceCollectionId, sourceCollectionItems);
+  const itemIndex = sourceCollectionItemsWithTransientIds.findIndex(
+    (item) => item.id === originalCollectionItemId,
+  );
+
+  if (itemIndex === -1) {
+    throw new Error(
+      `[Catalog] Collection item ${originalCollectionItemId} was not found in collection ${sourceCollectionId}.`,
+    );
+  }
+
+  return {
+    sourceCollectionItems: sourceCollectionItems.filter(
+      (_, index) => index !== itemIndex,
+    ),
+    targetCollectionItems: [...targetCollectionItems, collectionItem],
+  };
+}
+
+export async function moveCatalogCollectionItem(
+  sourceCollectionId: string,
+  originalCollectionItemId: number,
+  targetCollectionId: string,
+  collectionItem: CollectionItemRef,
+): Promise<void> {
+  if (sourceCollectionId === targetCollectionId) {
+    await updateCatalogCollectionItem(
+      sourceCollectionId,
+      originalCollectionItemId,
+      collectionItem,
+    );
+    return;
+  }
+
+  const firestore = await getCatalogFirestore();
+  const versionId = await resolveCatalogVersionId();
+  const sourceCollectionRef = getCatalogCollectionNodeDocRef(
+    firestore,
+    versionId,
+    sourceCollectionId,
+  );
+  const targetCollectionRef = getCatalogCollectionNodeDocRef(
+    firestore,
+    versionId,
+    targetCollectionId,
+  );
+
+  await runTransaction(firestore, async (transaction) => {
+    const sourceSnapshot = await transaction.get(sourceCollectionRef);
+    const targetSnapshot = await transaction.get(targetCollectionRef);
+
+    if (!sourceSnapshot.exists()) {
+      throw new Error(
+        `[Catalog] Missing collection node ${sourceCollectionId}.`,
+      );
+    }
+
+    if (!targetSnapshot.exists()) {
+      throw new Error(
+        `[Catalog] Missing collection node ${targetCollectionId}.`,
+      );
+    }
+
+    const sourceData = sourceSnapshot.data() as CatalogCollectionDoc;
+    const targetData = targetSnapshot.data() as CatalogCollectionDoc;
+
+    if (sourceData.rootCategory !== targetData.rootCategory) {
+      throw new Error(
+        "[Catalog] Collection items cannot be moved across categories.",
+      );
+    }
+
+    const nextCollectionItems = moveCatalogCollectionItemRefs(
+      sourceCollectionId,
+      sourceData.collectionItems ?? [],
+      targetData.collectionItems ?? [],
+      originalCollectionItemId,
+      collectionItem,
+    );
+
+    transaction.update(sourceCollectionRef, {
+      collectionItems: nextCollectionItems.sourceCollectionItems,
+    });
+    transaction.update(targetCollectionRef, {
+      collectionItems: nextCollectionItems.targetCollectionItems,
+    });
   });
 }
 

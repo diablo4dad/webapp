@@ -10,11 +10,13 @@ import {
   addCatalogCollectionItem,
   deleteCatalogCollectionItem,
   fetchHybridDadDbRef,
+  moveCatalogCollectionItem,
   updateCatalogCollectionItem,
 } from "../store/catalog";
 import {
   CharacterClass,
   Chest,
+  Collection,
   CollectionItem,
   CollectionItemRef,
   Item,
@@ -102,6 +104,12 @@ type ItemGroupOption = {
   value: ItemGroup;
 };
 
+type CollectionOption = {
+  disabled: boolean;
+  id: string;
+  label: string;
+};
+
 type PreviewTag = {
   icon: string;
   label: string;
@@ -158,6 +166,7 @@ function getItemDisplayName(item: Item): string {
 type EditorInitialState = {
   form: FormState;
   selectedItems: Item[];
+  targetCollectionId: string;
 };
 
 function buildCollectionItemRef(
@@ -212,11 +221,13 @@ function buildCollectionItem(
 
 function createInitialState(
   collectionItem?: CollectionItem,
+  collectionId = "",
 ): EditorInitialState {
   if (!collectionItem) {
     return {
       form: initialForm,
       selectedItems: [],
+      targetCollectionId: collectionId,
     };
   }
 
@@ -244,6 +255,7 @@ function createInitialState(
       useBaseItemName: collectionItem.useBaseItemName ?? false,
     },
     selectedItems: collectionItem.items,
+    targetCollectionId: collectionId,
   };
 }
 
@@ -251,11 +263,13 @@ function hasEditorChanges(
   initialState: EditorInitialState,
   form: FormState,
   selectedItems: Item[],
+  targetCollectionId: string,
 ): boolean {
   return (
     JSON.stringify(initialState.form) !== JSON.stringify(form) ||
     initialState.selectedItems.map((item) => item.id).join(",") !==
-      selectedItems.map((item) => item.id).join(",")
+      selectedItems.map((item) => item.id).join(",") ||
+    initialState.targetCollectionId !== targetCollectionId
   );
 }
 
@@ -331,6 +345,42 @@ function getItemPreviewTags(item: Item | undefined): PreviewTag[] {
   return tags;
 }
 
+function getCollectionCategory(collection?: Collection): string | undefined {
+  return collection?.rootCategory ?? collection?.category;
+}
+
+function buildCollectionOptions(
+  collections: Collection[],
+  activeCollection?: Collection,
+): CollectionOption[] {
+  const activeCategory = getCollectionCategory(activeCollection);
+
+  if (!activeCategory) {
+    return [];
+  }
+
+  return collections
+    .filter((collection) => getCollectionCategory(collection) === activeCategory)
+    .flatMap((collection) => {
+      const options: CollectionOption[] = [
+        {
+          disabled: collection.subcollections.length > 0,
+          id: collection.id,
+          label: collection.name,
+        },
+      ];
+
+      return [
+        ...options,
+        ...collection.subcollections.map((subcollection) => ({
+          disabled: subcollection.subcollections.length > 0,
+          id: subcollection.id,
+          label: `${collection.name} / ${subcollection.name}`,
+        })),
+      ];
+    });
+}
+
 function CollectionItemEditor() {
   const { db, setCatalogCategoryDb } = useData();
   const { activeCollectionItemEditor, closeCollectionItemEditor } = useEditor();
@@ -339,9 +389,11 @@ function CollectionItemEditor() {
   const [itemGroup, setItemGroup] = useState<ItemGroup | "">("");
   const [itemSearch, setItemSearch] = useState("");
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+  const [targetCollectionId, setTargetCollectionId] = useState("");
   const [initialState, setInitialState] = useState<EditorInitialState>({
     form: initialForm,
     selectedItems: [],
+    targetCollectionId: "",
   });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -352,12 +404,16 @@ function CollectionItemEditor() {
   const isEditingExisting = activeCollectionItemEditor?.mode === "edit";
 
   useEffect(() => {
-    const nextInitialState = createInitialState(activeCollectionItem);
+    const nextInitialState = createInitialState(
+      activeCollectionItem,
+      activeCollection?.id ?? "",
+    );
     setInitialState(nextInitialState);
     setForm(nextInitialState.form);
     setItemGroup("");
     setItemSearch("");
     setSelectedItems(nextInitialState.selectedItems);
+    setTargetCollectionId(nextInitialState.targetCollectionId);
     setError(undefined);
     setSaving(false);
     setDeleting(false);
@@ -393,6 +449,13 @@ function CollectionItemEditor() {
       ).sort((a, b) => a.localeCompare(b)),
     [db.collections],
   );
+  const collectionOptions = useMemo(
+    () => buildCollectionOptions(db.collections, activeCollection),
+    [activeCollection, db.collections],
+  );
+  const targetCollectionOption = collectionOptions.find(
+    (option) => option.id === targetCollectionId,
+  );
   const normalizedSearch = itemSearch.trim().toLowerCase();
   const matchingItems = useMemo(() => {
     const collectionItemFilter = createCollectionItemSettingsFilter(
@@ -427,9 +490,15 @@ function CollectionItemEditor() {
     settings,
   ]);
 
-  const canSave = selectedItems.length > 0 && form.claim.trim().length > 0;
+  const canSave =
+    selectedItems.length > 0 &&
+    form.claim.trim().length > 0 &&
+    (!isEditingExisting ||
+      (targetCollectionOption !== undefined &&
+        !targetCollectionOption.disabled));
   const canUndo =
-    isEditingExisting && hasEditorChanges(initialState, form, selectedItems);
+    isEditingExisting &&
+    hasEditorChanges(initialState, form, selectedItems, targetCollectionId);
   const isCompactPreview = selectedItems.length > 1;
   const hasSelectedTransmogName = selectedItems.some(
     (item) => (item.transmogName?.trim().length ?? 0) > 0,
@@ -495,6 +564,7 @@ function CollectionItemEditor() {
   function undoChanges() {
     setForm(initialState.form);
     setSelectedItems(initialState.selectedItems);
+    setTargetCollectionId(initialState.targetCollectionId);
     setError(undefined);
   }
 
@@ -511,11 +581,27 @@ function CollectionItemEditor() {
     try {
       const collectionItem = buildCollectionItemRef(form, selectedItems);
       if (isEditingExisting && activeCollectionItem) {
-        await updateCatalogCollectionItem(
-          activeCollection.id,
-          activeCollectionItem.id,
-          collectionItem,
-        );
+        if (
+          targetCollectionOption === undefined ||
+          targetCollectionOption.disabled
+        ) {
+          throw new Error("[Catalog] Select a valid destination collection.");
+        }
+
+        if (targetCollectionId === activeCollection.id) {
+          await updateCatalogCollectionItem(
+            activeCollection.id,
+            activeCollectionItem.id,
+            collectionItem,
+          );
+        } else {
+          await moveCatalogCollectionItem(
+            activeCollection.id,
+            activeCollectionItem.id,
+            targetCollectionId,
+            collectionItem,
+          );
+        }
       } else {
         await addCatalogCollectionItem(activeCollection.id, collectionItem);
       }
@@ -728,6 +814,41 @@ function CollectionItemEditor() {
                 })
               )}
             </div>
+
+            {isEditingExisting && (
+              <section className={styles.Section}>
+                <label
+                  className={styles.Label}
+                  htmlFor="collection-item-target-collection"
+                >
+                  Collection
+                </label>
+                <select
+                  id="collection-item-target-collection"
+                  className={styles.Input}
+                  value={targetCollectionId}
+                  onChange={(event) =>
+                    setTargetCollectionId(event.target.value)
+                  }
+                  required
+                >
+                  {collectionOptions.length === 0 && (
+                    <option value="">No collections available</option>
+                  )}
+                  {collectionOptions.map((option) => (
+                    <option
+                      key={option.id}
+                      value={option.id}
+                      disabled={option.disabled}
+                    >
+                      {option.disabled
+                        ? `${option.label} (contains subcollections)`
+                        : option.label}
+                    </option>
+                  ))}
+                </select>
+              </section>
+            )}
 
             {!isEditingExisting && (
               <section className={styles.Section}>

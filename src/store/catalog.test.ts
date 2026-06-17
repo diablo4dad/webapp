@@ -3,6 +3,7 @@ import {
   CatalogCollectionDoc,
   getCatalogCollectionNodesBundleName,
   getCatalogCollectionNodesBundleUrl,
+  moveCatalogCollectionItemRefs,
   reorderCatalogCollectionNodes,
   reorderCatalogCollectionItems,
 } from "./catalog";
@@ -201,6 +202,63 @@ describe("reorderCatalogCollectionItems", () => {
         99,
       ]),
     ).toThrow("was not found in the current collection order");
+  });
+});
+
+describe("moveCatalogCollectionItemRefs", () => {
+  const sourceCollectionId = "source";
+  const targetCollectionItems = [
+    {
+      claim: "Shop",
+      items: [201],
+    },
+  ];
+  const sourceCollectionItems = [
+    {
+      claim: "World Drop",
+      items: [101],
+    },
+    {
+      claim: "Dungeon",
+      items: [102],
+    },
+  ];
+  const transientIds = assignTransientCollectionItemIds(
+    sourceCollectionId,
+    sourceCollectionItems,
+  ).map((item) => item.id);
+
+  test("removes an item from the source collection and appends it to the target collection", () => {
+    const updatedCollectionItem = {
+      claim: "Updated",
+      items: [103],
+      useBaseItemName: true,
+    };
+    const result = moveCatalogCollectionItemRefs(
+      sourceCollectionId,
+      sourceCollectionItems,
+      targetCollectionItems,
+      transientIds[1],
+      updatedCollectionItem,
+    );
+
+    expect(result.sourceCollectionItems).toEqual([sourceCollectionItems[0]]);
+    expect(result.targetCollectionItems).toEqual([
+      targetCollectionItems[0],
+      updatedCollectionItem,
+    ]);
+  });
+
+  test("throws when the source item is missing", () => {
+    expect(() =>
+      moveCatalogCollectionItemRefs(
+        sourceCollectionId,
+        sourceCollectionItems,
+        targetCollectionItems,
+        99,
+        sourceCollectionItems[0],
+      ),
+    ).toThrow("was not found in collection source");
   });
 });
 
