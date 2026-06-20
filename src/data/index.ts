@@ -19,6 +19,7 @@ export enum MagicType {
   UNIQUE,
   MAGIC,
   MYTHIC,
+  RARE,
 }
 
 export enum Zone {

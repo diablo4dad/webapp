@@ -115,14 +115,16 @@ const magicTypeCssMap = new Map<MagicType, string>([
   [MagicType.LEGENDARY, styles.ItemMagicTypeLegendary],
   [MagicType.UNIQUE, styles.ItemMagicTypeUnique],
   [MagicType.MYTHIC, styles.ItemMagicTypeMythic],
+  [MagicType.RARE, styles.ItemMagicTypeRare],
 ]);
 
 const magicTypeSortOrder = new Map<MagicType, number>([
   [MagicType.COMMON, 0],
-  [MagicType.MAGIC, 0],
-  [MagicType.LEGENDARY, 1],
-  [MagicType.UNIQUE, 2],
-  [MagicType.MYTHIC, 3],
+  [MagicType.MAGIC, 1],
+  [MagicType.RARE, 2],
+  [MagicType.LEGENDARY, 3],
+  [MagicType.UNIQUE, 4],
+  [MagicType.MYTHIC, 5],
 ]);
 
 function getMagicTypeSortRank(item: Item): number {

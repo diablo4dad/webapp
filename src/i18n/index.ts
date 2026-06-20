@@ -31,6 +31,7 @@ const I18N = {
     [MagicType.UNIQUE]: "Unique",
     [MagicType.MAGIC]: "Magic",
     [MagicType.MYTHIC]: "Mythic",
+    [MagicType.RARE]: "Rare",
   },
   region: {
     [Zone.FRACTURED_PEAKS]: "Fractured Peaks",
