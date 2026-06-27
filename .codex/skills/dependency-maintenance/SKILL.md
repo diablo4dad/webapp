@@ -7,6 +7,8 @@ description: Dependency and toolchain maintenance workflow. Use when updating np
 
 - Treat dependency changes as their own commit unless they are required by the active fix.
 - Check currently installed and locked versions before changing package ranges.
+- Keep `dependencies` limited to runtime app libraries; put test, type, lint, build, analysis, and local tooling packages in `devDependencies`.
+- Keep package entries alphabetized within each dependency group.
 - Review upstream release notes for major, Firebase, React, TypeScript, react-scripts, or Cypress updates before applying them.
 - Update `package-lock.json` with `package.json`; do not hand-edit lockfile content.
 - Check root app dependencies separately from `functions` dependencies.
