@@ -19,7 +19,8 @@ This repository is being brought back to health incrementally. Favor technical p
 ## Verification
 
 - Run the smallest meaningful verification for each change.
-- Current baseline for behavior changes: `npm test -- --watchAll=false`.
+- Current baseline for behavior changes: `npm test`.
+- Use `npm run check` before handing over dependency, toolchain, or broad refactor changes.
 - Use `npm run build` when touching routing, app bootstrapping, TypeScript boundaries, dependencies, or production-facing behavior.
 - Use Cypress or a browser check when changing core UI workflows.
 - Report any verification skipped and why.

@@ -15,5 +15,5 @@ description: Dependency and toolchain maintenance workflow. Use when updating np
 - Review upstream release notes for major, Firebase, React, TypeScript, react-scripts, or Cypress updates before applying them.
 - Update `package-lock.json` with `package.json`; do not hand-edit lockfile content.
 - Check root app dependencies separately from `functions` dependencies.
-- Verify browser app changes with `npm test`; use `npm run build` for dependency or TypeScript/toolchain changes.
+- Verify dependency or toolchain changes with `npm run check` unless the user asks for a narrower gate.
 - Call out migrations, deprecations, or follow-up risks in the final response.

@@ -7,6 +7,7 @@ description: Testing and verification workflow for this repository. Use when cha
 
 - Identify the smallest verification that can catch the changed risk.
 - Current baseline for code behavior is `npm test`.
+- Use `npm run check` before handing over dependency, toolchain, or broad refactor changes.
 - Run focused Vitest tests first when a nearby test exists; broaden to the full test suite before finishing behavior changes.
 - Use `npm run build` when touching app bootstrapping, routing, TypeScript boundaries, dependencies, production config, or Firebase integration.
 - Use Cypress or browser verification for critical user workflows that Jest does not cover.
