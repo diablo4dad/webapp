@@ -4,6 +4,9 @@ node_modules
 functions/.env.local
 firestore-debug.log
 tmp/
+cypress/downloads/
+cypress/screenshots/
+cypress/videos/
 public/icons
 public/collection.json
 /build/
