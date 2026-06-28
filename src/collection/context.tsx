@@ -3,9 +3,7 @@ import {
   Dispatch,
   PropsWithChildren,
   useContext,
-  useEffect,
   useReducer,
-  useRef,
 } from "react";
 
 import { CollectionLog } from "./type";
@@ -51,7 +49,6 @@ export const CollectionDispatchContext =
   createContext<Dispatch<CollectionAction>>(defaultDispatch);
 
 export function CollectionProvider({ children, collection }: Props) {
-  const loaded = useRef(false);
   const [value, dispatch] = useReducer(
     collectionReducer,
     collection ?? defaultCollection,

@@ -31,10 +31,6 @@ import { useEditor } from "./context";
 import { ItemGroup, MasterGroup, catalogGroups, itemGroups } from "../common";
 import { enumKeys } from "../common/enums";
 import { createCollectionItemSettingsFilter } from "../data/filters";
-import {
-  doesHaveWardrobePlaceholder,
-  isVesselOfHatredItem,
-} from "../data/predicates";
 import { useSettings } from "../settings/context";
 import {
   canSelectCollectionItem,
@@ -50,13 +46,7 @@ import rogue from "../image/classes/rogue.webp";
 import sorceress from "../image/classes/sorcerer.webp";
 import spiritborn from "../image/classes/spiritborn.webp";
 import warlock from "../image/classes/warlock.webp";
-import expansion from "../image/logo/d4ico_x1.png";
-import unobtainable from "../image/miniico/mystery.webp";
-import premium from "../image/miniico/purse.webp";
-import season from "../image/miniico/season.webp";
 import series from "../image/miniico/series.webp";
-import oor from "../image/miniico/skull.webp";
-import wardrobe from "../image/miniico/wardrobe.webp";
 import transmog from "../image/icons/transmog.webp";
 import placeholder from "../image/placeholder.webp";
 import DeleteConfirmationModal from "../components/DeleteConfirmationModal";

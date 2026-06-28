@@ -121,7 +121,7 @@ export function selectCollectionItem(
   }
 
   if (isPlayerTitle(candidateItem)) {
-    if (currentItems.length === 0 || currentItems.every(isPlayerTitle)) {
+    if (currentItems.every(isPlayerTitle)) {
       return [...currentItems, candidateItem].slice(-2);
     }
 

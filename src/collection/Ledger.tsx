@@ -38,7 +38,6 @@ import {
   countItemsInCollectionOwned,
 } from "./aggregate";
 import { onTouchStart } from "../common/dom";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import placeholder from "../image/placeholder.webp";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { useSettings } from "../settings/context";
@@ -684,6 +683,21 @@ function moveCollectionIdToIndex(
   return nextCollectionIds;
 }
 
+function getCollectionIdsForDropList(listElement: HTMLElement): string[] {
+  return Array.from(
+    listElement.querySelectorAll<HTMLElement>(
+      "[data-collection-reorder-item='true']",
+    ),
+  )
+    .filter(
+      (itemElement) =>
+        itemElement.closest("[data-collection-drop-list='true']") ===
+        listElement,
+    )
+    .map((itemElement) => itemElement.dataset.collectionId)
+    .filter((collectionId): collectionId is string => Boolean(collectionId));
+}
+
 const Ledger = ({
   collections,
   collectionDragController,
@@ -758,21 +772,6 @@ const Ledger = ({
     }
 
     return draggedCollection.subcollections.length === 0;
-  }
-
-  function getCollectionIdsForDropList(listElement: HTMLElement): string[] {
-    return Array.from(
-      listElement.querySelectorAll<HTMLElement>(
-        "[data-collection-reorder-item='true']",
-      ),
-    )
-      .filter(
-        (itemElement) =>
-          itemElement.closest("[data-collection-drop-list='true']") ===
-          listElement,
-      )
-      .map((itemElement) => itemElement.dataset.collectionId)
-      .filter((collectionId): collectionId is string => Boolean(collectionId));
   }
 
   function beginCollectionReorder(

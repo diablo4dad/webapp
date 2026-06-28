@@ -7,7 +7,7 @@ function LedgerSkeleton() {
 
   return (
     <div className={classNameStr}>
-      {new Array(5).fill(0).map((_, k) => (
+      {Array.from({ length: 5 }, (_, k) => (
         <div className={styles.LedgerHeader} key={k}>
           <div className={styles.LedgerButton}>
             <div>

@@ -4,11 +4,6 @@ import { Outlet } from "react-router-dom";
 import Account, { Direction } from "../auth/Account";
 import Authenticate, { Orientation } from "../auth/Authenticate";
 import { useAuth } from "../auth/context";
-import {
-  countItemInDbHidden,
-  countItemInDbOwned,
-} from "../collection/aggregate";
-import { useCollection } from "../collection/context";
 import { ContentType } from "../common";
 import Button, { BtnColours } from "../components/Button";
 import { DiscordInvite } from "../components/DiscordPanel";
@@ -22,7 +17,6 @@ import {
 import Search from "../components/Search";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
 import { VersionInfo } from "../components/VersionPanel";
-import { countAllItemsDabDb } from "../data/aggregate";
 import { useData } from "../data/context";
 import i18n from "../i18n";
 import logo from "../image/d4dad-badge@1x.png";
@@ -37,19 +31,13 @@ import styles from "./Root.module.css";
 
 function Root(): ReactElement<HTMLDivElement> {
   const {
-    countedDb,
     searchTerm,
     setSearchTerm,
     setSidebarVisibility,
     sidebarVisibility,
   } = useData();
-  const log = useCollection();
   const { user, signIn, signOut } = useAuth();
   const { canEditCatalog, isEditMode, toggleEditMode } = useEditor();
-
-  const itemsCollected = countItemInDbOwned(log, countedDb);
-  const itemsTotal =
-    countAllItemsDabDb(countedDb) - countItemInDbHidden(log, countedDb);
 
   // preload to prevent jank
   useEffect(() => {

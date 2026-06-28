@@ -1,4 +1,3 @@
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import EmptyCollection from "../collection/EmptyCollection";
 import Welcome from "../collection/Welcome";
 import ItemSidebar from "../collection/ItemSidebar";

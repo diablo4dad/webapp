@@ -178,11 +178,11 @@ function runCollectionLogMigrationsPreV170(store: StoreData): StoreData {
       }
 
       if (e.collected) {
-        lookup.map((v: String) => collected.add(Number(v)));
+        lookup.map((v: string) => collected.add(Number(v)));
       }
 
       if (e.hidden) {
-        lookup.map((v: String) => hidden.add(Number(v)));
+        lookup.map((v: string) => hidden.add(Number(v)));
       }
     });
 

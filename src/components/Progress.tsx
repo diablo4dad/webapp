@@ -14,9 +14,9 @@ function Progress({ totalCollected, collectionSize }: Props) {
       <div className={styles.ProgressBar}>
         <span
           className={styles.ProgressBarFill}
-          style={{ width: "max(" + percentage + "%" + ", 3rem)" }}
+          style={{ width: `max(${percentage}%, 3rem)` }}
         >
-          {percentage + "%"}
+          {`${percentage}%`}
         </span>
       </div>
       <div className={styles.ProgressTicker}>

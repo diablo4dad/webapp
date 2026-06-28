@@ -4,18 +4,14 @@ import React, { HTMLProps, ReactNode } from "react";
 type Props = HTMLProps<HTMLDivElement> & {
   header?: ReactNode;
   stickyTop?: ReactNode;
-  sidebar?: ReactNode;
   main?: ReactNode;
-  stickyBottom?: ReactNode;
   footer?: ReactNode;
 };
 
 function Shell({
   header,
   stickyTop,
-  sidebar,
   main,
-  stickyBottom,
   footer,
   ...props
 }: Props) {
