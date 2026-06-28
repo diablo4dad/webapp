@@ -10,6 +10,7 @@ description: Dependency and toolchain maintenance workflow. Use when updating np
 - Keep `dependencies` limited to runtime app libraries; put test, type, lint, build, analysis, and local tooling packages in `devDependencies`.
 - Keep package entries alphabetized within each dependency group.
 - Prefer incremental toolchain migrations with an explicit user evaluation gate after each phase.
+- Apply audit fixes incrementally: run non-forced fixes first, and treat forced major upgrades as separate review gates.
 - Treat Oxlint as an evaluated lint layer until explicitly promoted; do not remove other quality gates just because Oxlint passes.
 - Target Node.js 22 for the browser toolchain and Firebase Cloud Functions runtime unless the user explicitly revises the runtime policy.
 - Review upstream release notes for major, Firebase, React, TypeScript, react-scripts, or Cypress updates before applying them.
