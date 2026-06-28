@@ -69,7 +69,7 @@ import { useData } from "../data/context";
 import { MasterGroup } from "../common";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
-  return dci.items.some((di) => di.usableByClass?.[clazz] === 1 ?? false);
+  return dci.items.some((di) => di.usableByClass?.[clazz] === 1);
 }
 
 type ItemProps = {

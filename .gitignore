@@ -1,4 +1,9 @@
 node_modules
+.idea/
+.env.local
+functions/.env.local
+firestore-debug.log
+tmp/
 public/icons
 public/collection.json
 /build/
