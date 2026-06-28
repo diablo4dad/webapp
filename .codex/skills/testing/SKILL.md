@@ -6,8 +6,8 @@ description: Testing and verification workflow for this repository. Use when cha
 # Testing
 
 - Identify the smallest verification that can catch the changed risk.
-- Current baseline for code behavior is `npm test -- --watchAll=false`.
-- Run focused Jest tests first when a nearby test exists; broaden to the full non-watch test suite before finishing behavior changes.
+- Current baseline for code behavior is `npm test`.
+- Run focused Vitest tests first when a nearby test exists; broaden to the full test suite before finishing behavior changes.
 - Use `npm run build` when touching app bootstrapping, routing, TypeScript boundaries, dependencies, production config, or Firebase integration.
 - Use Cypress or browser verification for critical user workflows that Jest does not cover.
 - Keep tests close to pure logic where possible; isolate Firebase, localStorage, DOM size, and image-loading dependencies behind fixtures or existing boundaries.

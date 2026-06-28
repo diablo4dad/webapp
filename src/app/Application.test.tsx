@@ -1,10 +1,11 @@
 import React from "react";
 import { act, render } from "@testing-library/react";
+import { vi } from "vitest";
 import { Application } from "./Application";
 
-jest.mock("../store/catalog", () => ({
+vi.mock("../store/catalog", () => ({
   __esModule: true,
-  fetchHybridDadDbRef: jest.fn(() =>
+  fetchHybridDadDbRef: vi.fn(() =>
     Promise.resolve({
       collections: [],
       items: [],
