@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "private": true,
   "engines": {
-    "node": ">=22 <23"
+    "node": ">=22.22.1 <23"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",
@@ -73,7 +73,7 @@
     "cypress": "^15.18.0",
     "husky": "^9.0.11",
     "jsdom": "^29.1.1",
-    "lint-staged": "^15.2.7",
+    "lint-staged": "^17.0.8",
     "oxlint": "^1.71.0",
     "prettier": "^3.3.2",
     "source-map-explorer": "^2.5.3",
