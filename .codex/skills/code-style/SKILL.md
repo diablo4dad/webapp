@@ -5,7 +5,7 @@ description: Code style and TypeScript/React conventions for this repository. Us
 
 # Code Style
 
-- Follow existing Create React App, React 18, TypeScript strict-mode style.
+- Follow existing Vite, React 19, TypeScript strict-mode style.
 - Use `.tsx` for React components and `.ts` for non-React logic.
 - Prefer named exports for reusable logic unless nearby code uses a default export.
 - Keep provider, reducer, predicate, getter, and persistence logic in their existing module families.
