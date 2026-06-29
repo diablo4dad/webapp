@@ -3,7 +3,7 @@ import { Settings } from "../settings/type";
 import { defaultSettings } from "../settings/context";
 import { CollectionLog } from "../collection/type";
 import { defaultCollection } from "../collection/context";
-import type { ViewModel } from "../routes/CollectionLog";
+import type { CollectionLogViewModel } from "../routes/collection-log/state";
 
 const VM_KEY = "vm";
 const VERSION_KEY = "version";
@@ -32,13 +32,13 @@ export function saveSettings(settings: Settings) {
   setValueInStorage(SETTINGS_KEY, settings);
 }
 
-export function getViewModel(): ViewModel {
+export function getViewModel(): CollectionLogViewModel {
   return getValueFromStorage(VM_KEY, {
     openCollections: [],
   });
 }
 
-export function saveViewModel(vm: ViewModel) {
+export function saveViewModel(vm: CollectionLogViewModel) {
   setValueInStorage(VM_KEY, vm);
 }
 

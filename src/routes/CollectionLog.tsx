@@ -24,10 +24,7 @@ import { useAuth } from "../auth/context";
 import { useEditor } from "../editor/context";
 import { getCatalogRouteLoadPlan } from "./collection-log/loading";
 import { slugToGroup } from "./collection-log/links";
-
-export type ViewModel = {
-  openCollections: string[];
-};
+import type { CollectionLogViewModel } from "./collection-log/state";
 
 export type Params = {
   params: {
@@ -64,7 +61,7 @@ export function CollectionView() {
   } = useData();
   const { isLoading: isAuthLoading } = useAuth();
   const { canEditCatalog } = useEditor();
-  const [vm, setVm] = useState<ViewModel>(getViewModel());
+  const [vm, setVm] = useState<CollectionLogViewModel>(getViewModel());
   const [isCatalogLoading, setIsCatalogLoading] = useState(false);
   const [catalogError, setCatalogError] = useState<string>();
   const focusItem = selectItemOrDefault(db.collections, focusItemId);
