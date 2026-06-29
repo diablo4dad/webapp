@@ -711,8 +711,12 @@ const Ledger = ({
 }: Props) => {
   const { db, group, searchTerm, setDb } = useData();
   const { isEditMode, openCollectionCreator } = useEditor();
-  const collectionDragStateRef = useRef<CollectionDragState>();
-  const collectionDragScrollTargetRef = useRef<DragScrollTarget>();
+  const collectionDragStateRef = useRef<CollectionDragState | undefined>(
+    undefined,
+  );
+  const collectionDragScrollTargetRef = useRef<DragScrollTarget | undefined>(
+    undefined,
+  );
   const [collectionDragState, setCollectionDragState] =
     useState<CollectionDragState>();
   const [collectionReordering, setCollectionReordering] = useState(false);
@@ -1174,10 +1178,12 @@ const LedgerInner = ({
     openCollectionEditor,
     openCollectionItemEditor,
   } = useEditor();
-  const toggleCountDown = useRef<NodeJS.Timeout | undefined>();
+  const toggleCountDown = useRef<NodeJS.Timeout | undefined>(undefined);
   const itemListRef = useRef<HTMLDivElement>(null);
-  const dragStateRef = useRef<ItemDragState>();
-  const itemDragScrollTargetRef = useRef<DragScrollTarget>();
+  const dragStateRef = useRef<ItemDragState | undefined>(undefined);
+  const itemDragScrollTargetRef = useRef<DragScrollTarget | undefined>(
+    undefined,
+  );
   const suppressItemClickRef = useRef(false);
   const [dragState, setDragState] = useState<ItemDragState>();
   const [isReordering, setIsReordering] = useState(false);

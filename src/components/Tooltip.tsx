@@ -121,14 +121,23 @@ export const TooltipTrigger = React.forwardRef<
 
   // `asChild` allows the user to pass any element as the anchor
   if (asChild && React.isValidElement(children)) {
+    type TriggerProps = React.HTMLProps<HTMLElement> & {
+      "data-state": "open" | "closed";
+    };
+    const child = children as React.ReactElement<TriggerProps>;
+    const childProps = child.props;
+    const referenceProps = context.getReferenceProps({
+      ref,
+      ...props,
+      ...childProps,
+    });
+
     return React.cloneElement(
-      children,
-      context.getReferenceProps({
-        ref,
-        ...props,
-        ...children.props,
+      child,
+      {
+        ...referenceProps,
         "data-state": context.open ? "open" : "closed",
-      }),
+      } satisfies TriggerProps,
     );
   }
 
