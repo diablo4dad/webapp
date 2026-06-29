@@ -9,6 +9,9 @@ description: Dependency and toolchain maintenance workflow. Use when updating np
 - Check currently installed and locked versions before changing package ranges.
 - Keep `dependencies` limited to runtime app libraries; put test, type, lint, build, analysis, and local tooling packages in `devDependencies`.
 - Keep package entries alphabetized within each dependency group.
+- Prefer self-authored code and existing local primitives before adding runtime dependencies; add a package only when it clearly pays for its bundle, maintenance, accessibility, or correctness cost.
+- During refactors, look for redundant dependencies and duplicated helper code that can be removed in a separate cleanup gate.
+- Remove unused packages from both `package.json` and `package-lock.json`; verify no imports remain before handing over.
 - Prefer incremental toolchain migrations with an explicit user evaluation gate after each phase.
 - Apply audit fixes incrementally: run non-forced fixes first, and treat forced major upgrades as separate review gates.
 - Treat Oxlint as an evaluated lint layer until explicitly promoted; do not remove other quality gates just because Oxlint passes.
