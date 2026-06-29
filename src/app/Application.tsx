@@ -15,6 +15,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    HydrateFallback,
     children: [
       {
         index: true,
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
+function HydrateFallback() {
+  return null;
+}
 
 export function Application() {
   // Run LocalStorage migrations
