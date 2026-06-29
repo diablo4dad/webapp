@@ -9,6 +9,8 @@ description: Testing and verification workflow for this repository. Use when cha
 - Current baseline for code behavior is `npm test`.
 - Use `npm run check` before handing over dependency, toolchain, or broad refactor changes.
 - Run focused Vitest tests first when a nearby test exists; broaden to the full test suite before finishing behavior changes.
+- Add characterization tests before splitting or moving risky modules, especially large components, providers, persistence adapters, reducers, routing, or async loading flows.
+- Prefer tests around pure planners, reducers, selectors, and adapters before component rewrites; keep UI tests focused on behavior that pure tests cannot cover.
 - Use `npm run build` when touching app bootstrapping, routing, TypeScript boundaries, dependencies, production config, or Firebase integration.
 - Use `npm run e2e` or browser verification for critical user workflows that Vitest does not cover; `npm run e2e` starts Vite and runs Cypress headless.
 - Keep Cypress browser-exposed env disabled unless a test explicitly needs public, non-sensitive config.

@@ -16,6 +16,9 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 - Follow Twelve-Factor app principles for deploy-varying configuration: read service locators, feature flags, public client configuration, and secrets from environment/framework configuration rather than checked-in constants. Treat Firebase, storage, remote APIs, and other backing services as attached resources hidden behind config and adapters.
 - Prefer small typed functions for reducers, predicates, getters, migrations, and persistence adapters.
 - Prefer composition over monolithic feature components; assemble large features from focused components, hooks, reducers, and layout primitives.
+- For broad refactors, plan top-down but implement in feature slices. Define the intended boundary first, then refactor one module or workflow at a time.
+- Within a refactor slice, work from low-risk pure logic upward: extract typed helpers, add tests, then split container/view behavior, layout wrappers, async loading, and app-level composition only as needed.
+- Avoid starting broad refactors by rewiring `src/app`, providers, or routing unless the gate specifically requires it; app-level changes have high blast radius and should follow clearer feature boundaries.
 - Keep browser app changes separate from Cloud Functions changes unless the behavior spans both.
 - When paying down debt, separate mechanical moves, behavioral changes, dependency updates, and generated/static data refreshes into distinct commits.
 - Document any new durable architectural rule in this skill or `AGENTS.md`.
