@@ -10,7 +10,7 @@ import Ledger from "../collection/Ledger";
 import LedgerSkeleton from "../collection/LedgerSkeleton";
 import { toggleValueInArray } from "../common/arrays";
 import { Collection, CollectionItem } from "../data";
-import { MasterGroup, catalogGroups } from "../common";
+import { MasterGroup } from "../common";
 import React, { useEffect, useState } from "react";
 import { countAllItemsDabDb } from "../data/aggregate";
 import { selectCollectionById, selectItemOrDefault } from "../data/reducers";
@@ -22,6 +22,7 @@ import { hydrateDadDb } from "../data/factory";
 import { fetchHybridDadDbRefsByCategory } from "../store/catalog";
 import { useAuth } from "../auth/context";
 import { useEditor } from "../editor/context";
+import { getCatalogRouteLoadPlan } from "./collection-log/loading";
 
 export type ViewModel = {
   openCollections: string[];
@@ -102,19 +103,11 @@ export function CollectionView() {
     }
 
     let cancelled = false;
-    const source = canEditCatalog ? "firestore" : "bundle";
-    const targetGroups =
-      group === MasterGroup.UNIVERSAL ? catalogGroups : [group];
-    const groupsToFetch = targetGroups.filter((targetGroup) => {
-      if (!catalogGroups.some((category) => category === targetGroup)) {
-        return false;
-      }
-
-      if (source === "firestore") {
-        return catalogGroupSources[targetGroup] !== "firestore";
-      }
-
-      return !loadedCatalogGroups.includes(targetGroup);
+    const { groupsToFetch, source } = getCatalogRouteLoadPlan({
+      canEditCatalog,
+      catalogGroupSources,
+      group,
+      loadedCatalogGroups,
     });
 
     if (groupsToFetch.length === 0) {
