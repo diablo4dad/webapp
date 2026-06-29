@@ -3,7 +3,7 @@ import { Settings } from "../settings/type";
 import { defaultSettings } from "../settings/context";
 import { CollectionLog } from "../collection/type";
 import { defaultCollection } from "../collection/context";
-import { ViewModel } from "../routes/CollectionLog";
+import type { ViewModel } from "../routes/CollectionLog";
 
 const VM_KEY = "vm";
 const VERSION_KEY = "version";

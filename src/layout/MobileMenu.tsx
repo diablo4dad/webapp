@@ -4,7 +4,7 @@ import Account from "../auth/Account";
 import React from "react";
 import { ContentType, MasterGroup } from "../common";
 import { Link } from "react-router-dom";
-import { generateUrl } from "../routes/CollectionLog";
+import { generateUrl } from "../routes/collection-log/links";
 import { DadUser } from "../auth/type";
 
 type Props = {

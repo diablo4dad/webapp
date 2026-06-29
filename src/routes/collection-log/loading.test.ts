@@ -1,7 +1,7 @@
 import { MasterGroup, catalogGroups } from "../../common";
 import { getCatalogRouteLoadPlan } from "./loading";
 
-describe("getCatalogRouteLoadPlan", () => {
+describe("collection log route loading plan", () => {
   test("loads the active catalog group from the bundle for normal users", () => {
     const plan = getCatalogRouteLoadPlan({
       canEditCatalog: false,

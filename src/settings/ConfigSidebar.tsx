@@ -10,7 +10,7 @@ import { useData } from "../data/context";
 import { useCollection } from "../collection/context";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { ChevronRight } from "../components/Icons";
-import { generateUrl } from "../routes/CollectionLog";
+import { generateUrl } from "../routes/collection-log/links";
 import { useNavigate } from "react-router-dom";
 
 function ConfigSidebar() {

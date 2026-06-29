@@ -9,7 +9,7 @@ import ChallengeIcon from "../image/icons/dungeon.webp";
 import GlobalIcon from "../image/icons/wardrobe.webp";
 import { ChevronRight } from "../components/Icons";
 import { NavLink } from "react-router-dom";
-import { generateUrl } from "../routes/CollectionLog";
+import { generateUrl } from "../routes/collection-log/links";
 import classNames from "classnames";
 
 type Props = {
