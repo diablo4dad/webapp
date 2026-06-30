@@ -1,20 +1,8 @@
-import EmptyCollection from "../../collection/EmptyCollection";
-import Welcome from "../../collection/Welcome";
-import ItemSidebar from "../../collection/ItemSidebar";
-import ItemSidebarSkeleton from "../../collection/ItemSidebarSkeleton";
-import Progress from "../../collection/Progress";
-import Season from "../../collection/Season";
-import ConfigSidebar from "../../settings/ConfigSidebar";
-import styles from "./route.module.css";
-import Ledger from "../../collection/Ledger";
-import LedgerSkeleton from "../../collection/LedgerSkeleton";
 import { toggleValueInArray } from "../../common/arrays";
 import { Collection, CollectionItem } from "../../data";
 import { MasterGroup } from "../../common";
 import React, { useEffect, useState } from "react";
-import { countAllItemsDabDb } from "../../data/aggregate";
 import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
-import SidebarMain from "../../layout/SidebarMain";
 import { getViewModel, saveViewModel } from "../../store/local";
 import { useLoaderData } from "react-router-dom";
 import { useData } from "../../data/context";
@@ -25,6 +13,7 @@ import { useEditor } from "../../editor/context";
 import { getCatalogRouteLoadPlan } from "./loading";
 import { slugToGroup } from "./links";
 import type { CollectionLogViewModel } from "./state";
+import { CollectionLogView } from "./view";
 
 export type Params = {
   params: {
@@ -152,66 +141,29 @@ export function CollectionView() {
     setFocusCollectionId(collection.id);
   }
 
+  function onCollectionChange(collectionId: string, isOpen: boolean) {
+    setVm((vm) => ({
+      ...vm,
+      openCollections: toggleValueInArray(
+        vm.openCollections,
+        collectionId,
+        isOpen,
+      ),
+    }));
+  }
+
   return (
-    <SidebarMain
-      hero={
-        <div className={styles.HeroLayout}>
-          <Welcome />
-          <Season />
-          <Progress />
-        </div>
-      }
-      leftSidebar={
-        sidebarVisibility.showItem ? (
-          <div className={styles.MainSidebarPanel}>
-            {focusItemId === -1 ? (
-              <ItemSidebarSkeleton />
-            ) : (
-              <ItemSidebar
-                collectionItem={focusItem}
-                collection={focusCollection}
-              />
-            )}
-          </div>
-        ) : undefined
-      }
-      rightSidebar={
-        sidebarVisibility.showConfig ? (
-          <div className={styles.Sidebar}>
-            <div className={styles.SidebarContent}>
-              <ConfigSidebar />
-            </div>
-          </div>
-        ) : undefined
-      }
-      main={
-        <div className={styles.Content}>
-          {isAuthLoading || isCatalogLoading ? (
-            <LedgerSkeleton />
-          ) : catalogError ? (
-            <div className={styles.LoadError}>{catalogError}</div>
-          ) : (
-            <>
-              <Ledger
-                collections={filteredDb}
-                openCollections={vm.openCollections}
-                onClickItem={onClickItem}
-                onCollectionChange={(collectionId, isOpen) => {
-                  setVm((vm) => ({
-                    ...vm,
-                    openCollections: toggleValueInArray(
-                      vm.openCollections,
-                      collectionId,
-                      isOpen,
-                    ),
-                  }));
-                }}
-              />
-              {countAllItemsDabDb(filteredDb) === 0 && <EmptyCollection />}
-            </>
-          )}
-        </div>
-      }
-    ></SidebarMain>
+    <CollectionLogView
+      catalogError={catalogError}
+      collections={filteredDb}
+      focusCollection={focusCollection}
+      focusItem={focusItem}
+      focusItemId={focusItemId}
+      isLoading={isAuthLoading || isCatalogLoading}
+      onClickItem={onClickItem}
+      onCollectionChange={onCollectionChange}
+      openCollections={vm.openCollections}
+      sidebarVisibility={sidebarVisibility}
+    />
   );
 }

@@ -1,5 +1,5 @@
-import styles from "./SidebarMain.module.css";
-import React, { HTMLProps, ReactNode } from "react";
+import type { HTMLProps, ReactNode } from "react";
+import styles from "./layout.module.css";
 
 type Props = HTMLProps<HTMLDivElement> & {
   leftSidebar?: ReactNode;
@@ -8,7 +8,13 @@ type Props = HTMLProps<HTMLDivElement> & {
   hero?: ReactNode;
 };
 
-function SidebarMain({ leftSidebar, rightSidebar, main, hero, ...props }: Props) {
+export function CollectionLogLayout({
+  leftSidebar,
+  rightSidebar,
+  main,
+  hero,
+  ...props
+}: Props) {
   const contentClassName = [
     styles.Content,
     leftSidebar ? styles.ContentWithLeftSidebar : null,
@@ -42,5 +48,3 @@ function SidebarMain({ leftSidebar, rightSidebar, main, hero, ...props }: Props)
     </div>
   );
 }
-
-export default SidebarMain;
