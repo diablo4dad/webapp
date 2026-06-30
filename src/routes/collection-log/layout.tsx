@@ -2,10 +2,10 @@ import type { ReactNode } from "react";
 import styles from "./layout.module.css";
 
 type Props = {
+  hero: ReactNode;
+  main: ReactNode;
   leftSidebar?: ReactNode;
   rightSidebar?: ReactNode;
-  main?: ReactNode;
-  hero?: ReactNode;
 };
 
 export function CollectionLogLayout({
