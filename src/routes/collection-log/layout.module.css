@@ -34,7 +34,6 @@
     .Block {
         display: block;
         flex: auto;
-        flex-direction: column;
     }
 
     .Hero {
@@ -83,13 +82,7 @@
     }
 }
 
-
-
 @media screen and (min-width: 1600px) {
-    .Content {
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-
     .MainWithBothSidebars {
         grid-column: span 6;
     }
@@ -108,12 +101,7 @@
     }
 }
 
-
 @media screen and (min-width: 2600px) {
-    .Content {
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-
     .MainWithBothSidebars {
         grid-column: span 8;
     }
