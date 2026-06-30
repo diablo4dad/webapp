@@ -216,4 +216,16 @@ describe("mobile settings", () => {
     expect(screen.queryByText("Settings")).not.toBeInTheDocument();
     expect(screen.getByText("route outlet")).toBeInTheDocument();
   });
+
+  test("keeps settings drawer open when panel content is clicked", async () => {
+    const user = userEvent.setup();
+    renderRoot();
+    const buttons = screen.getAllByRole("button");
+    const mobileMenuButton = buttons[2];
+
+    await user.click(mobileMenuButton);
+    await user.click(screen.getByText("settings panel"));
+
+    expect(screen.getByText("Settings")).toBeInTheDocument();
+  });
 });

@@ -23,7 +23,12 @@ import i18n from "../../i18n";
 import logo from "../../image/d4dad-badge@1x.png";
 import ConfigSidebar from "../../settings/ConfigSidebar";
 import styles from "./route.module.css";
-import { RootHeaderLayout, RootLayout } from "./layout";
+import {
+  RootHeaderLayout,
+  RootLayout,
+  RootMobileDrawerLayout,
+  RootMobileSearchOverlayLayout,
+} from "./layout";
 
 type Props = {
   canEditCatalog: boolean;
@@ -317,52 +322,47 @@ function MobileSearchOverlay({
   searchTerm,
 }: MobileSearchOverlayProps) {
   return (
-    <div className={styles.MobileSearchOverlay} onClick={onClose}>
-      <div
-        className={styles.MobileSearchPanel}
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className={styles.MobileSearchHeader}>
-          <div className={styles.MobileSearchHeading}>
-            <div className={styles.MobileSearchTitle}>Transmog Search</div>
-          </div>
-          <button
-            className={styles.MobileDrawerClose}
-            onClick={onClose}
-            aria-label="Close search"
-          >
-            <Close />
-          </button>
+    <RootMobileSearchOverlayLayout onClose={onClose}>
+      <div className={styles.MobileSearchHeader}>
+        <div className={styles.MobileSearchHeading}>
+          <div className={styles.MobileSearchTitle}>Transmog Search</div>
         </div>
-        <div className={styles.MobileSearchBody}>
-          <div className={styles.MobileSearchField}>
-            <Search
-              value={searchTerm}
-              onChange={onSearchChange}
-              onClear={onClearSearch}
-              autoFocus={true}
-              placeholder={"Search transmogs"}
-            />
-          </div>
-        </div>
-        <div className={styles.MobileSearchActions}>
-          <Button
-            className={styles.MobileSearchActionPrimary}
-            colour={BtnColours.Dark}
-            onClick={onClose}
-          >
-            Search
-          </Button>
-          <Button
-            className={styles.MobileSearchAction}
-            colour={BtnColours.Dark}
-            onClick={onClearSearch}
-          >
-            Clear
-          </Button>
+        <button
+          className={styles.MobileDrawerClose}
+          onClick={onClose}
+          aria-label="Close search"
+        >
+          <Close />
+        </button>
+      </div>
+      <div className={styles.MobileSearchBody}>
+        <div className={styles.MobileSearchField}>
+          <Search
+            value={searchTerm}
+            onChange={onSearchChange}
+            onClear={onClearSearch}
+            autoFocus={true}
+            placeholder={"Search transmogs"}
+          />
         </div>
       </div>
-    </div>
+      <div className={styles.MobileSearchActions}>
+        <Button
+          className={styles.MobileSearchActionPrimary}
+          colour={BtnColours.Dark}
+          onClick={onClose}
+        >
+          Search
+        </Button>
+        <Button
+          className={styles.MobileSearchAction}
+          colour={BtnColours.Dark}
+          onClick={onClearSearch}
+        >
+          Clear
+        </Button>
+      </div>
+    </RootMobileSearchOverlayLayout>
   );
 }
 
@@ -386,61 +386,56 @@ function MobileSettingsDrawer({
   user,
 }: MobileSettingsDrawerProps) {
   return (
-    <div className={styles.MobileDrawerOverlay} onClick={onClose}>
-      <aside
-        className={styles.MobileDrawer}
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className={styles.MobileDrawerHeader}>
-          <div className={styles.MobileDrawerTitle}>Settings</div>
-          <button
-            className={styles.MobileDrawerClose}
-            onClick={onClose}
-            aria-label="Close settings"
-          >
-            <Close />
-          </button>
-        </div>
-        <div className={styles.MobileDrawerBody}>
-          {canEditCatalog && (
-            <div className={styles.MobileEditorSection}>
-              <div className={styles.MobileEditorMeta}>
-                <div className={styles.MobileEditorTitle}>Editor Mode</div>
-              </div>
-              <button
-                className={
-                  isEditMode
-                    ? styles.MobileEditorToggleActive
-                    : styles.MobileEditorToggle
-                }
-                onClick={onToggleEditMode}
-                type="button"
-                aria-pressed={isEditMode}
-              >
-                <span className={styles.MobileEditorToggleIcon}>
-                  <Pencil />
-                </span>
-                <span>{isEditMode ? "On" : "Off"}</span>
-              </button>
+    <RootMobileDrawerLayout onClose={onClose}>
+      <div className={styles.MobileDrawerHeader}>
+        <div className={styles.MobileDrawerTitle}>Settings</div>
+        <button
+          className={styles.MobileDrawerClose}
+          onClick={onClose}
+          aria-label="Close settings"
+        >
+          <Close />
+        </button>
+      </div>
+      <div className={styles.MobileDrawerBody}>
+        {canEditCatalog && (
+          <div className={styles.MobileEditorSection}>
+            <div className={styles.MobileEditorMeta}>
+              <div className={styles.MobileEditorTitle}>Editor Mode</div>
             </div>
-          )}
-          <div className={styles.MobileDrawerContent}>
-            <ConfigSidebar />
+            <button
+              className={
+                isEditMode
+                  ? styles.MobileEditorToggleActive
+                  : styles.MobileEditorToggle
+              }
+              onClick={onToggleEditMode}
+              type="button"
+              aria-pressed={isEditMode}
+            >
+              <span className={styles.MobileEditorToggleIcon}>
+                <Pencil />
+              </span>
+              <span>{isEditMode ? "On" : "Off"}</span>
+            </button>
           </div>
-          <div className={styles.MobileDrawerFooter}>
-            {user === undefined && (
-              <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />
-            )}
-            {user !== undefined && (
-              <Account
-                currentUser={user}
-                onLogout={onSignOut}
-                direction={Direction.ROW}
-              />
-            )}
-          </div>
+        )}
+        <div className={styles.MobileDrawerContent}>
+          <ConfigSidebar />
         </div>
-      </aside>
-    </div>
+        <div className={styles.MobileDrawerFooter}>
+          {user === undefined && (
+            <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />
+          )}
+          {user !== undefined && (
+            <Account
+              currentUser={user}
+              onLogout={onSignOut}
+              direction={Direction.ROW}
+            />
+          )}
+        </div>
+      </div>
+    </RootMobileDrawerLayout>
   );
 }

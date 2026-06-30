@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "../../config";
 import { Discord } from "../../components/Icons";
 import Shell from "../../layout/Shell";
@@ -15,6 +15,11 @@ type HeaderProps = {
   logo: ReactNode;
   search: ReactNode;
   title: ReactNode;
+};
+
+type MobileOverlayProps = {
+  children: ReactNode;
+  onClose: () => void;
 };
 
 export function RootLayout({ header, main }: Props) {
@@ -53,6 +58,39 @@ export function RootHeaderLayout({
       </div>
     </header>
   );
+}
+
+export function RootMobileSearchOverlayLayout({
+  children,
+  onClose,
+}: MobileOverlayProps) {
+  return (
+    <div className={styles.MobileSearchOverlay} onClick={onClose}>
+      <div
+        className={styles.MobileSearchPanel}
+        onClick={stopOverlayPropagation}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export function RootMobileDrawerLayout({
+  children,
+  onClose,
+}: MobileOverlayProps) {
+  return (
+    <div className={styles.MobileDrawerOverlay} onClick={onClose}>
+      <aside className={styles.MobileDrawer} onClick={stopOverlayPropagation}>
+        {children}
+      </aside>
+    </div>
+  );
+}
+
+function stopOverlayPropagation(event: MouseEvent) {
+  event.stopPropagation();
 }
 
 function DiscordInvite() {

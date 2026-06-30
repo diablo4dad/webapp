@@ -1,5 +1,12 @@
 import { render, screen } from "@testing-library/react";
-import { RootHeaderLayout, RootLayout } from "./layout";
+import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
+import {
+  RootHeaderLayout,
+  RootLayout,
+  RootMobileDrawerLayout,
+  RootMobileSearchOverlayLayout,
+} from "./layout";
 
 describe("shell slots", () => {
   test("renders header, main, and footer content", () => {
@@ -37,5 +44,38 @@ describe("header slots", () => {
       screen.getByRole("button", { name: "actions slot" }),
     ).toBeInTheDocument();
     expect(screen.getByText("auth slot")).toBeInTheDocument();
+  });
+});
+
+describe("mobile overlays", () => {
+  test.each([
+    [
+      "search",
+      RootMobileSearchOverlayLayout,
+      "search panel",
+    ],
+    [
+      "drawer",
+      RootMobileDrawerLayout,
+      "drawer panel",
+    ],
+  ])("closes %s from the backdrop only", async (_label, Layout, panelText) => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+
+    const { container } = render(
+      <Layout onClose={onClose}>
+        <button>{panelText}</button>
+      </Layout>,
+    );
+    const backdrop = container.firstElementChild as HTMLElement;
+
+    await user.click(screen.getByRole("button", { name: panelText }));
+
+    expect(onClose).not.toHaveBeenCalled();
+
+    await user.click(backdrop);
+
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
