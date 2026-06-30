@@ -11,7 +11,7 @@ import type { SidebarVisibility } from "../../common";
 import { countAllItemsDabDb } from "../../data/aggregate";
 import ConfigSidebar from "../../settings/ConfigSidebar";
 import { CollectionLogLayout } from "./layout";
-import styles from "./route.module.css";
+import styles from "./view.module.css";
 
 type Props = {
   catalogError?: string;
