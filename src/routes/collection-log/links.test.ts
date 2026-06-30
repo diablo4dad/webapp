@@ -1,7 +1,7 @@
 import { MasterGroup } from "../../common";
 import { generateUrl, groupToSlug, slugToGroup } from "./links";
 
-describe("collection log route links", () => {
+describe("route links", () => {
   test.each([
     [MasterGroup.GENERAL, "general"],
     [MasterGroup.SEASONS, "seasons"],
@@ -15,7 +15,7 @@ describe("collection log route links", () => {
     expect(generateUrl(group)).toBe(`/transmogs/${slug}`);
   });
 
-  test("defaults unknown slugs to the general collection", () => {
+  test("defaults unknown slugs", () => {
     expect(slugToGroup("missing")).toBe(MasterGroup.GENERAL);
   });
 });

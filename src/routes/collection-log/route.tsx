@@ -1,20 +1,14 @@
 import { Collection, CollectionItem } from "../../data";
 import { MasterGroup } from "../../common";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
-import {
-  getCollectionLogViewModel,
-  saveCollectionLogViewModel,
-} from "../../store/local";
 import { useLoaderData } from "react-router-dom";
 import { useData } from "../../data/context";
-import { hydrateDadDb } from "../../data/factory";
-import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
 import { useAuth } from "../../auth/context";
 import { useEditor } from "../../editor/context";
-import { getCatalogRouteLoadPlan } from "./loading";
+import { useCatalogRouteLoading } from "./loading";
 import { slugToGroup } from "./links";
-import { setCollectionOpen, type CollectionLogViewModel } from "./state";
+import { useCollectionLogState } from "./state";
 import { CollectionLogView } from "./view";
 
 export type Params = {
@@ -52,11 +46,15 @@ export function CollectionView() {
   } = useData();
   const { isLoading: isAuthLoading } = useAuth();
   const { canEditCatalog } = useEditor();
-  const [vm, setVm] = useState<CollectionLogViewModel>(
-    getCollectionLogViewModel(),
-  );
-  const [isCatalogLoading, setIsCatalogLoading] = useState(false);
-  const [catalogError, setCatalogError] = useState<string>();
+  const { openCollections, setOpenCollection } = useCollectionLogState();
+  const { catalogError, isCatalogLoading } = useCatalogRouteLoading({
+    canEditCatalog,
+    catalogGroupSources,
+    group,
+    isAuthLoading,
+    loadedCatalogGroups,
+    setCatalogCategoryDb,
+  });
   const focusItem = selectItemOrDefault(db.collections, focusItemId);
   const focusCollection = selectCollectionById(
     db.collections,
@@ -64,89 +62,12 @@ export function CollectionView() {
   );
 
   useEffect(() => {
-    if (isAuthLoading) {
-      return;
-    }
-
-    let cancelled = false;
-    const { groupsToFetch, source } = getCatalogRouteLoadPlan({
-      canEditCatalog,
-      catalogGroupSources,
-      group,
-      loadedCatalogGroups,
-    });
-
-    if (groupsToFetch.length === 0) {
-      setIsCatalogLoading(false);
-      setCatalogError(undefined);
-      return;
-    }
-
-    setIsCatalogLoading(true);
-    setCatalogError(undefined);
-
-    async function fetchCatalog() {
-      try {
-        const resolvedGroups = await fetchHybridDadDbRefsByCategory(
-          groupsToFetch,
-          {
-            source,
-          },
-        );
-
-        if (!cancelled) {
-          resolvedGroups.forEach((resolvedGroup) => {
-            setCatalogCategoryDb(
-              resolvedGroup.category as MasterGroup,
-              hydrateDadDb(resolvedGroup.dadDbRef),
-              source,
-            );
-          });
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setCatalogError(
-            error instanceof Error
-              ? error.message
-              : "Failed to load catalogue.",
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setIsCatalogLoading(false);
-        }
-      }
-    }
-
-    void fetchCatalog();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    canEditCatalog,
-    catalogGroupSources,
-    group,
-    isAuthLoading,
-    loadedCatalogGroups,
-    setCatalogCategoryDb,
-  ]);
-
-  useEffect(() => {
     switchDb(group);
   }, [group, switchDb]);
-
-  useEffect(() => {
-    saveCollectionLogViewModel(vm);
-  }, [vm]);
 
   function onClickItem(collectionItem: CollectionItem, collection: Collection) {
     setFocusItemId(collectionItem.id);
     setFocusCollectionId(collection.id);
-  }
-
-  function onCollectionChange(collectionId: string, isOpen: boolean) {
-    setVm((vm) => setCollectionOpen(vm, collectionId, isOpen));
   }
 
   return (
@@ -158,8 +79,8 @@ export function CollectionView() {
       focusItemId={focusItemId}
       isLoading={isAuthLoading || isCatalogLoading}
       onClickItem={onClickItem}
-      onCollectionChange={onCollectionChange}
-      openCollections={vm.openCollections}
+      onCollectionChange={setOpenCollection}
+      openCollections={openCollections}
       sidebarVisibility={sidebarVisibility}
     />
   );

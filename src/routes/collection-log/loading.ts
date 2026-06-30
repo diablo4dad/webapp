@@ -1,5 +1,8 @@
 import { MasterGroup, catalogGroups } from "../../common";
-import type { CatalogGroupSource } from "../../data/context";
+import { useEffect, useState } from "react";
+import type { CatalogGroupSource, DataContextType } from "../../data/context";
+import { hydrateDadDb } from "../../data/factory";
+import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
 
 type CatalogGroupSources = Partial<Record<MasterGroup, CatalogGroupSource>>;
 
@@ -14,6 +17,11 @@ export type CatalogRouteLoadPlan = {
   groupsToFetch: MasterGroup[];
   source: CatalogGroupSource;
   targetGroups: MasterGroup[];
+};
+
+export type CatalogRouteLoadingInput = CatalogRouteLoadPlanInput & {
+  isAuthLoading: boolean;
+  setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"];
 };
 
 function isCatalogGroup(group: MasterGroup): boolean {
@@ -62,5 +70,91 @@ export function getCatalogRouteLoadPlan({
     groupsToFetch,
     source,
     targetGroups,
+  };
+}
+
+export function useCatalogRouteLoading({
+  canEditCatalog,
+  catalogGroupSources,
+  group,
+  isAuthLoading,
+  loadedCatalogGroups,
+  setCatalogCategoryDb,
+}: CatalogRouteLoadingInput) {
+  const [isCatalogLoading, setIsCatalogLoading] = useState(false);
+  const [catalogError, setCatalogError] = useState<string>();
+
+  useEffect(() => {
+    if (isAuthLoading) {
+      return;
+    }
+
+    let cancelled = false;
+    const { groupsToFetch, source } = getCatalogRouteLoadPlan({
+      canEditCatalog,
+      catalogGroupSources,
+      group,
+      loadedCatalogGroups,
+    });
+
+    if (groupsToFetch.length === 0) {
+      setIsCatalogLoading(false);
+      setCatalogError(undefined);
+      return;
+    }
+
+    setIsCatalogLoading(true);
+    setCatalogError(undefined);
+
+    async function fetchCatalog() {
+      try {
+        const resolvedGroups = await fetchHybridDadDbRefsByCategory(
+          groupsToFetch,
+          {
+            source,
+          },
+        );
+
+        if (!cancelled) {
+          resolvedGroups.forEach((resolvedGroup) => {
+            setCatalogCategoryDb(
+              resolvedGroup.category as MasterGroup,
+              hydrateDadDb(resolvedGroup.dadDbRef),
+              source,
+            );
+          });
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setCatalogError(
+            error instanceof Error
+              ? error.message
+              : "Failed to load catalogue.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsCatalogLoading(false);
+        }
+      }
+    }
+
+    void fetchCatalog();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    canEditCatalog,
+    catalogGroupSources,
+    group,
+    isAuthLoading,
+    loadedCatalogGroups,
+    setCatalogCategoryDb,
+  ]);
+
+  return {
+    catalogError,
+    isCatalogLoading,
   };
 }
