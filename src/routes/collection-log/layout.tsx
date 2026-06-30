@@ -1,7 +1,7 @@
-import type { HTMLProps, ReactNode } from "react";
+import type { ReactNode } from "react";
 import styles from "./layout.module.css";
 
-type Props = HTMLProps<HTMLDivElement> & {
+type Props = {
   leftSidebar?: ReactNode;
   rightSidebar?: ReactNode;
   main?: ReactNode;
@@ -13,7 +13,6 @@ export function CollectionLogLayout({
   rightSidebar,
   main,
   hero,
-  ...props
 }: Props) {
   const mainClassName = [
     styles.Main,
@@ -26,7 +25,7 @@ export function CollectionLogLayout({
     .join(" ");
 
   return (
-    <div {...props} className={styles.Block}>
+    <div className={styles.Block}>
       <div className={styles.Hero}>{hero}</div>
       <div className={styles.Content}>
         {leftSidebar && (
