@@ -32,13 +32,13 @@ export function saveSettings(settings: Settings) {
   setValueInStorage(SETTINGS_KEY, settings);
 }
 
-export function getViewModel(): CollectionLogViewModel {
+export function getCollectionLogViewModel(): CollectionLogViewModel {
   return getValueFromStorage(VM_KEY, {
     openCollections: [],
   });
 }
 
-export function saveViewModel(vm: CollectionLogViewModel) {
+export function saveCollectionLogViewModel(vm: CollectionLogViewModel) {
   setValueInStorage(VM_KEY, vm);
 }
 

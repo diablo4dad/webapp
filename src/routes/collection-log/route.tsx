@@ -2,7 +2,10 @@ import { Collection, CollectionItem } from "../../data";
 import { MasterGroup } from "../../common";
 import React, { useEffect, useState } from "react";
 import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
-import { getViewModel, saveViewModel } from "../../store/local";
+import {
+  getCollectionLogViewModel,
+  saveCollectionLogViewModel,
+} from "../../store/local";
 import { useLoaderData } from "react-router-dom";
 import { useData } from "../../data/context";
 import { hydrateDadDb } from "../../data/factory";
@@ -49,7 +52,9 @@ export function CollectionView() {
   } = useData();
   const { isLoading: isAuthLoading } = useAuth();
   const { canEditCatalog } = useEditor();
-  const [vm, setVm] = useState<CollectionLogViewModel>(getViewModel());
+  const [vm, setVm] = useState<CollectionLogViewModel>(
+    getCollectionLogViewModel(),
+  );
   const [isCatalogLoading, setIsCatalogLoading] = useState(false);
   const [catalogError, setCatalogError] = useState<string>();
   const focusItem = selectItemOrDefault(db.collections, focusItemId);
@@ -132,7 +137,7 @@ export function CollectionView() {
   }, [group, switchDb]);
 
   useEffect(() => {
-    saveViewModel(vm);
+    saveCollectionLogViewModel(vm);
   }, [vm]);
 
   function onClickItem(collectionItem: CollectionItem, collection: Collection) {
