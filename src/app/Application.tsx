@@ -19,21 +19,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: async () => {
-          const { CollectionView, loader } = await import(
-            "../routes/collection-log/route"
-          );
-          return { loader, Component: CollectionView };
-        },
+        lazy: () => import("../routes/collection-log/route"),
       },
       {
         path: "/transmogs/:collectionId",
-        lazy: async () => {
-          const { CollectionView, loader } = await import(
-            "../routes/collection-log/route"
-          );
-          return { loader, Component: CollectionView };
-        },
+        lazy: () => import("../routes/collection-log/route"),
       },
     ],
   },

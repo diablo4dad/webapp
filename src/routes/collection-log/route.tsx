@@ -28,7 +28,7 @@ export async function loader({ params }: Params) {
   };
 }
 
-export function CollectionView() {
+function CollectionLogRoute() {
   const { group } = useLoaderData() as LoaderPayload;
   const {
     filteredDb,
@@ -84,3 +84,5 @@ export function CollectionView() {
     />
   );
 }
+
+export { CollectionLogRoute as Component };
