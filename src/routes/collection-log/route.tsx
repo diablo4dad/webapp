@@ -1,35 +1,18 @@
 import type { Collection, CollectionItem } from "../../data";
-import type { MasterGroup } from "../../common";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useLoaderData } from "react-router-dom";
 import { useData } from "../../data/context";
 import { useAuth } from "../../auth/context";
 import { useEditor } from "../../editor/context";
+import type { LoaderPayload } from "./loader";
 import { useCatalogRouteLoading } from "./loading";
-import { slugToGroup } from "./links";
 import {
   getCollectionLogViewState,
   useCollectionLogState,
 } from "./state";
 import { CollectionLogView } from "./view";
 
-export type Params = {
-  params: {
-    collectionId?: string;
-  };
-};
-
-export type LoaderPayload = {
-  group: MasterGroup;
-};
-
-export async function loader({ params }: Params) {
-  const group = slugToGroup(params.collectionId ?? "general");
-
-  return {
-    group,
-  };
-}
+export { loader } from "./loader";
 
 function CollectionLogRoute() {
   const { group } = useLoaderData() as LoaderPayload;
