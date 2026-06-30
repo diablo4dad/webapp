@@ -8,7 +8,6 @@ import Season from "../../collection/Season";
 import Welcome from "../../collection/Welcome";
 import type { Collection, CollectionItem } from "../../data";
 import type { SidebarVisibility } from "../../common";
-import { countAllItemsDabDb } from "../../data/aggregate";
 import ConfigSidebar from "../../settings/ConfigSidebar";
 import { CollectionLogLayout } from "./layout";
 import styles from "./view.module.css";
@@ -18,6 +17,7 @@ type Props = {
   collections: Collection[];
   focusCollection?: Collection;
   focusItem: CollectionItem;
+  isEmpty: boolean;
   isItemSidebarLoading: boolean;
   isLoading: boolean;
   onClickItem: (collectionItem: CollectionItem, collection: Collection) => void;
@@ -31,6 +31,7 @@ export function CollectionLogView({
   collections,
   focusCollection,
   focusItem,
+  isEmpty,
   isItemSidebarLoading,
   isLoading,
   onClickItem,
@@ -57,6 +58,7 @@ export function CollectionLogView({
         <MainContent
           catalogError={catalogError}
           collections={collections}
+          isEmpty={isEmpty}
           isLoading={isLoading}
           onClickItem={onClickItem}
           onCollectionChange={onCollectionChange}
@@ -110,6 +112,7 @@ function ConfigSidebarPanel() {
 type MainContentProps = {
   catalogError?: string;
   collections: Collection[];
+  isEmpty: boolean;
   isLoading: boolean;
   onClickItem: (collectionItem: CollectionItem, collection: Collection) => void;
   onCollectionChange: (collectionId: string, isOpen: boolean) => void;
@@ -119,6 +122,7 @@ type MainContentProps = {
 function MainContent({
   catalogError,
   collections,
+  isEmpty,
   isLoading,
   onClickItem,
   onCollectionChange,
@@ -138,7 +142,7 @@ function MainContent({
             onClickItem={onClickItem}
             onCollectionChange={onCollectionChange}
           />
-          {countAllItemsDabDb(collections) === 0 && <EmptyCollection />}
+          {isEmpty && <EmptyCollection />}
         </>
       )}
     </div>

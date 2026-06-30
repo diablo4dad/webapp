@@ -47,6 +47,7 @@ vi.mock("../../settings/ConfigSidebar", () => ({
 type ViewOptions = {
   catalogError?: string;
   collections?: Collection[];
+  isEmpty?: boolean;
   isItemSidebarLoading?: boolean;
   isLoading?: boolean;
   sidebarVisibility?: SidebarVisibility;
@@ -75,6 +76,7 @@ function collection(
 function renderView({
   catalogError,
   collections = [collection("general-001", [item(101)])],
+  isEmpty = false,
   isItemSidebarLoading = false,
   isLoading = false,
   sidebarVisibility = { showConfig: false, showItem: false },
@@ -87,6 +89,7 @@ function renderView({
       collections={collections}
       focusCollection={collections[0]}
       focusItem={focusItem}
+      isEmpty={isEmpty}
       isItemSidebarLoading={isItemSidebarLoading}
       isLoading={isLoading}
       onClickItem={vi.fn()}
@@ -123,7 +126,7 @@ describe("main content", () => {
   });
 
   test("shows empty state", () => {
-    renderView({ collections: [collection("general-001")] });
+    renderView({ collections: [collection("general-001")], isEmpty: true });
 
     expect(screen.getByText("ledger 1")).toBeInTheDocument();
     expect(screen.getByText("empty collection")).toBeInTheDocument();

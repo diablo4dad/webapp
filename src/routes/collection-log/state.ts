@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toggleValueInArray } from "../../common/arrays";
 import type { Collection, CollectionGroup, CollectionItem } from "../../data";
+import { countAllItemsDabDb } from "../../data/aggregate";
 import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
 import {
   getCollectionLogViewModel,
@@ -55,6 +56,10 @@ export function getFocusState({
     focusItem: selectItemOrDefault(collections, focusItemId),
     isItemSidebarLoading: focusItemId === EMPTY_FOCUS_ITEM_ID,
   };
+}
+
+export function isCollectionLogEmpty(collections: CollectionGroup): boolean {
+  return countAllItemsDabDb(collections) === 0;
 }
 
 export function useCollectionLogState(): CollectionLogState {

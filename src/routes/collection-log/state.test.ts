@@ -10,6 +10,7 @@ import {
 } from "../../store/local";
 import {
   getFocusState,
+  isCollectionLogEmpty,
   setCollectionOpen,
   type CollectionLogViewModel,
   useCollectionLogState,
@@ -152,6 +153,24 @@ describe("view model state", () => {
         openCollections: ["general-001", "season-002", "shop-004"],
       });
     });
+  });
+});
+
+describe("empty state", () => {
+  test("detects empty logs", () => {
+    expect(
+      isCollectionLogEmpty([
+        collection("general-001", []),
+        collection("season-002", []),
+        collection("challenge-003", []),
+      ]),
+    ).toBe(true);
+  });
+
+  test("detects direct items", () => {
+    expect(isCollectionLogEmpty([collection("general-001", [item(101)])])).toBe(
+      false,
+    );
   });
 });
 

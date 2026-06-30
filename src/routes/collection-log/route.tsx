@@ -7,7 +7,11 @@ import { useAuth } from "../../auth/context";
 import { useEditor } from "../../editor/context";
 import { useCatalogRouteLoading } from "./loading";
 import { slugToGroup } from "./links";
-import { getFocusState, useCollectionLogState } from "./state";
+import {
+  getFocusState,
+  isCollectionLogEmpty,
+  useCollectionLogState,
+} from "./state";
 import { CollectionLogView } from "./view";
 
 export type Params = {
@@ -75,6 +79,7 @@ function CollectionLogRoute() {
       collections={filteredDb}
       focusCollection={focusCollection}
       focusItem={focusItem}
+      isEmpty={isCollectionLogEmpty(filteredDb)}
       isItemSidebarLoading={isItemSidebarLoading}
       isLoading={isAuthLoading || isCatalogLoading}
       onClickItem={onClickItem}
