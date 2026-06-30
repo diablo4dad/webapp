@@ -10,6 +10,7 @@ description: Code style and TypeScript/React conventions for this repository. Us
 - Prefer lowercase kebab-case file and folder names for new modules. Use short, broad names when the parent folder supplies context, avoid repeating parent context in filenames, and reserve PascalCase filenames for a deliberate compatibility reason.
 - In complex UI modules, prefer conventional file names such as `route.tsx`, `view.tsx`, `layout.tsx`, `state.ts`, `links.ts`, and `loading.ts` when the parent folder supplies the feature context.
 - Prefer named exports for reusable logic unless nearby code uses a default export.
+- Group top-level constants by logical naming family. Keep related prefixes or suffixes contiguous, such as `DEFAULT_*` constants together and `*_SLUG` constants together; place dependency constants before aliases that reference them.
 - Keep provider, reducer, predicate, getter, and persistence logic in their existing module families.
 - Prefer small single-file React components over large monoliths; split by responsibility before adding more behavior to an already large component.
 - Keep tightly coupled one-off child render components in the parent file when they only support that view. Extract them to sibling files only when reuse, size, testing, async loading, or distinct ownership justifies the file boundary.

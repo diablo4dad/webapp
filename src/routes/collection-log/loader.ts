@@ -1,5 +1,5 @@
 import type { MasterGroup } from "../../common";
-import { slugToGroup } from "./links";
+import { DEFAULT_SLUG, slugToGroup } from "./links";
 
 export type Params = {
   params: {
@@ -13,6 +13,6 @@ export type LoaderPayload = {
 
 export async function loader({ params }: Params): Promise<LoaderPayload> {
   return {
-    group: slugToGroup(params.collectionId ?? "general"),
+    group: slugToGroup(params.collectionId ?? DEFAULT_SLUG),
   };
 }
