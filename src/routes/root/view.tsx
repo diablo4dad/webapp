@@ -23,7 +23,7 @@ import i18n from "../../i18n";
 import logo from "../../image/d4dad-badge@1x.png";
 import ConfigSidebar from "../../settings/ConfigSidebar";
 import styles from "../Root.module.css";
-import { RootLayout } from "./layout";
+import { RootHeaderLayout, RootLayout } from "./layout";
 
 type Props = {
   canEditCatalog: boolean;
@@ -136,31 +136,27 @@ function RootHeader({
   user,
 }: RootHeaderProps) {
   return (
-    <header className={styles.Header}>
-      <div className={styles.HeaderBrand}>
-        <div className={styles.HeaderLogo}>
-          <img className={styles.HeaderIcon} src={logo} alt={i18n.gameName} />
-        </div>
-        <div className={styles.HeaderTitle}>
-          <div className={styles.HeaderInfo}>
-            <div className={styles.HeaderInfoName}>
-              <span className={styles.HeaderInfoNameAccent}>Diablo IV</span>{" "}
-              <span>Dad</span>
-            </div>
-            <div className={styles.HeaderInfoTagLine}>{i18n.siteTagLine}</div>
+    <RootHeaderLayout
+      logo={<img className={styles.HeaderIcon} src={logo} alt={i18n.gameName} />}
+      title={
+        <div className={styles.HeaderInfo}>
+          <div className={styles.HeaderInfoName}>
+            <span className={styles.HeaderInfoNameAccent}>Diablo IV</span>{" "}
+            <span>Dad</span>
           </div>
+          <div className={styles.HeaderInfoTagLine}>{i18n.siteTagLine}</div>
         </div>
-      </div>
-      <div className={styles.HeaderControls}>
-        <div className={styles.HeaderSearch}>
-          <Search
-            value={searchTerm}
-            onChange={onSearchChange}
-            onClear={onClearSearch}
-            placeholder={"Search transmogs"}
-          />
-        </div>
-        <div className={styles.HeaderButtons}>
+      }
+      search={
+        <Search
+          value={searchTerm}
+          onChange={onSearchChange}
+          onClear={onClearSearch}
+          placeholder={"Search transmogs"}
+        />
+      }
+      actions={
+        <>
           <Tooltip placement={"bottom"}>
             <TooltipTrigger asChild={true}>
               <Button
@@ -222,9 +218,10 @@ function RootHeader({
           >
             <Hamburger />
           </Button>
-        </div>
-        <div className={styles.HeaderSpacer} />
-        <div className={styles.HeaderAuth}>
+        </>
+      }
+      auth={
+        <>
           {user === undefined && (
             <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />
           )}
@@ -235,9 +232,9 @@ function RootHeader({
               direction={Direction.ROW}
             />
           )}
-        </div>
-      </div>
-    </header>
+        </>
+      }
+    />
   );
 }
 
