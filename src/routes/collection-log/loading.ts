@@ -7,32 +7,32 @@ import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
 
 type CatalogGroupSources = Partial<Record<MasterGroup, CatalogGroupSource>>;
 
-export type CatalogRouteLoadPlanInput = {
+export type CatalogLoadPlanInput = {
   canEditCatalog: boolean;
   catalogGroupSources: CatalogGroupSources;
   group: MasterGroup;
   loadedCatalogGroups: readonly MasterGroup[];
 };
 
-export type CatalogRouteLoadPlan = {
+export type CatalogLoadPlan = {
   groupsToFetch: MasterGroup[];
   source: CatalogGroupSource;
   targetGroups: MasterGroup[];
 };
 
-export type CatalogRouteLoadStatus = "waiting" | "idle" | "loading";
+export type CatalogLoadStatus = "waiting" | "idle" | "loading";
 
-export type CatalogRouteLoadStatusInput = {
+export type CatalogLoadStatusInput = {
   groupsToFetch: readonly MasterGroup[];
   isAuthLoading: boolean;
 };
 
-export type CatalogRouteLoadingInput = CatalogRouteLoadPlanInput & {
+export type CatalogLoadingInput = CatalogLoadPlanInput & {
   isAuthLoading: boolean;
   setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"];
 };
 
-type CatalogRouteLoadedGroup = {
+type LoadedCatalogGroup = {
   category: MasterGroup;
   dadDbRef: DadDbRef;
 };
@@ -41,7 +41,7 @@ function isCatalogGroup(group: MasterGroup): boolean {
   return catalogGroups.some((category) => category === group);
 }
 
-function getCatalogRouteTargetGroups(group: MasterGroup): MasterGroup[] {
+function getCatalogTargetGroups(group: MasterGroup): MasterGroup[] {
   return group === MasterGroup.UNIVERSAL ? [...catalogGroups] : [group];
 }
 
@@ -62,14 +62,14 @@ function shouldFetchCatalogGroup(
   return !loadedCatalogGroups.includes(group);
 }
 
-export function getCatalogRouteLoadPlan({
+export function getCatalogLoadPlan({
   canEditCatalog,
   catalogGroupSources,
   group,
   loadedCatalogGroups,
-}: CatalogRouteLoadPlanInput): CatalogRouteLoadPlan {
+}: CatalogLoadPlanInput): CatalogLoadPlan {
   const source: CatalogGroupSource = canEditCatalog ? "firestore" : "bundle";
-  const targetGroups = getCatalogRouteTargetGroups(group);
+  const targetGroups = getCatalogTargetGroups(group);
   const groupsToFetch = targetGroups.filter((targetGroup) =>
     shouldFetchCatalogGroup(
       targetGroup,
@@ -86,10 +86,10 @@ export function getCatalogRouteLoadPlan({
   };
 }
 
-export function getCatalogRouteLoadStatus({
+export function getCatalogLoadStatus({
   groupsToFetch,
   isAuthLoading,
-}: CatalogRouteLoadStatusInput): CatalogRouteLoadStatus {
+}: CatalogLoadStatusInput): CatalogLoadStatus {
   if (isAuthLoading) {
     return "waiting";
   }
@@ -101,10 +101,10 @@ export function getCatalogRouteLoadStatus({
   return "loading";
 }
 
-async function loadCatalogRouteGroups(
+async function loadCatalogGroups(
   groupsToFetch: MasterGroup[],
   source: CatalogGroupSource,
-): Promise<CatalogRouteLoadedGroup[]> {
+): Promise<LoadedCatalogGroup[]> {
   const resolvedGroups = await fetchHybridDadDbRefsByCategory(groupsToFetch, {
     source,
   });
@@ -115,26 +115,26 @@ async function loadCatalogRouteGroups(
   }));
 }
 
-export function useCatalogRouteLoading({
+export function useCatalogLoading({
   canEditCatalog,
   catalogGroupSources,
   group,
   isAuthLoading,
   loadedCatalogGroups,
   setCatalogCategoryDb,
-}: CatalogRouteLoadingInput) {
+}: CatalogLoadingInput) {
   const [isCatalogLoading, setIsCatalogLoading] = useState(false);
   const [catalogError, setCatalogError] = useState<string>();
 
   useEffect(() => {
     let cancelled = false;
-    const { groupsToFetch, source } = getCatalogRouteLoadPlan({
+    const { groupsToFetch, source } = getCatalogLoadPlan({
       canEditCatalog,
       catalogGroupSources,
       group,
       loadedCatalogGroups,
     });
-    const loadStatus = getCatalogRouteLoadStatus({
+    const loadStatus = getCatalogLoadStatus({
       groupsToFetch,
       isAuthLoading,
     });
@@ -154,7 +154,7 @@ export function useCatalogRouteLoading({
 
     async function fetchCatalog() {
       try {
-        const loadedGroups = await loadCatalogRouteGroups(
+        const loadedGroups = await loadCatalogGroups(
           groupsToFetch,
           source,
         );

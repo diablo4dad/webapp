@@ -6,9 +6,9 @@ import type { DataContextType } from "../../data/context";
 import { hydrateDadDb } from "../../data/factory";
 import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
 import {
-  getCatalogRouteLoadPlan,
-  getCatalogRouteLoadStatus,
-  useCatalogRouteLoading,
+  getCatalogLoadPlan,
+  getCatalogLoadStatus,
+  useCatalogLoading,
 } from "./loading";
 
 const mocks = vi.hoisted(() => ({
@@ -54,12 +54,12 @@ function createDeferredCatalogLoad() {
 }
 
 function renderCatalogLoading(
-  options: Partial<Parameters<typeof useCatalogRouteLoading>[0]> = {},
+  options: Partial<Parameters<typeof useCatalogLoading>[0]> = {},
 ) {
   const setCatalogCategoryDb = vi.fn();
 
   const hook = renderHook(() =>
-    useCatalogRouteLoading({
+    useCatalogLoading({
       canEditCatalog: false,
       catalogGroupSources: {},
       group: MasterGroup.GENERAL,
@@ -91,7 +91,7 @@ beforeEach(() => {
 describe("catalog load plan", () => {
   describe("bundle source", () => {
     test("loads active groups", () => {
-      const plan = getCatalogRouteLoadPlan({
+      const plan = getCatalogLoadPlan({
         canEditCatalog: false,
         catalogGroupSources: {},
         group: MasterGroup.GENERAL,
@@ -106,7 +106,7 @@ describe("catalog load plan", () => {
     });
 
     test("skips loaded groups", () => {
-      const plan = getCatalogRouteLoadPlan({
+      const plan = getCatalogLoadPlan({
         canEditCatalog: false,
         catalogGroupSources: {
           [MasterGroup.GENERAL]: "firestore",
@@ -121,7 +121,7 @@ describe("catalog load plan", () => {
 
   describe("universal route", () => {
     test("expands to catalog groups", () => {
-      const plan = getCatalogRouteLoadPlan({
+      const plan = getCatalogLoadPlan({
         canEditCatalog: false,
         catalogGroupSources: {},
         group: MasterGroup.UNIVERSAL,
@@ -137,7 +137,7 @@ describe("catalog load plan", () => {
     });
 
     test("does not include universal", () => {
-      const plan = getCatalogRouteLoadPlan({
+      const plan = getCatalogLoadPlan({
         canEditCatalog: false,
         catalogGroupSources: {},
         group: MasterGroup.UNIVERSAL,
@@ -150,7 +150,7 @@ describe("catalog load plan", () => {
 
   describe("firestore source", () => {
     test("reloads stale editor groups", () => {
-      const plan = getCatalogRouteLoadPlan({
+      const plan = getCatalogLoadPlan({
         canEditCatalog: true,
         catalogGroupSources: {
           [MasterGroup.GENERAL]: "bundle",
@@ -174,7 +174,7 @@ describe("catalog load plan", () => {
 describe("load status", () => {
   test("waits for auth", () => {
     expect(
-      getCatalogRouteLoadStatus({
+      getCatalogLoadStatus({
         groupsToFetch: [MasterGroup.GENERAL],
         isAuthLoading: true,
       }),
@@ -183,7 +183,7 @@ describe("load status", () => {
 
   test("idles without groups", () => {
     expect(
-      getCatalogRouteLoadStatus({
+      getCatalogLoadStatus({
         groupsToFetch: [],
         isAuthLoading: false,
       }),
@@ -192,7 +192,7 @@ describe("load status", () => {
 
   test("loads groups", () => {
     expect(
-      getCatalogRouteLoadStatus({
+      getCatalogLoadStatus({
         groupsToFetch: [MasterGroup.GENERAL],
         isAuthLoading: false,
       }),
@@ -304,7 +304,7 @@ describe("catalog loading", () => {
     };
     const { rerender } = renderHook(
       ({ group }) =>
-        useCatalogRouteLoading({
+        useCatalogLoading({
           ...routeLoadingInput,
           group,
         }),

@@ -5,7 +5,7 @@ import { useData } from "../../data/context";
 import { useAuth } from "../../auth/context";
 import { useEditor } from "../../editor/context";
 import type { LoaderPayload } from "./loader";
-import { useCatalogRouteLoading } from "./loading";
+import { useCatalogLoading } from "./loading";
 import {
   getFocusTarget,
   getCollectionLogViewState,
@@ -33,7 +33,7 @@ function CollectionLogRoute() {
   const { isLoading: isAuthLoading } = useAuth();
   const { canEditCatalog } = useEditor();
   const { openCollections, setOpenCollection } = useCollectionLogState();
-  const { catalogError, isCatalogLoading } = useCatalogRouteLoading({
+  const { catalogError, isCatalogLoading } = useCatalogLoading({
     canEditCatalog,
     catalogGroupSources,
     group,
