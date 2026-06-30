@@ -64,9 +64,7 @@ export function CollectionLogView({
       rightSidebar={
         sidebarVisibility.showConfig ? (
           <div className={styles.Sidebar}>
-            <div className={styles.SidebarContent}>
-              <ConfigSidebar />
-            </div>
+            <ConfigSidebar />
           </div>
         ) : undefined
       }
