@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import { MasterGroup, catalogGroups } from "../../common";
 import type { DadDb, DadDbRef } from "../../data";
@@ -200,6 +200,34 @@ describe("catalog loading", () => {
       catalogError: undefined,
       isCatalogLoading: false,
     });
+  });
+
+  test("ignores stale loads", async () => {
+    let resolveCatalog!: (
+      value: Awaited<ReturnType<typeof fetchHybridDadDbRefsByCategory>>,
+    ) => void;
+    vi.mocked(fetchHybridDadDbRefsByCategory).mockReturnValue(
+      new Promise((resolve) => {
+        resolveCatalog = resolve;
+      }),
+    );
+    const { setCatalogCategoryDb, unmount } = renderCatalogLoading();
+
+    await waitFor(() =>
+      expect(fetchHybridDadDbRefsByCategory).toHaveBeenCalled(),
+    );
+    unmount();
+    await act(async () => {
+      resolveCatalog([
+        {
+          category: MasterGroup.GENERAL,
+          dadDbRef,
+        },
+      ]);
+    });
+
+    expect(hydrateDadDb).not.toHaveBeenCalled();
+    expect(setCatalogCategoryDb).not.toHaveBeenCalled();
   });
 
   test("reports errors", async () => {

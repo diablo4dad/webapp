@@ -1,6 +1,6 @@
 import { MasterGroup, catalogGroups } from "../../common";
 import { useEffect, useState } from "react";
-import type { DadDb } from "../../data";
+import type { DadDbRef } from "../../data";
 import type { CatalogGroupSource, DataContextType } from "../../data/context";
 import { hydrateDadDb } from "../../data/factory";
 import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
@@ -27,7 +27,7 @@ export type CatalogRouteLoadingInput = CatalogRouteLoadPlanInput & {
 
 type CatalogRouteLoadedGroup = {
   category: MasterGroup;
-  dadDb: DadDb;
+  dadDbRef: DadDbRef;
 };
 
 function isCatalogGroup(group: MasterGroup): boolean {
@@ -89,7 +89,7 @@ async function loadCatalogRouteGroups(
 
   return resolvedGroups.map((resolvedGroup) => ({
     category: resolvedGroup.category as MasterGroup,
-    dadDb: hydrateDadDb(resolvedGroup.dadDbRef),
+    dadDbRef: resolvedGroup.dadDbRef,
   }));
 }
 
@@ -137,7 +137,7 @@ export function useCatalogRouteLoading({
           loadedGroups.forEach((loadedGroup) => {
             setCatalogCategoryDb(
               loadedGroup.category,
-              loadedGroup.dadDb,
+              hydrateDadDb(loadedGroup.dadDbRef),
               source,
             );
           });
