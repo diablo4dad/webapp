@@ -90,14 +90,10 @@ function ItemSidebarPanel({
   focusItem,
   isLoading,
 }: ItemSidebarPanelProps) {
-  return (
-    <div className={styles.MainSidebarPanel}>
-      {isLoading ? (
-        <ItemSidebarSkeleton />
-      ) : (
-        <ItemSidebar collectionItem={focusItem} collection={focusCollection} />
-      )}
-    </div>
+  return isLoading ? (
+    <ItemSidebarSkeleton />
+  ) : (
+    <ItemSidebar collectionItem={focusItem} collection={focusCollection} />
   );
 }
 

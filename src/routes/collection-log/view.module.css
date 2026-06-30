@@ -31,9 +31,4 @@
         grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 1rem;
     }
-
-    .MainSidebarPanel {
-        position: sticky;
-        top: 2rem;
-    }
 }
