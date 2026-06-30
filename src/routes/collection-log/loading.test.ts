@@ -5,7 +5,11 @@ import type { DadDb, DadDbRef } from "../../data";
 import type { DataContextType } from "../../data/context";
 import { hydrateDadDb } from "../../data/factory";
 import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
-import { getCatalogRouteLoadPlan, useCatalogRouteLoading } from "./loading";
+import {
+  getCatalogRouteLoadPlan,
+  getCatalogRouteLoadStatus,
+  useCatalogRouteLoading,
+} from "./loading";
 
 const mocks = vi.hoisted(() => ({
   fetchHybridDadDbRefsByCategory: vi.fn(),
@@ -164,6 +168,35 @@ describe("catalog load plan", () => {
         MasterGroup.CHALLENGE,
       ]);
     });
+  });
+});
+
+describe("load status", () => {
+  test("waits for auth", () => {
+    expect(
+      getCatalogRouteLoadStatus({
+        groupsToFetch: [MasterGroup.GENERAL],
+        isAuthLoading: true,
+      }),
+    ).toBe("waiting");
+  });
+
+  test("idles without groups", () => {
+    expect(
+      getCatalogRouteLoadStatus({
+        groupsToFetch: [],
+        isAuthLoading: false,
+      }),
+    ).toBe("idle");
+  });
+
+  test("loads groups", () => {
+    expect(
+      getCatalogRouteLoadStatus({
+        groupsToFetch: [MasterGroup.GENERAL],
+        isAuthLoading: false,
+      }),
+    ).toBe("loading");
   });
 });
 

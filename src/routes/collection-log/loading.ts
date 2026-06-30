@@ -20,6 +20,13 @@ export type CatalogRouteLoadPlan = {
   targetGroups: MasterGroup[];
 };
 
+export type CatalogRouteLoadStatus = "waiting" | "idle" | "loading";
+
+export type CatalogRouteLoadStatusInput = {
+  groupsToFetch: readonly MasterGroup[];
+  isAuthLoading: boolean;
+};
+
 export type CatalogRouteLoadingInput = CatalogRouteLoadPlanInput & {
   isAuthLoading: boolean;
   setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"];
@@ -79,6 +86,21 @@ export function getCatalogRouteLoadPlan({
   };
 }
 
+export function getCatalogRouteLoadStatus({
+  groupsToFetch,
+  isAuthLoading,
+}: CatalogRouteLoadStatusInput): CatalogRouteLoadStatus {
+  if (isAuthLoading) {
+    return "waiting";
+  }
+
+  if (groupsToFetch.length === 0) {
+    return "idle";
+  }
+
+  return "loading";
+}
+
 async function loadCatalogRouteGroups(
   groupsToFetch: MasterGroup[],
   source: CatalogGroupSource,
@@ -105,10 +127,6 @@ export function useCatalogRouteLoading({
   const [catalogError, setCatalogError] = useState<string>();
 
   useEffect(() => {
-    if (isAuthLoading) {
-      return;
-    }
-
     let cancelled = false;
     const { groupsToFetch, source } = getCatalogRouteLoadPlan({
       canEditCatalog,
@@ -116,8 +134,16 @@ export function useCatalogRouteLoading({
       group,
       loadedCatalogGroups,
     });
+    const loadStatus = getCatalogRouteLoadStatus({
+      groupsToFetch,
+      isAuthLoading,
+    });
 
-    if (groupsToFetch.length === 0) {
+    if (loadStatus === "waiting") {
+      return;
+    }
+
+    if (loadStatus === "idle") {
       setIsCatalogLoading(false);
       setCatalogError(undefined);
       return;
