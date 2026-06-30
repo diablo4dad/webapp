@@ -18,7 +18,7 @@ type Props = {
   collections: Collection[];
   focusCollection?: Collection;
   focusItem: CollectionItem;
-  focusItemId: number;
+  isItemSidebarLoading: boolean;
   isLoading: boolean;
   onClickItem: (collectionItem: CollectionItem, collection: Collection) => void;
   onCollectionChange: (collectionId: string, isOpen: boolean) => void;
@@ -31,7 +31,7 @@ export function CollectionLogView({
   collections,
   focusCollection,
   focusItem,
-  focusItemId,
+  isItemSidebarLoading,
   isLoading,
   onClickItem,
   onCollectionChange,
@@ -46,7 +46,7 @@ export function CollectionLogView({
           <ItemSidebarPanel
             focusCollection={focusCollection}
             focusItem={focusItem}
-            focusItemId={focusItemId}
+            isLoading={isItemSidebarLoading}
           />
         ) : undefined
       }
@@ -80,17 +80,17 @@ function Hero() {
 type ItemSidebarPanelProps = {
   focusCollection?: Collection;
   focusItem: CollectionItem;
-  focusItemId: number;
+  isLoading: boolean;
 };
 
 function ItemSidebarPanel({
   focusCollection,
   focusItem,
-  focusItemId,
+  isLoading,
 }: ItemSidebarPanelProps) {
   return (
     <div className={styles.MainSidebarPanel}>
-      {focusItemId === -1 ? (
+      {isLoading ? (
         <ItemSidebarSkeleton />
       ) : (
         <ItemSidebar collectionItem={focusItem} collection={focusCollection} />

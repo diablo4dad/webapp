@@ -1,5 +1,5 @@
-import { Collection, CollectionItem } from "../../data";
-import { MasterGroup } from "../../common";
+import type { Collection, CollectionItem } from "../../data";
+import type { MasterGroup } from "../../common";
 import React, { useEffect } from "react";
 import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
 import { useLoaderData } from "react-router-dom";
@@ -60,6 +60,7 @@ export function CollectionView() {
     db.collections,
     focusCollectionId,
   );
+  const isItemSidebarLoading = focusItemId === -1;
 
   useEffect(() => {
     switchDb(group);
@@ -76,7 +77,7 @@ export function CollectionView() {
       collections={filteredDb}
       focusCollection={focusCollection}
       focusItem={focusItem}
-      focusItemId={focusItemId}
+      isItemSidebarLoading={isItemSidebarLoading}
       isLoading={isAuthLoading || isCatalogLoading}
       onClickItem={onClickItem}
       onCollectionChange={setOpenCollection}
