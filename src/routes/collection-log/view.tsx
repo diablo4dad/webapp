@@ -71,11 +71,11 @@ export function CollectionLogView({
 
 function Hero() {
   return (
-    <div className={styles.HeroLayout}>
+    <>
       <Welcome />
       <Season />
       <Progress />
-    </div>
+    </>
   );
 }
 

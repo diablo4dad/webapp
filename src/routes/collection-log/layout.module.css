@@ -9,6 +9,13 @@
     flex-direction: column;
 }
 
+.Hero {
+    padding: 1rem 0;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+}
+
 .LeftSidebar,
 .RightSidebar {
     display: none;
@@ -32,6 +39,9 @@
 
     .Hero {
         position: sticky;
+        padding: 2rem 2rem 1rem;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1rem;
     }
 
     .Content {

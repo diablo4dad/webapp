@@ -5,18 +5,3 @@
     border-bottom: 1px solid rgba(166, 38, 57, 0.35);
     color: #f1b4bd;
 }
-
-.HeroLayout {
-    padding: 1rem 0;
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1rem;
-}
-
-@media screen and (min-width: 1200px) {
-    .HeroLayout {
-        padding: 2rem 2rem 1rem;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 1rem;
-    }
-}
