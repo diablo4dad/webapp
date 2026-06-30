@@ -1,17 +1,17 @@
 import EmptyCollection from "../../collection/EmptyCollection";
-import Welcome from "../../collection/Welcome";
 import ItemSidebar from "../../collection/ItemSidebar";
 import ItemSidebarSkeleton from "../../collection/ItemSidebarSkeleton";
-import Progress from "../../collection/Progress";
-import Season from "../../collection/Season";
-import ConfigSidebar from "../../settings/ConfigSidebar";
-import styles from "./route.module.css";
 import Ledger from "../../collection/Ledger";
 import LedgerSkeleton from "../../collection/LedgerSkeleton";
-import { Collection, CollectionItem } from "../../data";
+import Progress from "../../collection/Progress";
+import Season from "../../collection/Season";
+import Welcome from "../../collection/Welcome";
+import type { Collection, CollectionItem } from "../../data";
 import type { SidebarVisibility } from "../../common";
 import { countAllItemsDabDb } from "../../data/aggregate";
+import ConfigSidebar from "../../settings/ConfigSidebar";
 import { CollectionLogLayout } from "./layout";
+import styles from "./route.module.css";
 
 type Props = {
   catalogError?: string;
@@ -40,53 +40,107 @@ export function CollectionLogView({
 }: Props) {
   return (
     <CollectionLogLayout
-      hero={
-        <div className={styles.HeroLayout}>
-          <Welcome />
-          <Season />
-          <Progress />
-        </div>
-      }
+      hero={<Hero />}
       leftSidebar={
         sidebarVisibility.showItem ? (
-          <div className={styles.MainSidebarPanel}>
-            {focusItemId === -1 ? (
-              <ItemSidebarSkeleton />
-            ) : (
-              <ItemSidebar
-                collectionItem={focusItem}
-                collection={focusCollection}
-              />
-            )}
-          </div>
+          <ItemSidebarPanel
+            focusCollection={focusCollection}
+            focusItem={focusItem}
+            focusItemId={focusItemId}
+          />
         ) : undefined
       }
       rightSidebar={
-        sidebarVisibility.showConfig ? (
-          <div className={styles.Sidebar}>
-            <ConfigSidebar />
-          </div>
-        ) : undefined
+        sidebarVisibility.showConfig ? <ConfigSidebarPanel /> : undefined
       }
       main={
-        <div className={styles.Content}>
-          {isLoading ? (
-            <LedgerSkeleton />
-          ) : catalogError ? (
-            <div className={styles.LoadError}>{catalogError}</div>
-          ) : (
-            <>
-              <Ledger
-                collections={collections}
-                openCollections={openCollections}
-                onClickItem={onClickItem}
-                onCollectionChange={onCollectionChange}
-              />
-              {countAllItemsDabDb(collections) === 0 && <EmptyCollection />}
-            </>
-          )}
-        </div>
+        <MainContent
+          catalogError={catalogError}
+          collections={collections}
+          isLoading={isLoading}
+          onClickItem={onClickItem}
+          onCollectionChange={onCollectionChange}
+          openCollections={openCollections}
+        />
       }
     ></CollectionLogLayout>
+  );
+}
+
+function Hero() {
+  return (
+    <div className={styles.HeroLayout}>
+      <Welcome />
+      <Season />
+      <Progress />
+    </div>
+  );
+}
+
+type ItemSidebarPanelProps = {
+  focusCollection?: Collection;
+  focusItem: CollectionItem;
+  focusItemId: number;
+};
+
+function ItemSidebarPanel({
+  focusCollection,
+  focusItem,
+  focusItemId,
+}: ItemSidebarPanelProps) {
+  return (
+    <div className={styles.MainSidebarPanel}>
+      {focusItemId === -1 ? (
+        <ItemSidebarSkeleton />
+      ) : (
+        <ItemSidebar collectionItem={focusItem} collection={focusCollection} />
+      )}
+    </div>
+  );
+}
+
+function ConfigSidebarPanel() {
+  return (
+    <div className={styles.Sidebar}>
+      <ConfigSidebar />
+    </div>
+  );
+}
+
+type MainContentProps = {
+  catalogError?: string;
+  collections: Collection[];
+  isLoading: boolean;
+  onClickItem: (collectionItem: CollectionItem, collection: Collection) => void;
+  onCollectionChange: (collectionId: string, isOpen: boolean) => void;
+  openCollections: string[];
+};
+
+function MainContent({
+  catalogError,
+  collections,
+  isLoading,
+  onClickItem,
+  onCollectionChange,
+  openCollections,
+}: MainContentProps) {
+  return (
+    <div className={styles.Content}>
+      {isLoading ? (
+        <LedgerSkeleton />
+      ) : catalogError ? (
+        <div className={styles.LoadError}>{catalogError}</div>
+      ) : (
+        <>
+          <Ledger
+            collections={collections}
+            openCollections={openCollections}
+            onClickItem={onClickItem}
+            onCollectionChange={onCollectionChange}
+          />
+          {countAllItemsDabDb(collections) === 0 && <EmptyCollection />}
+        </>
+      )}
+    </div>
   );
 }

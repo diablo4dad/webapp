@@ -12,6 +12,7 @@ description: Code style and TypeScript/React conventions for this repository. Us
 - Prefer named exports for reusable logic unless nearby code uses a default export.
 - Keep provider, reducer, predicate, getter, and persistence logic in their existing module families.
 - Prefer small single-file React components over large monoliths; split by responsibility before adding more behavior to an already large component.
+- Keep tightly coupled one-off child render components in the parent file when they only support that view. Extract them to sibling files only when reuse, size, testing, async loading, or distinct ownership justifies the file boundary.
 - Keep components single-responsibility; build larger feature experiences through composition instead of accumulating unrelated state, effects, and markup in one component.
 - Keep components readable: move complex derivations into named helpers when JSX becomes hard to scan.
 - Keep render components pure where practical: pass data, derived state, and event handlers through props instead of reading context, loading data, or performing persistence from the view.
