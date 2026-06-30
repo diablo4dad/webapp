@@ -52,7 +52,7 @@ export function CollectionLogView({
         ) : undefined
       }
       rightSidebar={
-        sidebarVisibility.showConfig ? <ConfigSidebarPanel /> : undefined
+        sidebarVisibility.showConfig ? <ConfigSidebar /> : undefined
       }
       main={
         <MainContent
@@ -94,14 +94,6 @@ function ItemSidebarPanel({
     <ItemSidebarSkeleton />
   ) : (
     <ItemSidebar collectionItem={focusItem} collection={focusCollection} />
-  );
-}
-
-function ConfigSidebarPanel() {
-  return (
-    <div className={styles.Sidebar}>
-      <ConfigSidebar />
-    </div>
   );
 }
 
