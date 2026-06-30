@@ -15,14 +15,6 @@ export function CollectionLogLayout({
   hero,
   ...props
 }: Props) {
-  const contentClassName = [
-    styles.Content,
-    leftSidebar ? styles.ContentWithLeftSidebar : null,
-    rightSidebar ? styles.ContentWithRightSidebar : null,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
   const mainClassName = [
     styles.Main,
     leftSidebar && rightSidebar ? styles.MainWithBothSidebars : null,
@@ -36,7 +28,7 @@ export function CollectionLogLayout({
   return (
     <div {...props} className={styles.Block}>
       <div className={styles.Hero}>{hero}</div>
-      <div className={contentClassName}>
+      <div className={styles.Content}>
         {leftSidebar && (
           <aside className={styles.LeftSidebar}>{leftSidebar}</aside>
         )}
