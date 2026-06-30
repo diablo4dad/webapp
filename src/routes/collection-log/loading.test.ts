@@ -1,5 +1,72 @@
+import { renderHook, waitFor } from "@testing-library/react";
+import { vi } from "vitest";
 import { MasterGroup, catalogGroups } from "../../common";
-import { getCatalogRouteLoadPlan } from "./loading";
+import type { DadDb, DadDbRef } from "../../data";
+import type { DataContextType } from "../../data/context";
+import { hydrateDadDb } from "../../data/factory";
+import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
+import { getCatalogRouteLoadPlan, useCatalogRouteLoading } from "./loading";
+
+const mocks = vi.hoisted(() => ({
+  fetchHybridDadDbRefsByCategory: vi.fn(),
+  hydrateDadDb: vi.fn(),
+}));
+
+vi.mock("../../store/catalog", () => ({
+  fetchHybridDadDbRefsByCategory: mocks.fetchHybridDadDbRefsByCategory,
+}));
+
+vi.mock("../../data/factory", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../data/factory")>()),
+  hydrateDadDb: mocks.hydrateDadDb,
+}));
+
+const dadDbRef: DadDbRef = {
+  collections: [],
+  items: [],
+  itemTypes: [],
+};
+
+const dadDb: DadDb = {
+  collections: [],
+  items: [],
+  itemTypes: [],
+};
+
+function renderCatalogLoading(
+  options: Partial<Parameters<typeof useCatalogRouteLoading>[0]> = {},
+) {
+  const setCatalogCategoryDb = vi.fn();
+
+  const hook = renderHook(() =>
+    useCatalogRouteLoading({
+      canEditCatalog: false,
+      catalogGroupSources: {},
+      group: MasterGroup.GENERAL,
+      isAuthLoading: false,
+      loadedCatalogGroups: [],
+      setCatalogCategoryDb:
+        setCatalogCategoryDb as DataContextType["setCatalogCategoryDb"],
+      ...options,
+    }),
+  );
+
+  return {
+    ...hook,
+    setCatalogCategoryDb,
+  };
+}
+
+beforeEach(() => {
+  vi.resetAllMocks();
+  vi.mocked(fetchHybridDadDbRefsByCategory).mockResolvedValue([
+    {
+      category: MasterGroup.GENERAL,
+      dadDbRef,
+    },
+  ]);
+  vi.mocked(hydrateDadDb).mockReturnValue(dadDb);
+});
 
 describe("catalog load plan", () => {
   describe("bundle source", () => {
@@ -81,5 +148,72 @@ describe("catalog load plan", () => {
         MasterGroup.CHALLENGE,
       ]);
     });
+  });
+});
+
+describe("catalog loading", () => {
+  test("waits for auth", () => {
+    const { result, setCatalogCategoryDb } = renderCatalogLoading({
+      isAuthLoading: true,
+    });
+
+    expect(result.current).toEqual({
+      catalogError: undefined,
+      isCatalogLoading: false,
+    });
+    expect(fetchHybridDadDbRefsByCategory).not.toHaveBeenCalled();
+    expect(setCatalogCategoryDb).not.toHaveBeenCalled();
+  });
+
+  test("skips loaded groups", () => {
+    const { result, setCatalogCategoryDb } = renderCatalogLoading({
+      loadedCatalogGroups: [MasterGroup.GENERAL],
+    });
+
+    expect(result.current).toEqual({
+      catalogError: undefined,
+      isCatalogLoading: false,
+    });
+    expect(fetchHybridDadDbRefsByCategory).not.toHaveBeenCalled();
+    expect(setCatalogCategoryDb).not.toHaveBeenCalled();
+  });
+
+  test("loads groups", async () => {
+    const { result, setCatalogCategoryDb } = renderCatalogLoading();
+
+    await waitFor(() =>
+      expect(fetchHybridDadDbRefsByCategory).toHaveBeenCalledWith(
+        [MasterGroup.GENERAL],
+        { source: "bundle" },
+      ),
+    );
+    await waitFor(() =>
+      expect(setCatalogCategoryDb).toHaveBeenCalledWith(
+        MasterGroup.GENERAL,
+        dadDb,
+        "bundle",
+      ),
+    );
+
+    expect(hydrateDadDb).toHaveBeenCalledWith(dadDbRef);
+    expect(result.current).toEqual({
+      catalogError: undefined,
+      isCatalogLoading: false,
+    });
+  });
+
+  test("reports errors", async () => {
+    vi.mocked(fetchHybridDadDbRefsByCategory).mockRejectedValue(
+      new Error("catalog failed"),
+    );
+    const { result, setCatalogCategoryDb } = renderCatalogLoading();
+
+    await waitFor(() =>
+      expect(result.current).toEqual({
+        catalogError: "catalog failed",
+        isCatalogLoading: false,
+      }),
+    );
+    expect(setCatalogCategoryDb).not.toHaveBeenCalled();
   });
 });
