@@ -1,5 +1,6 @@
 import { MasterGroup, catalogGroups } from "../../common";
 import { useEffect, useState } from "react";
+import type { DadDb } from "../../data";
 import type { CatalogGroupSource, DataContextType } from "../../data/context";
 import { hydrateDadDb } from "../../data/factory";
 import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
@@ -22,6 +23,11 @@ export type CatalogRouteLoadPlan = {
 export type CatalogRouteLoadingInput = CatalogRouteLoadPlanInput & {
   isAuthLoading: boolean;
   setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"];
+};
+
+type CatalogRouteLoadedGroup = {
+  category: MasterGroup;
+  dadDb: DadDb;
 };
 
 function isCatalogGroup(group: MasterGroup): boolean {
@@ -73,6 +79,20 @@ export function getCatalogRouteLoadPlan({
   };
 }
 
+async function loadCatalogRouteGroups(
+  groupsToFetch: MasterGroup[],
+  source: CatalogGroupSource,
+): Promise<CatalogRouteLoadedGroup[]> {
+  const resolvedGroups = await fetchHybridDadDbRefsByCategory(groupsToFetch, {
+    source,
+  });
+
+  return resolvedGroups.map((resolvedGroup) => ({
+    category: resolvedGroup.category as MasterGroup,
+    dadDb: hydrateDadDb(resolvedGroup.dadDbRef),
+  }));
+}
+
 export function useCatalogRouteLoading({
   canEditCatalog,
   catalogGroupSources,
@@ -108,18 +128,16 @@ export function useCatalogRouteLoading({
 
     async function fetchCatalog() {
       try {
-        const resolvedGroups = await fetchHybridDadDbRefsByCategory(
+        const loadedGroups = await loadCatalogRouteGroups(
           groupsToFetch,
-          {
-            source,
-          },
+          source,
         );
 
         if (!cancelled) {
-          resolvedGroups.forEach((resolvedGroup) => {
+          loadedGroups.forEach((loadedGroup) => {
             setCatalogCategoryDb(
-              resolvedGroup.category as MasterGroup,
-              hydrateDadDb(resolvedGroup.dadDbRef),
+              loadedGroup.category,
+              loadedGroup.dadDb,
               source,
             );
           });
