@@ -1,8 +1,3 @@
-.Content {
-    position: relative;
-    min-width: 0;
-}
-
 .LoadError {
     padding: 1rem 2rem;
     background-color: rgba(166, 38, 57, 0.16);

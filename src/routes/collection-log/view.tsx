@@ -116,23 +116,23 @@ function MainContent({
   onCollectionChange,
   openCollections,
 }: MainContentProps) {
+  if (isLoading) {
+    return <LedgerSkeleton />;
+  }
+
+  if (catalogError) {
+    return <div className={styles.LoadError}>{catalogError}</div>;
+  }
+
   return (
-    <div className={styles.Content}>
-      {isLoading ? (
-        <LedgerSkeleton />
-      ) : catalogError ? (
-        <div className={styles.LoadError}>{catalogError}</div>
-      ) : (
-        <>
-          <Ledger
-            collections={collections}
-            openCollections={openCollections}
-            onClickItem={onClickItem}
-            onCollectionChange={onCollectionChange}
-          />
-          {isEmpty && <EmptyCollection />}
-        </>
-      )}
-    </div>
+    <>
+      <Ledger
+        collections={collections}
+        openCollections={openCollections}
+        onClickItem={onClickItem}
+        onCollectionChange={onCollectionChange}
+      />
+      {isEmpty && <EmptyCollection />}
+    </>
   );
 }
