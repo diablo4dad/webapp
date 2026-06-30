@@ -1,4 +1,3 @@
-import { toggleValueInArray } from "../../common/arrays";
 import { Collection, CollectionItem } from "../../data";
 import { MasterGroup } from "../../common";
 import React, { useEffect, useState } from "react";
@@ -12,7 +11,7 @@ import { useAuth } from "../../auth/context";
 import { useEditor } from "../../editor/context";
 import { getCatalogRouteLoadPlan } from "./loading";
 import { slugToGroup } from "./links";
-import type { CollectionLogViewModel } from "./state";
+import { setCollectionOpen, type CollectionLogViewModel } from "./state";
 import { CollectionLogView } from "./view";
 
 export type Params = {
@@ -142,14 +141,7 @@ export function CollectionView() {
   }
 
   function onCollectionChange(collectionId: string, isOpen: boolean) {
-    setVm((vm) => ({
-      ...vm,
-      openCollections: toggleValueInArray(
-        vm.openCollections,
-        collectionId,
-        isOpen,
-      ),
-    }));
+    setVm((vm) => setCollectionOpen(vm, collectionId, isOpen));
   }
 
   return (
