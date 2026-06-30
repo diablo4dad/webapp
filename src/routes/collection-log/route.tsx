@@ -1,14 +1,13 @@
 import type { Collection, CollectionItem } from "../../data";
 import type { MasterGroup } from "../../common";
 import React, { useEffect } from "react";
-import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
 import { useLoaderData } from "react-router-dom";
 import { useData } from "../../data/context";
 import { useAuth } from "../../auth/context";
 import { useEditor } from "../../editor/context";
 import { useCatalogRouteLoading } from "./loading";
 import { slugToGroup } from "./links";
-import { useCollectionLogState } from "./state";
+import { getFocusState, useCollectionLogState } from "./state";
 import { CollectionLogView } from "./view";
 
 export type Params = {
@@ -55,12 +54,11 @@ export function CollectionView() {
     loadedCatalogGroups,
     setCatalogCategoryDb,
   });
-  const focusItem = selectItemOrDefault(db.collections, focusItemId);
-  const focusCollection = selectCollectionById(
-    db.collections,
+  const { focusCollection, focusItem, isItemSidebarLoading } = getFocusState({
+    collections: db.collections,
     focusCollectionId,
-  );
-  const isItemSidebarLoading = focusItemId === -1;
+    focusItemId,
+  });
 
   useEffect(() => {
     switchDb(group);

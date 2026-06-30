@@ -1,12 +1,28 @@
 import { useEffect, useState } from "react";
 import { toggleValueInArray } from "../../common/arrays";
+import type { Collection, CollectionGroup, CollectionItem } from "../../data";
+import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
 import {
   getCollectionLogViewModel,
   saveCollectionLogViewModel,
 } from "../../store/local";
 
+const EMPTY_FOCUS_ITEM_ID = -1;
+
 export type CollectionLogViewModel = {
   openCollections: string[];
+};
+
+export type CollectionLogFocusInput = {
+  collections: CollectionGroup;
+  focusCollectionId?: string;
+  focusItemId: number;
+};
+
+export type CollectionLogFocusState = {
+  focusCollection?: Collection;
+  focusItem: CollectionItem;
+  isItemSidebarLoading: boolean;
 };
 
 export type CollectionLogState = {
@@ -26,6 +42,18 @@ export function setCollectionOpen(
       collectionId,
       isOpen,
     ),
+  };
+}
+
+export function getFocusState({
+  collections,
+  focusCollectionId,
+  focusItemId,
+}: CollectionLogFocusInput): CollectionLogFocusState {
+  return {
+    focusCollection: selectCollectionById(collections, focusCollectionId),
+    focusItem: selectItemOrDefault(collections, focusItemId),
+    isItemSidebarLoading: focusItemId === EMPTY_FOCUS_ITEM_ID,
   };
 }
 

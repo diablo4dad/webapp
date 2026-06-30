@@ -1,9 +1,15 @@
 import { act, renderHook } from "@testing-library/react";
 import {
+  DEFAULT_COLLECTION_ITEM,
+  type Collection,
+  type CollectionItem,
+} from "../../data";
+import {
   getCollectionLogViewModel,
   saveCollectionLogViewModel,
 } from "../../store/local";
 import {
+  getFocusState,
   setCollectionOpen,
   type CollectionLogViewModel,
   useCollectionLogState,
@@ -11,6 +17,70 @@ import {
 
 beforeEach(() => {
   localStorage.clear();
+});
+
+function item(id: number): CollectionItem {
+  return {
+    claim: `claim-${id}`,
+    id,
+    items: [],
+  };
+}
+
+function collection(
+  id: string,
+  collectionItems: CollectionItem[],
+  subcollections: Collection[] = [],
+): Collection {
+  return {
+    collectionItems,
+    id,
+    name: id,
+    subcollections,
+  };
+}
+
+describe("focus state", () => {
+  const generalItem = item(101);
+  const seasonItem = item(202);
+  const seasonCollection = collection("season-002", [seasonItem]);
+  const collections = [
+    collection("general-001", [generalItem], [seasonCollection]),
+  ];
+
+  test("selects item and collection", () => {
+    const focus = getFocusState({
+      collections,
+      focusCollectionId: "season-002",
+      focusItemId: 202,
+    });
+
+    expect(focus.focusCollection).toBe(seasonCollection);
+    expect(focus.focusItem).toBe(seasonItem);
+    expect(focus.isItemSidebarLoading).toBe(false);
+  });
+
+  test("uses default item", () => {
+    const focus = getFocusState({
+      collections,
+      focusCollectionId: "missing-003",
+      focusItemId: 303,
+    });
+
+    expect(focus.focusCollection).toBeUndefined();
+    expect(focus.focusItem).toBe(DEFAULT_COLLECTION_ITEM);
+    expect(focus.isItemSidebarLoading).toBe(false);
+  });
+
+  test("marks empty focus", () => {
+    const focus = getFocusState({
+      collections,
+      focusCollectionId: "general-001",
+      focusItemId: -1,
+    });
+
+    expect(focus.isItemSidebarLoading).toBe(true);
+  });
 });
 
 describe("view model state", () => {
