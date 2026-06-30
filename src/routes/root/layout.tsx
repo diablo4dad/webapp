@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { DiscordInvite } from "../../components/DiscordPanel";
-import { VersionInfo } from "../../components/VersionPanel";
+import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "../../config";
+import { Discord } from "../../components/Icons";
 import Shell from "../../layout/Shell";
 import styles from "./route.module.css";
 
@@ -52,5 +52,36 @@ export function RootHeaderLayout({
         <div className={styles.HeaderAuth}>{auth}</div>
       </div>
     </header>
+  );
+}
+
+function DiscordInvite() {
+  return (
+    <div className={styles.Discord}>
+      <div className={styles.DiscordIcon}>
+        <a href={DISCORD_INVITE_LINK}>
+          <Discord />
+        </a>
+      </div>
+      <div className={styles.DiscordInfo}>
+        <a className={styles.DiscordInfoLink} href={DISCORD_INVITE_LINK}>
+          Join the Discord Server
+        </a>
+        <div className={styles.DiscordInfoSlugs}>
+          Site News | Community | Bragging
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VersionInfo() {
+  return (
+    <div className={styles.SiteVersion}>
+      <div>Last updated {LAST_UPDATED}</div>
+      <div>
+        Site Version <code>{SITE_VERSION}</code>
+      </div>
+    </div>
   );
 }

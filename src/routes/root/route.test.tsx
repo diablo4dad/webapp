@@ -46,14 +46,6 @@ vi.mock("../../auth/context", () => ({
   useAuth: mocks.useAuth,
 }));
 
-vi.mock("../../components/DiscordPanel", () => ({
-  DiscordInvite: () => <div>discord invite</div>,
-}));
-
-vi.mock("../../components/VersionPanel", () => ({
-  VersionInfo: () => <div>version info</div>,
-}));
-
 vi.mock("../../data/context", () => ({
   useData: mocks.useData,
 }));
@@ -128,8 +120,8 @@ describe("shell content", () => {
     expect(screen.getByText("route outlet")).toBeInTheDocument();
     expect(screen.getByText("collection editor")).toBeInTheDocument();
     expect(screen.getByText("collection item editor")).toBeInTheDocument();
-    expect(screen.getByText("discord invite")).toBeInTheDocument();
-    expect(screen.getByText("version info")).toBeInTheDocument();
+    expect(screen.getByText("Join the Discord Server")).toBeInTheDocument();
+    expect(screen.getByText(/Site Version/)).toBeInTheDocument();
   });
 
   test("passes search changes to data context", () => {

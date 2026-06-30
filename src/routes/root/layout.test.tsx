@@ -1,14 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { vi } from "vitest";
 import { RootHeaderLayout, RootLayout } from "./layout";
-
-vi.mock("../../components/DiscordPanel", () => ({
-  DiscordInvite: () => <div>discord footer</div>,
-}));
-
-vi.mock("../../components/VersionPanel", () => ({
-  VersionInfo: () => <div>version footer</div>,
-}));
 
 describe("shell slots", () => {
   test("renders header, main, and footer content", () => {
@@ -21,8 +12,8 @@ describe("shell slots", () => {
 
     expect(screen.getByText("header slot")).toBeInTheDocument();
     expect(screen.getByText("main slot")).toBeInTheDocument();
-    expect(screen.getByText("discord footer")).toBeInTheDocument();
-    expect(screen.getByText("version footer")).toBeInTheDocument();
+    expect(screen.getByText("Join the Discord Server")).toBeInTheDocument();
+    expect(screen.getByText(/Site Version/)).toBeInTheDocument();
   });
 });
 
