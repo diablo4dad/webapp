@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { useAuth } from "../../auth/context";
@@ -6,6 +6,11 @@ import { ContentType } from "../../common";
 import { useData } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor/context";
+import {
+  closeRootContent,
+  getInitialRootContentState,
+  toggleRootContent,
+} from "./state";
 import { RootView } from "./view";
 
 function RootRoute(): ReactElement {
@@ -23,8 +28,8 @@ function RootRoute(): ReactElement {
     new Image().src = placeholder;
   }, []);
 
-  const [content, setContent] = useState(ContentType.LEDGER);
-  const history = useRef([ContentType.LEDGER]);
+  const [contentState, setContentState] = useState(getInitialRootContentState);
+  const content = contentState.content;
 
   function onToggleItemSidebar() {
     setSidebarVisibility({
@@ -45,35 +50,19 @@ function RootRoute(): ReactElement {
   }
 
   function onCloseMobileContent() {
-    setContent(popHistory());
-  }
-
-  function onToggleMobileConfig() {
-    setContent(
-      content === ContentType.CONFIG
-        ? popHistory()
-        : pushHistory(ContentType.CONFIG),
+    setContentState((currentContentState) =>
+      closeRootContent(currentContentState.history),
     );
   }
 
-  function pushHistory(content: ContentType) {
-    if ([ContentType.CONFIG, ContentType.SEARCH].includes(content)) {
-      return content;
-    }
-    if (
-      history.current.length &&
-      history.current[history.current.length - 1] === content
-    ) {
-      return content;
-    }
-
-    history.current.push(content);
-
-    return content;
-  }
-
-  function popHistory(): ContentType {
-    return history.current.pop() ?? ContentType.LEDGER;
+  function onToggleMobileConfig() {
+    setContentState((currentContentState) =>
+      toggleRootContent(
+        currentContentState.content,
+        currentContentState.history,
+        ContentType.CONFIG,
+      ),
+    );
   }
 
   return (
