@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import type { ReactNode } from "react";
 import styles from "./layout.module.css";
 
@@ -14,15 +15,12 @@ export function CollectionLogLayout({
   main,
   hero,
 }: Props) {
-  const mainClassName = [
-    styles.Main,
-    leftSidebar && rightSidebar ? styles.MainWithBothSidebars : null,
-    leftSidebar && !rightSidebar ? styles.MainWithLeftSidebar : null,
-    !leftSidebar && rightSidebar ? styles.MainWithRightSidebar : null,
-    !leftSidebar && !rightSidebar ? styles.MainFullWidth : null,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const mainClassName = classNames(styles.Main, {
+    [styles.MainWithBothSidebars]: leftSidebar && rightSidebar,
+    [styles.MainWithLeftSidebar]: leftSidebar && !rightSidebar,
+    [styles.MainWithRightSidebar]: !leftSidebar && rightSidebar,
+    [styles.MainFullWidth]: !leftSidebar && !rightSidebar,
+  });
 
   return (
     <div className={styles.Block}>
