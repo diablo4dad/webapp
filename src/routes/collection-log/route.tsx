@@ -7,6 +7,7 @@ import { useEditor } from "../../editor/context";
 import type { LoaderPayload } from "./loader";
 import { useCatalogRouteLoading } from "./loading";
 import {
+  getFocusTarget,
   getCollectionLogViewState,
   useCollectionLogState,
 } from "./state";
@@ -54,8 +55,13 @@ function CollectionLogRoute() {
   }, [group, switchDb]);
 
   function onClickItem(collectionItem: CollectionItem, collection: Collection) {
-    setFocusItemId(collectionItem.id);
-    setFocusCollectionId(collection.id);
+    const { collectionId, itemId } = getFocusTarget({
+      collection,
+      collectionItem,
+    });
+
+    setFocusItemId(itemId);
+    setFocusCollectionId(collectionId);
   }
 
   return (

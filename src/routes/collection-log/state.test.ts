@@ -10,6 +10,7 @@ import {
 } from "../../store/local";
 import {
   getFocusState,
+  getFocusTarget,
   getCollectionLogViewState,
   isCollectionLogEmpty,
   setCollectionOpen,
@@ -82,6 +83,20 @@ describe("focus state", () => {
     });
 
     expect(focus.isItemSidebarLoading).toBe(true);
+  });
+});
+
+describe("focus target", () => {
+  test("selects ids", () => {
+    expect(
+      getFocusTarget({
+        collection: collection("season-002", []),
+        collectionItem: item(202),
+      }),
+    ).toEqual({
+      collectionId: "season-002",
+      itemId: 202,
+    });
   });
 });
 

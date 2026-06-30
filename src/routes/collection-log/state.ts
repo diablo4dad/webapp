@@ -26,6 +26,16 @@ export type CollectionLogFocusState = {
   isItemSidebarLoading: boolean;
 };
 
+export type CollectionLogFocusTargetInput = {
+  collection: Collection;
+  collectionItem: CollectionItem;
+};
+
+export type CollectionLogFocusTarget = {
+  collectionId: string;
+  itemId: number;
+};
+
 export type CollectionLogViewStateInput = {
   catalogCollections: CollectionGroup;
   focusCollectionId?: string;
@@ -70,6 +80,16 @@ export function getFocusState({
     focusCollection: selectCollectionById(collections, focusCollectionId),
     focusItem: selectItemOrDefault(collections, focusItemId),
     isItemSidebarLoading: focusItemId === EMPTY_FOCUS_ITEM_ID,
+  };
+}
+
+export function getFocusTarget({
+  collection,
+  collectionItem,
+}: CollectionLogFocusTargetInput): CollectionLogFocusTarget {
+  return {
+    collectionId: collection.id,
+    itemId: collectionItem.id,
   };
 }
 
