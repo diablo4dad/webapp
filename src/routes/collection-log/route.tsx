@@ -8,8 +8,7 @@ import { useEditor } from "../../editor/context";
 import { useCatalogRouteLoading } from "./loading";
 import { slugToGroup } from "./links";
 import {
-  getFocusState,
-  isCollectionLogEmpty,
+  getCollectionLogViewState,
   useCollectionLogState,
 } from "./state";
 import { CollectionLogView } from "./view";
@@ -58,10 +57,13 @@ function CollectionLogRoute() {
     loadedCatalogGroups,
     setCatalogCategoryDb,
   });
-  const { focusCollection, focusItem, isItemSidebarLoading } = getFocusState({
-    collections: db.collections,
+  const viewState = getCollectionLogViewState({
+    catalogCollections: db.collections,
     focusCollectionId,
     focusItemId,
+    isAuthLoading,
+    isCatalogLoading,
+    visibleCollections: filteredDb,
   });
 
   useEffect(() => {
@@ -76,12 +78,12 @@ function CollectionLogRoute() {
   return (
     <CollectionLogView
       catalogError={catalogError}
-      collections={filteredDb}
-      focusCollection={focusCollection}
-      focusItem={focusItem}
-      isEmpty={isCollectionLogEmpty(filteredDb)}
-      isItemSidebarLoading={isItemSidebarLoading}
-      isLoading={isAuthLoading || isCatalogLoading}
+      collections={viewState.collections}
+      focusCollection={viewState.focusCollection}
+      focusItem={viewState.focusItem}
+      isEmpty={viewState.isEmpty}
+      isItemSidebarLoading={viewState.isItemSidebarLoading}
+      isLoading={viewState.isLoading}
       onClickItem={onClickItem}
       onCollectionChange={setOpenCollection}
       openCollections={openCollections}

@@ -26,6 +26,21 @@ export type CollectionLogFocusState = {
   isItemSidebarLoading: boolean;
 };
 
+export type CollectionLogViewStateInput = {
+  catalogCollections: CollectionGroup;
+  focusCollectionId?: string;
+  focusItemId: number;
+  isAuthLoading: boolean;
+  isCatalogLoading: boolean;
+  visibleCollections: CollectionGroup;
+};
+
+export type CollectionLogViewState = CollectionLogFocusState & {
+  collections: CollectionGroup;
+  isEmpty: boolean;
+  isLoading: boolean;
+};
+
 export type CollectionLogState = {
   openCollections: string[];
   setOpenCollection: (collectionId: string, isOpen: boolean) => void;
@@ -60,6 +75,26 @@ export function getFocusState({
 
 export function isCollectionLogEmpty(collections: CollectionGroup): boolean {
   return countAllItemsDabDb(collections) === 0;
+}
+
+export function getCollectionLogViewState({
+  catalogCollections,
+  focusCollectionId,
+  focusItemId,
+  isAuthLoading,
+  isCatalogLoading,
+  visibleCollections,
+}: CollectionLogViewStateInput): CollectionLogViewState {
+  return {
+    ...getFocusState({
+      collections: catalogCollections,
+      focusCollectionId,
+      focusItemId,
+    }),
+    collections: visibleCollections,
+    isEmpty: isCollectionLogEmpty(visibleCollections),
+    isLoading: isAuthLoading || isCatalogLoading,
+  };
 }
 
 export function useCollectionLogState(): CollectionLogState {

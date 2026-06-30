@@ -10,6 +10,7 @@ import {
 } from "../../store/local";
 import {
   getFocusState,
+  getCollectionLogViewState,
   isCollectionLogEmpty,
   setCollectionOpen,
   type CollectionLogViewModel,
@@ -171,6 +172,51 @@ describe("empty state", () => {
     expect(isCollectionLogEmpty([collection("general-001", [item(101)])])).toBe(
       false,
     );
+  });
+});
+
+describe("view state", () => {
+  const generalItem = item(101);
+  const seasonItem = item(202);
+  const catalogCollections = [
+    collection("general-001", [generalItem]),
+    collection("season-002", [seasonItem]),
+  ];
+
+  test("combines derived props", () => {
+    const visibleCollections = [collection("season-002", [])];
+
+    const viewState = getCollectionLogViewState({
+      catalogCollections,
+      focusCollectionId: "general-001",
+      focusItemId: 101,
+      isAuthLoading: false,
+      isCatalogLoading: true,
+      visibleCollections,
+    });
+
+    expect(viewState).toEqual({
+      collections: visibleCollections,
+      focusCollection: catalogCollections[0],
+      focusItem: generalItem,
+      isEmpty: true,
+      isItemSidebarLoading: false,
+      isLoading: true,
+    });
+  });
+
+  test("settles loading", () => {
+    const viewState = getCollectionLogViewState({
+      catalogCollections,
+      focusCollectionId: "season-002",
+      focusItemId: 202,
+      isAuthLoading: false,
+      isCatalogLoading: false,
+      visibleCollections: catalogCollections,
+    });
+
+    expect(viewState.isLoading).toBe(false);
+    expect(viewState.isEmpty).toBe(false);
   });
 });
 
