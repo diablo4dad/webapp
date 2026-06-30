@@ -1,14 +1,14 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { useAuth } from "../auth/context";
-import { ContentType } from "../common";
-import { useData } from "../data/context";
-import placeholder from "../image/placeholder.webp";
-import { useEditor } from "../editor/context";
-import { RootView } from "./root/view";
+import { useAuth } from "../../auth/context";
+import { ContentType } from "../../common";
+import { useData } from "../../data/context";
+import placeholder from "../../image/placeholder.webp";
+import { useEditor } from "../../editor/context";
+import { RootView } from "./view";
 
-function Root(): ReactElement {
+function RootRoute(): ReactElement {
   const {
     searchTerm,
     setSearchTerm,
@@ -98,4 +98,4 @@ function Root(): ReactElement {
   );
 }
 
-export default Root;
+export default RootRoute;

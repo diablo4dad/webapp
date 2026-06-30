@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { DiscordInvite } from "../../components/DiscordPanel";
 import { VersionInfo } from "../../components/VersionPanel";
 import Shell from "../../layout/Shell";
-import styles from "../Root.module.css";
+import styles from "./route.module.css";
 
 type Props = {
   header: ReactNode;

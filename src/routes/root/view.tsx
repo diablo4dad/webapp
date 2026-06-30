@@ -22,7 +22,7 @@ import CollectionItemEditor from "../../editor/CollectionItemEditor";
 import i18n from "../../i18n";
 import logo from "../../image/d4dad-badge@1x.png";
 import ConfigSidebar from "../../settings/ConfigSidebar";
-import styles from "../Root.module.css";
+import styles from "./route.module.css";
 import { RootHeaderLayout, RootLayout } from "./layout";
 
 type Props = {

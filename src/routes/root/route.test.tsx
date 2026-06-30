@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { SidebarVisibility } from "../common";
-import type { DadUser } from "../auth/type";
-import Root from "./Root";
+import type { SidebarVisibility } from "../../common";
+import type { DadUser } from "../../auth/type";
+import RootRoute from "./route";
 
 const mocks = vi.hoisted(() => ({
   signIn: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock("react-router-dom", () => ({
   Outlet: () => <div>route outlet</div>,
 }));
 
-vi.mock("../auth/Account", () => ({
+vi.mock("../../auth/Account", () => ({
   Direction: {
     ROW: "row",
   },
@@ -33,7 +33,7 @@ vi.mock("../auth/Account", () => ({
   }) => <button onClick={onLogout}>sign out {currentUser.email}</button>,
 }));
 
-vi.mock("../auth/Authenticate", () => ({
+vi.mock("../../auth/Authenticate", () => ({
   Orientation: {
     ROW: "row",
   },
@@ -42,35 +42,35 @@ vi.mock("../auth/Authenticate", () => ({
   ),
 }));
 
-vi.mock("../auth/context", () => ({
+vi.mock("../../auth/context", () => ({
   useAuth: mocks.useAuth,
 }));
 
-vi.mock("../components/DiscordPanel", () => ({
+vi.mock("../../components/DiscordPanel", () => ({
   DiscordInvite: () => <div>discord invite</div>,
 }));
 
-vi.mock("../components/VersionPanel", () => ({
+vi.mock("../../components/VersionPanel", () => ({
   VersionInfo: () => <div>version info</div>,
 }));
 
-vi.mock("../data/context", () => ({
+vi.mock("../../data/context", () => ({
   useData: mocks.useData,
 }));
 
-vi.mock("../editor/CollectionEditor", () => ({
+vi.mock("../../editor/CollectionEditor", () => ({
   default: () => <div>collection editor</div>,
 }));
 
-vi.mock("../editor/CollectionItemEditor", () => ({
+vi.mock("../../editor/CollectionItemEditor", () => ({
   default: () => <div>collection item editor</div>,
 }));
 
-vi.mock("../editor/context", () => ({
+vi.mock("../../editor/context", () => ({
   useEditor: mocks.useEditor,
 }));
 
-vi.mock("../settings/ConfigSidebar", () => ({
+vi.mock("../../settings/ConfigSidebar", () => ({
   default: () => <div>settings panel</div>,
 }));
 
@@ -109,7 +109,7 @@ function renderRoot({
     toggleEditMode: mocks.toggleEditMode,
   });
 
-  const renderResult = render(<Root />);
+  const renderResult = render(<RootRoute />);
 
   return {
     ...renderResult,
@@ -186,7 +186,7 @@ describe("header actions", () => {
       toggleEditMode: mocks.toggleEditMode,
     });
 
-    rerender(<Root />);
+    rerender(<RootRoute />);
 
     await user.click(screen.getByRole("button", { name: "Enable editor mode" }));
 

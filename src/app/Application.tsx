@@ -1,7 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SidebarProvider } from "../layout/context";
-import Root from "../routes/Root";
+import RootRoute from "../routes/root/route";
 import { SettingsProvider } from "../settings/context";
 import { CollectionProvider } from "../collection/context";
 import { getUserCollectionLog, getUserSettings } from "../store/local";
@@ -14,7 +14,7 @@ import { EditorProvider } from "../editor/context";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <RootRoute />,
     HydrateFallback,
     children: [
       {
