@@ -2,7 +2,7 @@ import type { MouseEvent, ReactNode } from "react";
 import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "../../config";
 import { Discord } from "../../components/Icons";
 import Shell from "../../layout/Shell";
-import styles from "./route.module.css";
+import styles from "./layout.module.css";
 
 type Props = {
   header: ReactNode;
