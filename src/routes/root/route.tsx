@@ -14,7 +14,7 @@ import {
 } from "./state";
 import { RootView } from "./view";
 
-export default function RootRoute(): ReactElement {
+function RootRoute(): ReactElement {
   const {
     searchTerm,
     setSearchTerm,
@@ -93,3 +93,5 @@ function toggleSidebarVisibility(
     [key]: !sidebarVisibility[key],
   };
 }
+
+export default RootRoute;

@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "overrides": [
+    {
+      "files": ["src/routes/**/*.{ts,tsx}"],
+      "plugins": ["import", "typescript", "oxc"],
+      "rules": {
+        "import/exports-last": "error",
+        "import/group-exports": "error"
+      }
+    }
+  ]
+}

@@ -8,33 +8,33 @@ import {
   saveCollectionLogViewModel,
 } from "../../store/local";
 
-export type CollectionLogViewModel = {
+type CollectionLogViewModel = {
   openCollections: string[];
 };
 
-export type CollectionLogFocusInput = {
+type CollectionLogFocusInput = {
   collections: CollectionGroup;
   focusCollectionId?: string;
   focusItemId: number;
 };
 
-export type CollectionLogFocusState = {
+type CollectionLogFocusState = {
   focusCollection?: Collection;
   focusItem: CollectionItem;
   isItemSidebarLoading: boolean;
 };
 
-export type CollectionLogFocusTargetInput = {
+type CollectionLogFocusTargetInput = {
   collection: Collection;
   collectionItem: CollectionItem;
 };
 
-export type CollectionLogFocusTarget = {
+type CollectionLogFocusTarget = {
   collectionId: string;
   itemId: number;
 };
 
-export type CollectionLogViewStateInput = {
+type CollectionLogViewStateInput = {
   catalogCollections: CollectionGroup;
   focusCollectionId?: string;
   focusItemId: number;
@@ -43,20 +43,20 @@ export type CollectionLogViewStateInput = {
   visibleCollections: CollectionGroup;
 };
 
-export type CollectionLogViewState = CollectionLogFocusState & {
+type CollectionLogViewState = CollectionLogFocusState & {
   collections: CollectionGroup;
   isEmpty: boolean;
   isLoading: boolean;
 };
 
-export type CollectionLogState = {
+type CollectionLogState = {
   openCollections: string[];
   setOpenCollection: (collectionId: string, isOpen: boolean) => void;
 };
 
 const EMPTY_FOCUS_ITEM_ID = -1;
 
-export function setCollectionOpen(
+function setCollectionOpen(
   viewModel: CollectionLogViewModel,
   collectionId: string,
   isOpen: boolean,
@@ -71,7 +71,7 @@ export function setCollectionOpen(
   };
 }
 
-export function getFocusState({
+function getFocusState({
   collections,
   focusCollectionId,
   focusItemId,
@@ -83,7 +83,7 @@ export function getFocusState({
   };
 }
 
-export function getFocusTarget({
+function getFocusTarget({
   collection,
   collectionItem,
 }: CollectionLogFocusTargetInput): CollectionLogFocusTarget {
@@ -93,11 +93,11 @@ export function getFocusTarget({
   };
 }
 
-export function isCollectionLogEmpty(collections: CollectionGroup): boolean {
+function isCollectionLogEmpty(collections: CollectionGroup): boolean {
   return countAllItemsDabDb(collections) === 0;
 }
 
-export function getCollectionLogViewState({
+function getCollectionLogViewState({
   catalogCollections,
   focusCollectionId,
   focusItemId,
@@ -117,7 +117,7 @@ export function getCollectionLogViewState({
   };
 }
 
-export function useCollectionLogState(): CollectionLogState {
+function useCollectionLogState(): CollectionLogState {
   const [viewModel, setViewModel] = useState<CollectionLogViewModel>(
     getCollectionLogViewModel,
   );
@@ -137,3 +137,20 @@ export function useCollectionLogState(): CollectionLogState {
     setOpenCollection,
   };
 }
+
+export {
+  getCollectionLogViewState,
+  getFocusState,
+  getFocusTarget,
+  isCollectionLogEmpty,
+  setCollectionOpen,
+  useCollectionLogState,
+  type CollectionLogFocusInput,
+  type CollectionLogFocusState,
+  type CollectionLogFocusTarget,
+  type CollectionLogFocusTargetInput,
+  type CollectionLogState,
+  type CollectionLogViewModel,
+  type CollectionLogViewState,
+  type CollectionLogViewStateInput,
+};

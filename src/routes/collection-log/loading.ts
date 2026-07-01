@@ -7,27 +7,27 @@ import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
 
 type CatalogGroupSources = Partial<Record<MasterGroup, CatalogGroupSource>>;
 
-export type CatalogLoadPlanInput = {
+type CatalogLoadPlanInput = {
   canEditCatalog: boolean;
   catalogGroupSources: CatalogGroupSources;
   group: MasterGroup;
   loadedCatalogGroups: readonly MasterGroup[];
 };
 
-export type CatalogLoadPlan = {
+type CatalogLoadPlan = {
   groupsToFetch: MasterGroup[];
   source: CatalogGroupSource;
   targetGroups: MasterGroup[];
 };
 
-export type CatalogLoadStatus = "waiting" | "idle" | "loading";
+type CatalogLoadStatus = "waiting" | "idle" | "loading";
 
-export type CatalogLoadStatusInput = {
+type CatalogLoadStatusInput = {
   groupsToFetch: readonly MasterGroup[];
   isAuthLoading: boolean;
 };
 
-export type CatalogLoadingInput = CatalogLoadPlanInput & {
+type CatalogLoadingInput = CatalogLoadPlanInput & {
   isAuthLoading: boolean;
   setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"];
 };
@@ -37,7 +37,7 @@ type LoadedCatalogGroup = {
   dadDbRef: DadDbRef;
 };
 
-export function getCatalogLoadPlan({
+function getCatalogLoadPlan({
   canEditCatalog,
   catalogGroupSources,
   group,
@@ -61,7 +61,7 @@ export function getCatalogLoadPlan({
   };
 }
 
-export function getCatalogLoadStatus({
+function getCatalogLoadStatus({
   groupsToFetch,
   isAuthLoading,
 }: CatalogLoadStatusInput): CatalogLoadStatus {
@@ -76,7 +76,7 @@ export function getCatalogLoadStatus({
   return "loading";
 }
 
-export function useCatalogLoading({
+function useCatalogLoading({
   canEditCatalog,
   catalogGroupSources,
   group,
@@ -202,3 +202,14 @@ async function loadCatalogGroups(
     dadDbRef: resolvedGroup.dadDbRef,
   }));
 }
+
+export {
+  getCatalogLoadPlan,
+  getCatalogLoadStatus,
+  useCatalogLoading,
+  type CatalogLoadPlan,
+  type CatalogLoadPlanInput,
+  type CatalogLoadStatus,
+  type CatalogLoadStatusInput,
+  type CatalogLoadingInput,
+};

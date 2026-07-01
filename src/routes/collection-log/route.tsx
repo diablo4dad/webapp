@@ -14,9 +14,9 @@ import {
 } from "./state";
 import { CollectionLogView } from "./view";
 
-export const loader = collectionLogLoader;
+const loader = collectionLogLoader;
 
-export function Component() {
+function Component() {
   const { group } = useLoaderData() as LoaderPayload;
   const {
     filteredDb,
@@ -81,3 +81,5 @@ export function Component() {
     />
   );
 }
+
+export { Component, loader };

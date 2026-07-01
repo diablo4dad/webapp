@@ -42,7 +42,7 @@ type MainContentProps = {
   openCollections: string[];
 };
 
-export function CollectionLogView({
+function CollectionLogView({
   catalogError,
   collections,
   focusCollection,
@@ -136,3 +136,5 @@ function MainContent({
     </>
   );
 }
+
+export { CollectionLogView };

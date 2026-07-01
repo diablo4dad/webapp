@@ -1,25 +1,25 @@
-export enum RootContent {
+enum RootContent {
   LEDGER = "ledger",
   CONFIG = "config",
   SEARCH = "search",
 }
 
-export type RootContentState = {
+type RootContentState = {
   content: RootContent;
   history: RootContent[];
 };
 
-export const DEFAULT_ROOT_CONTENT = RootContent.LEDGER;
+const DEFAULT_ROOT_CONTENT = RootContent.LEDGER;
 const transientContent = [RootContent.CONFIG, RootContent.SEARCH];
 
-export function getInitialRootContentState(): RootContentState {
+function getInitialRootContentState(): RootContentState {
   return {
     content: DEFAULT_ROOT_CONTENT,
     history: [DEFAULT_ROOT_CONTENT],
   };
 }
 
-export function openRootContent(
+function openRootContent(
   history: RootContent[],
   content: RootContent,
 ): RootContentState {
@@ -43,14 +43,14 @@ export function openRootContent(
   };
 }
 
-export function closeRootContent(history: RootContent[]): RootContentState {
+function closeRootContent(history: RootContent[]): RootContentState {
   return {
     content: history[history.length - 1] ?? DEFAULT_ROOT_CONTENT,
     history: history.slice(0, -1),
   };
 }
 
-export function toggleRootContent(
+function toggleRootContent(
   currentContent: RootContent,
   history: RootContent[],
   content: RootContent,
@@ -59,3 +59,13 @@ export function toggleRootContent(
     ? closeRootContent(history)
     : openRootContent(history, content);
 }
+
+export {
+  DEFAULT_ROOT_CONTENT,
+  RootContent,
+  closeRootContent,
+  getInitialRootContentState,
+  openRootContent,
+  toggleRootContent,
+  type RootContentState,
+};

@@ -7,6 +7,7 @@ description: Testing and verification workflow for this repository. Use when cha
 
 - Identify the smallest verification that can catch the changed risk.
 - Current baseline for code behavior is `npm test`.
+- Keep `npm run lint` non-mutating. Use `npm run lint:fix` as the explicit lint cleanup shortcut, review any edits, then rerun `npm run lint`.
 - Use `npm run check` before handing over dependency, toolchain, or broad refactor changes.
 - Run focused Vitest tests first when a nearby test exists; broaden to the full test suite before finishing behavior changes.
 - Add characterization tests before splitting or moving risky modules, especially large components, providers, persistence adapters, reducers, routing, or async loading flows.

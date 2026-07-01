@@ -29,6 +29,7 @@
     "e2e:run": "cypress run",
     "export:catalog-seed": "node scripts/export-catalog-seed.cjs",
     "lint": "oxlint src --tsconfig tsconfig.json --disable-unicorn-plugin --deny correctness --deny suspicious --allow no-shadow --allow react-in-jsx-scope",
+    "lint:fix": "npm run lint -- --fix",
     "preview": "vite preview",
     "set:editor-role": "node scripts/set-editor-role.cjs",
     "start": "vite",

@@ -31,7 +31,7 @@ type MobileDrawerProps = {
   onClose: () => void;
 };
 
-export function RootLayout({ header, main }: Props) {
+function RootLayout({ header, main }: Props) {
   return (
     <Shell
       header={header}
@@ -46,7 +46,7 @@ export function RootLayout({ header, main }: Props) {
   );
 }
 
-export function RootHeaderLayout({
+function RootHeaderLayout({
   actions,
   auth,
   logo,
@@ -69,7 +69,7 @@ export function RootHeaderLayout({
   );
 }
 
-export function RootMobileSearchOverlayLayout({
+function RootMobileSearchOverlayLayout({
   actions,
   body,
   header,
@@ -89,7 +89,7 @@ export function RootMobileSearchOverlayLayout({
   );
 }
 
-export function RootMobileDrawerLayout({
+function RootMobileDrawerLayout({
   body,
   footer,
   header,
@@ -142,3 +142,10 @@ function VersionInfo() {
     </div>
   );
 }
+
+export {
+  RootHeaderLayout,
+  RootLayout,
+  RootMobileDrawerLayout,
+  RootMobileSearchOverlayLayout,
+};

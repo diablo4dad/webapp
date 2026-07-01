@@ -130,7 +130,7 @@ type MobileEditorControlProps = {
   onToggleEditMode: () => void;
 };
 
-export function RootView({
+function RootView({
   canEditCatalog,
   content,
   isEditMode,
@@ -519,3 +519,5 @@ function MobileEditorControl({
     </div>
   );
 }
+
+export { RootView };

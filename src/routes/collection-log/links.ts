@@ -1,14 +1,14 @@
 import { MasterGroup } from "../../common";
 
-export const GENERAL_SLUG = "general";
-export const SEASONS_SLUG = "seasons";
-export const STORE_SLUG = "store";
-export const PROMOTIONAL_SLUG = "promotional";
-export const CHALLENGES_SLUG = "challenges";
-export const UNIVERSAL_SLUG = "universal";
+const GENERAL_SLUG = "general";
+const SEASONS_SLUG = "seasons";
+const STORE_SLUG = "store";
+const PROMOTIONAL_SLUG = "promotional";
+const CHALLENGES_SLUG = "challenges";
+const UNIVERSAL_SLUG = "universal";
 
-export const DEFAULT_GROUP = MasterGroup.GENERAL;
-export const DEFAULT_SLUG = GENERAL_SLUG;
+const DEFAULT_GROUP = MasterGroup.GENERAL;
+const DEFAULT_SLUG = GENERAL_SLUG;
 
 const slugMap: ReadonlyMap<MasterGroup, string> = new Map([
   [MasterGroup.GENERAL, GENERAL_SLUG],
@@ -23,14 +23,28 @@ const slugMapInverse: ReadonlyMap<string, MasterGroup> = new Map(
   Array.from(slugMap, (a) => a.reverse() as [string, MasterGroup]),
 );
 
-export function slugToGroup(slug: string): MasterGroup {
+function slugToGroup(slug: string): MasterGroup {
   return slugMapInverse.get(slug) ?? DEFAULT_GROUP;
 }
 
-export function groupToSlug(group: MasterGroup): string {
+function groupToSlug(group: MasterGroup): string {
   return slugMap.get(group) ?? DEFAULT_SLUG;
 }
 
-export function generateUrl(group: MasterGroup): string {
+function generateUrl(group: MasterGroup): string {
   return `/transmogs/${groupToSlug(group)}`;
 }
+
+export {
+  CHALLENGES_SLUG,
+  DEFAULT_GROUP,
+  DEFAULT_SLUG,
+  GENERAL_SLUG,
+  PROMOTIONAL_SLUG,
+  SEASONS_SLUG,
+  STORE_SLUG,
+  UNIVERSAL_SLUG,
+  generateUrl,
+  groupToSlug,
+  slugToGroup,
+};
