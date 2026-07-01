@@ -48,16 +48,22 @@ describe("header slots", () => {
 });
 
 describe("mobile overlays", () => {
-  test("closes search from the backdrop only", async () => {
+  test("renders search slots and closes from the backdrop only", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
 
     const { container } = render(
-      <RootMobileSearchOverlayLayout onClose={onClose}>
-        <button>search panel</button>
-      </RootMobileSearchOverlayLayout>,
+      <RootMobileSearchOverlayLayout
+        actions={<div>search actions</div>}
+        body={<button>search panel</button>}
+        header={<div>search header</div>}
+        onClose={onClose}
+      />,
     );
     const backdrop = container.firstElementChild as HTMLElement;
+
+    expect(screen.getByText("search header")).toBeInTheDocument();
+    expect(screen.getByText("search actions")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "search panel" }));
 

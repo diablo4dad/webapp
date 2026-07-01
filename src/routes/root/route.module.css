@@ -102,19 +102,6 @@
     height: 100%;
 }
 
-.MobileSearchHeader {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-.MobileSearchHeading {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
 .MobileSearchTitle {
     color: #d0b07c;
     font-family: "PT Serif", serif;
@@ -123,28 +110,13 @@
     text-shadow: 1px 1px 2px #111;
 }
 
-.MobileSearchBody {
-    flex: 1 1 auto;
-}
-
 .MobileSearchField {
     display: flex;
     flex-direction: column;
 }
 
-.MobileSearchBody > :global(.Search) {
-    width: 100%;
-}
-
 .MobileSearchField > :global(.Search) {
     width: 100%;
-}
-
-.MobileSearchActions {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
 }
 
 .MobileSearchAction,

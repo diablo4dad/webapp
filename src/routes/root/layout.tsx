@@ -17,8 +17,10 @@ type HeaderProps = {
   title: ReactNode;
 };
 
-type MobileOverlayProps = {
-  children: ReactNode;
+type MobileSearchProps = {
+  actions: ReactNode;
+  body: ReactNode;
+  header: ReactNode;
   onClose: () => void;
 };
 
@@ -68,16 +70,20 @@ export function RootHeaderLayout({
 }
 
 export function RootMobileSearchOverlayLayout({
-  children,
+  actions,
+  body,
+  header,
   onClose,
-}: MobileOverlayProps) {
+}: MobileSearchProps) {
   return (
     <div className={styles.MobileSearchOverlay} onClick={onClose}>
       <div
         className={styles.MobileSearchPanel}
         onClick={stopOverlayPropagation}
       >
-        {children}
+        <div className={styles.MobileSearchHeader}>{header}</div>
+        <div className={styles.MobileSearchBody}>{body}</div>
+        <div className={styles.MobileSearchActions}>{actions}</div>
       </div>
     </div>
   );

@@ -112,6 +112,24 @@
     animation: search-panel-in 200ms ease-out;
 }
 
+.MobileSearchHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.MobileSearchBody {
+    flex: 1 1 auto;
+}
+
+.MobileSearchActions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
 .MobileDrawer {
     width: min(30rem, calc(100vw - 2rem));
     height: 100%;

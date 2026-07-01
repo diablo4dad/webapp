@@ -315,20 +315,21 @@ function MobileSearchOverlay({
   searchTerm,
 }: MobileSearchOverlayProps) {
   return (
-    <RootMobileSearchOverlayLayout onClose={onClose}>
-      <div className={styles.MobileSearchHeader}>
-        <div className={styles.MobileSearchHeading}>
+    <RootMobileSearchOverlayLayout
+      onClose={onClose}
+      header={
+        <>
           <div className={styles.MobileSearchTitle}>Transmog Search</div>
-        </div>
-        <button
-          className={styles.MobileDrawerClose}
-          onClick={onClose}
-          aria-label="Close search"
-        >
-          <Close />
-        </button>
-      </div>
-      <div className={styles.MobileSearchBody}>
+          <button
+            className={styles.MobileDrawerClose}
+            onClick={onClose}
+            aria-label="Close search"
+          >
+            <Close />
+          </button>
+        </>
+      }
+      body={
         <div className={styles.MobileSearchField}>
           <Search
             value={searchTerm}
@@ -338,24 +339,26 @@ function MobileSearchOverlay({
             placeholder={"Search transmogs"}
           />
         </div>
-      </div>
-      <div className={styles.MobileSearchActions}>
-        <Button
-          className={styles.MobileSearchActionPrimary}
-          colour={BtnColours.Dark}
-          onClick={onClose}
-        >
-          Search
-        </Button>
-        <Button
-          className={styles.MobileSearchAction}
-          colour={BtnColours.Dark}
-          onClick={onClearSearch}
-        >
-          Clear
-        </Button>
-      </div>
-    </RootMobileSearchOverlayLayout>
+      }
+      actions={
+        <>
+          <Button
+            className={styles.MobileSearchActionPrimary}
+            colour={BtnColours.Dark}
+            onClick={onClose}
+          >
+            Search
+          </Button>
+          <Button
+            className={styles.MobileSearchAction}
+            colour={BtnColours.Dark}
+            onClick={onClearSearch}
+          >
+            Clear
+          </Button>
+        </>
+      }
+    />
   );
 }
 
