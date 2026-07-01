@@ -1,121 +1,120 @@
-.Block {
+.Layout {
     --layout-padding: 2rem;
     --layout-gap: 1rem;
 }
 
-.Content {
+.LayoutContent {
     display: flex;
-    flex: 1;
     flex-direction: column;
+    flex: 1;
 }
 
-.Hero {
-    padding: 1rem 0;
+.LayoutHero {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
     gap: 1rem;
+    padding: 1rem 0;
 }
 
-.LeftSidebar,
-.RightSidebar {
+.LayoutLeftSidebar,
+.LayoutRightSidebar {
     display: none;
 }
 
-.Main {
+.LayoutMain {
     position: relative;
     display: flex;
+    flex-direction: column;
+    flex: 1;
     width: 100%;
     min-width: 0;
-    flex: 1;
-    flex-direction: column;
 }
 
 @media screen and (min-width: 1200px) {
-    .Block {
+    .Layout {
         display: block;
         flex: auto;
     }
 
-    .Hero {
+    .LayoutHero {
         position: sticky;
-        padding: 2rem 2rem 1rem;
         grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 1rem;
+        padding: 2rem 2rem 1rem;
     }
 
-    .Content {
+    .LayoutContent {
         display: grid;
         grid-template-columns: repeat(12, minmax(0, 1fr));
         gap: var(--layout-gap);
         padding: 0 var(--layout-padding) var(--layout-padding);
     }
 
-    .LeftSidebar,
-    .RightSidebar {
+    .LayoutLeftSidebar,
+    .LayoutRightSidebar {
         position: sticky;
         top: 2rem;
         align-self: start;
-
         display: flex;
         flex-direction: column;
     }
 
-    .LeftSidebar {
+    .LayoutLeftSidebar {
         grid-column: span 4;
     }
 
-    .RightSidebar {
+    .LayoutRightSidebar {
         grid-column: span 4;
     }
 
-    .MainWithBothSidebars {
+    .LayoutMainWithBothSidebars {
         grid-column: span 4;
     }
 
-    .MainWithLeftSidebar,
-    .MainWithRightSidebar {
+    .LayoutMainWithLeftSidebar,
+    .LayoutMainWithRightSidebar {
         grid-column: span 8;
     }
 
-    .MainFullWidth {
+    .LayoutMainFullWidth {
         grid-column: 1 / -1;
     }
 }
 
 @media screen and (min-width: 1600px) {
-    .MainWithBothSidebars {
+    .LayoutMainWithBothSidebars {
         grid-column: span 6;
     }
 
-    .MainWithLeftSidebar,
-    .MainWithRightSidebar {
+    .LayoutMainWithLeftSidebar,
+    .LayoutMainWithRightSidebar {
         grid-column: span 9;
     }
 
-    .LeftSidebar {
+    .LayoutLeftSidebar {
         grid-column: span 3;
     }
 
-    .RightSidebar {
+    .LayoutRightSidebar {
         grid-column: span 3;
     }
 }
 
 @media screen and (min-width: 2600px) {
-    .MainWithBothSidebars {
+    .LayoutMainWithBothSidebars {
         grid-column: span 8;
     }
 
-    .MainWithLeftSidebar,
-    .MainWithRightSidebar {
+    .LayoutMainWithLeftSidebar,
+    .LayoutMainWithRightSidebar {
         grid-column: span 10;
     }
 
-    .LeftSidebar {
+    .LayoutLeftSidebar {
         grid-column: span 2;
     }
 
-    .RightSidebar {
+    .LayoutRightSidebar {
         grid-column: span 2;
     }
 }

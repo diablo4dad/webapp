@@ -43,9 +43,11 @@ function MobileSearchOverlay({
       onClose={onClose}
       header={
         <>
-          <div className={styles.MobileSearchTitle}>Transmog Search</div>
+          <div className={styles.MobileSearchOverlayTitle}>
+            Transmog Search
+          </div>
           <button
-            className={styles.MobileOverlayClose}
+            className={styles.MobileSearchOverlayClose}
             onClick={onClose}
             aria-label="Close search"
           >
@@ -54,7 +56,7 @@ function MobileSearchOverlay({
         </>
       }
       body={
-        <div className={styles.MobileSearchField}>
+        <div className={styles.MobileSearchOverlayField}>
           <Search
             value={searchTerm}
             onChange={onSearchChange}
@@ -67,14 +69,14 @@ function MobileSearchOverlay({
       actions={
         <>
           <Button
-            className={styles.MobileSearchActionPrimary}
+            className={styles.MobileSearchOverlayActionPrimary}
             colour={BtnColours.Dark}
             onClick={onClose}
           >
             Search
           </Button>
           <Button
-            className={styles.MobileSearchAction}
+            className={styles.MobileSearchOverlayAction}
             colour={BtnColours.Dark}
             onClick={onClearSearch}
           >
@@ -100,9 +102,9 @@ function MobileSettingsDrawer({
       onClose={onClose}
       header={
         <>
-          <div className={styles.MobileDrawerTitle}>Settings</div>
+          <div className={styles.MobileSettingsDrawerTitle}>Settings</div>
           <button
-            className={styles.MobileOverlayClose}
+            className={styles.MobileSettingsDrawerClose}
             onClick={onClose}
             aria-label="Close settings"
           >
@@ -137,21 +139,21 @@ function MobileEditorControl({
   onToggleEditMode,
 }: MobileEditorControlProps) {
   return (
-    <div className={styles.MobileEditorSection}>
-      <div className={styles.MobileEditorMeta}>
-        <div className={styles.MobileEditorTitle}>Editor Mode</div>
+    <div className={styles.MobileEditorControl}>
+      <div className={styles.MobileEditorControlMeta}>
+        <div className={styles.MobileEditorControlTitle}>Editor Mode</div>
       </div>
       <button
         className={
           isEditMode
-            ? styles.MobileEditorToggleActive
-            : styles.MobileEditorToggle
+            ? styles.MobileEditorControlToggleActive
+            : styles.MobileEditorControlToggle
         }
         onClick={onToggleEditMode}
         type="button"
         aria-pressed={isEditMode}
       >
-        <span className={styles.MobileEditorToggleIcon}>
+        <span className={styles.MobileEditorControlToggleIcon}>
           <Pencil />
         </span>
         <span>{isEditMode ? "On" : "Off"}</span>

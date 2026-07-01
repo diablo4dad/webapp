@@ -21,6 +21,10 @@ description: Code style and TypeScript/React conventions for this repository. Us
 - Keep components readable: move complex derivations into named helpers when JSX becomes hard to scan.
 - Keep render components pure where practical: pass data, derived state, and event handlers through props instead of reading context, loading data, or performing persistence from the view.
 - Use CSS modules for component-specific styles and existing shared components before adding new styling patterns.
+- Keep CSS modules self-contained: a module should style the owning component and only tightly coupled private subcomponents; move shared layout, placement, and reusable primitives to the appropriate layout or component module.
+- Name CSS module classes with the UpperCamelCase module filename as the first segment, then append hierarchical role segments in reading order. For example, `layout.module.css` uses `Layout`, `LayoutHeading`, and `LayoutHeadingTitle`; `header.module.css` uses `HeaderLogo`.
+- Keep CSS class hierarchy shallow and meaningful. CSS modules scope class names, so omit route or feature prefixes such as `Root` or `CollectionLog` unless they disambiguate multiple owners in the same CSS module; avoid naming by incidental DOM tags, colors, or implementation details.
+- Group CSS properties by purpose: positioning and stacking, layout/display, box model and sizing, visual treatment, typography, interaction/state, then animation/transition. Use that order when editing a rule, without reordering untouched CSS solely for churn.
 - Prefer self-authored components and existing local primitives before adding UI libraries; reach for a library only when accessibility, positioning, virtualization, parsing, or other complexity justifies the dependency.
 - Keep reusable component CSS focused on the component's own appearance and intrinsic affordances. Put screen positioning, page sizing, and fixed layout constraints in layout components or parent wrappers.
 - Preserve current formatting style in touched files; do not introduce repo-wide formatting churn.

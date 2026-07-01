@@ -74,14 +74,22 @@ function RootHeader({
 }: RootHeaderProps) {
   return (
     <RootHeaderLayout
-      logo={<img className={styles.HeaderIcon} src={logo} alt={i18n.gameName} />}
+      logo={
+        <img
+          className={styles.HeaderLogo}
+          src={logo}
+          alt={i18n.gameName}
+        />
+      }
       title={
-        <div className={styles.HeaderInfo}>
-          <div className={styles.HeaderInfoName}>
-            <span className={styles.HeaderInfoNameAccent}>Diablo IV</span>{" "}
+        <div className={styles.HeaderTitle}>
+          <div className={styles.HeaderTitleName}>
+            <span className={styles.HeaderTitleNameAccent}>Diablo IV</span>{" "}
             <span>Dad</span>
           </div>
-          <div className={styles.HeaderInfoTagLine}>{i18n.siteTagLine}</div>
+          <div className={styles.HeaderTitleTagLine}>
+            {i18n.siteTagLine}
+          </div>
         </div>
       }
       search={
@@ -191,7 +199,7 @@ function RootHeaderToggle({
           {children}
         </Button>
       </TooltipTrigger>
-      <TooltipContent className={styles.HeaderTooltip}>
+      <TooltipContent className={styles.HeaderToggleTooltip}>
         {tooltip}
       </TooltipContent>
     </Tooltip>

@@ -15,23 +15,27 @@ export function CollectionLogLayout({
   main,
   hero,
 }: Props) {
-  const mainClassName = classNames(styles.Main, {
-    [styles.MainWithBothSidebars]: leftSidebar && rightSidebar,
-    [styles.MainWithLeftSidebar]: leftSidebar && !rightSidebar,
-    [styles.MainWithRightSidebar]: !leftSidebar && rightSidebar,
-    [styles.MainFullWidth]: !leftSidebar && !rightSidebar,
+  const mainClassName = classNames(styles.LayoutMain, {
+    [styles.LayoutMainWithBothSidebars]: leftSidebar && rightSidebar,
+    [styles.LayoutMainWithLeftSidebar]: leftSidebar && !rightSidebar,
+    [styles.LayoutMainWithRightSidebar]: !leftSidebar && rightSidebar,
+    [styles.LayoutMainFullWidth]: !leftSidebar && !rightSidebar,
   });
 
   return (
-    <div className={styles.Block}>
-      <div className={styles.Hero}>{hero}</div>
-      <div className={styles.Content}>
+    <div className={styles.Layout}>
+      <div className={styles.LayoutHero}>{hero}</div>
+      <div className={styles.LayoutContent}>
         {leftSidebar && (
-          <aside className={styles.LeftSidebar}>{leftSidebar}</aside>
+          <aside className={styles.LayoutLeftSidebar}>
+            {leftSidebar}
+          </aside>
         )}
         <main className={mainClassName}>{main}</main>
         {rightSidebar && (
-          <aside className={styles.RightSidebar}>{rightSidebar}</aside>
+          <aside className={styles.LayoutRightSidebar}>
+            {rightSidebar}
+          </aside>
         )}
       </div>
     </div>

@@ -1,7 +1,7 @@
-.LoadError {
+.ViewLoadError {
     padding: 1rem 2rem;
-    background-color: rgba(166, 38, 57, 0.16);
     border-top: 1px solid rgba(166, 38, 57, 0.35);
     border-bottom: 1px solid rgba(166, 38, 57, 0.35);
+    background-color: rgba(166, 38, 57, 0.16);
     color: #f1b4bd;
 }

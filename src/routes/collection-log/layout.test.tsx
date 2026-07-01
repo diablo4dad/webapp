@@ -25,16 +25,27 @@ function renderLayout({
 
 describe("main column", () => {
   test.each([
-    ["full width", {}, styles.MainFullWidth],
-    ["left sidebar", { leftSidebar: true }, styles.MainWithLeftSidebar],
-    ["right sidebar", { rightSidebar: true }, styles.MainWithRightSidebar],
+    ["full width", {}, styles.LayoutMainFullWidth],
+    [
+      "left sidebar",
+      { leftSidebar: true },
+      styles.LayoutMainWithLeftSidebar,
+    ],
+    [
+      "right sidebar",
+      { rightSidebar: true },
+      styles.LayoutMainWithRightSidebar,
+    ],
     [
       "both sidebars",
       { leftSidebar: true, rightSidebar: true },
-      styles.MainWithBothSidebars,
+      styles.LayoutMainWithBothSidebars,
     ],
   ])("uses %s", (_label, options, className) => {
-    expect(renderLayout(options)).toHaveClass(styles.Main, className);
+    expect(renderLayout(options)).toHaveClass(
+      styles.LayoutMain,
+      className,
+    );
   });
 });
 

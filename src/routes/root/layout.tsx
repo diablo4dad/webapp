@@ -54,16 +54,16 @@ function RootHeaderLayout({
   title,
 }: HeaderProps) {
   return (
-    <header className={styles.Header}>
-      <div className={styles.HeaderBrand}>
-        <div className={styles.HeaderLogo}>{logo}</div>
-        <div className={styles.HeaderTitle}>{title}</div>
+    <header className={styles.LayoutHeader}>
+      <div className={styles.LayoutHeaderBrand}>
+        <div className={styles.LayoutHeaderLogo}>{logo}</div>
+        <div className={styles.LayoutHeaderTitle}>{title}</div>
       </div>
-      <div className={styles.HeaderControls}>
-        <div className={styles.HeaderSearch}>{search}</div>
-        <div className={styles.HeaderButtons}>{actions}</div>
-        <div className={styles.HeaderSpacer} />
-        <div className={styles.HeaderAuth}>{auth}</div>
+      <div className={styles.LayoutHeaderControls}>
+        <div className={styles.LayoutHeaderSearch}>{search}</div>
+        <div className={styles.LayoutHeaderButtons}>{actions}</div>
+        <div className={styles.LayoutHeaderSpacer} />
+        <div className={styles.LayoutHeaderAuth}>{auth}</div>
       </div>
     </header>
   );
@@ -76,14 +76,18 @@ function RootMobileSearchOverlayLayout({
   onClose,
 }: MobileSearchProps) {
   return (
-    <div className={styles.MobileSearchOverlay} onClick={onClose}>
+    <div className={styles.LayoutMobileSearchOverlay} onClick={onClose}>
       <div
-        className={styles.MobileSearchPanel}
+        className={styles.LayoutMobileSearchOverlayPanel}
         onClick={stopOverlayPropagation}
       >
-        <div className={styles.MobileSearchHeader}>{header}</div>
-        <div className={styles.MobileSearchBody}>{body}</div>
-        <div className={styles.MobileSearchActions}>{actions}</div>
+        <div className={styles.LayoutMobileSearchOverlayHeader}>
+          {header}
+        </div>
+        <div className={styles.LayoutMobileSearchOverlayBody}>{body}</div>
+        <div className={styles.LayoutMobileSearchOverlayActions}>
+          {actions}
+        </div>
       </div>
     </div>
   );
@@ -96,12 +100,15 @@ function RootMobileDrawerLayout({
   onClose,
 }: MobileDrawerProps) {
   return (
-    <div className={styles.MobileDrawerOverlay} onClick={onClose}>
-      <aside className={styles.MobileDrawer} onClick={stopOverlayPropagation}>
-        <div className={styles.MobileDrawerHeader}>{header}</div>
-        <div className={styles.MobileDrawerBody}>
-          <div className={styles.MobileDrawerContent}>{body}</div>
-          <div className={styles.MobileDrawerFooter}>{footer}</div>
+    <div className={styles.LayoutMobileDrawer} onClick={onClose}>
+      <aside
+        className={styles.LayoutMobileDrawerPanel}
+        onClick={stopOverlayPropagation}
+      >
+        <div className={styles.LayoutMobileDrawerHeader}>{header}</div>
+        <div className={styles.LayoutMobileDrawerBody}>
+          <div className={styles.LayoutMobileDrawerContent}>{body}</div>
+          <div className={styles.LayoutMobileDrawerFooter}>{footer}</div>
         </div>
       </aside>
     </div>
@@ -114,17 +121,20 @@ function stopOverlayPropagation(event: MouseEvent) {
 
 function DiscordInvite() {
   return (
-    <div className={styles.Discord}>
-      <div className={styles.DiscordIcon}>
+    <div className={styles.LayoutDiscordInvite}>
+      <div className={styles.LayoutDiscordInviteIcon}>
         <a href={DISCORD_INVITE_LINK}>
           <Discord />
         </a>
       </div>
-      <div className={styles.DiscordInfo}>
-        <a className={styles.DiscordInfoLink} href={DISCORD_INVITE_LINK}>
+      <div className={styles.LayoutDiscordInviteInfo}>
+        <a
+          className={styles.LayoutDiscordInviteInfoLink}
+          href={DISCORD_INVITE_LINK}
+        >
           Join the Discord Server
         </a>
-        <div className={styles.DiscordInfoSlugs}>
+        <div className={styles.LayoutDiscordInviteInfoSlugs}>
           Site News | Community | Bragging
         </div>
       </div>
@@ -134,7 +144,7 @@ function DiscordInvite() {
 
 function VersionInfo() {
   return (
-    <div className={styles.SiteVersion}>
+    <div className={styles.LayoutSiteVersion}>
       <div>Last updated {LAST_UPDATED}</div>
       <div>
         Site Version <code>{SITE_VERSION}</code>

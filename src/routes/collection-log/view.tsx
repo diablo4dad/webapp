@@ -121,7 +121,9 @@ function MainContent({
   }
 
   if (catalogError) {
-    return <div className={styles.LoadError}>{catalogError}</div>;
+    return (
+      <div className={styles.ViewLoadError}>{catalogError}</div>
+    );
   }
 
   return (
