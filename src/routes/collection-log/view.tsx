@@ -26,6 +26,22 @@ type Props = {
   sidebarVisibility: SidebarVisibility;
 };
 
+type ItemSidebarPanelProps = {
+  focusCollection?: Collection;
+  focusItem: CollectionItem;
+  isLoading: boolean;
+};
+
+type MainContentProps = {
+  catalogError?: string;
+  collections: Collection[];
+  isEmpty: boolean;
+  isLoading: boolean;
+  onClickItem: (collectionItem: CollectionItem, collection: Collection) => void;
+  onCollectionChange: (collectionId: string, isOpen: boolean) => void;
+  openCollections: string[];
+};
+
 export function CollectionLogView({
   catalogError,
   collections,
@@ -79,12 +95,6 @@ function Hero() {
   );
 }
 
-type ItemSidebarPanelProps = {
-  focusCollection?: Collection;
-  focusItem: CollectionItem;
-  isLoading: boolean;
-};
-
 function ItemSidebarPanel({
   focusCollection,
   focusItem,
@@ -96,16 +106,6 @@ function ItemSidebarPanel({
     <ItemSidebar collectionItem={focusItem} collection={focusCollection} />
   );
 }
-
-type MainContentProps = {
-  catalogError?: string;
-  collections: Collection[];
-  isEmpty: boolean;
-  isLoading: boolean;
-  onClickItem: (collectionItem: CollectionItem, collection: Collection) => void;
-  onCollectionChange: (collectionId: string, isOpen: boolean) => void;
-  openCollections: string[];
-};
 
 function MainContent({
   catalogError,

@@ -4,6 +4,7 @@ import { useLoaderData } from "react-router-dom";
 import { useData } from "../../data/context";
 import { useAuth } from "../../auth/context";
 import { useEditor } from "../../editor/context";
+import { loader as collectionLogLoader } from "./loader";
 import type { LoaderPayload } from "./loader";
 import { useCatalogLoading } from "./loading";
 import {
@@ -13,9 +14,9 @@ import {
 } from "./state";
 import { CollectionLogView } from "./view";
 
-export { loader } from "./loader";
+export const loader = collectionLogLoader;
 
-function CollectionLogRoute() {
+export function Component() {
   const { group } = useLoaderData() as LoaderPayload;
   const {
     filteredDb,
@@ -80,5 +81,3 @@ function CollectionLogRoute() {
     />
   );
 }
-
-export { CollectionLogRoute as Component };

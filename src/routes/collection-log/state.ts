@@ -8,8 +8,6 @@ import {
   saveCollectionLogViewModel,
 } from "../../store/local";
 
-const EMPTY_FOCUS_ITEM_ID = -1;
-
 export type CollectionLogViewModel = {
   openCollections: string[];
 };
@@ -55,6 +53,8 @@ export type CollectionLogState = {
   openCollections: string[];
   setOpenCollection: (collectionId: string, isOpen: boolean) => void;
 };
+
+const EMPTY_FOCUS_ITEM_ID = -1;
 
 export function setCollectionOpen(
   viewModel: CollectionLogViewModel,

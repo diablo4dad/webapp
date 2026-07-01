@@ -5,6 +5,14 @@ import type { SidebarVisibility } from "../../common";
 import type { DadUser } from "../../auth/type";
 import RootRoute from "./route";
 
+type RootOptions = {
+  canEditCatalog?: boolean;
+  isEditMode?: boolean;
+  searchTerm?: string;
+  sidebarVisibility?: SidebarVisibility;
+  user?: DadUser;
+};
+
 const mocks = vi.hoisted(() => ({
   signIn: vi.fn(),
   signOut: vi.fn(),
@@ -65,14 +73,6 @@ vi.mock("../../editor/context", () => ({
 vi.mock("../../settings/ConfigSidebar", () => ({
   default: () => <div>settings panel</div>,
 }));
-
-type RootOptions = {
-  canEditCatalog?: boolean;
-  isEditMode?: boolean;
-  searchTerm?: string;
-  sidebarVisibility?: SidebarVisibility;
-  user?: DadUser;
-};
 
 const signedInUser: DadUser = {
   email: "dad@example.com",

@@ -18,10 +18,6 @@ import {
   useCollectionLogState,
 } from "./state";
 
-beforeEach(() => {
-  localStorage.clear();
-});
-
 function item(id: number): CollectionItem {
   return {
     claim: `claim-${id}`,
@@ -42,6 +38,10 @@ function collection(
     subcollections,
   };
 }
+
+beforeEach(() => {
+  localStorage.clear();
+});
 
 describe("focus state", () => {
   const generalItem = item(101);

@@ -50,6 +50,86 @@ type Props = {
   user?: DadUser;
 };
 
+type RootHeaderProps = {
+  canEditCatalog: boolean;
+  isMobileConfigOpen: boolean;
+  isEditMode: boolean;
+  onClearSearch: () => void;
+  onSearchChange: (value: string) => void;
+  onSignIn: () => void;
+  onSignOut: () => void;
+  onToggleConfig: () => void;
+  onToggleEditMode: () => void;
+  onToggleItemSidebar: () => void;
+  onToggleMobileConfig: () => void;
+  searchTerm: string;
+  sidebarVisibility: SidebarVisibility;
+  user?: DadUser;
+};
+
+type RootHeaderActionsProps = {
+  canEditCatalog: boolean;
+  isEditMode: boolean;
+  isMobileConfigOpen: boolean;
+  onToggleConfig: () => void;
+  onToggleEditMode: () => void;
+  onToggleItemSidebar: () => void;
+  onToggleMobileConfig: () => void;
+  sidebarVisibility: SidebarVisibility;
+};
+
+type RootHeaderToggleProps = {
+  ariaLabel?: string;
+  children: ReactNode;
+  isPressed: boolean;
+  onToggle: () => void;
+  tooltip: string;
+};
+
+type RootAuthActionsProps = {
+  onSignIn: () => void;
+  onSignOut: () => void;
+  user?: DadUser;
+};
+
+type RootMainProps = {
+  canEditCatalog: boolean;
+  isEditMode: boolean;
+  isMobileConfigOpen: boolean;
+  isMobileSearchOpen: boolean;
+  onClearSearch: () => void;
+  onCloseMobileContent: () => void;
+  onSearchChange: (value: string) => void;
+  onSignIn: () => void;
+  onSignOut: () => void;
+  onToggleEditMode: () => void;
+  routeOutlet: ReactNode;
+  searchTerm: string;
+  user?: DadUser;
+};
+
+type MobileSearchOverlayProps = {
+  onClearSearch: () => void;
+  onClose: () => void;
+  onSearchChange: (value: string) => void;
+  searchTerm: string;
+};
+
+type MobileSettingsDrawerProps = {
+  canEditCatalog: boolean;
+  isEditMode: boolean;
+  onClose: () => void;
+  onSignIn: () => void;
+  onSignOut: () => void;
+  onToggleEditMode: () => void;
+  user?: DadUser;
+};
+
+type MobileEditorControlProps = {
+  isEditMode: boolean;
+  onToggleEditMode: () => void;
+};
+
 export function RootView({
   canEditCatalog,
   content,
@@ -112,23 +192,6 @@ export function RootView({
   );
 }
 
-type RootHeaderProps = {
-  canEditCatalog: boolean;
-  isMobileConfigOpen: boolean;
-  isEditMode: boolean;
-  onClearSearch: () => void;
-  onSearchChange: (value: string) => void;
-  onSignIn: () => void;
-  onSignOut: () => void;
-  onToggleConfig: () => void;
-  onToggleEditMode: () => void;
-  onToggleItemSidebar: () => void;
-  onToggleMobileConfig: () => void;
-  searchTerm: string;
-  sidebarVisibility: SidebarVisibility;
-  user?: DadUser;
-};
-
 function RootHeader({
   canEditCatalog,
   isMobileConfigOpen,
@@ -188,17 +251,6 @@ function RootHeader({
   );
 }
 
-type RootHeaderActionsProps = {
-  canEditCatalog: boolean;
-  isEditMode: boolean;
-  isMobileConfigOpen: boolean;
-  onToggleConfig: () => void;
-  onToggleEditMode: () => void;
-  onToggleItemSidebar: () => void;
-  onToggleMobileConfig: () => void;
-  sidebarVisibility: SidebarVisibility;
-};
-
 function RootHeaderActions({
   canEditCatalog,
   isEditMode,
@@ -252,14 +304,6 @@ function RootHeaderActions({
   );
 }
 
-type RootHeaderToggleProps = {
-  ariaLabel?: string;
-  children: ReactNode;
-  isPressed: boolean;
-  onToggle: () => void;
-  tooltip: string;
-};
-
 function RootHeaderToggle({
   ariaLabel,
   children,
@@ -287,12 +331,6 @@ function RootHeaderToggle({
   );
 }
 
-type RootAuthActionsProps = {
-  onSignIn: () => void;
-  onSignOut: () => void;
-  user?: DadUser;
-};
-
 function RootAuthActions({
   onSignIn,
   onSignOut,
@@ -310,22 +348,6 @@ function RootAuthActions({
     />
   );
 }
-
-type RootMainProps = {
-  canEditCatalog: boolean;
-  isEditMode: boolean;
-  isMobileConfigOpen: boolean;
-  isMobileSearchOpen: boolean;
-  onClearSearch: () => void;
-  onCloseMobileContent: () => void;
-  onSearchChange: (value: string) => void;
-  onSignIn: () => void;
-  onSignOut: () => void;
-  onToggleEditMode: () => void;
-  routeOutlet: ReactNode;
-  searchTerm: string;
-  user?: DadUser;
-};
 
 function RootMain({
   canEditCatalog,
@@ -369,13 +391,6 @@ function RootMain({
     </>
   );
 }
-
-type MobileSearchOverlayProps = {
-  onClearSearch: () => void;
-  onClose: () => void;
-  onSearchChange: (value: string) => void;
-  searchTerm: string;
-};
 
 function MobileSearchOverlay({
   onClearSearch,
@@ -431,16 +446,6 @@ function MobileSearchOverlay({
   );
 }
 
-type MobileSettingsDrawerProps = {
-  canEditCatalog: boolean;
-  isEditMode: boolean;
-  onClose: () => void;
-  onSignIn: () => void;
-  onSignOut: () => void;
-  onToggleEditMode: () => void;
-  user?: DadUser;
-};
-
 function MobileSettingsDrawer({
   canEditCatalog,
   isEditMode,
@@ -486,11 +491,6 @@ function MobileSettingsDrawer({
     />
   );
 }
-
-type MobileEditorControlProps = {
-  isEditMode: boolean;
-  onToggleEditMode: () => void;
-};
 
 function MobileEditorControl({
   isEditMode,

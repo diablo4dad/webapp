@@ -37,31 +37,6 @@ type LoadedCatalogGroup = {
   dadDbRef: DadDbRef;
 };
 
-function isCatalogGroup(group: MasterGroup): boolean {
-  return catalogGroups.some((category) => category === group);
-}
-
-function getCatalogTargetGroups(group: MasterGroup): MasterGroup[] {
-  return group === MasterGroup.UNIVERSAL ? [...catalogGroups] : [group];
-}
-
-function shouldFetchCatalogGroup(
-  group: MasterGroup,
-  source: CatalogGroupSource,
-  catalogGroupSources: CatalogGroupSources,
-  loadedCatalogGroups: readonly MasterGroup[],
-): boolean {
-  if (!isCatalogGroup(group)) {
-    return false;
-  }
-
-  if (source === "firestore") {
-    return catalogGroupSources[group] !== "firestore";
-  }
-
-  return !loadedCatalogGroups.includes(group);
-}
-
 export function getCatalogLoadPlan({
   canEditCatalog,
   catalogGroupSources,
@@ -99,20 +74,6 @@ export function getCatalogLoadStatus({
   }
 
   return "loading";
-}
-
-async function loadCatalogGroups(
-  groupsToFetch: MasterGroup[],
-  source: CatalogGroupSource,
-): Promise<LoadedCatalogGroup[]> {
-  const resolvedGroups = await fetchHybridDadDbRefsByCategory(groupsToFetch, {
-    source,
-  });
-
-  return resolvedGroups.map((resolvedGroup) => ({
-    category: resolvedGroup.category as MasterGroup,
-    dadDbRef: resolvedGroup.dadDbRef,
-  }));
 }
 
 export function useCatalogLoading({
@@ -201,4 +162,43 @@ export function useCatalogLoading({
     catalogError,
     isCatalogLoading,
   };
+}
+
+function isCatalogGroup(group: MasterGroup): boolean {
+  return catalogGroups.some((category) => category === group);
+}
+
+function getCatalogTargetGroups(group: MasterGroup): MasterGroup[] {
+  return group === MasterGroup.UNIVERSAL ? [...catalogGroups] : [group];
+}
+
+function shouldFetchCatalogGroup(
+  group: MasterGroup,
+  source: CatalogGroupSource,
+  catalogGroupSources: CatalogGroupSources,
+  loadedCatalogGroups: readonly MasterGroup[],
+): boolean {
+  if (!isCatalogGroup(group)) {
+    return false;
+  }
+
+  if (source === "firestore") {
+    return catalogGroupSources[group] !== "firestore";
+  }
+
+  return !loadedCatalogGroups.includes(group);
+}
+
+async function loadCatalogGroups(
+  groupsToFetch: MasterGroup[],
+  source: CatalogGroupSource,
+): Promise<LoadedCatalogGroup[]> {
+  const resolvedGroups = await fetchHybridDadDbRefsByCategory(groupsToFetch, {
+    source,
+  });
+
+  return resolvedGroups.map((resolvedGroup) => ({
+    category: resolvedGroup.category as MasterGroup,
+    dadDbRef: resolvedGroup.dadDbRef,
+  }));
 }

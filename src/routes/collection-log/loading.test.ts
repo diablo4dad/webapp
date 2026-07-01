@@ -11,6 +11,10 @@ import {
   useCatalogLoading,
 } from "./loading";
 
+type LoadedCatalogGroups = Awaited<
+  ReturnType<typeof fetchHybridDadDbRefsByCategory>
+>;
+
 const mocks = vi.hoisted(() => ({
   fetchHybridDadDbRefsByCategory: vi.fn(),
   hydrateDadDb: vi.fn(),
@@ -36,10 +40,6 @@ const dadDb: DadDb = {
   items: [],
   itemTypes: [],
 };
-
-type LoadedCatalogGroups = Awaited<
-  ReturnType<typeof fetchHybridDadDbRefsByCategory>
->;
 
 function createDeferredCatalogLoad() {
   let resolve!: (value: LoadedCatalogGroups) => void;

@@ -4,6 +4,15 @@ import type { SidebarVisibility } from "../../common";
 import type { Collection, CollectionItem } from "../../data";
 import { CollectionLogView } from "./view";
 
+type ViewOptions = {
+  catalogError?: string;
+  collections?: Collection[];
+  isEmpty?: boolean;
+  isItemSidebarLoading?: boolean;
+  isLoading?: boolean;
+  sidebarVisibility?: SidebarVisibility;
+};
+
 vi.mock("../../collection/EmptyCollection", () => ({
   default: () => <div>empty collection</div>,
 }));
@@ -43,15 +52,6 @@ vi.mock("../../collection/Welcome", () => ({
 vi.mock("../../settings/ConfigSidebar", () => ({
   default: () => <div>config sidebar</div>,
 }));
-
-type ViewOptions = {
-  catalogError?: string;
-  collections?: Collection[];
-  isEmpty?: boolean;
-  isItemSidebarLoading?: boolean;
-  isLoading?: boolean;
-  sidebarVisibility?: SidebarVisibility;
-};
 
 function item(id: number): CollectionItem {
   return {

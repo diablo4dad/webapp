@@ -8,6 +8,13 @@ import type { CollectionLogView } from "./view";
 
 type ViewProps = Parameters<typeof CollectionLogView>[0];
 
+type RouteOptions = {
+  canEditCatalog?: boolean;
+  catalogError?: string;
+  isAuthLoading?: boolean;
+  isCatalogLoading?: boolean;
+};
+
 const mocks = vi.hoisted(() => ({
   renderView: vi.fn(),
   useAuth: vi.fn(),
@@ -66,13 +73,6 @@ vi.mock("./view", () => ({
     );
   },
 }));
-
-type RouteOptions = {
-  canEditCatalog?: boolean;
-  catalogError?: string;
-  isAuthLoading?: boolean;
-  isCatalogLoading?: boolean;
-};
 
 function item(id: number): CollectionItem {
   return {
