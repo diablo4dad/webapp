@@ -163,59 +163,41 @@ function RootHeader({
       }
       actions={
         <>
-          <Tooltip placement={"bottom"}>
-            <TooltipTrigger asChild={true}>
-              <Button
-                onClick={onToggleItemSidebar}
-                pressed={sidebarVisibility.showItem}
-                showOnly={"desktop"}
-                colour={BtnColours.Dark}
-              >
-                <SidebarLeft />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className={styles.HeaderTooltip}>
-              {sidebarVisibility.showItem
+          <RootHeaderToggle
+            isPressed={sidebarVisibility.showItem}
+            onToggle={onToggleItemSidebar}
+            tooltip={
+              sidebarVisibility.showItem
                 ? "Hide Item Sidebar"
-                : "Show Item Sidebar"}
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip placement={"bottom"}>
-            <TooltipTrigger asChild={true}>
-              <Button
-                onClick={onToggleConfig}
-                pressed={sidebarVisibility.showConfig}
-                showOnly={"desktop"}
-                colour={BtnColours.Dark}
-              >
-                <SidebarRight />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className={styles.HeaderTooltip}>
-              {sidebarVisibility.showConfig
+                : "Show Item Sidebar"
+            }
+          >
+            <SidebarLeft />
+          </RootHeaderToggle>
+          <RootHeaderToggle
+            isPressed={sidebarVisibility.showConfig}
+            onToggle={onToggleConfig}
+            tooltip={
+              sidebarVisibility.showConfig
                 ? "Hide Settings Sidebar"
-                : "Show Settings Sidebar"}
-            </TooltipContent>
-          </Tooltip>
+                : "Show Settings Sidebar"
+            }
+          >
+            <SidebarRight />
+          </RootHeaderToggle>
           {canEditCatalog && (
-            <Tooltip placement={"bottom"}>
-              <TooltipTrigger asChild={true}>
-                <Button
-                  onClick={onToggleEditMode}
-                  pressed={isEditMode}
-                  showOnly={"desktop"}
-                  colour={BtnColours.Dark}
-                  aria-label={
-                    isEditMode ? "Disable editor mode" : "Enable editor mode"
-                  }
-                >
-                  <Pencil />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className={styles.HeaderTooltip}>
-                {isEditMode ? "Disable Editor Mode" : "Enable Editor Mode"}
-              </TooltipContent>
-            </Tooltip>
+            <RootHeaderToggle
+              ariaLabel={
+                isEditMode ? "Disable editor mode" : "Enable editor mode"
+              }
+              isPressed={isEditMode}
+              onToggle={onToggleEditMode}
+              tooltip={
+                isEditMode ? "Disable Editor Mode" : "Enable Editor Mode"
+              }
+            >
+              <Pencil />
+            </RootHeaderToggle>
           )}
           <Button
             onClick={onToggleMobileConfig}
@@ -234,6 +216,41 @@ function RootHeader({
         />
       }
     />
+  );
+}
+
+type RootHeaderToggleProps = {
+  ariaLabel?: string;
+  children: ReactNode;
+  isPressed: boolean;
+  onToggle: () => void;
+  tooltip: string;
+};
+
+function RootHeaderToggle({
+  ariaLabel,
+  children,
+  isPressed,
+  onToggle,
+  tooltip,
+}: RootHeaderToggleProps) {
+  return (
+    <Tooltip placement={"bottom"}>
+      <TooltipTrigger asChild={true}>
+        <Button
+          onClick={onToggle}
+          pressed={isPressed}
+          showOnly={"desktop"}
+          colour={BtnColours.Dark}
+          aria-label={ariaLabel}
+        >
+          {children}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent className={styles.HeaderTooltip}>
+        {tooltip}
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
