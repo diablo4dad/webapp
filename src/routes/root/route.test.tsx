@@ -154,8 +154,12 @@ describe("header actions", () => {
         showItem: true,
       },
     });
-    const [itemSidebarButton, settingsSidebarButton] =
-      screen.getAllByRole("button");
+    const itemSidebarButton = screen.getByRole("button", {
+      name: "Hide Item Sidebar",
+    });
+    const settingsSidebarButton = screen.getByRole("button", {
+      name: "Hide Settings Sidebar",
+    });
 
     await user.click(itemSidebarButton);
 
@@ -224,8 +228,9 @@ describe("mobile settings", () => {
     renderRoot({
       canEditCatalog: true,
     });
-    const buttons = screen.getAllByRole("button");
-    const mobileMenuButton = buttons[3];
+    const mobileMenuButton = screen.getByRole("button", {
+      name: "Settings menu",
+    });
 
     await user.click(mobileMenuButton);
 
@@ -244,8 +249,9 @@ describe("mobile settings", () => {
   test("returns to the ledger when the settings drawer closes", async () => {
     const user = userEvent.setup();
     renderRoot();
-    const buttons = screen.getAllByRole("button");
-    const mobileMenuButton = buttons[2];
+    const mobileMenuButton = screen.getByRole("button", {
+      name: "Settings menu",
+    });
 
     await user.click(mobileMenuButton);
     await user.click(screen.getByRole("button", { name: "Close settings" }));
@@ -257,8 +263,9 @@ describe("mobile settings", () => {
   test("keeps settings drawer open when panel content is clicked", async () => {
     const user = userEvent.setup();
     renderRoot();
-    const buttons = screen.getAllByRole("button");
-    const mobileMenuButton = buttons[2];
+    const mobileMenuButton = screen.getByRole("button", {
+      name: "Settings menu",
+    });
 
     await user.click(mobileMenuButton);
     await user.click(screen.getByText("settings panel"));

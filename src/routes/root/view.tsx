@@ -294,6 +294,8 @@ function RootHeaderActions({
         </RootHeaderToggle>
       )}
       <Button
+        aria-label="Settings menu"
+        aria-pressed={isMobileConfigOpen}
         onClick={onToggleMobileConfig}
         pressed={isMobileConfigOpen}
         showOnly={"mobile"}
@@ -319,7 +321,8 @@ function RootHeaderToggle({
           pressed={isPressed}
           showOnly={"desktop"}
           colour={BtnColours.Dark}
-          aria-label={ariaLabel}
+          aria-label={ariaLabel ?? tooltip}
+          aria-pressed={isPressed}
         >
           {children}
         </Button>
