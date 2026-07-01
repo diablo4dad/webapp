@@ -227,19 +227,36 @@ function RootHeader({
         </>
       }
       auth={
-        <>
-          {user === undefined && (
-            <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />
-          )}
-          {user !== undefined && (
-            <Account
-              currentUser={user}
-              onLogout={onSignOut}
-              direction={Direction.ROW}
-            />
-          )}
-        </>
+        <RootAuthActions
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+          user={user}
+        />
       }
+    />
+  );
+}
+
+type RootAuthActionsProps = {
+  onSignIn: () => void;
+  onSignOut: () => void;
+  user?: DadUser;
+};
+
+function RootAuthActions({
+  onSignIn,
+  onSignOut,
+  user,
+}: RootAuthActionsProps) {
+  if (user === undefined) {
+    return <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />;
+  }
+
+  return (
+    <Account
+      currentUser={user}
+      onLogout={onSignOut}
+      direction={Direction.ROW}
     />
   );
 }
@@ -424,18 +441,11 @@ function MobileSettingsDrawer({
         </>
       }
       footer={
-        <>
-          {user === undefined && (
-            <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />
-          )}
-          {user !== undefined && (
-            <Account
-              currentUser={user}
-              onLogout={onSignOut}
-              direction={Direction.ROW}
-            />
-          )}
-        </>
+        <RootAuthActions
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+          user={user}
+        />
       }
     />
   );

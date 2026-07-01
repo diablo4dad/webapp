@@ -74,6 +74,14 @@ type RootOptions = {
   user?: DadUser;
 };
 
+const signedInUser: DadUser = {
+  email: "dad@example.com",
+  isEditor: false,
+  providerId: "discord",
+  roles: [],
+  uid: "dad-user",
+};
+
 function renderRoot({
   canEditCatalog = false,
   isEditMode = false,
@@ -183,6 +191,30 @@ describe("header actions", () => {
     await user.click(screen.getByRole("button", { name: "Enable editor mode" }));
 
     expect(mocks.toggleEditMode).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("auth actions", () => {
+  test("passes sign-in action to anonymous controls", async () => {
+    const user = userEvent.setup();
+    renderRoot();
+
+    await user.click(screen.getByRole("button", { name: "sign in" }));
+
+    expect(mocks.signIn).toHaveBeenCalledTimes(1);
+  });
+
+  test("passes sign-out action to signed-in controls", async () => {
+    const user = userEvent.setup();
+    renderRoot({
+      user: signedInUser,
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "sign out dad@example.com" }),
+    );
+
+    expect(mocks.signOut).toHaveBeenCalledTimes(1);
   });
 });
 
