@@ -1,19 +1,11 @@
 import type { ReactNode } from "react";
 import type { DadUser } from "../../auth/type";
 import type { SidebarVisibility } from "../../common";
-import Button, { BtnColours } from "../../components/Button";
-import { Close, Pencil } from "../../components/Icons";
-import Search from "../../components/Search";
 import CollectionEditor from "../../editor/CollectionEditor";
 import CollectionItemEditor from "../../editor/CollectionItemEditor";
-import ConfigSidebar from "../../settings/ConfigSidebar";
-import { RootAuthActions, RootHeader } from "./header";
-import {
-  RootLayout,
-  RootMobileDrawerLayout,
-  RootMobileSearchOverlayLayout,
-} from "./layout";
-import styles from "./route.module.css";
+import { RootHeader } from "./header";
+import { RootLayout } from "./layout";
+import { MobileSearchOverlay, MobileSettingsDrawer } from "./mobile";
 import { RootContent } from "./state";
 
 type Props = {
@@ -49,28 +41,6 @@ type RootMainProps = {
   routeOutlet: ReactNode;
   searchTerm: string;
   user?: DadUser;
-};
-
-type MobileSearchOverlayProps = {
-  onClearSearch: () => void;
-  onClose: () => void;
-  onSearchChange: (value: string) => void;
-  searchTerm: string;
-};
-
-type MobileSettingsDrawerProps = {
-  canEditCatalog: boolean;
-  isEditMode: boolean;
-  onClose: () => void;
-  onSignIn: () => void;
-  onSignOut: () => void;
-  onToggleEditMode: () => void;
-  user?: DadUser;
-};
-
-type MobileEditorControlProps = {
-  isEditMode: boolean;
-  onToggleEditMode: () => void;
 };
 
 function RootView({
@@ -175,134 +145,6 @@ function RootMain({
         />
       )}
     </>
-  );
-}
-
-function MobileSearchOverlay({
-  onClearSearch,
-  onClose,
-  onSearchChange,
-  searchTerm,
-}: MobileSearchOverlayProps) {
-  return (
-    <RootMobileSearchOverlayLayout
-      onClose={onClose}
-      header={
-        <>
-          <div className={styles.MobileSearchTitle}>Transmog Search</div>
-          <button
-            className={styles.MobileOverlayClose}
-            onClick={onClose}
-            aria-label="Close search"
-          >
-            <Close />
-          </button>
-        </>
-      }
-      body={
-        <div className={styles.MobileSearchField}>
-          <Search
-            value={searchTerm}
-            onChange={onSearchChange}
-            onClear={onClearSearch}
-            autoFocus={true}
-            placeholder={"Search transmogs"}
-          />
-        </div>
-      }
-      actions={
-        <>
-          <Button
-            className={styles.MobileSearchActionPrimary}
-            colour={BtnColours.Dark}
-            onClick={onClose}
-          >
-            Search
-          </Button>
-          <Button
-            className={styles.MobileSearchAction}
-            colour={BtnColours.Dark}
-            onClick={onClearSearch}
-          >
-            Clear
-          </Button>
-        </>
-      }
-    />
-  );
-}
-
-function MobileSettingsDrawer({
-  canEditCatalog,
-  isEditMode,
-  onClose,
-  onSignIn,
-  onSignOut,
-  onToggleEditMode,
-  user,
-}: MobileSettingsDrawerProps) {
-  return (
-    <RootMobileDrawerLayout
-      onClose={onClose}
-      header={
-        <>
-          <div className={styles.MobileDrawerTitle}>Settings</div>
-          <button
-            className={styles.MobileOverlayClose}
-            onClick={onClose}
-            aria-label="Close settings"
-          >
-            <Close />
-          </button>
-        </>
-      }
-      body={
-        <>
-          {canEditCatalog && (
-            <MobileEditorControl
-              isEditMode={isEditMode}
-              onToggleEditMode={onToggleEditMode}
-            />
-          )}
-          <ConfigSidebar />
-        </>
-      }
-      footer={
-        <RootAuthActions
-          onSignIn={onSignIn}
-          onSignOut={onSignOut}
-          user={user}
-        />
-      }
-    />
-  );
-}
-
-function MobileEditorControl({
-  isEditMode,
-  onToggleEditMode,
-}: MobileEditorControlProps) {
-  return (
-    <div className={styles.MobileEditorSection}>
-      <div className={styles.MobileEditorMeta}>
-        <div className={styles.MobileEditorTitle}>Editor Mode</div>
-      </div>
-      <button
-        className={
-          isEditMode
-            ? styles.MobileEditorToggleActive
-            : styles.MobileEditorToggle
-        }
-        onClick={onToggleEditMode}
-        type="button"
-        aria-pressed={isEditMode}
-      >
-        <span className={styles.MobileEditorToggleIcon}>
-          <Pencil />
-        </span>
-        <span>{isEditMode ? "On" : "Off"}</span>
-      </button>
-    </div>
   );
 }
 

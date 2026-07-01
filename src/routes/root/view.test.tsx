@@ -204,3 +204,35 @@ describe("mobile settings", () => {
     expect(props.onToggleEditMode).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("mobile search", () => {
+  test("renders search overlay from content state", async () => {
+    const user = userEvent.setup();
+    const { props } = renderView({
+      content: RootContent.SEARCH,
+      searchTerm: "helm",
+    });
+    const mobileSearchField = screen.getAllByRole("textbox", {
+      name: "Search transmogs",
+    })[1];
+    const mobileClearButton = screen.getAllByRole("button", {
+      name: "clear Search transmogs",
+    })[1];
+
+    expect(screen.getByText("Transmog Search")).toBeInTheDocument();
+    expect(mobileSearchField).toHaveValue("helm");
+
+    fireEvent.change(mobileSearchField, {
+      target: {
+        value: "sword",
+      },
+    });
+    await user.click(mobileClearButton);
+    await user.click(screen.getByRole("button", { name: "Close search" }));
+    await user.click(screen.getByRole("button", { name: "Search" }));
+
+    expect(props.onSearchChange).toHaveBeenCalledWith("sword");
+    expect(props.onClearSearch).toHaveBeenCalledTimes(1);
+    expect(props.onCloseMobileContent).toHaveBeenCalledTimes(2);
+  });
+});
