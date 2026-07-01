@@ -1,5 +1,5 @@
-import { ContentType } from "../../common";
 import {
+  RootContent,
   closeRootContent,
   getInitialRootContentState,
   openRootContent,
@@ -9,49 +9,49 @@ import {
 describe("initial content", () => {
   test("starts on the ledger", () => {
     expect(getInitialRootContentState()).toEqual({
-      content: ContentType.LEDGER,
-      history: [ContentType.LEDGER],
+      content: RootContent.LEDGER,
+      history: [RootContent.LEDGER],
     });
   });
 });
 
 describe("opening", () => {
   test("opens transient content without adding history", () => {
-    expect(openRootContent([ContentType.LEDGER], ContentType.CONFIG)).toEqual({
-      content: ContentType.CONFIG,
-      history: [ContentType.LEDGER],
+    expect(openRootContent([RootContent.LEDGER], RootContent.CONFIG)).toEqual({
+      content: RootContent.CONFIG,
+      history: [RootContent.LEDGER],
     });
 
-    expect(openRootContent([ContentType.LEDGER], ContentType.SEARCH)).toEqual({
-      content: ContentType.SEARCH,
-      history: [ContentType.LEDGER],
+    expect(openRootContent([RootContent.LEDGER], RootContent.SEARCH)).toEqual({
+      content: RootContent.SEARCH,
+      history: [RootContent.LEDGER],
     });
   });
 
   test("adds non-transient content once", () => {
-    expect(openRootContent([], ContentType.LEDGER)).toEqual({
-      content: ContentType.LEDGER,
-      history: [ContentType.LEDGER],
+    expect(openRootContent([], RootContent.LEDGER)).toEqual({
+      content: RootContent.LEDGER,
+      history: [RootContent.LEDGER],
     });
 
-    expect(openRootContent([ContentType.LEDGER], ContentType.LEDGER)).toEqual({
-      content: ContentType.LEDGER,
-      history: [ContentType.LEDGER],
+    expect(openRootContent([RootContent.LEDGER], RootContent.LEDGER)).toEqual({
+      content: RootContent.LEDGER,
+      history: [RootContent.LEDGER],
     });
   });
 });
 
 describe("closing", () => {
   test("returns to the most recent history entry", () => {
-    expect(closeRootContent([ContentType.LEDGER])).toEqual({
-      content: ContentType.LEDGER,
+    expect(closeRootContent([RootContent.LEDGER])).toEqual({
+      content: RootContent.LEDGER,
       history: [],
     });
   });
 
   test("falls back to the ledger without history", () => {
     expect(closeRootContent([])).toEqual({
-      content: ContentType.LEDGER,
+      content: RootContent.LEDGER,
       history: [],
     });
   });
@@ -61,12 +61,12 @@ describe("toggling", () => {
   test("closes matching content", () => {
     expect(
       toggleRootContent(
-        ContentType.CONFIG,
-        [ContentType.LEDGER],
-        ContentType.CONFIG,
+        RootContent.CONFIG,
+        [RootContent.LEDGER],
+        RootContent.CONFIG,
       ),
     ).toEqual({
-      content: ContentType.LEDGER,
+      content: RootContent.LEDGER,
       history: [],
     });
   });
@@ -74,13 +74,13 @@ describe("toggling", () => {
   test("opens different content", () => {
     expect(
       toggleRootContent(
-        ContentType.LEDGER,
-        [ContentType.LEDGER],
-        ContentType.CONFIG,
+        RootContent.LEDGER,
+        [RootContent.LEDGER],
+        RootContent.CONFIG,
       ),
     ).toEqual({
-      content: ContentType.CONFIG,
-      history: [ContentType.LEDGER],
+      content: RootContent.CONFIG,
+      history: [RootContent.LEDGER],
     });
   });
 });

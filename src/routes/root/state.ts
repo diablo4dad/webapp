@@ -1,12 +1,16 @@
-import { ContentType } from "../../common";
+enum RootContent {
+  LEDGER = "ledger",
+  CONFIG = "config",
+  SEARCH = "search",
+}
 
 type RootContentState = {
-  content: ContentType;
-  history: ContentType[];
+  content: RootContent;
+  history: RootContent[];
 };
 
-const DEFAULT_ROOT_CONTENT = ContentType.LEDGER;
-const transientContent = [ContentType.CONFIG, ContentType.SEARCH];
+const DEFAULT_ROOT_CONTENT = RootContent.LEDGER;
+const transientContent = [RootContent.CONFIG, RootContent.SEARCH];
 
 function getInitialRootContentState(): RootContentState {
   return {
@@ -16,8 +20,8 @@ function getInitialRootContentState(): RootContentState {
 }
 
 function openRootContent(
-  history: ContentType[],
-  content: ContentType,
+  history: RootContent[],
+  content: RootContent,
 ): RootContentState {
   if (transientContent.includes(content)) {
     return {
@@ -39,7 +43,7 @@ function openRootContent(
   };
 }
 
-function closeRootContent(history: ContentType[]): RootContentState {
+function closeRootContent(history: RootContent[]): RootContentState {
   return {
     content: history[history.length - 1] ?? DEFAULT_ROOT_CONTENT,
     history: history.slice(0, -1),
@@ -47,9 +51,9 @@ function closeRootContent(history: ContentType[]): RootContentState {
 }
 
 function toggleRootContent(
-  currentContent: ContentType,
-  history: ContentType[],
-  content: ContentType,
+  currentContent: RootContent,
+  history: RootContent[],
+  content: RootContent,
 ): RootContentState {
   return currentContent === content
     ? closeRootContent(history)
@@ -58,6 +62,7 @@ function toggleRootContent(
 
 export {
   DEFAULT_ROOT_CONTENT,
+  RootContent,
   closeRootContent,
   getInitialRootContentState,
   openRootContent,

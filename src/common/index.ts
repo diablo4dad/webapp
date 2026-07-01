@@ -27,13 +27,6 @@ enum ItemGroup {
   PETS = "pets",
 }
 
-enum ContentType {
-  MOBILE_MENU = "menu",
-  LEDGER = "ledger",
-  CONFIG = "config",
-  SEARCH = "search",
-}
-
 type SidebarVisibility = {
   showItem: boolean;
   showConfig: boolean;
@@ -208,7 +201,6 @@ export {
   type SidebarVisibility,
   type SidebarPanel,
   ItemGroup,
-  ContentType,
   catalogGroups,
   itemGroups,
   wardrobeIcons,

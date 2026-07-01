@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Account, { Direction } from "../../auth/Account";
 import type { DadUser } from "../../auth/type";
 import Authenticate, { Orientation } from "../../auth/Authenticate";
-import { ContentType, type SidebarVisibility } from "../../common";
+import type { SidebarVisibility } from "../../common";
 import Button, { BtnColours } from "../../components/Button";
 import {
   Close,
@@ -29,10 +29,11 @@ import {
   RootMobileDrawerLayout,
   RootMobileSearchOverlayLayout,
 } from "./layout";
+import { RootContent } from "./state";
 
 type Props = {
   canEditCatalog: boolean;
-  content: ContentType;
+  content: RootContent;
   isEditMode: boolean;
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
@@ -72,7 +73,7 @@ export function RootView({
       header={
         <RootHeader
           canEditCatalog={canEditCatalog}
-          isMobileConfigOpen={content === ContentType.CONFIG}
+          isMobileConfigOpen={content === RootContent.CONFIG}
           isEditMode={isEditMode}
           onClearSearch={onClearSearch}
           onSearchChange={onSearchChange}
@@ -245,7 +246,7 @@ function RootHeader({
 
 type RootMainProps = {
   canEditCatalog: boolean;
-  content: ContentType;
+  content: RootContent;
   isEditMode: boolean;
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
@@ -277,7 +278,7 @@ function RootMain({
       {showsRouteContent(content) && routeOutlet}
       <CollectionEditor />
       <CollectionItemEditor />
-      {content === ContentType.SEARCH && (
+      {content === RootContent.SEARCH && (
         <MobileSearchOverlay
           onClearSearch={onClearSearch}
           onClose={onCloseMobileContent}
@@ -285,7 +286,7 @@ function RootMain({
           searchTerm={searchTerm}
         />
       )}
-      {content === ContentType.CONFIG && (
+      {content === RootContent.CONFIG && (
         <MobileSettingsDrawer
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
@@ -300,11 +301,11 @@ function RootMain({
   );
 }
 
-function showsRouteContent(content: ContentType): boolean {
+function showsRouteContent(content: RootContent): boolean {
   return [
-    ContentType.LEDGER,
-    ContentType.CONFIG,
-    ContentType.SEARCH,
+    RootContent.LEDGER,
+    RootContent.CONFIG,
+    RootContent.SEARCH,
   ].includes(content);
 }
 

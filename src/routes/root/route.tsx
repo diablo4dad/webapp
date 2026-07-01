@@ -2,11 +2,11 @@ import { ReactElement, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { useAuth } from "../../auth/context";
-import { ContentType } from "../../common";
 import { useData } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor/context";
 import {
+  RootContent,
   closeRootContent,
   getInitialRootContentState,
   toggleRootContent,
@@ -60,7 +60,7 @@ function RootRoute(): ReactElement {
       toggleRootContent(
         currentContentState.content,
         currentContentState.history,
-        ContentType.CONFIG,
+        RootContent.CONFIG,
       ),
     );
   }
