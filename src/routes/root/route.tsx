@@ -2,6 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { useAuth } from "../../auth/context";
+import type { SidebarVisibility } from "../../common";
 import { useData } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor/context";
@@ -32,17 +33,13 @@ function RootRoute(): ReactElement {
   const content = contentState.content;
 
   function onToggleItemSidebar() {
-    setSidebarVisibility({
-      ...sidebarVisibility,
-      showItem: !sidebarVisibility.showItem,
-    });
+    setSidebarVisibility(toggleSidebarVisibility(sidebarVisibility, "showItem"));
   }
 
   function onToggleConfig() {
-    setSidebarVisibility({
-      ...sidebarVisibility,
-      showConfig: !sidebarVisibility.showConfig,
-    });
+    setSidebarVisibility(
+      toggleSidebarVisibility(sidebarVisibility, "showConfig"),
+    );
   }
 
   function onClearSearch() {
@@ -85,6 +82,16 @@ function RootRoute(): ReactElement {
       user={user}
     />
   );
+}
+
+function toggleSidebarVisibility(
+  sidebarVisibility: SidebarVisibility,
+  key: keyof SidebarVisibility,
+): SidebarVisibility {
+  return {
+    ...sidebarVisibility,
+    [key]: !sidebarVisibility[key],
+  };
 }
 
 export default RootRoute;
