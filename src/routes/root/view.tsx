@@ -433,26 +433,10 @@ function MobileSettingsDrawer({
       body={
         <>
           {canEditCatalog && (
-            <div className={styles.MobileEditorSection}>
-              <div className={styles.MobileEditorMeta}>
-                <div className={styles.MobileEditorTitle}>Editor Mode</div>
-              </div>
-              <button
-                className={
-                  isEditMode
-                    ? styles.MobileEditorToggleActive
-                    : styles.MobileEditorToggle
-                }
-                onClick={onToggleEditMode}
-                type="button"
-                aria-pressed={isEditMode}
-              >
-                <span className={styles.MobileEditorToggleIcon}>
-                  <Pencil />
-                </span>
-                <span>{isEditMode ? "On" : "Off"}</span>
-              </button>
-            </div>
+            <MobileEditorControl
+              isEditMode={isEditMode}
+              onToggleEditMode={onToggleEditMode}
+            />
           )}
           <ConfigSidebar />
         </>
@@ -465,5 +449,38 @@ function MobileSettingsDrawer({
         />
       }
     />
+  );
+}
+
+type MobileEditorControlProps = {
+  isEditMode: boolean;
+  onToggleEditMode: () => void;
+};
+
+function MobileEditorControl({
+  isEditMode,
+  onToggleEditMode,
+}: MobileEditorControlProps) {
+  return (
+    <div className={styles.MobileEditorSection}>
+      <div className={styles.MobileEditorMeta}>
+        <div className={styles.MobileEditorTitle}>Editor Mode</div>
+      </div>
+      <button
+        className={
+          isEditMode
+            ? styles.MobileEditorToggleActive
+            : styles.MobileEditorToggle
+        }
+        onClick={onToggleEditMode}
+        type="button"
+        aria-pressed={isEditMode}
+      >
+        <span className={styles.MobileEditorToggleIcon}>
+          <Pencil />
+        </span>
+        <span>{isEditMode ? "On" : "Off"}</span>
+      </button>
+    </div>
   );
 }

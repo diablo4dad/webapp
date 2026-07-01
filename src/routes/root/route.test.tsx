@@ -232,9 +232,13 @@ describe("mobile settings", () => {
     expect(screen.getByText("Settings")).toBeInTheDocument();
     expect(screen.getByText("route outlet")).toBeInTheDocument();
     expect(screen.getByText("settings panel")).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /off/i }),
-    ).toHaveAttribute("aria-pressed", "false");
+    const mobileEditorToggle = screen.getByRole("button", { name: /off/i });
+
+    expect(mobileEditorToggle).toHaveAttribute("aria-pressed", "false");
+
+    await user.click(mobileEditorToggle);
+
+    expect(mocks.toggleEditMode).toHaveBeenCalledTimes(1);
   });
 
   test("returns to the ledger when the settings drawer closes", async () => {
