@@ -13,6 +13,7 @@ description: Code style and TypeScript/React conventions for this repository. Us
 - Order top-level declarations after imports as types/interfaces/enums first, then constants/static maps, then functions/components/hooks. Within functions/components, put the public entrypoint first and local helpers after it in reading order. Preserve required framework or test setup ordering, such as `vi.hoisted` and `vi.mock`, when runtime behavior depends on it.
 - Group top-level constants by logical naming family. Keep related prefixes or suffixes contiguous, such as `DEFAULT_*` constants together and `*_SLUG` constants together; place dependency constants before aliases that reference them.
 - Use `npm run lint:fix` for Oxlint auto-fixes; manually correct remaining Oxlint violations that cannot be resolved by `--fix`.
+- Do not bulk-normalize existing modules solely for export grouping; apply Oxlint's grouped, bottom-of-file export style to source files as they are touched for active work.
 - Keep provider, reducer, predicate, getter, and persistence logic in their existing module families.
 - Prefer small single-file React components over large monoliths; split by responsibility before adding more behavior to an already large component.
 - Keep tightly coupled one-off child render components in the parent file when they only support that view. Extract them to sibling files only when reuse, size, testing, async loading, or distinct ownership justifies the file boundary.
