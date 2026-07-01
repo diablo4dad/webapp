@@ -321,7 +321,7 @@ function MobileSearchOverlay({
         <>
           <div className={styles.MobileSearchTitle}>Transmog Search</div>
           <button
-            className={styles.MobileDrawerClose}
+            className={styles.MobileOverlayClose}
             onClick={onClose}
             aria-label="Close search"
           >
@@ -388,7 +388,7 @@ function MobileSettingsDrawer({
         <>
           <div className={styles.MobileDrawerTitle}>Settings</div>
           <button
-            className={styles.MobileDrawerClose}
+            className={styles.MobileOverlayClose}
             onClick={onClose}
             aria-label="Close settings"
           >
