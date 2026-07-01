@@ -275,7 +275,7 @@ function RootMain({
 }: RootMainProps) {
   return (
     <>
-      {showsRouteContent(content) && routeOutlet}
+      {routeOutlet}
       <CollectionEditor />
       <CollectionItemEditor />
       {content === RootContent.SEARCH && (
@@ -299,14 +299,6 @@ function RootMain({
       )}
     </>
   );
-}
-
-function showsRouteContent(content: RootContent): boolean {
-  return [
-    RootContent.LEDGER,
-    RootContent.CONFIG,
-    RootContent.SEARCH,
-  ].includes(content);
 }
 
 type MobileSearchOverlayProps = {

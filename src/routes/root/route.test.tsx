@@ -198,6 +198,7 @@ describe("mobile settings", () => {
     await user.click(mobileMenuButton);
 
     expect(screen.getByText("Settings")).toBeInTheDocument();
+    expect(screen.getByText("route outlet")).toBeInTheDocument();
     expect(screen.getByText("settings panel")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /off/i }),
