@@ -162,51 +162,16 @@ function RootHeader({
         />
       }
       actions={
-        <>
-          <RootHeaderToggle
-            isPressed={sidebarVisibility.showItem}
-            onToggle={onToggleItemSidebar}
-            tooltip={
-              sidebarVisibility.showItem
-                ? "Hide Item Sidebar"
-                : "Show Item Sidebar"
-            }
-          >
-            <SidebarLeft />
-          </RootHeaderToggle>
-          <RootHeaderToggle
-            isPressed={sidebarVisibility.showConfig}
-            onToggle={onToggleConfig}
-            tooltip={
-              sidebarVisibility.showConfig
-                ? "Hide Settings Sidebar"
-                : "Show Settings Sidebar"
-            }
-          >
-            <SidebarRight />
-          </RootHeaderToggle>
-          {canEditCatalog && (
-            <RootHeaderToggle
-              ariaLabel={
-                isEditMode ? "Disable editor mode" : "Enable editor mode"
-              }
-              isPressed={isEditMode}
-              onToggle={onToggleEditMode}
-              tooltip={
-                isEditMode ? "Disable Editor Mode" : "Enable Editor Mode"
-              }
-            >
-              <Pencil />
-            </RootHeaderToggle>
-          )}
-          <Button
-            onClick={onToggleMobileConfig}
-            pressed={isMobileConfigOpen}
-            showOnly={"mobile"}
-          >
-            <Hamburger />
-          </Button>
-        </>
+        <RootHeaderActions
+          canEditCatalog={canEditCatalog}
+          isEditMode={isEditMode}
+          isMobileConfigOpen={isMobileConfigOpen}
+          onToggleConfig={onToggleConfig}
+          onToggleEditMode={onToggleEditMode}
+          onToggleItemSidebar={onToggleItemSidebar}
+          onToggleMobileConfig={onToggleMobileConfig}
+          sidebarVisibility={sidebarVisibility}
+        />
       }
       auth={
         <RootAuthActions
@@ -216,6 +181,70 @@ function RootHeader({
         />
       }
     />
+  );
+}
+
+type RootHeaderActionsProps = {
+  canEditCatalog: boolean;
+  isEditMode: boolean;
+  isMobileConfigOpen: boolean;
+  onToggleConfig: () => void;
+  onToggleEditMode: () => void;
+  onToggleItemSidebar: () => void;
+  onToggleMobileConfig: () => void;
+  sidebarVisibility: SidebarVisibility;
+};
+
+function RootHeaderActions({
+  canEditCatalog,
+  isEditMode,
+  isMobileConfigOpen,
+  onToggleConfig,
+  onToggleEditMode,
+  onToggleItemSidebar,
+  onToggleMobileConfig,
+  sidebarVisibility,
+}: RootHeaderActionsProps) {
+  return (
+    <>
+      <RootHeaderToggle
+        isPressed={sidebarVisibility.showItem}
+        onToggle={onToggleItemSidebar}
+        tooltip={
+          sidebarVisibility.showItem ? "Hide Item Sidebar" : "Show Item Sidebar"
+        }
+      >
+        <SidebarLeft />
+      </RootHeaderToggle>
+      <RootHeaderToggle
+        isPressed={sidebarVisibility.showConfig}
+        onToggle={onToggleConfig}
+        tooltip={
+          sidebarVisibility.showConfig
+            ? "Hide Settings Sidebar"
+            : "Show Settings Sidebar"
+        }
+      >
+        <SidebarRight />
+      </RootHeaderToggle>
+      {canEditCatalog && (
+        <RootHeaderToggle
+          ariaLabel={isEditMode ? "Disable editor mode" : "Enable editor mode"}
+          isPressed={isEditMode}
+          onToggle={onToggleEditMode}
+          tooltip={isEditMode ? "Disable Editor Mode" : "Enable Editor Mode"}
+        >
+          <Pencil />
+        </RootHeaderToggle>
+      )}
+      <Button
+        onClick={onToggleMobileConfig}
+        pressed={isMobileConfigOpen}
+        showOnly={"mobile"}
+      >
+        <Hamburger />
+      </Button>
+    </>
   );
 }
 
