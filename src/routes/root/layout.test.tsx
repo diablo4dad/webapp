@@ -48,29 +48,44 @@ describe("header slots", () => {
 });
 
 describe("mobile overlays", () => {
-  test.each([
-    [
-      "search",
-      RootMobileSearchOverlayLayout,
-      "search panel",
-    ],
-    [
-      "drawer",
-      RootMobileDrawerLayout,
-      "drawer panel",
-    ],
-  ])("closes %s from the backdrop only", async (_label, Layout, panelText) => {
+  test("closes search from the backdrop only", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
 
     const { container } = render(
-      <Layout onClose={onClose}>
-        <button>{panelText}</button>
-      </Layout>,
+      <RootMobileSearchOverlayLayout onClose={onClose}>
+        <button>search panel</button>
+      </RootMobileSearchOverlayLayout>,
     );
     const backdrop = container.firstElementChild as HTMLElement;
 
-    await user.click(screen.getByRole("button", { name: panelText }));
+    await user.click(screen.getByRole("button", { name: "search panel" }));
+
+    expect(onClose).not.toHaveBeenCalled();
+
+    await user.click(backdrop);
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  test("renders drawer slots and closes from the backdrop only", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+
+    const { container } = render(
+      <RootMobileDrawerLayout
+        body={<button>drawer panel</button>}
+        footer={<div>drawer footer</div>}
+        header={<div>drawer header</div>}
+        onClose={onClose}
+      />,
+    );
+    const backdrop = container.firstElementChild as HTMLElement;
+
+    expect(screen.getByText("drawer header")).toBeInTheDocument();
+    expect(screen.getByText("drawer footer")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "drawer panel" }));
 
     expect(onClose).not.toHaveBeenCalled();
 

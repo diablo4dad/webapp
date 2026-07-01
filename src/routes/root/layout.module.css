@@ -123,6 +123,47 @@
     animation: drawer-panel-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.MobileDrawerHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: rgba(30, 33, 38, 0.96);
+    border-bottom: 1px solid #303640;
+}
+
+.MobileDrawerBody {
+    padding: 1rem;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.MobileDrawerContent {
+    flex: 1 0 auto;
+}
+
+.MobileDrawerFooter {
+    margin-top: auto;
+    padding-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.MobileDrawerFooter > * {
+    width: 100%;
+}
+
 .Discord {
     display: flex;
     flex-direction: column;

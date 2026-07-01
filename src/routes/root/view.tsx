@@ -379,44 +379,49 @@ function MobileSettingsDrawer({
   user,
 }: MobileSettingsDrawerProps) {
   return (
-    <RootMobileDrawerLayout onClose={onClose}>
-      <div className={styles.MobileDrawerHeader}>
-        <div className={styles.MobileDrawerTitle}>Settings</div>
-        <button
-          className={styles.MobileDrawerClose}
-          onClick={onClose}
-          aria-label="Close settings"
-        >
-          <Close />
-        </button>
-      </div>
-      <div className={styles.MobileDrawerBody}>
-        {canEditCatalog && (
-          <div className={styles.MobileEditorSection}>
-            <div className={styles.MobileEditorMeta}>
-              <div className={styles.MobileEditorTitle}>Editor Mode</div>
+    <RootMobileDrawerLayout
+      onClose={onClose}
+      header={
+        <>
+          <div className={styles.MobileDrawerTitle}>Settings</div>
+          <button
+            className={styles.MobileDrawerClose}
+            onClick={onClose}
+            aria-label="Close settings"
+          >
+            <Close />
+          </button>
+        </>
+      }
+      body={
+        <>
+          {canEditCatalog && (
+            <div className={styles.MobileEditorSection}>
+              <div className={styles.MobileEditorMeta}>
+                <div className={styles.MobileEditorTitle}>Editor Mode</div>
+              </div>
+              <button
+                className={
+                  isEditMode
+                    ? styles.MobileEditorToggleActive
+                    : styles.MobileEditorToggle
+                }
+                onClick={onToggleEditMode}
+                type="button"
+                aria-pressed={isEditMode}
+              >
+                <span className={styles.MobileEditorToggleIcon}>
+                  <Pencil />
+                </span>
+                <span>{isEditMode ? "On" : "Off"}</span>
+              </button>
             </div>
-            <button
-              className={
-                isEditMode
-                  ? styles.MobileEditorToggleActive
-                  : styles.MobileEditorToggle
-              }
-              onClick={onToggleEditMode}
-              type="button"
-              aria-pressed={isEditMode}
-            >
-              <span className={styles.MobileEditorToggleIcon}>
-                <Pencil />
-              </span>
-              <span>{isEditMode ? "On" : "Off"}</span>
-            </button>
-          </div>
-        )}
-        <div className={styles.MobileDrawerContent}>
+          )}
           <ConfigSidebar />
-        </div>
-        <div className={styles.MobileDrawerFooter}>
+        </>
+      }
+      footer={
+        <>
           {user === undefined && (
             <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />
           )}
@@ -427,8 +432,8 @@ function MobileSettingsDrawer({
               direction={Direction.ROW}
             />
           )}
-        </div>
-      </div>
-    </RootMobileDrawerLayout>
+        </>
+      }
+    />
   );
 }

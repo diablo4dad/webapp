@@ -22,6 +22,13 @@ type MobileOverlayProps = {
   onClose: () => void;
 };
 
+type MobileDrawerProps = {
+  body: ReactNode;
+  footer: ReactNode;
+  header: ReactNode;
+  onClose: () => void;
+};
+
 export function RootLayout({ header, main }: Props) {
   return (
     <Shell
@@ -77,13 +84,19 @@ export function RootMobileSearchOverlayLayout({
 }
 
 export function RootMobileDrawerLayout({
-  children,
+  body,
+  footer,
+  header,
   onClose,
-}: MobileOverlayProps) {
+}: MobileDrawerProps) {
   return (
     <div className={styles.MobileDrawerOverlay} onClick={onClose}>
       <aside className={styles.MobileDrawer} onClick={stopOverlayPropagation}>
-        {children}
+        <div className={styles.MobileDrawerHeader}>{header}</div>
+        <div className={styles.MobileDrawerBody}>
+          <div className={styles.MobileDrawerContent}>{body}</div>
+          <div className={styles.MobileDrawerFooter}>{footer}</div>
+        </div>
       </aside>
     </div>
   );

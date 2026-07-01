@@ -15,19 +15,6 @@
     fill: #d8c29a;
 }
 
-.MobileDrawerHeader {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: rgba(30, 33, 38, 0.96);
-    border-bottom: 1px solid #303640;
-}
-
 .MobileDrawerTitle {
     color: #d0b07c;
     font-family: "PT Serif", serif;
@@ -57,20 +44,6 @@
     width: 1.75rem;
     height: 1.75rem;
     fill: currentColor;
-}
-
-.MobileDrawerBody {
-    padding: 1rem;
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    overflow-y: auto;
-    min-height: 0;
-}
-
-.MobileDrawerContent {
-    flex: 1 0 auto;
 }
 
 .MobileEditorSection {
@@ -127,20 +100,6 @@
 .MobileEditorToggleIcon svg {
     width: 100%;
     height: 100%;
-}
-
-.MobileDrawerFooter {
-    margin-top: auto;
-    padding-top: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    width: 100%;
-}
-
-.MobileDrawerFooter > * {
-    width: 100%;
 }
 
 .MobileSearchHeader {
