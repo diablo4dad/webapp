@@ -68,12 +68,15 @@ export function RootView({
   sidebarVisibility,
   user,
 }: Props) {
+  const isMobileConfigOpen = content === RootContent.CONFIG;
+  const isMobileSearchOpen = content === RootContent.SEARCH;
+
   return (
     <RootLayout
       header={
         <RootHeader
           canEditCatalog={canEditCatalog}
-          isMobileConfigOpen={content === RootContent.CONFIG}
+          isMobileConfigOpen={isMobileConfigOpen}
           isEditMode={isEditMode}
           onClearSearch={onClearSearch}
           onSearchChange={onSearchChange}
@@ -91,8 +94,9 @@ export function RootView({
       main={
         <RootMain
           canEditCatalog={canEditCatalog}
-          content={content}
           isEditMode={isEditMode}
+          isMobileConfigOpen={isMobileConfigOpen}
+          isMobileSearchOpen={isMobileSearchOpen}
           onClearSearch={onClearSearch}
           onCloseMobileContent={onCloseMobileContent}
           onSearchChange={onSearchChange}
@@ -309,8 +313,9 @@ function RootAuthActions({
 
 type RootMainProps = {
   canEditCatalog: boolean;
-  content: RootContent;
   isEditMode: boolean;
+  isMobileConfigOpen: boolean;
+  isMobileSearchOpen: boolean;
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
   onSearchChange: (value: string) => void;
@@ -324,8 +329,9 @@ type RootMainProps = {
 
 function RootMain({
   canEditCatalog,
-  content,
   isEditMode,
+  isMobileConfigOpen,
+  isMobileSearchOpen,
   onClearSearch,
   onCloseMobileContent,
   onSearchChange,
@@ -341,7 +347,7 @@ function RootMain({
       {routeOutlet}
       <CollectionEditor />
       <CollectionItemEditor />
-      {content === RootContent.SEARCH && (
+      {isMobileSearchOpen && (
         <MobileSearchOverlay
           onClearSearch={onClearSearch}
           onClose={onCloseMobileContent}
@@ -349,7 +355,7 @@ function RootMain({
           searchTerm={searchTerm}
         />
       )}
-      {content === RootContent.CONFIG && (
+      {isMobileConfigOpen && (
         <MobileSettingsDrawer
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
