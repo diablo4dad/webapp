@@ -1,6 +1,4 @@
 import type { ReactNode } from "react";
-import Account, { Direction } from "../../auth/Account";
-import Authenticate, { Orientation } from "../../auth/Authenticate";
 import type { DadUser } from "../../auth/type";
 import type { SidebarVisibility } from "../../common";
 import Button, { BtnColours } from "../../components/Button";
@@ -18,6 +16,7 @@ import {
 } from "../../components/Tooltip";
 import i18n from "../../i18n";
 import logo from "../../image/d4dad-badge@1x.png";
+import { RootAuthActions } from "./auth";
 import { RootHeaderLayout } from "./layout";
 import styles from "./route.module.css";
 
@@ -55,12 +54,6 @@ type RootHeaderToggleProps = {
   isPressed: boolean;
   onToggle: () => void;
   tooltip: string;
-};
-
-type RootAuthActionsProps = {
-  onSignIn: () => void;
-  onSignOut: () => void;
-  user?: DadUser;
 };
 
 function RootHeader({
@@ -205,22 +198,4 @@ function RootHeaderToggle({
   );
 }
 
-function RootAuthActions({
-  onSignIn,
-  onSignOut,
-  user,
-}: RootAuthActionsProps) {
-  if (user === undefined) {
-    return <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />;
-  }
-
-  return (
-    <Account
-      currentUser={user}
-      onLogout={onSignOut}
-      direction={Direction.ROW}
-    />
-  );
-}
-
-export { RootAuthActions, RootHeader };
+export { RootHeader };

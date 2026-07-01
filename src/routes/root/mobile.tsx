@@ -3,7 +3,7 @@ import Button, { BtnColours } from "../../components/Button";
 import { Close, Pencil } from "../../components/Icons";
 import Search from "../../components/Search";
 import ConfigSidebar from "../../settings/ConfigSidebar";
-import { RootAuthActions } from "./header";
+import { RootAuthActions } from "./auth";
 import {
   RootMobileDrawerLayout,
   RootMobileSearchOverlayLayout,
