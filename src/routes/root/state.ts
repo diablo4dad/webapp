@@ -1,3 +1,5 @@
+import type { SidebarVisibility } from "../../common";
+
 enum RootContent {
   LEDGER = "ledger",
   CONFIG = "config",
@@ -60,6 +62,16 @@ function toggleRootContent(
     : openRootContent(history, content);
 }
 
+function toggleRootSidebarVisibility(
+  sidebarVisibility: SidebarVisibility,
+  key: keyof SidebarVisibility,
+): SidebarVisibility {
+  return {
+    ...sidebarVisibility,
+    [key]: !sidebarVisibility[key],
+  };
+}
+
 export {
   DEFAULT_ROOT_CONTENT,
   RootContent,
@@ -67,5 +79,6 @@ export {
   getInitialRootContentState,
   openRootContent,
   toggleRootContent,
+  toggleRootSidebarVisibility,
   type RootContentState,
 };

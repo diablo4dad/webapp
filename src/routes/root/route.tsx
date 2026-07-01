@@ -2,7 +2,6 @@ import { ReactElement, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { useAuth } from "../../auth/context";
-import type { SidebarVisibility } from "../../common";
 import { useData } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor/context";
@@ -11,6 +10,7 @@ import {
   closeRootContent,
   getInitialRootContentState,
   toggleRootContent,
+  toggleRootSidebarVisibility,
 } from "./state";
 import { RootView } from "./view";
 
@@ -33,12 +33,14 @@ function RootRoute(): ReactElement {
   const content = contentState.content;
 
   function onToggleItemSidebar() {
-    setSidebarVisibility(toggleSidebarVisibility(sidebarVisibility, "showItem"));
+    setSidebarVisibility(
+      toggleRootSidebarVisibility(sidebarVisibility, "showItem"),
+    );
   }
 
   function onToggleConfig() {
     setSidebarVisibility(
-      toggleSidebarVisibility(sidebarVisibility, "showConfig"),
+      toggleRootSidebarVisibility(sidebarVisibility, "showConfig"),
     );
   }
 
@@ -82,16 +84,6 @@ function RootRoute(): ReactElement {
       user={user}
     />
   );
-}
-
-function toggleSidebarVisibility(
-  sidebarVisibility: SidebarVisibility,
-  key: keyof SidebarVisibility,
-): SidebarVisibility {
-  return {
-    ...sidebarVisibility,
-    [key]: !sidebarVisibility[key],
-  };
 }
 
 export default RootRoute;

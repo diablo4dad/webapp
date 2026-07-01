@@ -4,6 +4,7 @@ import {
   getInitialRootContentState,
   openRootContent,
   toggleRootContent,
+  toggleRootSidebarVisibility,
 } from "./state";
 
 describe("initial content", () => {
@@ -81,6 +82,36 @@ describe("toggling", () => {
     ).toEqual({
       content: RootContent.CONFIG,
       history: [RootContent.LEDGER],
+    });
+  });
+});
+
+describe("sidebar visibility", () => {
+  test("toggles one sidebar without changing the other", () => {
+    expect(
+      toggleRootSidebarVisibility(
+        {
+          showConfig: true,
+          showItem: false,
+        },
+        "showItem",
+      ),
+    ).toEqual({
+      showConfig: true,
+      showItem: true,
+    });
+
+    expect(
+      toggleRootSidebarVisibility(
+        {
+          showConfig: true,
+          showItem: false,
+        },
+        "showConfig",
+      ),
+    ).toEqual({
+      showConfig: false,
+      showItem: false,
     });
   });
 });
