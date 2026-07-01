@@ -8,7 +8,7 @@ import {
   RootMobileDrawerLayout,
   RootMobileSearchOverlayLayout,
 } from "./layout";
-import styles from "./route.module.css";
+import styles from "./mobile.module.css";
 
 type MobileSearchOverlayProps = {
   onClearSearch: () => void;

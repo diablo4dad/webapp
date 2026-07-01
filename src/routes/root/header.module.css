@@ -1,0 +1,60 @@
+.HeaderTooltip {
+    background-color: #d8c29a;
+    color: #1b1e24;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    box-shadow: 2px 3px 8px rgba(8, 10, 13, 0.18);
+}
+
+.HeaderTooltip svg {
+    fill: #d8c29a;
+}
+
+.HeaderIcon {
+    width: auto;
+    height: 3rem;
+}
+
+.HeaderInfo {
+    min-width: 0;
+    text-align: center;
+}
+
+.HeaderInfoName {
+    font-family: "PT Serif", serif;
+    font-style: normal;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f1ede4;
+    line-height: 1.1;
+}
+
+.HeaderInfoNameAccent {
+    color: var(--secondary-color);
+    text-shadow: 1px 2px 5px #111;
+}
+
+.HeaderInfoTagLine {
+    font-size: 0.875rem;
+    color: #ccc;
+}
+
+@media screen and (min-width: 1200px) {
+    .HeaderInfoTagLine {
+        display: block;
+    }
+
+    .HeaderIcon {
+        height: 4.5rem;
+    }
+
+    .HeaderInfo {
+        text-align: left;
+    }
+
+    .HeaderInfoName {
+        font-size: 2rem;
+    }
+}
