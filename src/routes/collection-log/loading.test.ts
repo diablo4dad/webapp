@@ -42,13 +42,18 @@ const dadDb: DadDb = {
 };
 
 function createDeferredCatalogLoad() {
+  let reject!: (reason?: unknown) => void;
   let resolve!: (value: LoadedCatalogGroups) => void;
-  const promise = new Promise<LoadedCatalogGroups>((promiseResolve) => {
-    resolve = promiseResolve;
-  });
+  const promise = new Promise<LoadedCatalogGroups>(
+    (promiseResolve, promiseReject) => {
+      reject = promiseReject;
+      resolve = promiseResolve;
+    },
+  );
 
   return {
     promise,
+    reject,
     resolve,
   };
 }
@@ -343,6 +348,109 @@ describe("catalog loading", () => {
 
     expect(hydrateDadDb).not.toHaveBeenCalledWith(staleDadDbRef);
     expect(setCatalogCategoryDb).toHaveBeenCalledTimes(1);
+  });
+
+  test("ignores stale errors", async () => {
+    const catalogLoad = createDeferredCatalogLoad();
+    vi.mocked(fetchHybridDadDbRefsByCategory)
+      .mockReturnValueOnce(catalogLoad.promise)
+      .mockResolvedValueOnce([
+        {
+          category: MasterGroup.SEASONS,
+          dadDbRef,
+        },
+      ]);
+    const setCatalogCategoryDb = vi.fn();
+    const routeLoadingInput = {
+      canEditCatalog: false,
+      catalogGroupSources: {},
+      isAuthLoading: false,
+      loadedCatalogGroups: [],
+      setCatalogCategoryDb:
+        setCatalogCategoryDb as DataContextType["setCatalogCategoryDb"],
+    };
+    const { rerender, result } = renderHook(
+      ({ group }) =>
+        useCatalogLoading({
+          ...routeLoadingInput,
+          group,
+        }),
+      { initialProps: { group: MasterGroup.GENERAL } },
+    );
+
+    await waitFor(() =>
+      expect(fetchHybridDadDbRefsByCategory).toHaveBeenCalledWith(
+        [MasterGroup.GENERAL],
+        { source: "bundle" },
+      ),
+    );
+    rerender({ group: MasterGroup.SEASONS });
+    await waitFor(() =>
+      expect(fetchHybridDadDbRefsByCategory).toHaveBeenCalledWith(
+        [MasterGroup.SEASONS],
+        { source: "bundle" },
+      ),
+    );
+    await waitFor(() =>
+      expect(setCatalogCategoryDb).toHaveBeenCalledWith(
+        MasterGroup.SEASONS,
+        dadDb,
+        "bundle",
+      ),
+    );
+    await act(async () => {
+      catalogLoad.reject(new Error("stale catalog failed"));
+      await catalogLoad.promise.catch(() => undefined);
+    });
+
+    expect(result.current).toEqual({
+      catalogError: undefined,
+      isCatalogLoading: false,
+    });
+    expect(setCatalogCategoryDb).toHaveBeenCalledTimes(1);
+  });
+
+  test("clears previous errors when a new load starts", async () => {
+    const catalogLoad = createDeferredCatalogLoad();
+    vi.mocked(fetchHybridDadDbRefsByCategory)
+      .mockRejectedValueOnce(new Error("catalog failed"))
+      .mockReturnValueOnce(catalogLoad.promise);
+    const setCatalogCategoryDb = vi.fn();
+    const routeLoadingInput = {
+      canEditCatalog: false,
+      catalogGroupSources: {},
+      isAuthLoading: false,
+      loadedCatalogGroups: [],
+      setCatalogCategoryDb:
+        setCatalogCategoryDb as DataContextType["setCatalogCategoryDb"],
+    };
+    const { rerender, result } = renderHook(
+      ({ group }) =>
+        useCatalogLoading({
+          ...routeLoadingInput,
+          group,
+        }),
+      { initialProps: { group: MasterGroup.GENERAL } },
+    );
+
+    await waitFor(() =>
+      expect(result.current).toEqual({
+        catalogError: "catalog failed",
+        isCatalogLoading: false,
+      }),
+    );
+    rerender({ group: MasterGroup.SEASONS });
+
+    await waitFor(() =>
+      expect(fetchHybridDadDbRefsByCategory).toHaveBeenCalledWith(
+        [MasterGroup.SEASONS],
+        { source: "bundle" },
+      ),
+    );
+    expect(result.current).toEqual({
+      catalogError: undefined,
+      isCatalogLoading: true,
+    });
   });
 
   test("reports errors", async () => {

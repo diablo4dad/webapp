@@ -27,6 +27,29 @@ type CatalogLoadStatusInput = {
   isAuthLoading: boolean;
 };
 
+type CatalogLoadRequestInput = CatalogLoadPlanInput & {
+  isAuthLoading: boolean;
+};
+
+type WaitingCatalogLoadRequest = {
+  status: "waiting";
+};
+
+type IdleCatalogLoadRequest = {
+  status: "idle";
+};
+
+type LoadingCatalogLoadRequest = {
+  groupsToFetch: MasterGroup[];
+  source: CatalogGroupSource;
+  status: "loading";
+};
+
+type CatalogLoadRequest =
+  | WaitingCatalogLoadRequest
+  | IdleCatalogLoadRequest
+  | LoadingCatalogLoadRequest;
+
 type CatalogLoadingInput = CatalogLoadPlanInput & {
   isAuthLoading: boolean;
   setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"];
@@ -36,6 +59,17 @@ type LoadedCatalogGroup = {
   category: MasterGroup;
   dadDbRef: DadDbRef;
 };
+
+type CatalogLoadStateSetters = {
+  setCatalogError: (catalogError?: string) => void;
+  setIsCatalogLoading: (isCatalogLoading: boolean) => void;
+};
+
+type RunCatalogLoadInput = LoadingCatalogLoadRequest &
+  CatalogLoadStateSetters & {
+    isCurrent: () => boolean;
+    setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"];
+  };
 
 function getCatalogLoadPlan({
   canEditCatalog,
@@ -76,6 +110,37 @@ function getCatalogLoadStatus({
   return "loading";
 }
 
+function getCatalogLoadRequest({
+  canEditCatalog,
+  catalogGroupSources,
+  group,
+  isAuthLoading,
+  loadedCatalogGroups,
+}: CatalogLoadRequestInput): CatalogLoadRequest {
+  const { groupsToFetch, source } = getCatalogLoadPlan({
+    canEditCatalog,
+    catalogGroupSources,
+    group,
+    loadedCatalogGroups,
+  });
+  const status = getCatalogLoadStatus({
+    groupsToFetch,
+    isAuthLoading,
+  });
+
+  if (status !== "loading") {
+    return {
+      status,
+    };
+  }
+
+  return {
+    groupsToFetch,
+    source,
+    status,
+  };
+}
+
 function useCatalogLoading({
   canEditCatalog,
   catalogGroupSources,
@@ -89,62 +154,28 @@ function useCatalogLoading({
 
   useEffect(() => {
     let cancelled = false;
-    const { groupsToFetch, source } = getCatalogLoadPlan({
+    const request = getCatalogLoadRequest({
       canEditCatalog,
       catalogGroupSources,
       group,
+      isAuthLoading,
       loadedCatalogGroups,
     });
-    const loadStatus = getCatalogLoadStatus({
-      groupsToFetch,
-      isAuthLoading,
+
+    if (!prepareCatalogLoad(request, {
+      setCatalogError,
+      setIsCatalogLoading,
+    })) {
+      return;
+    }
+
+    void runCatalogLoad({
+      ...request,
+      isCurrent: () => !cancelled,
+      setCatalogCategoryDb,
+      setCatalogError,
+      setIsCatalogLoading,
     });
-
-    if (loadStatus === "waiting") {
-      return;
-    }
-
-    if (loadStatus === "idle") {
-      setIsCatalogLoading(false);
-      setCatalogError(undefined);
-      return;
-    }
-
-    setIsCatalogLoading(true);
-    setCatalogError(undefined);
-
-    async function fetchCatalog() {
-      try {
-        const loadedGroups = await loadCatalogGroups(
-          groupsToFetch,
-          source,
-        );
-
-        if (!cancelled) {
-          loadedGroups.forEach((loadedGroup) => {
-            setCatalogCategoryDb(
-              loadedGroup.category,
-              hydrateDadDb(loadedGroup.dadDbRef),
-              source,
-            );
-          });
-        }
-      } catch (error) {
-        if (!cancelled) {
-          setCatalogError(
-            error instanceof Error
-              ? error.message
-              : "Failed to load catalogue.",
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setIsCatalogLoading(false);
-        }
-      }
-    }
-
-    void fetchCatalog();
 
     return () => {
       cancelled = true;
@@ -162,6 +193,60 @@ function useCatalogLoading({
     catalogError,
     isCatalogLoading,
   };
+}
+
+function prepareCatalogLoad(
+  request: CatalogLoadRequest,
+  {
+    setCatalogError,
+    setIsCatalogLoading,
+  }: CatalogLoadStateSetters,
+): request is LoadingCatalogLoadRequest {
+  if (request.status === "waiting") {
+    return false;
+  }
+
+  if (request.status === "idle") {
+    setIsCatalogLoading(false);
+    setCatalogError(undefined);
+    return false;
+  }
+
+  setIsCatalogLoading(true);
+  setCatalogError(undefined);
+  return true;
+}
+
+async function runCatalogLoad({
+  groupsToFetch,
+  isCurrent,
+  setCatalogCategoryDb,
+  setCatalogError,
+  setIsCatalogLoading,
+  source,
+}: RunCatalogLoadInput) {
+  try {
+    const loadedGroups = await loadCatalogGroups(
+      groupsToFetch,
+      source,
+    );
+
+    if (isCurrent()) {
+      applyLoadedCatalogGroups(
+        loadedGroups,
+        source,
+        setCatalogCategoryDb,
+      );
+    }
+  } catch (error) {
+    if (isCurrent()) {
+      setCatalogError(getCatalogLoadErrorMessage(error));
+    }
+  } finally {
+    if (isCurrent()) {
+      setIsCatalogLoading(false);
+    }
+  }
 }
 
 function isCatalogGroup(group: MasterGroup): boolean {
@@ -187,6 +272,26 @@ function shouldFetchCatalogGroup(
   }
 
   return !loadedCatalogGroups.includes(group);
+}
+
+function applyLoadedCatalogGroups(
+  loadedGroups: LoadedCatalogGroup[],
+  source: CatalogGroupSource,
+  setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"],
+) {
+  loadedGroups.forEach((loadedGroup) => {
+    setCatalogCategoryDb(
+      loadedGroup.category,
+      hydrateDadDb(loadedGroup.dadDbRef),
+      source,
+    );
+  });
+}
+
+function getCatalogLoadErrorMessage(error: unknown): string {
+  return error instanceof Error
+    ? error.message
+    : "Failed to load catalogue.";
 }
 
 async function loadCatalogGroups(
