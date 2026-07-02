@@ -1,5 +1,4 @@
 import type { MouseEvent, ReactNode } from "react";
-import Shell from "../../layout/Shell";
 import { RootFooter } from "./footer";
 import styles from "./layout.module.css";
 
@@ -32,11 +31,15 @@ type MobileDrawerProps = {
 
 function RootLayout({ header, main }: Props) {
   return (
-    <Shell
-      header={header}
-      main={main}
-      footer={<RootFooter />}
-    />
+    <div className={styles.Layout}>
+      <div className={styles.LayoutHeader}>{header}</div>
+      <div className={styles.LayoutMain}>
+        <div className={styles.LayoutContent}>{main}</div>
+        <footer className={styles.LayoutFooter}>
+          <RootFooter />
+        </footer>
+      </div>
+    </div>
   );
 }
 
@@ -48,7 +51,7 @@ function RootHeaderLayout({
   title,
 }: HeaderProps) {
   return (
-    <header className={styles.LayoutHeader}>
+    <header className={styles.LayoutHeaderContent}>
       <div className={styles.LayoutHeaderBrand}>
         <div className={styles.LayoutHeaderLogo}>{logo}</div>
         <div className={styles.LayoutHeaderTitle}>{title}</div>
