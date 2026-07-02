@@ -7,7 +7,7 @@ import { RootAuthActions } from "./auth";
 import {
   RootMobileDrawerLayout,
   RootMobileSearchOverlayLayout,
-} from "./layout";
+} from "./mobile-layout";
 import styles from "./mobile.module.css";
 
 type MobileSearchOverlayProps = {
