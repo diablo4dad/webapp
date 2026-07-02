@@ -5,8 +5,8 @@ import {
   ItemCard,
   ItemDragGhost,
   ItemDropPlaceholder,
-  type ItemView,
 } from "./item-card";
+import type { ItemView } from "./item-view";
 import type { ItemDragState } from "./ledger-types";
 
 vi.mock("../bucket", () => ({

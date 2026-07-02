@@ -3,15 +3,10 @@ import classNames from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { MasterGroup } from "../common";
-import { getDefaultItem, type Collection, type CollectionItem } from "../data";
+import type { Collection, CollectionItem } from "../data";
 import { countAllItemsInCollection } from "../data/aggregate";
 import { useData } from "../data/context";
-import {
-  getAllCollectionItems,
-  getClassIconVariant,
-  getClassItemVariant,
-  getItemIds,
-} from "../data/getters";
+import { getAllCollectionItems, getItemIds } from "../data/getters";
 import { isCollectionEmpty } from "../data/predicates";
 import { selectCollectionById } from "../data/reducers";
 import { useEditor } from "../editor/context";
@@ -40,14 +35,13 @@ import {
   ItemCard,
   ItemDragGhost,
   ItemDropPlaceholder,
-  type ItemView,
 } from "./item-card";
+import { getItemView } from "./item-view";
 import type {
   ItemDragState,
   LedgerProps,
   LedgerSectionProps,
 } from "./ledger-types";
-import { isItemCollected, isItemHidden } from "./predicate";
 import {
   areItemOrdersEqual,
   moveItemIdToIndex,
@@ -483,28 +477,6 @@ const LedgerSection = ({
     };
   }, [dragState?.draggedItemId]);
 
-  function getCollectionItemView(collectionItem: CollectionItem): ItemView {
-    const item =
-      getClassItemVariant(collectionItem, preferredClass) ??
-      getDefaultItem(collectionItem);
-    const icon =
-      getClassIconVariant(item, preferredClass, preferredGender) ?? item.icon;
-    const itemIds = getItemIds(collectionItem);
-    const isCollected = isItemCollected(log, itemIds);
-    const isHidden = isItemHidden(log, itemIds);
-    const showCollected =
-      isCollected && !isHidden && !collectionItem.unobtainable;
-    const showExcluded = isHidden || collectionItem.unobtainable === true;
-
-    return {
-      icon,
-      isCollected,
-      item,
-      showCollected,
-      showExcluded,
-    };
-  }
-
   return (
     <AccordionItem
       hidden={!isEditMode && isCollectionEmpty(collection)}
@@ -567,7 +539,12 @@ const LedgerSection = ({
                 return null;
               }
 
-              const itemView = getCollectionItemView(collectionItem);
+              const itemView = getItemView({
+                collectionItem,
+                log,
+                preferredClass,
+                preferredGender,
+              });
 
               return (
                 <ItemCard
@@ -603,7 +580,12 @@ const LedgerSection = ({
               <ItemDragGhost
                 collectionItem={draggedCollectionItem}
                 dragState={dragState}
-                itemView={getCollectionItemView(draggedCollectionItem)}
+                itemView={getItemView({
+                  collectionItem: draggedCollectionItem,
+                  log,
+                  preferredClass,
+                  preferredGender,
+                })}
               />
             )}
             {reorderError && (

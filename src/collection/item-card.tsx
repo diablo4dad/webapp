@@ -7,20 +7,13 @@ import { getIcon } from "../bucket";
 import { onTouchStart } from "../common/dom";
 import { Close, Currency, GripVertical, TickCircle } from "../components/Icons";
 import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
-import { MagicType, type CollectionItem, type Item } from "../data";
+import { MagicType, type CollectionItem } from "../data";
 import { getItemName, getItemType } from "../data/getters";
 import { getItemDescription } from "../i18n";
 import placeholder from "../image/placeholder.webp";
 import type { ItemDragState } from "./ledger-types";
+import type { ItemView } from "./item-view";
 import styles from "./Ledger.module.css";
-
-type ItemView = {
-  icon: string;
-  isCollected: boolean;
-  item: Item;
-  showCollected: boolean;
-  showExcluded: boolean;
-};
 
 type Props = {
   canReorder: boolean;
@@ -232,4 +225,3 @@ function getItemClassName({
 }
 
 export { ItemCard, ItemDragGhost, ItemDropPlaceholder };
-export type { ItemView };
