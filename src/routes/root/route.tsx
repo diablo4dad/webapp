@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { useAuth } from "../../auth/context";
-import { useData } from "../../data/context";
+import { useData, type DataContextType } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor/context";
 import {
@@ -18,6 +18,11 @@ type ContentControls = {
   content: Content;
   onCloseMobileContent: () => void;
   onToggleMobileConfig: () => void;
+};
+
+type SidebarControls = {
+  onToggleConfig: () => void;
+  onToggleItemSidebar: () => void;
 };
 
 function RootRoute(): ReactElement {
@@ -40,18 +45,10 @@ function RootRoute(): ReactElement {
     onCloseMobileContent,
     onToggleMobileConfig,
   } = useContentControls();
-
-  function onToggleItemSidebar() {
-    setSidebarVisibility(
-      toggleSidebarVisibility(sidebarVisibility, "showItem"),
-    );
-  }
-
-  function onToggleConfig() {
-    setSidebarVisibility(
-      toggleSidebarVisibility(sidebarVisibility, "showConfig"),
-    );
-  }
+  const {
+    onToggleConfig,
+    onToggleItemSidebar,
+  } = getSidebarControls(sidebarVisibility, setSidebarVisibility);
 
   function onClearSearch() {
     setSearchTerm("");
@@ -102,6 +99,24 @@ function useContentControls(): ContentControls {
     content: contentState.content,
     onCloseMobileContent,
     onToggleMobileConfig,
+  };
+}
+
+function getSidebarControls(
+  sidebarVisibility: DataContextType["sidebarVisibility"],
+  setSidebarVisibility: DataContextType["setSidebarVisibility"],
+): SidebarControls {
+  return {
+    onToggleConfig: () => {
+      setSidebarVisibility(
+        toggleSidebarVisibility(sidebarVisibility, "showConfig"),
+      );
+    },
+    onToggleItemSidebar: () => {
+      setSidebarVisibility(
+        toggleSidebarVisibility(sidebarVisibility, "showItem"),
+      );
+    },
   };
 }
 
