@@ -4,7 +4,7 @@
   z-index: 6500;
   display: flex;
   justify-content: stretch;
-  background: rgba(10, 12, 16, 0.55);
+  background: var(--overlay-backdrop-editor);
   backdrop-filter: blur(0.2rem);
 }
 
@@ -13,9 +13,9 @@
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  background-color: #1f232a;
-  color: #d7dce3;
-  box-shadow: -12px 0 32px rgba(8, 10, 13, 0.45);
+  background-color: var(--editor-panel);
+  color: var(--editor-text);
+  box-shadow: var(--shadow-drawer);
 }
 
 .Form {
@@ -31,8 +31,8 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem;
-  border-bottom: 1px solid #343b46;
-  background-color: #252a32;
+  border-bottom: 1px solid var(--editor-border);
+  background-color: var(--editor-panel-surface);
 }
 
 .HeaderText {
@@ -50,7 +50,7 @@
 
 .Title {
   margin: 0;
-  color: #d0b07c;
+  color: var(--app-text-accent);
   font-family: "PT Serif", serif;
   font-size: 1.35rem;
   line-height: 1.2;
@@ -65,7 +65,7 @@
   border: 0;
   padding: 0;
   background: transparent;
-  color: #cbd2da;
+  color: var(--color-neutral-310);
   cursor: pointer;
 }
 
@@ -102,8 +102,8 @@
   align-items: center;
   padding: 1.25rem;
   box-sizing: border-box;
-  border: 1px solid #343b46;
-  background-color: #252a32;
+  border: 1px solid var(--editor-border);
+  background-color: var(--editor-panel-surface);
 }
 
 .PreviewCompact {
@@ -120,8 +120,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #171a20;
-  border: 1px solid #303640;
+  background-color: var(--editor-field-surface);
+  border: 1px solid var(--app-surface-muted);
 }
 
 .PreviewCompact .PreviewImage {
@@ -161,7 +161,7 @@
 }
 
 .PreviewName {
-  color: #f0ede7;
+  color: var(--editor-text-strong);
   font-size: 1.35rem;
   line-height: 1.2;
   font-weight: 700;
@@ -173,7 +173,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  color: #c5ccd4;
+  color: var(--editor-text-secondary);
   font-size: 0.95rem;
   line-height: 1.25;
 }
@@ -191,12 +191,12 @@
 }
 
 .PreviewTypeSeparator {
-  color: #5f6977;
+  color: var(--color-neutral-650);
 }
 
 .PreviewType,
 .ResultType {
-  color: #9faab6;
+  color: var(--editor-text-muted);
   text-transform: uppercase;
 }
 
@@ -205,7 +205,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.625rem;
-  color: #9faab6;
+  color: var(--editor-text-muted);
   font-size: 0.9rem;
   line-height: 1.25;
 }
@@ -271,7 +271,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  color: #c5ccd4;
+  color: var(--editor-text-secondary);
   font-size: 0.9rem;
   line-height: 1.25;
 }
@@ -305,7 +305,7 @@
 
 .Label {
   display: block;
-  color: #d0b07c;
+  color: var(--app-text-accent);
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -315,10 +315,10 @@
 .TextArea {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #46505e;
+  border: 1px solid var(--color-neutral-700);
   border-radius: 0.375rem;
-  background-color: #171a20;
-  color: #f0ede7;
+  background-color: var(--editor-field-surface);
+  color: var(--editor-text-strong);
   font: inherit;
   padding: 0.65rem 0.75rem;
   outline: none;
@@ -326,8 +326,8 @@
 
 .Input:focus,
 .TextArea:focus {
-  border-color: #a06458;
-  box-shadow: 0 0 0 2px rgba(160, 100, 88, 0.25);
+  border-color: var(--field-focus-border-strong);
+  box-shadow: 0 0 0 2px var(--field-focus-shadow-color);
 }
 
 .TextArea {
@@ -338,8 +338,8 @@
 .Results {
   max-height: 14rem;
   overflow-y: auto;
-  border: 1px solid #343b46;
-  background-color: #1a1e24;
+  border: 1px solid var(--editor-border);
+  background-color: var(--editor-panel-surface-muted);
 }
 
 .Result {
@@ -352,9 +352,9 @@
   gap: 0.125rem;
   padding: 0.55rem 0.75rem;
   border: 0;
-  border-bottom: 1px solid #2b313a;
+  border-bottom: 1px solid var(--editor-divider);
   background: transparent;
-  color: #d7dce3;
+  color: var(--editor-text);
   text-align: left;
   cursor: pointer;
 }
@@ -365,11 +365,11 @@
 
 .Result:hover,
 .Result:focus {
-  background-color: #2d3440;
+  background-color: var(--color-neutral-820);
 }
 
 .ResultName {
-  color: #f0ede7;
+  color: var(--editor-text-strong);
   font-weight: 700;
   overflow-wrap: anywhere;
 }
@@ -387,10 +387,10 @@
   gap: 0.5rem;
   max-width: 100%;
   padding: 0.35rem 0.5rem 0.35rem 0.75rem;
-  border: 1px solid #48515e;
+  border: 1px solid var(--selection-border);
   border-radius: 999px;
-  background-color: #303640;
-  color: #f0ede7;
+  background-color: var(--app-surface-muted);
+  color: var(--editor-text-strong);
   font-size: 0.85rem;
 }
 
@@ -415,9 +415,9 @@
   display: flex;
   align-items: center;
   padding: 0.75rem;
-  border: 1px solid #343b46;
-  background-color: #252a32;
-  color: #d7dce3;
+  border: 1px solid var(--editor-border);
+  background-color: var(--editor-panel-surface);
+  color: var(--editor-text);
 }
 
 .Toggle label {
@@ -431,8 +431,8 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   padding: 1rem;
-  border-top: 1px solid #343b46;
-  background-color: #252a32;
+  border-top: 1px solid var(--editor-border);
+  background-color: var(--editor-panel-surface);
 }
 
 .ActionLeft,
@@ -452,7 +452,7 @@
 .Error {
   flex: 1 1 auto;
   min-width: 0;
-  color: #ffb3a8;
+  color: var(--feedback-danger-text-strong);
   font-size: 0.875rem;
   overflow-wrap: anywhere;
 }
@@ -465,26 +465,26 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border: 1px solid #4f5968;
+  border: 1px solid var(--editor-control-border);
   border-radius: 0.375rem;
-  color: #f0ede7;
+  color: var(--editor-text-strong);
   font-weight: 700;
   padding: 0.65rem 1rem;
   cursor: pointer;
 }
 
 .SecondaryButton {
-  background-color: #303640;
+  background-color: var(--app-surface-muted);
 }
 
 .DeleteButton {
-  border-color: #8c4a43;
-  background-color: #3a2424;
+  border-color: var(--feedback-danger-toggle-border);
+  background-color: var(--feedback-danger-surface);
 }
 
 .SaveButton {
-  background: linear-gradient(180deg, #3e885b 0%, #2f6f49 100%);
-  border-color: #4aa16d;
+  background: linear-gradient(180deg, var(--feedback-success-fill) 0%, var(--color-green-800) 100%);
+  border-color: var(--feedback-success-border);
 }
 
 .SecondaryButton:disabled,
@@ -505,6 +505,15 @@
   height: 100%;
 }
 
+@keyframes panel-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 @media screen and (min-width: 720px) {
   .FieldGrid,
   .ToggleGrid {
@@ -520,7 +529,7 @@
   .Panel {
     width: min(38rem, 100vw);
     height: 100%;
-    border-left: 1px solid #343b46;
+    border-left: 1px solid var(--editor-border);
     animation: panel-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -559,14 +568,5 @@
 
   .PreviewTag img {
     height: 1.2rem;
-  }
-}
-
-@keyframes panel-in {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
   }
 }

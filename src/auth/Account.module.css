@@ -17,7 +17,7 @@
 }
 
 .TextLine2 {
-    color: #ccc;
+    color: var(--app-text-muted);
     font-size: 0.875rem;
 }
 
@@ -28,7 +28,7 @@
 .TextLogout {
     display: inline-block;
     text-align: center;
-    color: orange;
+    color: var(--link-color-action);
     background: transparent;
     border: 0;
     padding: 0;
@@ -38,14 +38,14 @@
 }
 
 .TextLogout:hover {
-    color: #cc8500;
+    color: var(--link-hover-color);
 }
 
 .Icon {
-    border: 1px solid #39404d;
+    border: 1px solid var(--control-border);
     padding: 0.5rem;
     border-radius: 0.5rem;
-    background-color: #303640;
+    background-color: var(--app-surface-muted);
     margin-bottom: 0;
 }
 

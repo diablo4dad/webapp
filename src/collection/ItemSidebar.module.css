@@ -12,13 +12,7 @@
   right: 0;
   width: 15rem;
   height: 15rem;
-  background: radial-gradient(
-      circle at 65% 35%,
-      rgba(168, 178, 191, 0.1),
-      transparent 50%
-    ),
-    radial-gradient(circle at 40% 55%, rgba(95, 104, 116, 0.1), transparent 66%),
-    linear-gradient(215deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+  background: var(--item-sidebar-decoration-background);
   filter: blur(0.5rem);
   pointer-events: none;
   z-index: 0;
@@ -31,21 +25,21 @@
   z-index: 5;
   min-height: 2rem;
   padding: 0.35rem 0.65rem;
-  border: 1px solid #5b6877;
+  border: 1px solid var(--color-neutral-650);
   border-radius: 0.25rem;
-  background-color: rgba(35, 39, 46, 0.94);
-  color: #f0ede7;
+  background-color: var(--item-sidebar-edit-background);
+  color: var(--editor-text-strong);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  box-shadow: 1px 2px 5px rgba(8, 10, 13, 0.45);
+  box-shadow: var(--shadow-control-strong);
   cursor: pointer;
 }
 
 .EditButton:hover {
-  border-color: #8f98a3;
-  color: #ffffff;
+  border-color: var(--app-text-disabled);
+  color: var(--app-text);
 }
 
 .PanelHeading {
@@ -80,19 +74,19 @@
   padding-top: 0;
   padding-left: 0;
   margin-bottom: 0.5rem;
-  color: #f9a620;
+  color: var(--link-color-action);
   font-family: "PT Serif", serif;
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.2;
-  text-shadow: 1px 1px 3px #111;
+  text-shadow: 1px 1px 3px var(--color-black);
 }
 
 .ItemType {
   padding-left: 0;
   padding-bottom: 0;
   text-transform: uppercase;
-  color: #8f98a3;
+  color: var(--app-text-disabled);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -101,9 +95,9 @@
 .ItemClasses {
   position: relative;
   z-index: 0;
-  background-color: #23272e;
-  border-top: 1px solid #303640;
-  border-bottom: 1px solid #303640;
+  background-color: var(--app-surface-raised);
+  border-top: 1px solid var(--app-surface-muted);
+  border-bottom: 1px solid var(--app-surface-muted);
   padding: 0.5rem 2rem;
   margin-bottom: 1rem;
 }
@@ -124,7 +118,7 @@
   left: calc(1.25rem - 0.25rem);
   width: 0.5rem;
   height: 0.5rem;
-  background-color: #4b5360;
+  background-color: var(--item-sidebar-marker);
   border-radius: 0.5rem;
   content: "";
 }
@@ -138,7 +132,7 @@
 }
 
 .ItemClassActive:before {
-  background-color: #f9a620;
+  background-color: var(--link-color-action);
 }
 
 .ItemClassIcon:not(:last-child) {
@@ -154,7 +148,7 @@
   padding-right: 2rem;
   margin-bottom: 1rem;
   font-size: 0.875rem;
-  color: #d5d8dd;
+  color: var(--item-sidebar-body-text);
 }
 
 .ItemLocations {
@@ -169,9 +163,9 @@
   align-items: center;
   width: 100%;
   padding: 1rem 2rem;
-  border-top: 1px solid #303640;
-  border-bottom: 1px solid #303640;
-  background-color: #23272e;
+  border-top: 1px solid var(--app-surface-muted);
+  border-bottom: 1px solid var(--app-surface-muted);
+  background-color: var(--app-surface-raised);
 }
 
 .ItemLocationIcon {
@@ -185,12 +179,12 @@
 
 .ItemLocationDescription {
   margin-bottom: 0.5rem;
-  color: #c0c6ce;
+  color: var(--item-sidebar-detail-text);
 }
 
 .ItemLocationCategory {
   text-transform: uppercase;
-  color: #8f98a3;
+  color: var(--app-text-disabled);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -202,7 +196,7 @@
   gap: 0.35rem;
   padding: 0 2rem;
   margin-bottom: 1rem;
-  color: #c0c6ce;
+  color: var(--item-sidebar-detail-text);
   font-size: 0.875rem;
   line-height: 1.35;
 }
@@ -225,30 +219,27 @@
 }
 
 .ItemMagicTypeCommon {
-  color: #ffffff;
+  color: var(--app-text);
 }
 
 .ItemMagicTypeMagic {
-  color: #0080ff;
+  color: var(--rarity-magic-color);
 }
 
 .ItemMagicTypeLegendary {
-  color: #e67e22;
+  color: var(--rarity-legendary-color);
 }
 
 .ItemMagicTypeUnique {
-  color: #deb887;
+  color: var(--rarity-unique-color);
 }
 
 .ItemMagicTypeMythic {
-  color: #9b59b6;
+  color: var(--rarity-mythic-color);
 }
 
 .ItemMagicTypeRare {
-  color: #ffff64;
-}
-
-.ItemCollectedBtn {
+  color: var(--rarity-rare-color);
 }
 
 .ItemDescription {
@@ -284,14 +275,14 @@
 }
 
 .ItemZoneInfo {
-  color: #ccc;
+  color: var(--app-text-muted);
 }
 
 .ItemMeta {
   padding-left: 2rem;
   padding-right: 2rem;
   font-size: 0.875rem;
-  color: #bfc4cb;
+  color: var(--item-sidebar-meta-text);
   margin-bottom: 1rem;
   justify-content: space-between;
 }
@@ -311,13 +302,13 @@
   margin-bottom: 0.5rem;
 
   padding: 0.5rem 1rem;
-  border: 1px solid rgba(143, 152, 163, 0.28);
-  background-color: #303640;
+  border: 1px solid var(--item-sidebar-tag-border);
+  background-color: var(--app-surface-muted);
   border-radius: 2rem;
 
   font-size: 0.875rem;
   font-weight: 300;
-  color: #d2d7de;
+  color: var(--item-sidebar-tag-text);
 }
 
 .ItemTag:last-child {
@@ -332,22 +323,6 @@
   width: auto;
   height: 1.5rem;
   margin-right: 0.5rem;
-}
-
-.ItemTag:not(:last-child) {
-  margin-right: 0.5rem;
-}
-
-@media screen and (min-width: 480px) {
-  .ItemImage {
-    max-width: 128px;
-  }
-}
-
-@media screen and (min-width: 1200px) {
-  /*.Panel {*/
-  /*    display: block;*/
-  /*}*/
 }
 
 /* Class Specific Modifiers */
@@ -372,10 +347,6 @@
 .Paladin .PaladinClassIcon,
 .Warlock .WarlockClassIcon {
   opacity: 1;
-}
-
-/* All skeleton loading states here */
-.Skeleton {
 }
 
 .Skeleton .ItemTitle span,
@@ -422,32 +393,32 @@
 }
 
 .Skeleton .ItemTitle:after {
-  background-image: linear-gradient(#cccccc 2rem, transparent 0);
+  background-image: linear-gradient(var(--skeleton-background) 2rem, transparent 0);
   background-size: 50% 2rem;
   background-position: 2rem 2rem;
 }
 
 .Skeleton .ItemType:after {
-  background-image: linear-gradient(#cccccc 1rem, transparent 0);
+  background-image: linear-gradient(var(--skeleton-background) 1rem, transparent 0);
   background-size: 25% 1rem;
   background-position: 2rem 0;
 }
 
 .Skeleton .ItemLocationDescription:after {
-  background-image: linear-gradient(#cccccc 1rem, transparent 0);
+  background-image: linear-gradient(var(--skeleton-background) 1rem, transparent 0);
   background-size: 50% 1rem;
   background-position: 0 0;
 }
 
 .Skeleton .ItemLocationCategory:after {
-  background-image: linear-gradient(#cccccc 1rem, transparent 0);
+  background-image: linear-gradient(var(--skeleton-background) 1rem, transparent 0);
   background-size: 25% 1rem;
   background-position: 0 0;
 }
 
 .Skeleton .ItemAction,
 .Skeleton .ItemImage {
-  background-color: #cccccc;
+  background-color: var(--skeleton-background);
 }
 
 .Skeleton .ItemTags,
@@ -461,5 +432,11 @@
   }
   100% {
     opacity: 0.5;
+  }
+}
+
+@media screen and (min-width: 480px) {
+  .ItemImage {
+    max-width: 128px;
   }
 }

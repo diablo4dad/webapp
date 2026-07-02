@@ -1,14 +1,14 @@
 .Btn {
     position: relative;
-    border: 1px solid #39404d;
+    border: 1px solid var(--control-border);
     padding: 0.5rem;
     border-radius: 0.5rem;
     max-width: 5rem;
-    background-color: #303640;
-    color: #8f98a3;
+    background-color: var(--app-surface-muted);
+    color: var(--app-text-disabled);
     cursor: pointer;
     top: -1px;
-    box-shadow: 1px 2px 5px #111;
+    box-shadow: var(--shadow-control);
 }
 
 .BtnMobile {
@@ -17,16 +17,6 @@
 
 .BtnDesktop {
     display: none;
-}
-
-@media screen and (min-width: 1200px) {
-    .BtnMobile {
-        display: none;
-    }
-
-    .BtnDesktop {
-        display: inline-block;
-    }
 }
 
 .Btn svg {
@@ -42,53 +32,63 @@
 }
 
 .BtnDark {
-    border: 1px solid #2D3239;
-    background-color: #23272e;
-    color: #a7afb8;
+    border: 1px solid var(--control-dark-border);
+    background-color: var(--app-surface-raised);
+    color: var(--control-dark-text);
 }
 
 .BtnDark:hover,
 .BtnDark:active,
 .BtnDark.BtnPressed {
-    color: #d7dbe0;
+    color: var(--color-neutral-250);
 }
 
 .BtnGrey {
-    color: #6F7D8C;
+    color: var(--control-icon-muted);
 }
 
 .BtnGrey:hover,
 .BtnGrey:active,
 .BtnGrey.BtnPressed {
-    color: #8394a6;
+    color: var(--control-icon-hover);
 }
 
 .BtnDiscord {
-    color: #7289da;
+    color: var(--brand-discord-color);
 }
 
 .BtnDiscord:hover,
 .BtnDiscord:active,
 .BtnDiscord.BtnPressed {
-    color: #7e97f2;
+    color: var(--brand-discord-hover-color);
 }
 
 .BtnBattleNet {
-    color: #009AE4;
+    color: var(--brand-battlenet-color);
 }
 
 .BtnBattleNet:hover,
 .BtnBattleNet:active,
 .BtnBattleNet.BtnPressed {
-    color: #00adfc;
+    color: var(--brand-battlenet-hover-color);
 }
 
 .BtnGreen {
-    color: #3e885b;
+    color: var(--feedback-success-fill);
 }
 
 .BtnGreen:hover,
 .BtnGreen:active,
 .BtnGreen.BtnPressed {
-    color: #4aa16d;
+    color: var(--feedback-success-border);
+}
+
+@media screen and (min-width: 1200px) {
+    .BtnMobile {
+        display: none;
+    }
+
+    .BtnDesktop {
+        display: inline-block;
+    }
 }

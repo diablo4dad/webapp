@@ -7,17 +7,17 @@
     padding: 0.125rem 0;
     border: 0;
     background: transparent;
-    color: #c2c6cb;
+    color: var(--color-neutral-350);
     cursor: pointer;
     transition: color 160ms ease, transform 160ms ease;
 }
 
 .Button:hover {
-    color: #f4f4f4;
+    color: var(--app-text-hover);
 }
 
 .ButtonActive {
-    color: #f9a620;
+    color: var(--link-color-action);
 }
 
 .Label {
@@ -33,16 +33,16 @@
     min-width: 2.25rem;
     padding: 0.25rem 0.6rem;
     border-radius: 999px;
-    background-color: #2d3239;
-    color: #aab2bc;
+    background-color: var(--control-dark-border);
+    color: var(--color-neutral-400);
     font-size: 0.95rem;
 }
 
 .Button:hover .Count,
 .ButtonActive .Count {
-    color: #f9a620;
+    color: var(--link-color-action);
 }
 
 .ButtonActive .Count {
-    background-color: rgba(139, 93, 32, 0.22);
+    background-color: var(--selection-active-background);
 }

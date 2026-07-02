@@ -2,7 +2,7 @@
     position: relative;
     display: flex;
     border-radius: 0.5rem;
-    box-shadow: 1px 2px 5px #111;
+    box-shadow: var(--shadow-control);
     width: 100%;
 }
 
@@ -12,44 +12,44 @@
 
 .Search:focus-within .Input {
     outline: none;
-    border-left-color: #404752;
-    border-top-color: #404752;
-    border-bottom-color: #404752;
+    border-left-color: var(--field-focus-border);
+    border-top-color: var(--field-focus-border);
+    border-bottom-color: var(--field-focus-border);
 }
 
 .Search:focus-within .Icon {
-    border-top-color: #404752;
-    border-bottom-color: #404752;
-    border-right-color: #404752;
+    border-top-color: var(--field-focus-border);
+    border-bottom-color: var(--field-focus-border);
+    border-right-color: var(--field-focus-border);
 }
 
 .Input {
     width: 100%;
     padding: 0.75rem 0.75rem;
-    background: #23272e;
+    background: var(--app-surface-raised);
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
-    border-top: 1px solid #2D3239;
-    border-bottom: 1px solid #2D3239;
-    border-left: 1px solid #2D3239;
+    border-top: 1px solid var(--control-dark-border);
+    border-bottom: 1px solid var(--control-dark-border);
+    border-left: 1px solid var(--control-dark-border);
     border-right: none;
-    color: #fff;
+    color: var(--app-text);
     font-size: 1rem;
 }
 
 .Icon {
     display: flex;
     padding: 0.75rem 1rem 0.75rem 0.75rem;
-    background: #23272e;
+    background: var(--app-surface-raised);
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
-    border-top: 1px solid #2D3239;
-    border-bottom: 1px solid #2D3239;
-    border-right: 1px solid #2D3239;
+    border-top: 1px solid var(--control-dark-border);
+    border-bottom: 1px solid var(--control-dark-border);
+    border-right: 1px solid var(--control-dark-border);
 }
 
 .Icon svg {
-    fill: #6F7D8C;
+    fill: var(--control-icon-muted);
     width: 1.75rem;
     height: auto;
 }
@@ -59,5 +59,5 @@
 }
 
 .IconClose svg {
-    fill: #ccc;
+    fill: var(--app-text-muted);
 }

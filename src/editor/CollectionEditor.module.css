@@ -1,6 +1,6 @@
 .ListHeading {
   margin: 0;
-  color: #d0b07c;
+  color: var(--app-text-accent);
   font-family: "PT Serif", serif;
   font-size: 1.1rem;
   line-height: 1.2;
@@ -9,8 +9,8 @@
 .ReadOnlyList {
   display: flex;
   flex-direction: column;
-  border: 1px solid #343b46;
-  background-color: #1a1e24;
+  border: 1px solid var(--editor-border);
+  background-color: var(--editor-panel-surface-muted);
 }
 
 .ListItem,
@@ -20,19 +20,19 @@
 
 .ListItem:not(:last-child),
 .EmptyListItem:not(:last-child) {
-  border-bottom: 1px solid #2b313a;
+  border-bottom: 1px solid var(--editor-divider);
 }
 
 .ListItemName {
   margin-bottom: 0.25rem;
-  color: #f0ede7;
+  color: var(--editor-text-strong);
   font-weight: 700;
   overflow-wrap: anywhere;
 }
 
 .ListItemDescription,
 .EmptyListItem {
-  color: #9faab6;
+  color: var(--editor-text-muted);
   font-size: 0.875rem;
   line-height: 1.35;
   overflow-wrap: anywhere;

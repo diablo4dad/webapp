@@ -14,27 +14,71 @@
     --color-neutral-900: #1e2126;
     --color-neutral-875: #23272e;
     --color-neutral-850: #282c34;
+    --color-neutral-840: #252a32;
+    --color-neutral-830: #2a3038;
     --color-neutral-825: #303640;
+    --color-neutral-820: #343944;
+    --color-neutral-815: #343b46;
     --color-neutral-800: #39404d;
     --color-neutral-750: #353d48;
+    --color-neutral-725: #404752;
     --color-neutral-700: #45505e;
+    --color-neutral-675: #4b5461;
     --color-neutral-650: #5b6877;
+    --color-neutral-625: #596472;
+    --color-neutral-600: #6b7480;
+    --color-neutral-575: #738296;
     --color-neutral-500: #8f98a3;
+    --color-neutral-450: #9faab6;
+    --color-neutral-425: #a7afb8;
+    --color-neutral-400: #aab2bc;
+    --color-neutral-390: #aeb7c2;
+    --color-neutral-375: #b8bcc2;
+    --color-neutral-360: #bfc4cb;
+    --color-neutral-350: #c2c6cb;
+    --color-neutral-340: #c0c6ce;
+    --color-neutral-325: #c7ccd3;
+    --color-neutral-310: #cbd2da;
     --color-neutral-300: #cfd5dc;
+    --color-neutral-290: #d2d7de;
+    --color-neutral-285: #d3d3d3;
+    --color-neutral-280: #d5d8dd;
+    --color-neutral-275: #d7dce3;
+    --color-neutral-265: #d8dde3;
     --color-neutral-250: #d7dbe0;
     --color-neutral-200: #ccc;
+    --color-neutral-150: #e6e6e6;
     --color-neutral-100: #f1ede4;
+    --color-neutral-75: #f4f4f4;
     --color-gold-800: #cc8500;
     --color-gold-700: #d0b07c;
     --color-gold-600: #d8c29a;
     --color-gold-500: #f9a620;
+    --color-gold-400: #d8b35a;
+    --color-gold-900: #7d5a1f;
     --color-blue-500: #5c749d;
     --color-blue-400: #748cab;
+    --color-blue-300: #8394a6;
+    --color-blue-200: #7e97f2;
+    --color-blue-100: #00adfc;
+    --color-blue-brand-discord: #7289da;
+    --color-blue-brand-battlenet: #009ae4;
+    --color-rarity-magic: #0080ff;
+    --color-rarity-legendary: #e67e22;
+    --color-rarity-unique: #deb887;
+    --color-rarity-mythic: #9b59b6;
+    --color-rarity-rare: #ffff64;
+    --color-green-900: #20472f;
+    --color-green-800: #2f6f49;
+    --color-green-700: #3e885b;
+    --color-green-600: #4aa16d;
     --color-red-800: #6d342e;
     --color-red-700: #8d433a;
     --color-red-600: #a62639;
     --color-red-500: #b16558;
     --color-red-200: #f1b4bd;
+    --color-red-150: #ffb3a8;
+    --color-red-900: #661723;
 
     /* spacing scale */
     --space-1: 0.25rem;
@@ -49,20 +93,39 @@
 
     /* typography scale */
     --font-size-sm: 0.875rem;
+    --font-size-sm-plus: 0.95rem;
     --font-size-md: 1rem;
+    --font-size-md-plus: 1.05rem;
+    --font-size-md-lg: 1.35rem;
     --font-size-lg: 1.4rem;
     --font-size-xl: 1.5rem;
     --font-size-2xl: 2rem;
 
     /* radius and shadows */
+    --radius-pill: 999px;
     --radius-sm: 0.25rem;
+    --radius-sm-plus: 0.375rem;
     --radius-md: 0.5rem;
     --shadow-text-subtle: 1px 1px 2px var(--color-black);
     --shadow-text-raised: 1px 2px 5px var(--color-black);
+    --shadow-control: 1px 2px 5px var(--color-black);
+    --shadow-control-strong: 1px 2px 5px rgba(8, 10, 13, 0.45);
+    --shadow-card: 3px 3px 3px rgba(17, 17, 17, 0.25);
     --shadow-tooltip: 2px 3px 8px rgba(8, 10, 13, 0.18);
     --shadow-action: 2px 3px 8px rgba(8, 10, 13, 0.35);
     --shadow-drawer: -12px 0 32px rgba(8, 10, 13, 0.45);
     --shadow-header: 0 1px 3px rgba(17, 17, 17, 0.5);
+    --shadow-drag: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.35);
+    --shadow-modal: 0 18px 48px rgba(8, 10, 13, 0.55);
+    --shadow-season-card: 3px 3px 5px rgba(8, 10, 13, 0.35);
+    --shadow-field-focus: 0 0 0 2px rgba(160, 100, 88, 0.25);
+    --shadow-glow: 0 0 0.5rem 0.25rem rgba(101, 113, 128, 0.75);
+    --shadow-glow-muted: 0 0 0.5rem 0.25rem rgba(101, 113, 128, 0.25);
+    --shadow-glow-muted-start: 0 0 0.5rem -0.25rem rgba(101, 113, 128, 0.25);
+    --shadow-progress-icon: drop-shadow(0 1px 2px rgba(17, 17, 17, 0.35));
+    --shadow-season-eyebrow: 1px 1px 2px rgba(17, 17, 17, 0.75);
+    --shadow-season-heading: 1px 1px 3px rgba(17, 17, 17, 0.8);
+    --shadow-season-text: 1px 1px 2px rgba(17, 17, 17, 0.8);
 
     /* theme */
     --primary-color: var(--color-blue-500);
@@ -91,8 +154,24 @@
     --app-text-secondary: var(--color-neutral-300);
     --app-text-disabled: var(--color-neutral-500);
     --app-text-accent: var(--color-gold-700);
+    --app-text-heading: var(--color-neutral-100);
+    --app-text-body: var(--color-neutral-275);
+    --app-text-subtle: var(--color-neutral-450);
+    --app-text-hover: var(--color-neutral-75);
+    --app-interactive-muted: var(--color-neutral-725);
+    --border-subtle-alpha: rgba(57, 64, 77, 0.45);
+
+    /* cards and skeletons */
+    --card-surface: var(--app-surface-muted);
+    --card-surface-muted: var(--app-surface-raised);
+    --card-border-top: var(--color-neutral-675);
+    --card-border-bottom: #1d2026;
+    --card-shadow: var(--shadow-card);
+    --skeleton-background: var(--color-neutral-200);
 
     /* overlays and panels */
+    --overlay-backdrop-strong: rgba(8, 10, 13, 0.66);
+    --overlay-backdrop-editor: rgba(10, 12, 16, 0.55);
     --overlay-backdrop: rgba(12, 14, 18, 0.48);
     --overlay-backdrop-soft: rgba(11, 12, 16, 0.46);
     --overlay-backdrop-transparent: rgba(12, 14, 18, 0);
@@ -101,16 +180,48 @@
         linear-gradient(180deg, rgba(24, 28, 36, 0.96) 0%, rgba(22, 25, 32, 0.96) 100%),
         radial-gradient(circle at top right, rgba(132, 48, 44, 0.28) 0%, rgba(132, 48, 44, 0) 36%),
         radial-gradient(circle at bottom left, rgba(66, 88, 118, 0.22) 0%, rgba(66, 88, 118, 0) 42%);
+    --welcome-panel-background:
+        linear-gradient(135deg, rgba(55, 62, 73, 0.78), rgba(48, 54, 64, 0.44)),
+        radial-gradient(circle at top left, rgba(143, 152, 163, 0.12), transparent 52%);
+    --season-card-background:
+        linear-gradient(160deg, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.42) 42%, rgba(0, 0, 0, 0.62) 100%),
+        radial-gradient(circle at 50% 20%, rgba(0, 0, 0, 0.08), transparent 38%);
 
     /* feedback */
     --feedback-danger-background: rgba(166, 38, 57, 0.16);
     --feedback-danger-border: rgba(166, 38, 57, 0.35);
     --feedback-danger-text: var(--color-red-200);
+    --feedback-danger-text-strong: var(--color-red-150);
+    --feedback-danger-border-strong: var(--color-red-500);
+    --feedback-danger-border-muted: #4b3030;
+    --feedback-danger-surface: #3a2424;
+    --feedback-danger-toggle-border: #8c4a43;
+    --feedback-success-background:
+        linear-gradient(180deg, var(--color-green-700) 0%, var(--color-green-800) 100%);
+    --feedback-success-border: var(--color-green-600);
+    --feedback-success-fill: var(--color-green-700);
+    --feedback-danger-fill: var(--color-red-600);
 
     /* affordances */
     --link-hover-color: var(--color-gold-800);
+    --link-color-action: var(--color-gold-500);
     --tooltip-background: var(--color-gold-600);
     --tooltip-text: #1b1e24;
+    --control-border: var(--color-neutral-800);
+    --control-background: var(--app-surface-muted);
+    --control-text: var(--app-text-disabled);
+    --control-dark-border: #2d3239;
+    --control-dark-background: var(--app-surface-raised);
+    --control-dark-text: var(--color-neutral-425);
+    --control-icon-muted: #6f7d8c;
+    --control-icon-hover: var(--color-blue-300);
+    --field-focus-border: var(--color-neutral-725);
+    --field-border: #2d3239;
+    --field-background: var(--app-surface-raised);
+    --field-text: var(--app-text);
+    --selection-border: #48515e;
+    --selection-background: var(--app-surface-muted);
+    --selection-active-background: rgba(139, 93, 32, 0.22);
     --action-primary-border: var(--color-red-500);
     --action-primary-background:
         linear-gradient(180deg, var(--color-red-700) 0%, var(--color-red-800) 100%);
@@ -119,6 +230,81 @@
         linear-gradient(180deg, var(--color-neutral-700) 0%, var(--color-neutral-750) 100%);
     --editor-toggle-active-border: #595259;
     --editor-toggle-active-background: #2f2830;
+    --drag-handle-border: var(--color-neutral-625);
+    --drag-handle-border-hover: var(--color-neutral-575);
+    --drag-handle-background: rgba(22, 25, 31, 0.65);
+    --drag-handle-background-strong: rgba(22, 25, 31, 0.82);
+    --drag-handle-text: #c6ced8;
+    --drag-handle-text-hover: #e2e8ef;
+    --drop-placeholder-border: var(--color-neutral-575);
+    --drop-placeholder-border-soft: rgba(115, 130, 150, 0.45);
+    --drop-placeholder-background: rgba(20, 23, 29, 0.72);
+    --drop-placeholder-visual-background: rgba(22, 25, 31, 0.55);
+    --drop-placeholder-shadow-color: rgba(104, 114, 126, 0.16);
+    --drop-placeholder-shadow:
+        inset 0 0 0 1px rgba(104, 114, 126, 0.16),
+        inset 0 0 1.25rem rgba(0, 0, 0, 0.24);
+    --add-placeholder-background-start: rgba(39, 43, 51, 0.9);
+    --add-placeholder-background-end: rgba(31, 35, 42, 0.9);
+    --add-placeholder-background:
+        linear-gradient(180deg, rgba(39, 43, 51, 0.9) 0%, rgba(31, 35, 42, 0.9) 100%);
+    --add-placeholder-shadow-color: rgba(104, 114, 126, 0.12);
+    --add-placeholder-shadow: inset 0 0 0 1px rgba(104, 114, 126, 0.12);
+    --progress-fill-background: linear-gradient(90deg, var(--color-gold-900), var(--color-gold-500));
+    --progress-fill-shadow-color: rgba(249, 166, 32, 0.25);
+    --progress-fill-shadow: 0 0 12px rgba(249, 166, 32, 0.25);
+    --progress-card-stats-text: var(--color-neutral-265);
+    --progress-card-detail-text: var(--color-neutral-375);
+    --welcome-discord-text: var(--color-neutral-325);
+    --welcome-link-decoration: rgba(208, 176, 124, 0.55);
+    --welcome-link-decoration-hover: rgba(249, 166, 32, 0.7);
+    --season-description-text: var(--color-neutral-285);
+    --ledger-subcollection-background: var(--color-neutral-830);
+    --item-sidebar-decoration-background:
+        radial-gradient(circle at 65% 35%, rgba(168, 178, 191, 0.1), transparent 50%),
+        radial-gradient(circle at 40% 55%, rgba(95, 104, 116, 0.1), transparent 66%),
+        linear-gradient(215deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+    --item-sidebar-edit-background: rgba(35, 39, 46, 0.94);
+    --item-sidebar-marker: var(--color-neutral-675);
+    --item-sidebar-body-text: var(--color-neutral-280);
+    --item-sidebar-detail-text: var(--color-neutral-340);
+    --item-sidebar-meta-text: var(--color-neutral-360);
+    --item-sidebar-tag-border: rgba(143, 152, 163, 0.28);
+    --item-sidebar-tag-text: var(--color-neutral-290);
+    --modal-description-text: var(--color-neutral-390);
+
+    /* editor */
+    --editor-panel: #1f232a;
+    --editor-panel-surface: var(--color-neutral-840);
+    --editor-panel-surface-muted: #1a1e24;
+    --editor-field-surface: #171a20;
+    --editor-border: var(--color-neutral-815);
+    --editor-divider: #2b313a;
+    --editor-text: var(--color-neutral-275);
+    --editor-text-strong: var(--color-neutral-100);
+    --editor-text-muted: var(--color-neutral-450);
+    --editor-text-secondary: var(--color-neutral-300);
+    --editor-control-border: #4f5968;
+    --field-focus-border-strong: #a06458;
+    --field-focus-shadow-color: rgba(160, 100, 88, 0.25);
+
+    /* item state and rarity */
+    --item-collected-color: var(--color-green-700);
+    --item-collected-color-dark: var(--color-green-900);
+    --item-hidden-color: var(--color-red-600);
+    --item-hidden-color-dark: var(--color-red-900);
+    --rarity-common-color: var(--color-white);
+    --rarity-magic-color: var(--color-rarity-magic);
+    --rarity-legendary-color: var(--color-rarity-legendary);
+    --rarity-unique-color: var(--color-rarity-unique);
+    --rarity-mythic-color: var(--color-rarity-mythic);
+    --rarity-rare-color: var(--color-rarity-rare);
+
+    /* brand/service colours */
+    --brand-discord-color: var(--color-blue-brand-discord);
+    --brand-discord-hover-color: var(--color-blue-200);
+    --brand-battlenet-color: var(--color-blue-brand-battlenet);
+    --brand-battlenet-hover-color: var(--color-blue-100);
 }
 
 /* dark mode */

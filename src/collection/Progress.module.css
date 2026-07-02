@@ -34,7 +34,7 @@
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 1px 2px rgba(17, 17, 17, 0.35));
+    filter: var(--shadow-progress-icon);
 }
 
 .ProgressCardLabel {
@@ -55,11 +55,11 @@
     margin-bottom: 0;
     flex: 1 1 auto;
     min-width: 0;
-    color: #fff;
+    color: var(--app-text);
     font-family: "PT Serif", serif;
     font-size: 1.05rem;
     line-height: 1.1;
-    text-shadow: 1px 1px 2px #111;
+    text-shadow: 1px 1px 2px var(--color-black);
 }
 
 .ProgressCardStats {
@@ -69,19 +69,19 @@
     flex: 0 0 auto;
     margin-top: 0;
     margin-bottom: 0;
-    color: #cfd5dc;
+    color: var(--app-text-secondary);
     font-size: 0.95rem;
     line-height: 1;
 }
 
 .ProgressCardCurrent {
-    color: #f9a620;
+    color: var(--link-color-action);
     font-size: 1.15rem;
     font-weight: 700;
 }
 
 .ProgressCardDivider {
-    color: #8f98a3;
+    color: var(--app-text-disabled);
 }
 
 .ProgressCardComplete {
@@ -89,7 +89,7 @@
     align-items: center;
     justify-content: center;
     margin-left: 0.125rem;
-    color: #d8b35a;
+    color: var(--color-gold-400);
 }
 
 .ProgressCardComplete svg {
@@ -104,8 +104,8 @@
     height: 0.6rem;
     margin-bottom: 0;
     padding: 0.2rem;
-    border: 1px solid #303640;
-    background: #23272e;
+    border: 1px solid var(--app-surface-muted);
+    background: var(--app-surface-raised);
     border-radius: 999px;
 }
 
@@ -114,8 +114,8 @@
     width: 38%;
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(90deg, #7d5a1f, #f9a620);
-    box-shadow: 0 0 12px rgba(249, 166, 32, 0.25);
+    background: var(--progress-fill-background);
+    box-shadow: var(--progress-fill-shadow);
 }
 
 .ProgressCardDetail {
@@ -135,7 +135,7 @@
         column-gap: 0;
         row-gap: 0;
         padding: 2rem;
-        box-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
+        box-shadow: var(--shadow-card);
         grid-column: span 1;
     }
 
@@ -150,7 +150,7 @@
     .ProgressCardLabel {
         display: block;
         margin-bottom: 0.75rem;
-        color: #8f98a3;
+        color: var(--app-text-disabled);
         font-size: 0.75rem;
         font-weight: 700;
         letter-spacing: 0.16em;
@@ -179,7 +179,7 @@
         flex: 0 0 auto;
         margin-top: auto;
         margin-bottom: 1rem;
-        color: #d8dde3;
+        color: var(--progress-card-stats-text);
         font-size: 1rem;
     }
 
@@ -196,7 +196,7 @@
         align-items: center;
         gap: 0.125rem;
         margin: 0;
-        color: #b8bcc2;
+        color: var(--progress-card-detail-text);
         font-size: 0.95rem;
         line-height: 1.5;
         width: fit-content;

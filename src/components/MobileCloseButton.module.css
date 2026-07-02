@@ -20,9 +20,9 @@
 .Button svg {
     width: 2rem;
     height: 2rem;
-    fill: #ccc;
+    fill: var(--app-text-muted);
 }
 
 .Button:hover svg {
-    fill: #e6e6e6;
+    fill: var(--color-neutral-150);
 }

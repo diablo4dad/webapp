@@ -1,6 +1,6 @@
 .Block {
-    background-color: #1e2126;
-    color: #ccc;
+    background-color: var(--app-surface);
+    color: var(--app-text-muted);
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     box-sizing: border-box;
@@ -11,5 +11,5 @@
 }
 
 .Block svg {
-    fill: #1e2126;
+    fill: var(--app-surface);
 }

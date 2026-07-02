@@ -7,16 +7,16 @@
   justify-content: center;
   padding: 1rem;
   box-sizing: border-box;
-  background: rgba(8, 10, 13, 0.66);
+  background: var(--overlay-backdrop-strong);
   backdrop-filter: blur(0.2rem);
 }
 
 .Modal {
   width: min(28rem, 100%);
-  border: 1px solid #4b3030;
-  background-color: #23272e;
-  color: #d7dce3;
-  box-shadow: 0 18px 48px rgba(8, 10, 13, 0.55);
+  border: 1px solid var(--feedback-danger-border-muted);
+  background-color: var(--app-surface-raised);
+  color: var(--editor-text);
+  box-shadow: var(--shadow-modal);
 }
 
 .Header {
@@ -25,7 +25,7 @@
 
 .Title {
   margin: 0 0 0.5rem;
-  color: #f0ede7;
+  color: var(--editor-text-strong);
   font-family: "PT Serif", serif;
   font-size: 1.35rem;
   line-height: 1.2;
@@ -33,7 +33,7 @@
 
 .Description {
   margin: 0;
-  color: #aeb7c2;
+  color: var(--modal-description-text);
   font-size: 0.95rem;
   line-height: 1.4;
 }
@@ -41,9 +41,9 @@
 .Subject {
   margin: 1rem 1.25rem 0;
   padding: 0.875rem;
-  border: 1px solid #343b46;
-  background-color: #1a1e24;
-  color: #f0ede7;
+  border: 1px solid var(--editor-border);
+  background-color: var(--editor-panel-surface-muted);
+  color: var(--editor-text-strong);
   font-weight: 700;
   overflow-wrap: anywhere;
 }
@@ -60,20 +60,20 @@
   min-height: 2.75rem;
   min-width: 7rem;
   border-radius: 0.375rem;
-  border: 1px solid #4f5968;
-  color: #f0ede7;
+  border: 1px solid var(--editor-control-border);
+  color: var(--editor-text-strong);
   font-weight: 700;
   text-transform: uppercase;
   cursor: pointer;
 }
 
 .CancelButton {
-  background-color: #303640;
+  background-color: var(--app-surface-muted);
 }
 
 .DeleteButton {
-  border-color: #b16558;
-  background: linear-gradient(180deg, #8d433a 0%, #6d342e 100%);
+  border-color: var(--action-primary-border);
+  background: linear-gradient(180deg, var(--color-red-700) 0%, var(--color-red-800) 100%);
 }
 
 .CancelButton:disabled,

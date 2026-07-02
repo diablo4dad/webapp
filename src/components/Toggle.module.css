@@ -1,7 +1,7 @@
 /* credit: https://adrianroselli.com/2019/03/under-engineered-toggles.html */
 .toggle [disabled] + label,
 .toggle [disabled]:hover + label {
-    color: #999;
+    color: var(--app-text-disabled);
     cursor: default;
 }
 
@@ -26,12 +26,12 @@
 
 .toggle [type="checkbox"]:focus + label,
 .toggle [type="checkbox"]:hover + label {
-    color: orange;
+    color: var(--link-color-action);
 }
 
 .toggle [type="checkbox"]:focus + label::before,
 .toggle [type="checkbox"]:hover + label::before {
-    box-shadow: 0 0 0.5em #333;
+    box-shadow: 0 0 0.5em var(--color-black);
 }
 
 .toggle [type="checkbox"]:focus + label::after,
@@ -62,7 +62,7 @@
 .toggle [type="checkbox"] + label::after {
     left: 0;
     top: 0.25em;
-    background-color: #fff;
+    background-color: var(--app-text);
     background-position: center center;
     border-radius: 50%;
     width: 1.5em;
@@ -70,7 +70,7 @@
 }
 
 .toggle [type="checkbox"]:disabled + label::after {
-    background-color: #ccc;
+    background-color: var(--app-text-muted);
 }
 
 .toggle [type="checkbox"]:checked + label::after {
@@ -80,8 +80,8 @@
 }
 
 .toggle.red [type="checkbox"]:checked + label::after {
-    border-color: #A62639;
-    color: #A62639;
+    border-color: var(--feedback-danger-fill);
+    color: var(--feedback-danger-fill);
 }
 
 .toggle [type="checkbox"]:indeterminate + label::after {
@@ -89,7 +89,7 @@
 }
 
 .toggle [type="checkbox"]:indeterminate + label::before {
-    background-color: #ddd;
+    background-color: var(--color-neutral-200);
 }
 
 .toggle [type="checkbox"]:checked + label::before {
@@ -98,21 +98,21 @@
 }
 
 .toggle.red [type="checkbox"]:checked + label::before {
-    background-color: #A62639;
-    border-color: #A62639;
+    background-color: var(--feedback-danger-fill);
+    border-color: var(--feedback-danger-fill);
 }
 
 .toggle [type="checkbox"][disabled] + label::before {
     background-color: transparent;
-    border-color: #1e2126;
+    border-color: var(--app-surface);
 }
 
 .toggle [type="checkbox"][disabled] + label::after {
-    border-color: #1e2126;
+    border-color: var(--app-surface);
 }
 
 .toggle [disabled]:hover + label {
-    color: #999; /* case for CSS custom property if not supporting IE/Edge */
+    color: var(--app-text-disabled); /* case for CSS custom property if not supporting IE/Edge */
 }
 
 .toggle [type="checkbox"][disabled]:hover + label::before {
@@ -148,74 +148,6 @@
     padding-left: 0;
     padding-right: 4em;
 }
-
-/* Windows High Contrast Mode Support */
-@media screen and (-ms-high-contrast: active) {
-    .toggle [type="checkbox"]:focus + label::before,
-    .toggle [type="checkbox"]:hover + label::before {
-        outline: 1px dotted windowText;
-        outline-offset: 0.25em;
-    }
-
-    .toggle [type="checkbox"] + label::after {
-        background-color: windowText;
-    }
-
-    .toggle [type="checkbox"][disabled] + label::after {
-        background-color: transparent;
-    }
-}
-
-/* Reduced motion */
-@media screen and (prefers-reduced-motion: reduce) {
-    .toggle [type="checkbox"] + label::before,
-    .toggle [type="checkbox"] + label::after {
-        transition: none;
-    }
-}
-
-/* Dark mode */
-/*@media screen and (prefers-color-scheme: dark) {*/
-/*    form {*/
-/*        background-color: #101010;*/
-/*    }*/
-
-/*    .toggle {*/
-/*        color: #fff;*/
-/*    }*/
-
-/*    fieldset.toggle {*/
-/*        border: 0.1em solid rgba(255, 255, 255, 0.15);*/
-/*    }*/
-
-/*    .toggle [type="checkbox"]:focus + label,*/
-/*    .toggle [type="checkbox"]:hover + label {*/
-/*        color: #99f;*/
-/*    }*/
-
-/*    .toggle [type="checkbox"] + label::before {*/
-/*        border-color: #808080;*/
-/*        background: #808080;*/
-/*    }*/
-
-/*    .toggle [type="checkbox"] + label::after {*/
-/*        background-color: #101010;*/
-/*    }*/
-
-/*    .toggle [type="checkbox"]:not([disabled]):indeterminate + label::before {*/
-/*        background-color: #444;*/
-/*    }*/
-
-/*    .toggle [type="checkbox"]:focus + label::after,*/
-/*    .toggle [type="checkbox"]:hover + label::after {*/
-/*        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='50' fill='rgba(255,255,255,.25)'/%3E%3C/svg%3E");*/
-/*    }*/
-
-/*    .toggle [type="checkbox"][disabled] + label::before,*/
-/*    .toggle [type="checkbox"][disabled] + label::after {*/
-/*        border-color: #555;*/
-/*    }*/
-/*}*/
 
 /* RTL */
 /* https://twitter.com/dror3go/status/1102946375396982784 */
@@ -266,6 +198,31 @@
 *[dir="rtl"] .toggle.flip [type="checkbox"] + label {
     padding-right: 0;
     padding-left: 4em;
+}
+
+/* Windows High Contrast Mode Support */
+@media screen and (-ms-high-contrast: active) {
+    .toggle [type="checkbox"]:focus + label::before,
+    .toggle [type="checkbox"]:hover + label::before {
+        outline: 1px dotted windowText;
+        outline-offset: 0.25em;
+    }
+
+    .toggle [type="checkbox"] + label::after {
+        background-color: windowText;
+    }
+
+    .toggle [type="checkbox"][disabled] + label::after {
+        background-color: transparent;
+    }
+}
+
+/* Reduced motion */
+@media screen and (prefers-reduced-motion: reduce) {
+    .toggle [type="checkbox"] + label::before,
+    .toggle [type="checkbox"] + label::after {
+        transition: none;
+    }
 }
 
 /* Print styles */

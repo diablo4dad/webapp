@@ -1,9 +1,4 @@
 .Ledger {
-  --card-border-top: #4b5461;
-  --card-border-bottom: #1d2026;
-  --card-surface: #303640;
-  --card-surface-muted: #23272e;
-  --card-shadow: 3px 3px 3px rgba(17, 17, 17, 0.25);
   width: 100%;
 }
 
@@ -52,10 +47,10 @@
   width: 2rem;
   height: 2rem;
   margin-right: 1rem;
-  border: 1px solid #596472;
+  border: 1px solid var(--drag-handle-border);
   border-radius: 0.375rem;
-  background-color: rgba(22, 25, 31, 0.65);
-  color: #c6ced8;
+  background-color: var(--drag-handle-background);
+  color: var(--drag-handle-text);
   cursor: grab;
   display: inline-flex;
   align-items: center;
@@ -64,8 +59,8 @@
 }
 
 .CollectionDragHandle:hover {
-  border-color: #738296;
-  color: #e2e8ef;
+  border-color: var(--drag-handle-border-hover);
+  color: var(--drag-handle-text-hover);
 }
 
 .CollectionDragHandle:active {
@@ -79,11 +74,9 @@
 
 .CollectionDropPlaceholder {
   min-height: var(--collection-placeholder-height, 5rem);
-  border: 1px dashed #738296;
-  background: rgba(20, 23, 29, 0.72);
-  box-shadow:
-    inset 0 0 0 1px rgba(104, 114, 126, 0.16),
-    inset 0 0 1.25rem rgba(0, 0, 0, 0.24);
+  border: 1px dashed var(--drag-handle-border-hover);
+  background: var(--drop-placeholder-background);
+  box-shadow: var(--drop-placeholder-shadow);
 }
 
 .CollectionDragGhost {
@@ -97,7 +90,7 @@
   background-color: var(--card-surface);
   border-top: 1px solid var(--card-border-top);
   border-bottom: 1px solid var(--card-border-bottom);
-  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-drag);
   opacity: 0.94;
 }
 
@@ -111,10 +104,10 @@
 
 .CollectionReorderError {
   padding: 0.75rem 2rem;
-  background-color: rgba(166, 38, 57, 0.16);
-  border-top: 1px solid rgba(166, 38, 57, 0.35);
-  border-bottom: 1px solid rgba(166, 38, 57, 0.35);
-  color: #f1b4bd;
+  background-color: var(--feedback-danger-background);
+  border-top: 1px solid var(--feedback-danger-border);
+  border-bottom: 1px solid var(--feedback-danger-border);
+  color: var(--feedback-danger-text);
   font-size: 0.875rem;
 }
 
@@ -123,18 +116,18 @@
   margin: 0 0.5rem 0.25rem 0;
   font-size: 1.5rem;
   text-align: left;
-  color: #fff;
+  color: var(--app-text);
 }
 
 .LedgerHeadingPlaceholder {
   width: 15rem;
-  background-color: #ccc;
+  background-color: var(--app-text-muted);
   color: transparent;
 }
 
 .LedgerDescriptionPlaceholder {
   width: 25rem;
-  background-color: #ccc;
+  background-color: var(--app-text-muted);
   color: transparent;
 }
 
@@ -147,13 +140,13 @@
 
 .ItemNamePlaceholder {
   width: 4rem;
-  background-color: #ccc;
+  background-color: var(--app-text-muted);
   color: transparent !important;
   margin: 0 auto;
 }
 
 .LedgerDescription {
-  color: #ccc;
+  color: var(--app-text-muted);
   font-family: "Ubuntu", sans-serif;
   font-size: 0.875rem;
   font-weight: 300;
@@ -166,13 +159,13 @@
   font-family: "PT Serif", serif;
   font-style: normal;
   font-weight: 700;
-  text-shadow: 1px 1px 3px #111;
+  text-shadow: 1px 1px 3px var(--color-black);
 }
 
 .LedgerCounter {
   display: inline-block;
   font-size: 1rem;
-  color: orange;
+  color: var(--link-color-action);
   font-weight: 400;
   margin-left: 0.25rem;
 }
@@ -182,14 +175,14 @@
   font-size: 1rem;
   margin-left: 0.25rem;
   font-weight: 400;
-  color: #ccc;
+  color: var(--app-text-muted);
 }
 
 .LedgerActions {
   display: flex;
   gap: 0.5rem;
   font-size: 0.875rem;
-  color: #ccc;
+  color: var(--app-text-muted);
 }
 
 .LedgerSelectBtn {
@@ -201,7 +194,7 @@
 }
 
 .LedgerSelectBtn:hover {
-  color: orange;
+  color: var(--link-color-action);
 }
 
 .LedgerRow {
@@ -246,14 +239,11 @@
 }
 
 .LedgerSubCollection .LedgerButton {
-  background-color: #2a3038;
-  /*height: 4rem;*/
-  /*top: 11rem;*/
-  /*z-index: 3;*/
+  background-color: var(--ledger-subcollection-background);
 }
 
 .LedgerSubCollection .LedgerTitle {
-  color: #ccc;
+  color: var(--app-text-muted);
   font-size: 1.125rem;
 }
 
@@ -269,10 +259,10 @@
   width: 2rem;
   height: 2rem;
   margin-right: 0.75rem;
-  border: 1px solid #596472;
+  border: 1px solid var(--drag-handle-border);
   border-radius: 0.375rem;
-  background-color: rgba(22, 25, 31, 0.65);
-  color: #c6ced8;
+  background-color: var(--drag-handle-background);
+  color: var(--drag-handle-text);
   cursor: grab;
   display: inline-flex;
   align-items: center;
@@ -281,8 +271,8 @@
 }
 
 .ItemDragHandle:hover {
-  border-color: #738296;
-  color: #e2e8ef;
+  border-color: var(--drag-handle-border-hover);
+  color: var(--drag-handle-text-hover);
 }
 
 .ItemDragHandle:active {
@@ -304,7 +294,7 @@
   z-index: 1000;
   pointer-events: none;
   opacity: 0.92 !important;
-  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-drag);
   transform: scale(1.01);
 }
 
@@ -318,20 +308,18 @@
 
 .ItemDropPlaceholder {
   min-height: 7rem;
-  border: 1px dashed #738296;
-  background: rgba(20, 23, 29, 0.72) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(104, 114, 126, 0.16),
-    inset 0 0 1.25rem rgba(0, 0, 0, 0.24);
+  border: 1px dashed var(--drag-handle-border-hover);
+  background: var(--drop-placeholder-background) !important;
+  box-shadow: var(--drop-placeholder-shadow);
   cursor: default;
 }
 
 .ItemDropPlaceholderVisual {
   width: 4rem;
   height: 6rem;
-  border: 1px dashed rgba(115, 130, 150, 0.45);
+  border: 1px dashed var(--drop-placeholder-border-soft);
   border-radius: 0.375rem;
-  background-color: rgba(22, 25, 31, 0.55);
+  background-color: var(--drop-placeholder-visual-background);
   flex-shrink: 0;
 }
 
@@ -341,10 +329,10 @@
 
 .ItemReorderError {
   padding: 0.75rem 2rem;
-  background-color: rgba(166, 38, 57, 0.16);
-  border-top: 1px solid rgba(166, 38, 57, 0.35);
-  border-bottom: 1px solid rgba(166, 38, 57, 0.35);
-  color: #f1b4bd;
+  background-color: var(--feedback-danger-background);
+  border-top: 1px solid var(--feedback-danger-border);
+  border-bottom: 1px solid var(--feedback-danger-border);
+  color: var(--feedback-danger-text);
   font-size: 0.875rem;
 }
 
@@ -369,7 +357,7 @@
 }
 
 .ItemName {
-  color: orange;
+  color: var(--link-color-action);
   margin-bottom: 0.125rem;
   font-size: 1.25rem;
 }
@@ -379,7 +367,7 @@
   text-transform: uppercase;
   margin-bottom: 0.25rem;
   font-size: 0.75rem;
-  color: #ccc;
+  color: var(--app-text-muted);
 }
 
 .Claim {
@@ -403,12 +391,12 @@
 
 .ItemIcon svg {
   opacity: 0;
-  fill: #303640;
+  fill: var(--app-surface-muted);
 }
 
 .ItemHidden .ItemName {
   text-decoration: line-through;
-  color: #999 !important;
+  color: var(--app-text-disabled) !important;
 }
 
 .Item:hover .ItemImage {
@@ -424,24 +412,24 @@
 }
 
 .ItemUnique .ItemName {
-  color: #d6a577 !important;
+  color: var(--rarity-unique-color) !important;
 }
 
 .ItemMythic .ItemName {
-  color: #92679d !important;
+  color: var(--rarity-mythic-color) !important;
 }
 
 .ItemRare .ItemName {
-  color: #ff0 !important;
+  color: var(--rarity-rare-color) !important;
 }
 
 .ItemIconCollection svg {
-  fill: #3e885b;
+  fill: var(--feedback-success-fill);
   margin: calc(0.5rem + 1px);
 }
 
 .ItemIconHidden svg {
-  fill: #a62639;
+  fill: var(--feedback-danger-fill);
   margin: calc(0.5rem + 1px);
 }
 
@@ -461,7 +449,7 @@
 }
 
 .Item:nth-child(even) {
-  background-color: #23272e;
+  background-color: var(--app-surface-raised);
 }
 
 .ItemAdd {
@@ -470,28 +458,28 @@
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
-  border: 1px dashed #596472;
+  border: 1px dashed var(--drag-handle-border);
   background: linear-gradient(
     180deg,
-    rgba(39, 43, 51, 0.9) 0%,
-    rgba(31, 35, 42, 0.9) 100%
+    var(--add-placeholder-background-start) 0%,
+    var(--add-placeholder-background-end) 100%
   );
-  box-shadow: inset 0 0 0 1px rgba(104, 114, 126, 0.12);
-  color: #c6ced8;
+  box-shadow: inset 0 0 0 1px var(--add-placeholder-shadow-color);
+  color: var(--drag-handle-text);
 }
 
 .ItemAdd:hover {
   opacity: 1;
-  border-color: #738296;
-  color: #e2e8ef;
+  border-color: var(--drag-handle-border-hover);
+  color: var(--drag-handle-text-hover);
 }
 
 .ItemAddVisual {
   width: 4rem;
   height: 6rem;
-  border: 1px dashed rgba(115, 130, 150, 0.45);
+  border: 1px dashed var(--drop-placeholder-border-soft);
   border-radius: 0.375rem;
-  background-color: rgba(22, 25, 31, 0.55);
+  background-color: var(--drop-placeholder-visual-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -528,22 +516,22 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 1rem 2rem;
-  border: 1px dashed #596472;
+  border: 1px dashed var(--drag-handle-border);
   background: linear-gradient(
     180deg,
-    rgba(39, 43, 51, 0.9) 0%,
-    rgba(31, 35, 42, 0.9) 100%
+    var(--add-placeholder-background-start) 0%,
+    var(--add-placeholder-background-end) 100%
   );
-  box-shadow: inset 0 0 0 1px rgba(104, 114, 126, 0.12);
-  color: #c6ced8;
+  box-shadow: inset 0 0 0 1px var(--add-placeholder-shadow-color);
+  color: var(--drag-handle-text);
   cursor: pointer;
   font-weight: 700;
   text-transform: uppercase;
 }
 
 .CollectionAdd:hover {
-  border-color: #738296;
-  color: #e2e8ef;
+  border-color: var(--drag-handle-border-hover);
+  color: var(--drag-handle-text-hover);
 }
 
 .CollectionAddIcon {
@@ -564,8 +552,6 @@
   flex: 1;
   align-items: inherit;
   background-color: var(--card-surface-muted);
-  /*border-top: 1px solid var(--card-border-top);*/
-  /*border-bottom: 1px solid var(--card-border-bottom);*/
   padding: 0.5rem 0.5rem 0;
   opacity: 1;
 }
@@ -578,7 +564,7 @@
   width: 1.875rem;
   height: 1.875rem;
   margin-right: 0;
-  background-color: rgba(22, 25, 31, 0.82);
+  background-color: var(--drag-handle-background-strong);
 }
 
 .LedgerCards .ItemDragGhost {
@@ -629,7 +615,7 @@
 
 .LedgerCards .ItemAddText {
   font-size: 0.875rem;
-  color: #cfd5dc;
+  color: var(--app-text-secondary);
 }
 
 .LedgerCards .ItemImageWrapper,
@@ -645,7 +631,7 @@
 }
 
 .LedgerCards .ItemName {
-  color: #aaa;
+  color: var(--color-neutral-400);
   font-size: 0.875rem;
 }
 
@@ -699,11 +685,11 @@
 }
 
 .LedgerCards .ItemIconCollection svg {
-  fill: #20472f;
+  fill: var(--item-collected-color-dark);
 }
 
 .LedgerCards .ItemIconHidden svg {
-  fill: #661723;
+  fill: var(--item-hidden-color-dark);
 }
 
 .LedgerCards .ItemCollected:before,
@@ -712,14 +698,14 @@
   position: absolute;
   top: 0;
   right: 0;
-  border-top: 3rem solid #3e885b;
+  border-top: 3rem solid var(--feedback-success-fill);
   border-left: 3rem solid transparent;
   border-top-right-radius: 0.5rem;
   width: 0;
 }
 
 .LedgerCards .ItemHidden:before {
-  border-top-color: #a62639;
+  border-top-color: var(--feedback-danger-fill);
 }
 
 .LedgerCards .ItemPremium .ItemIconPremium svg {
@@ -727,17 +713,7 @@
 }
 
 .LedgerCards .ItemCollected .ItemName {
-  color: #fff;
-}
-
-@media screen and (min-width: 1200px) {
-  .Item {
-    padding: 0.5rem 2rem;
-  }
-
-  .ItemIcons svg {
-    width: 3rem;
-  }
+  color: var(--app-text);
 }
 
 .ItemHidden .ItemImage,
@@ -759,7 +735,7 @@
 }
 
 .LedgerCardsInverse .ItemName {
-  color: #fff;
+  color: var(--app-text);
 }
 
 .LedgerCardsInverse .ItemInfo {
@@ -772,7 +748,7 @@
   border-top: none;
   border-bottom: none;
   box-shadow: none;
-  color: #ccc;
+  color: var(--app-text-muted);
 }
 
 .LedgerCardsInverse .ItemCollected .ItemInfo {
@@ -782,35 +758,6 @@
 .LedgerCards .ItemIconHidden svg,
 .LedgerCards .ItemIconCollection svg {
   margin: 0;
-}
-
-@media screen and (min-width: 1200px) {
-  .LedgerButton {
-    top: 0;
-    padding: 2rem 2rem;
-    height: 6rem;
-  }
-
-  .LedgerRow {
-    /*box-shadow: 3px 3px 7px rgba(17, 17, 17, 0.125) inset;*/
-  }
-
-  .LedgerCards .LedgerRow {
-    padding: 2rem;
-  }
-
-  .LedgerNoMoreItems {
-    padding: 1rem 2rem;
-  }
-
-  .LedgerCards .LedgerRow {
-    --grid-item--min-width: 120px;
-  }
-
-  .ItemIconHidden svg,
-  .ItemIconCollection svg {
-    margin: 0;
-  }
 }
 
 .ItemGlow {
@@ -826,24 +773,17 @@
     box-shadow: var(--card-shadow);
   }
   to {
-    box-shadow: 0 0 0.5rem 0.25rem rgba(101, 113, 128, 0.75);
+    box-shadow: var(--shadow-glow);
   }
 }
 
 @keyframes glow-inverse {
   from {
-    box-shadow: 0 0 0.5rem -0.25rem rgb(101, 113, 128, 0.25);
+    box-shadow: var(--shadow-glow-muted-start);
   }
   to {
-    box-shadow: 0 0 0.5rem 0.25rem rgb(101, 113, 128, 0.25);
+    box-shadow: var(--shadow-glow-muted);
   }
-}
-
-/* Skeleton */
-.Skeleton {
-}
-
-.Skeleton.Ledger {
 }
 
 .Skeleton .LedgerHeader {
@@ -851,7 +791,7 @@
 }
 
 .Skeleton .LedgerTitle {
-  background-color: #cccccc;
+  background-color: var(--skeleton-background);
 }
 
 .Skeleton .LedgerTitle span {
@@ -859,7 +799,7 @@
 }
 
 .Skeleton .LedgerDescription {
-  background-color: #cccccc;
+  background-color: var(--skeleton-background);
 }
 
 .Skeleton .LedgerDescription span {
@@ -867,7 +807,7 @@
 }
 
 .Skeleton .LedgerActions span {
-  background-color: #cccccc;
+  background-color: var(--skeleton-background);
   width: 3rem;
   height: 3rem;
   padding: 0.5rem;
@@ -885,5 +825,36 @@
   }
   100% {
     opacity: 0.5;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .LedgerButton {
+    top: 0;
+    height: 6rem;
+    padding: 2rem 2rem;
+  }
+
+  .LedgerCards .LedgerRow {
+    --grid-item--min-width: 120px;
+
+    padding: 2rem;
+  }
+
+  .LedgerNoMoreItems {
+    padding: 1rem 2rem;
+  }
+
+  .Item {
+    padding: 0.5rem 2rem;
+  }
+
+  .ItemIcons svg {
+    width: 3rem;
+  }
+
+  .ItemIconHidden svg,
+  .ItemIconCollection svg {
+    margin: 0;
   }
 }

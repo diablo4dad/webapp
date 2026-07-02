@@ -7,17 +7,17 @@
     padding: 0.125rem 0;
     border: 0;
     background: transparent;
-    color: #c2c6cb;
+    color: var(--color-neutral-350);
     cursor: pointer;
     transition: color 160ms ease;
 }
 
 .Button:hover {
-    color: #f4f4f4;
+    color: var(--app-text-hover);
 }
 
 .ButtonActive {
-    color: #f9a620;
+    color: var(--link-color-action);
 }
 
 .Label {
@@ -39,9 +39,9 @@
     justify-content: center;
     width: 1.125rem;
     height: 1.125rem;
-    border: 1px solid #6b7480;
+    border: 1px solid var(--color-neutral-600);
     border-radius: 999px;
-    background-color: #2d3239;
+    background-color: var(--control-dark-border);
     transition: border-color 160ms ease;
 }
 
@@ -49,7 +49,7 @@
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 999px;
-    background-color: #f9a620;
+    background-color: var(--link-color-action);
     transform: scale(0);
     transition: transform 160ms ease;
 }
@@ -61,7 +61,7 @@
     width: 2rem;
     height: 2rem;
     border-radius: 999px;
-    background-color: #2d3239;
+    background-color: var(--control-dark-border);
 }
 
 .Icon img {
@@ -73,7 +73,7 @@
 
 .Button:hover .RadioOuter,
 .ButtonActive .RadioOuter {
-    border-color: #8f98a3;
+    border-color: var(--app-text-disabled);
 }
 
 .ButtonActive .RadioInner {
@@ -82,5 +82,5 @@
 
 .Button:hover .Icon,
 .ButtonActive .Icon {
-    background-color: #343944;
+    background-color: var(--color-neutral-820);
 }
