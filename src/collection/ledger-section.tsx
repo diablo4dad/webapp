@@ -2,7 +2,6 @@ import { AccordionItem } from "@szhsin/react-accordion";
 import classNames from "classnames";
 import { useMemo } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
-import { countAllItemsInCollection } from "../data/aggregate";
 import { useData } from "../data/context";
 import { isCollectionEmpty } from "../data/predicates";
 import { selectCollectionById } from "../data/reducers";
@@ -11,10 +10,6 @@ import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isLedgerInverse, isLedgerView } from "../settings/predicate";
 import { LedgerView } from "../settings/type";
-import {
-  countItemsInCollectionHidden,
-  countItemsInCollectionOwned,
-} from "./aggregate";
 import { AddCard } from "./add-card";
 import { useCollection } from "./context";
 import {
@@ -26,6 +21,7 @@ import { useItemReorder } from "./item-reorder";
 import { getItemView } from "./item-view";
 import type { LedgerProps, LedgerSectionProps } from "./ledger-types";
 import { getSectionRules } from "./section-rules";
+import { getSectionState } from "./section-state";
 import { SectionHeader } from "./section-header";
 import { useSectionToggles } from "./section-toggles";
 import styles from "./Ledger.module.css";
@@ -69,20 +65,18 @@ const LedgerSection = ({
     onToggleCollection,
     onToggleItem,
   });
-
-  const collected = countItemsInCollectionOwned(log, collection);
-  const total =
-    countAllItemsInCollection(collection) -
-    countItemsInCollectionHidden(log, collection);
-  const isComplete = collected === total;
-  const ledgerIsOpen = openCollections.includes(collection.id);
-
-  const headingLabel = collection.name;
-  const counterLabel = `[${collected}/${total}]`;
-  const descriptionLabel =
-    parentCollection && !collection.description
-      ? parentCollection.name
-      : collection.description;
+  const {
+    counterLabel,
+    descriptionLabel,
+    headingLabel,
+    isComplete,
+    isOpen: ledgerIsOpen,
+  } = getSectionState({
+    collection,
+    log,
+    openCollections,
+    parentCollection,
+  });
 
   const className = classNames({
     [styles.Ledger]: true,
