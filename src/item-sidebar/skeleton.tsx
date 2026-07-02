@@ -1,6 +1,6 @@
-import ItemSidebar from "./ItemSidebar";
 import { DEFAULT_COLLECTION_ITEM } from "../data";
-import styles from "./ItemSidebar.module.css";
+import styles from "./item-sidebar.module.css";
+import { ItemSidebar } from "./view";
 
 function ItemSidebarSkeleton() {
   return (
@@ -11,4 +11,4 @@ function ItemSidebarSkeleton() {
   );
 }
 
-export default ItemSidebarSkeleton;
+export { ItemSidebarSkeleton };

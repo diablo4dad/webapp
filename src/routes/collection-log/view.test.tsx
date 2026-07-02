@@ -17,14 +17,11 @@ vi.mock("../../collection/EmptyCollection", () => ({
   default: () => <div>empty collection</div>,
 }));
 
-vi.mock("../../collection/ItemSidebar", () => ({
-  default: ({ collectionItem }: { collectionItem: CollectionItem }) => (
+vi.mock("../../item-sidebar", () => ({
+  ItemSidebar: ({ collectionItem }: { collectionItem: CollectionItem }) => (
     <div>item sidebar {collectionItem.id}</div>
   ),
-}));
-
-vi.mock("../../collection/ItemSidebarSkeleton", () => ({
-  default: () => <div>item sidebar loading</div>,
+  ItemSidebarSkeleton: () => <div>item sidebar loading</div>,
 }));
 
 vi.mock("../../collection/Ledger", () => ({
@@ -37,16 +34,16 @@ vi.mock("../../collection/LedgerSkeleton", () => ({
   default: () => <div>ledger loading</div>,
 }));
 
-vi.mock("../../collection/Progress", () => ({
-  default: () => <div>progress</div>,
+vi.mock("../../progress", () => ({
+  Progress: () => <div>progress</div>,
 }));
 
-vi.mock("../../collection/Season", () => ({
-  default: () => <div>season</div>,
+vi.mock("../../season", () => ({
+  Season: () => <div>season</div>,
 }));
 
-vi.mock("../../collection/Welcome", () => ({
-  default: () => <div>welcome</div>,
+vi.mock("../../welcome", () => ({
+  Welcome: () => <div>welcome</div>,
 }));
 
 vi.mock("../../settings/ConfigSidebar", () => ({

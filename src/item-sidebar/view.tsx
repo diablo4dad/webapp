@@ -7,8 +7,8 @@ import {
   CollectionActionType,
   useCollection,
   useCollectionDispatch,
-} from "./context";
-import { isItemCollected, isItemHidden } from "./predicate";
+} from "../collection/context";
+import { isItemCollected, isItemHidden } from "../collection/predicate";
 import { enumKeys } from "../common/enums";
 import { hashCode } from "../common/hash";
 import Toggle from "../components/Toggle";
@@ -59,7 +59,6 @@ import kehjistan from "../image/region/kehjistan.webp";
 import hawezar from "../image/region/hawezar.webp";
 import scosglen from "../image/region/scosglen.webp";
 import nahantu from "../image/region/nahantu.webp";
-import styles from "./ItemSidebar.module.css";
 import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isEnabled } from "../settings/predicate";
@@ -67,6 +66,7 @@ import { Option } from "../settings/type";
 import { useEditor } from "../editor/context";
 import { useData } from "../data/context";
 import { MasterGroup } from "../common";
+import styles from "./item-sidebar.module.css";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
   return dci.items.some((di) => di.usableByClass?.[clazz] === 1);
@@ -437,4 +437,4 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
   );
 }
 
-export default ItemSidebar;
+export { ItemSidebar };

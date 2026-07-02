@@ -1,6 +1,6 @@
 import { CSSProperties } from "react";
 import season13 from "../image/season13@1x.webp";
-import styles from "./Season.module.css";
+import styles from "./season.module.css";
 
 function Season() {
   return (
@@ -19,4 +19,4 @@ function Season() {
   );
 }
 
-export default Season;
+export { Season };

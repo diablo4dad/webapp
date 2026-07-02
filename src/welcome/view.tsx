@@ -2,7 +2,7 @@ import { CSSProperties } from "react";
 import { Discord, GitHub } from "../components/Icons";
 import { DISCORD_INVITE_LINK } from "../config";
 import wardrobe from "../image/wardrobe@1x.png";
-import styles from "./Welcome.module.css";
+import styles from "./welcome.module.css";
 
 function Welcome() {
   return (
@@ -59,4 +59,4 @@ function Welcome() {
   );
 }
 
-export default Welcome;
+export { Welcome };

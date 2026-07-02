@@ -5,9 +5,10 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 
 # Architecture
 
-- Preserve the app shape: `src/app` composes providers and routing, `src/routes` owns route screens, `src/collection` owns collection UI, `src/data` owns catalog types and transforms, `src/store` owns persistence, `src/auth` owns authentication, and `functions` owns Firebase Cloud Functions.
+- Preserve the app shape: `src/app` composes providers and routing, `src/routes` owns route screens, `src/collection` owns core collection state and ledger UI, `src/data` owns catalog types and transforms, `src/store` owns persistence, `src/auth` owns authentication, and `functions` owns Firebase Cloud Functions.
 - Prefer module/feature-based organization under `src`; most features should be top-level modules with feature-specific UI, state, and helpers kept near that feature. Use generalized modules such as `src/components`, `src/common` and `src/config` only for application-wide shared code.
 - Keep module internals shallow. When any feature or workflow needs several support files, use a lowercase hyphenated subdirectory named for that feature/workflow and place its helpers, hooks, views, skeletons, and tests there; avoid deeper hierarchies unless ownership would otherwise be unclear.
+- Keep self-contained collection-adjacent surfaces such as `src/item-sidebar`, `src/progress`, `src/season`, and `src/welcome` as shallow top-level feature modules instead of nesting them under `src/collection`.
 - Treat `src/routes` as route orchestration. Routes may use self-contained route submodules more often than other areas because loaders, URL helpers, skeletons, route containers, and views commonly need to be split while remaining route-local.
 - Keep `src/routes/root/route.tsx` as the root route controller for auth, data, editor, and mobile shell state; extract route-local view or layout pieces only when they remove meaningful render or layout complexity.
 - Prefer feature-based code splitting for routes and heavy feature surfaces when it reduces initial load size without scattering ownership.

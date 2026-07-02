@@ -1,11 +1,10 @@
-import EmptyCollection from "../../collection/EmptyCollection";
-import ItemSidebar from "../../collection/ItemSidebar";
-import ItemSidebarSkeleton from "../../collection/ItemSidebarSkeleton";
 import Ledger from "../../collection/Ledger";
 import LedgerSkeleton from "../../collection/LedgerSkeleton";
-import Progress from "../../collection/Progress";
-import Season from "../../collection/Season";
-import Welcome from "../../collection/Welcome";
+import EmptyCollection from "../../collection/EmptyCollection";
+import { ItemSidebar, ItemSidebarSkeleton } from "../../item-sidebar";
+import { Progress } from "../../progress";
+import { Season } from "../../season";
+import { Welcome } from "../../welcome";
 import type { Collection, CollectionItem } from "../../data";
 import type { SidebarVisibility } from "../../common";
 import ConfigSidebar from "../../settings/ConfigSidebar";
