@@ -3,7 +3,6 @@ import classNames from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { MasterGroup } from "../common";
-import { Plus } from "../components/Icons";
 import { getDefaultItem, type Collection, type CollectionItem } from "../data";
 import { countAllItemsInCollection } from "../data/aggregate";
 import { useData } from "../data/context";
@@ -25,6 +24,7 @@ import {
   countItemsInCollectionHidden,
   countItemsInCollectionOwned,
 } from "./aggregate";
+import { AddCard } from "./add-card";
 import {
   CollectionActionType,
   useCollection,
@@ -610,36 +610,16 @@ const LedgerSection = ({
               <div className={styles.ItemReorderError}>{reorderError}</div>
             )}
             {shouldRenderAddItemCard && (
-              <button
-                type="button"
-                className={classNames(styles.Item, styles.ItemAdd)}
+              <AddCard
+                label="Add Item"
                 onClick={() => openCollectionItemEditor(collection)}
-              >
-                <div className={styles.ItemAddVisual}>
-                  <span className={styles.ItemAddIcon}>
-                    <Plus />
-                  </span>
-                </div>
-                <div className={styles.ItemAddInfo}>
-                  <div className={styles.ItemAddText}>Add Item</div>
-                </div>
-              </button>
+              />
             )}
             {shouldRenderAddSubcollectionCard && (
-              <button
-                type="button"
-                className={classNames(styles.Item, styles.ItemAdd)}
+              <AddCard
+                label="Add Subcollection"
                 onClick={() => openCollectionCreator(collection, group)}
-              >
-                <div className={styles.ItemAddVisual}>
-                  <span className={styles.ItemAddIcon}>
-                    <Plus />
-                  </span>
-                </div>
-                <div className={styles.ItemAddInfo}>
-                  <div className={styles.ItemAddText}>Add Subcollection</div>
-                </div>
-              </button>
+              />
             )}
             {renderSubcollections({
               collections: collection.subcollections,
