@@ -5,18 +5,11 @@ import { useAuth } from "../../auth/context";
 import { useData, type DataContextType } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor/context";
-import {
-  Content,
-  closeContent,
-  getInitialContentState,
-  getMobileContentVisibility,
-  toggleContent,
-  toggleSidebarVisibility,
-} from "./state";
+import { toggleSidebarVisibility } from "./state";
 import { View } from "./view";
 
-type ContentControls = {
-  content: Content;
+type MobileConfigControls = {
+  isMobileConfigOpen: boolean;
   onCloseMobileContent: () => void;
   onToggleMobileConfig: () => void;
 };
@@ -42,14 +35,10 @@ function RootRoute(): ReactElement {
   }, []);
 
   const {
-    content,
+    isMobileConfigOpen,
     onCloseMobileContent,
     onToggleMobileConfig,
-  } = useContentControls();
-  const {
-    isMobileConfigOpen,
-    isMobileSearchOpen,
-  } = getMobileContentVisibility(content);
+  } = useMobileConfigControls();
   const {
     onToggleConfig,
     onToggleItemSidebar,
@@ -64,7 +53,7 @@ function RootRoute(): ReactElement {
       canEditCatalog={canEditCatalog}
       isEditMode={isEditMode}
       isMobileConfigOpen={isMobileConfigOpen}
-      isMobileSearchOpen={isMobileSearchOpen}
+      isMobileSearchOpen={false}
       onClearSearch={onClearSearch}
       onCloseMobileContent={onCloseMobileContent}
       onSearchChange={setSearchTerm}
@@ -82,27 +71,21 @@ function RootRoute(): ReactElement {
   );
 }
 
-function useContentControls(): ContentControls {
-  const [contentState, setContentState] = useState(getInitialContentState);
+function useMobileConfigControls(): MobileConfigControls {
+  const [isMobileConfigOpen, setIsMobileConfigOpen] = useState(false);
 
   function onCloseMobileContent() {
-    setContentState((currentContentState) =>
-      closeContent(currentContentState.history),
-    );
+    setIsMobileConfigOpen(false);
   }
 
   function onToggleMobileConfig() {
-    setContentState((currentContentState) =>
-      toggleContent(
-        currentContentState.content,
-        currentContentState.history,
-        Content.CONFIG,
-      ),
+    setIsMobileConfigOpen((currentIsMobileConfigOpen) =>
+      !currentIsMobileConfigOpen,
     );
   }
 
   return {
-    content: contentState.content,
+    isMobileConfigOpen,
     onCloseMobileContent,
     onToggleMobileConfig,
   };
