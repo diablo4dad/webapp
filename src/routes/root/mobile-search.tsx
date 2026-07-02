@@ -11,6 +11,21 @@ type Props = {
   searchTerm: string;
 };
 
+type HeaderProps = {
+  onClose: () => void;
+};
+
+type BodyProps = {
+  onClearSearch: () => void;
+  onSearchChange: (value: string) => void;
+  searchTerm: string;
+};
+
+type ActionsProps = {
+  onClearSearch: () => void;
+  onClose: () => void;
+};
+
 function MobileSearch({
   onClearSearch,
   onClose,
@@ -21,48 +36,80 @@ function MobileSearch({
     <MobileSearchLayout
       onClose={onClose}
       header={
-        <>
-          <div className={styles.MobileSearchTitle}>
-            Transmog Search
-          </div>
-          <button
-            className={styles.MobileSearchClose}
-            onClick={onClose}
-            aria-label="Close search"
-          >
-            <Close />
-          </button>
-        </>
+        <Header onClose={onClose} />
       }
       body={
-        <div className={styles.MobileSearchField}>
-          <SearchField
-            value={searchTerm}
-            onChange={onSearchChange}
-            onClear={onClearSearch}
-            autoFocus={true}
-          />
-        </div>
+        <Body
+          onClearSearch={onClearSearch}
+          onSearchChange={onSearchChange}
+          searchTerm={searchTerm}
+        />
       }
       actions={
-        <>
-          <Button
-            className={styles.MobileSearchActionPrimary}
-            colour={BtnColours.Dark}
-            onClick={onClose}
-          >
-            Search
-          </Button>
-          <Button
-            className={styles.MobileSearchAction}
-            colour={BtnColours.Dark}
-            onClick={onClearSearch}
-          >
-            Clear
-          </Button>
-        </>
+        <Actions
+          onClearSearch={onClearSearch}
+          onClose={onClose}
+        />
       }
     />
+  );
+}
+
+function Header({ onClose }: HeaderProps) {
+  return (
+    <>
+      <div className={styles.MobileSearchTitle}>
+        Transmog Search
+      </div>
+      <button
+        className={styles.MobileSearchClose}
+        onClick={onClose}
+        aria-label="Close search"
+      >
+        <Close />
+      </button>
+    </>
+  );
+}
+
+function Body({
+  onClearSearch,
+  onSearchChange,
+  searchTerm,
+}: BodyProps) {
+  return (
+    <div className={styles.MobileSearchField}>
+      <SearchField
+        value={searchTerm}
+        onChange={onSearchChange}
+        onClear={onClearSearch}
+        autoFocus={true}
+      />
+    </div>
+  );
+}
+
+function Actions({
+  onClearSearch,
+  onClose,
+}: ActionsProps) {
+  return (
+    <>
+      <Button
+        className={styles.MobileSearchActionPrimary}
+        colour={BtnColours.Dark}
+        onClick={onClose}
+      >
+        Search
+      </Button>
+      <Button
+        className={styles.MobileSearchAction}
+        colour={BtnColours.Dark}
+        onClick={onClearSearch}
+      >
+        Clear
+      </Button>
+    </>
   );
 }
 
