@@ -2,17 +2,17 @@ import Account, { Direction } from "../../auth/Account";
 import Authenticate, { Orientation } from "../../auth/Authenticate";
 import type { DadUser } from "../../auth/type";
 
-type RootAuthActionsProps = {
+type Props = {
   onSignIn: () => void;
   onSignOut: () => void;
   user?: DadUser;
 };
 
-function RootAuthActions({
+function AuthActions({
   onSignIn,
   onSignOut,
   user,
-}: RootAuthActionsProps) {
+}: Props) {
   if (user === undefined) {
     return <Authenticate orientation={Orientation.ROW} onAuth={onSignIn} />;
   }
@@ -26,4 +26,4 @@ function RootAuthActions({
   );
 }
 
-export { RootAuthActions };
+export { AuthActions };

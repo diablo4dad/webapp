@@ -1,18 +1,18 @@
 import type { ReactNode } from "react";
 import type { DadUser } from "../../auth/type";
 import type { SidebarVisibility } from "../../common";
-import { RootFooter } from "./footer";
-import { RootHeader } from "./header";
-import { RootLayout } from "./layout";
-import { RootMain } from "./main";
+import { Footer } from "./footer";
+import { Header } from "./header";
+import { Layout } from "./layout";
+import { Main } from "./main";
 import {
-  RootContent,
-  getRootMobileContentVisibility,
+  Content,
+  getMobileContentVisibility,
 } from "./state";
 
 type Props = {
   canEditCatalog: boolean;
-  content: RootContent;
+  content: Content;
   isEditMode: boolean;
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
@@ -29,7 +29,7 @@ type Props = {
   user?: DadUser;
 };
 
-function RootView({
+function View({
   canEditCatalog,
   content,
   isEditMode,
@@ -50,12 +50,12 @@ function RootView({
   const {
     isMobileConfigOpen,
     isMobileSearchOpen,
-  } = getRootMobileContentVisibility(content);
+  } = getMobileContentVisibility(content);
 
   return (
-    <RootLayout
+    <Layout
       header={
-        <RootHeader
+        <Header
           canEditCatalog={canEditCatalog}
           isMobileConfigOpen={isMobileConfigOpen}
           isEditMode={isEditMode}
@@ -73,7 +73,7 @@ function RootView({
         />
       }
       main={
-        <RootMain
+        <Main
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           isMobileConfigOpen={isMobileConfigOpen}
@@ -89,9 +89,9 @@ function RootView({
           user={user}
         />
       }
-      footer={<RootFooter />}
+      footer={<Footer />}
     />
   );
 }
 
-export { RootView };
+export { View };

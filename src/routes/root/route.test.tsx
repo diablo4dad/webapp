@@ -5,7 +5,7 @@ import type { SidebarVisibility } from "../../common";
 import type { DadUser } from "../../auth/type";
 import RootRoute from "./route";
 
-type RootOptions = {
+type Options = {
   canEditCatalog?: boolean;
   isEditMode?: boolean;
   searchTerm?: string;
@@ -82,7 +82,7 @@ const signedInUser: DadUser = {
   uid: "dad-user",
 };
 
-function renderRoot({
+function renderRoute({
   canEditCatalog = false,
   isEditMode = false,
   searchTerm = "",
@@ -91,7 +91,7 @@ function renderRoot({
     showItem: true,
   },
   user,
-}: RootOptions = {}) {
+}: Options = {}) {
   mocks.useData.mockReturnValue({
     searchTerm,
     setSearchTerm: mocks.setSearchTerm,
@@ -123,7 +123,7 @@ beforeEach(() => {
 
 describe("shell content", () => {
   test("renders route, editors, and footer slots", () => {
-    renderRoot();
+    renderRoute();
 
     expect(screen.getByText("route outlet")).toBeInTheDocument();
     expect(screen.getByText("collection editor")).toBeInTheDocument();
@@ -133,7 +133,7 @@ describe("shell content", () => {
   });
 
   test("passes search changes to data context", () => {
-    renderRoot();
+    renderRoute();
 
     fireEvent.change(screen.getByPlaceholderText("Search transmogs"), {
       target: {
@@ -148,7 +148,7 @@ describe("shell content", () => {
 describe("header actions", () => {
   test("toggles sidebars", async () => {
     const user = userEvent.setup();
-    const root = renderRoot({
+    const route = renderRoute({
       sidebarVisibility: {
         showConfig: true,
         showItem: true,
@@ -164,21 +164,21 @@ describe("header actions", () => {
     await user.click(itemSidebarButton);
 
     expect(mocks.setSidebarVisibility).toHaveBeenCalledWith({
-      ...root.sidebarVisibility,
+      ...route.sidebarVisibility,
       showItem: false,
     });
 
     await user.click(settingsSidebarButton);
 
     expect(mocks.setSidebarVisibility).toHaveBeenCalledWith({
-      ...root.sidebarVisibility,
+      ...route.sidebarVisibility,
       showConfig: false,
     });
   });
 
   test("shows editor controls only for editors", async () => {
     const user = userEvent.setup();
-    const { rerender } = renderRoot();
+    const { rerender } = renderRoute();
 
     expect(
       screen.queryByRole("button", { name: "Enable editor mode" }),
@@ -201,7 +201,7 @@ describe("header actions", () => {
 describe("auth actions", () => {
   test("passes sign-in action to anonymous controls", async () => {
     const user = userEvent.setup();
-    renderRoot();
+    renderRoute();
 
     await user.click(screen.getByRole("button", { name: "sign in" }));
 
@@ -210,7 +210,7 @@ describe("auth actions", () => {
 
   test("passes sign-out action to signed-in controls", async () => {
     const user = userEvent.setup();
-    renderRoot({
+    renderRoute({
       user: signedInUser,
     });
 
@@ -225,7 +225,7 @@ describe("auth actions", () => {
 describe("mobile settings", () => {
   test("opens settings drawer from the mobile menu button", async () => {
     const user = userEvent.setup();
-    renderRoot({
+    renderRoute({
       canEditCatalog: true,
     });
     const mobileMenuButton = screen.getByRole("button", {
@@ -248,7 +248,7 @@ describe("mobile settings", () => {
 
   test("returns to the ledger when the settings drawer closes", async () => {
     const user = userEvent.setup();
-    renderRoot();
+    renderRoute();
     const mobileMenuButton = screen.getByRole("button", {
       name: "Settings menu",
     });
@@ -262,7 +262,7 @@ describe("mobile settings", () => {
 
   test("keeps settings drawer open when panel content is clicked", async () => {
     const user = userEvent.setup();
-    renderRoot();
+    renderRoute();
     const mobileMenuButton = screen.getByRole("button", {
       name: "Settings menu",
     });

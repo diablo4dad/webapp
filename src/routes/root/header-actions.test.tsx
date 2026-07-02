@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { SidebarVisibility } from "../../common";
-import { RootHeaderActions } from "./header-actions";
+import { HeaderActions } from "./header-actions";
 
-type Props = Parameters<typeof RootHeaderActions>[0];
+type Props = Parameters<typeof HeaderActions>[0];
 
 type Options = Partial<Props>;
 
@@ -27,7 +27,7 @@ function renderActions(options: Options = {}) {
     sidebarVisibility: getDefaultSidebarVisibility(),
     ...options,
   };
-  const renderResult = render(<RootHeaderActions {...props} />);
+  const renderResult = render(<HeaderActions {...props} />);
 
   return {
     ...renderResult,
@@ -72,7 +72,7 @@ describe("editor action", () => {
       screen.queryByRole("button", { name: "Enable editor mode" }),
     ).not.toBeInTheDocument();
 
-    rerender(<RootHeaderActions {...props} canEditCatalog={true} />);
+    rerender(<HeaderActions {...props} canEditCatalog={true} />);
 
     expect(screen.getByRole("button", { name: "Enable editor mode" }))
       .toHaveAttribute("aria-pressed", "false");

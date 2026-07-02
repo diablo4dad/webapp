@@ -7,9 +7,9 @@ type Props = {
   value: string;
 };
 
-const ROOT_SEARCH_PLACEHOLDER = "Search transmogs";
+const SEARCH_PLACEHOLDER = "Search transmogs";
 
-function RootSearchField({
+function SearchField({
   autoFocus = false,
   onChange,
   onClear,
@@ -21,9 +21,9 @@ function RootSearchField({
       value={value}
       onChange={onChange}
       onClear={onClear}
-      placeholder={ROOT_SEARCH_PLACEHOLDER}
+      placeholder={SEARCH_PLACEHOLDER}
     />
   );
 }
 
-export { ROOT_SEARCH_PLACEHOLDER, RootSearchField };
+export { SEARCH_PLACEHOLDER, SearchField };

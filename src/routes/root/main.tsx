@@ -21,7 +21,7 @@ type Props = {
   user?: DadUser;
 };
 
-function RootMain({
+function Main({
   canEditCatalog,
   isEditMode,
   isMobileConfigOpen,
@@ -64,4 +64,4 @@ function RootMain({
   );
 }
 
-export { RootMain };
+export { Main };

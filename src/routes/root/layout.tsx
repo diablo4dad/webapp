@@ -7,7 +7,7 @@ type Props = {
   main: ReactNode;
 };
 
-function RootLayout({ footer, header, main }: Props) {
+function Layout({ footer, header, main }: Props) {
   return (
     <div className={styles.Layout}>
       <div className={styles.LayoutHeader}>{header}</div>
@@ -19,4 +19,4 @@ function RootLayout({ footer, header, main }: Props) {
   );
 }
 
-export { RootLayout };
+export { Layout };

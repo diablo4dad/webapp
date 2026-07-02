@@ -2,7 +2,7 @@ import { Discord } from "../../components/Icons";
 import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "../../config";
 import styles from "./footer.module.css";
 
-function RootFooter() {
+function Footer() {
   return (
     <>
       <DiscordInvite />
@@ -45,4 +45,4 @@ function VersionInfo() {
   );
 }
 
-export { RootFooter };
+export { Footer };

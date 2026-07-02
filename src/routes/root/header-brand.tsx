@@ -2,7 +2,7 @@ import i18n from "../../i18n";
 import logo from "../../image/d4dad-badge@1x.png";
 import styles from "./header-brand.module.css";
 
-function RootHeaderLogo() {
+function HeaderLogo() {
   return (
     <img
       className={styles.HeaderBrandLogo}
@@ -12,7 +12,7 @@ function RootHeaderLogo() {
   );
 }
 
-function RootHeaderTitle() {
+function HeaderTitle() {
   return (
     <div className={styles.HeaderBrandTitle}>
       <div className={styles.HeaderBrandTitleName}>
@@ -26,4 +26,4 @@ function RootHeaderTitle() {
   );
 }
 
-export { RootHeaderLogo, RootHeaderTitle };
+export { HeaderLogo, HeaderTitle };

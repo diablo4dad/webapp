@@ -2,13 +2,13 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import {
-  ROOT_SEARCH_PLACEHOLDER,
-  RootSearchField,
+  SEARCH_PLACEHOLDER,
+  SearchField,
 } from "./search";
 
-type SearchProps = Parameters<typeof RootSearchField>[0];
+type Props = Parameters<typeof SearchField>[0];
 
-type SearchOptions = Partial<SearchProps>;
+type Options = Partial<Props>;
 
 vi.mock("../../components/Search", () => ({
   default: ({
@@ -36,14 +36,14 @@ vi.mock("../../components/Search", () => ({
   ),
 }));
 
-function renderSearch(options: SearchOptions = {}) {
-  const props: SearchProps = {
+function renderSearch(options: Options = {}) {
+  const props: Props = {
     onChange: vi.fn(),
     onClear: vi.fn(),
     value: "helm",
     ...options,
   };
-  const renderResult = render(<RootSearchField {...props} />);
+  const renderResult = render(<SearchField {...props} />);
 
   return {
     ...renderResult,
@@ -56,7 +56,7 @@ describe("field", () => {
     renderSearch();
 
     expect(
-      screen.getByRole("textbox", { name: ROOT_SEARCH_PLACEHOLDER }),
+      screen.getByRole("textbox", { name: SEARCH_PLACEHOLDER }),
     ).toHaveValue("helm");
   });
 
@@ -65,7 +65,7 @@ describe("field", () => {
     const { props } = renderSearch();
 
     fireEvent.change(
-      screen.getByRole("textbox", { name: ROOT_SEARCH_PLACEHOLDER }),
+      screen.getByRole("textbox", { name: SEARCH_PLACEHOLDER }),
       {
         target: {
           value: "sword",
@@ -74,7 +74,7 @@ describe("field", () => {
     );
     await user.click(
       screen.getByRole("button", {
-        name: `clear ${ROOT_SEARCH_PLACEHOLDER}`,
+        name: `clear ${SEARCH_PLACEHOLDER}`,
       }),
     );
 

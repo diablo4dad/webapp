@@ -3,12 +3,12 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { SidebarVisibility } from "../../common";
 import type { DadUser } from "../../auth/type";
-import { RootContent } from "./state";
-import { RootView } from "./view";
+import { Content } from "./state";
+import { View } from "./view";
 
-type ViewProps = Parameters<typeof RootView>[0];
+type Props = Parameters<typeof View>[0];
 
-type ViewOptions = Partial<ViewProps>;
+type Options = Partial<Props>;
 
 vi.mock("../../auth/Account", () => ({
   Direction: {
@@ -95,10 +95,10 @@ function getDefaultSidebarVisibility(): SidebarVisibility {
   };
 }
 
-function renderView(options: ViewOptions = {}) {
-  const props: ViewProps = {
+function renderView(options: Options = {}) {
+  const props: Props = {
     canEditCatalog: false,
-    content: RootContent.LEDGER,
+    content: Content.LEDGER,
     isEditMode: false,
     onClearSearch: vi.fn(),
     onCloseMobileContent: vi.fn(),
@@ -114,7 +114,7 @@ function renderView(options: ViewOptions = {}) {
     sidebarVisibility: getDefaultSidebarVisibility(),
     ...options,
   };
-  const renderResult = render(<RootView {...props} />);
+  const renderResult = render(<View {...props} />);
 
   return {
     ...renderResult,
@@ -174,7 +174,7 @@ describe("auth actions", () => {
 
     expect(props.onSignIn).toHaveBeenCalledTimes(1);
 
-    rerender(<RootView {...props} user={signedInUser} />);
+    rerender(<View {...props} user={signedInUser} />);
 
     await user.click(
       screen.getByRole("button", { name: "sign out dad@example.com" }),
@@ -189,7 +189,7 @@ describe("mobile settings", () => {
     const user = userEvent.setup();
     const { props } = renderView({
       canEditCatalog: true,
-      content: RootContent.CONFIG,
+      content: Content.CONFIG,
     });
 
     expect(screen.getByRole("button", { name: "Settings menu" }))
@@ -209,7 +209,7 @@ describe("mobile search", () => {
   test("renders search overlay from content state", async () => {
     const user = userEvent.setup();
     const { props } = renderView({
-      content: RootContent.SEARCH,
+      content: Content.SEARCH,
       searchTerm: "helm",
     });
     const mobileSearchField = screen.getAllByRole("textbox", {

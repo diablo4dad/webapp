@@ -1,59 +1,59 @@
 import {
-  RootContent,
-  closeRootContent,
-  getInitialRootContentState,
-  getRootMobileContentVisibility,
-  openRootContent,
-  toggleRootContent,
-  toggleRootSidebarVisibility,
+  Content,
+  closeContent,
+  getInitialContentState,
+  getMobileContentVisibility,
+  openContent,
+  toggleContent,
+  toggleSidebarVisibility,
 } from "./state";
 
 describe("initial content", () => {
   test("starts on the ledger", () => {
-    expect(getInitialRootContentState()).toEqual({
-      content: RootContent.LEDGER,
-      history: [RootContent.LEDGER],
+    expect(getInitialContentState()).toEqual({
+      content: Content.LEDGER,
+      history: [Content.LEDGER],
     });
   });
 });
 
 describe("opening", () => {
   test("opens transient content without adding history", () => {
-    expect(openRootContent([RootContent.LEDGER], RootContent.CONFIG)).toEqual({
-      content: RootContent.CONFIG,
-      history: [RootContent.LEDGER],
+    expect(openContent([Content.LEDGER], Content.CONFIG)).toEqual({
+      content: Content.CONFIG,
+      history: [Content.LEDGER],
     });
 
-    expect(openRootContent([RootContent.LEDGER], RootContent.SEARCH)).toEqual({
-      content: RootContent.SEARCH,
-      history: [RootContent.LEDGER],
+    expect(openContent([Content.LEDGER], Content.SEARCH)).toEqual({
+      content: Content.SEARCH,
+      history: [Content.LEDGER],
     });
   });
 
   test("adds non-transient content once", () => {
-    expect(openRootContent([], RootContent.LEDGER)).toEqual({
-      content: RootContent.LEDGER,
-      history: [RootContent.LEDGER],
+    expect(openContent([], Content.LEDGER)).toEqual({
+      content: Content.LEDGER,
+      history: [Content.LEDGER],
     });
 
-    expect(openRootContent([RootContent.LEDGER], RootContent.LEDGER)).toEqual({
-      content: RootContent.LEDGER,
-      history: [RootContent.LEDGER],
+    expect(openContent([Content.LEDGER], Content.LEDGER)).toEqual({
+      content: Content.LEDGER,
+      history: [Content.LEDGER],
     });
   });
 });
 
 describe("closing", () => {
   test("returns to the most recent history entry", () => {
-    expect(closeRootContent([RootContent.LEDGER])).toEqual({
-      content: RootContent.LEDGER,
+    expect(closeContent([Content.LEDGER])).toEqual({
+      content: Content.LEDGER,
       history: [],
     });
   });
 
   test("falls back to the ledger without history", () => {
-    expect(closeRootContent([])).toEqual({
-      content: RootContent.LEDGER,
+    expect(closeContent([])).toEqual({
+      content: Content.LEDGER,
       history: [],
     });
   });
@@ -62,27 +62,27 @@ describe("closing", () => {
 describe("toggling", () => {
   test("closes matching content", () => {
     expect(
-      toggleRootContent(
-        RootContent.CONFIG,
-        [RootContent.LEDGER],
-        RootContent.CONFIG,
+      toggleContent(
+        Content.CONFIG,
+        [Content.LEDGER],
+        Content.CONFIG,
       ),
     ).toEqual({
-      content: RootContent.LEDGER,
+      content: Content.LEDGER,
       history: [],
     });
   });
 
   test("opens different content", () => {
     expect(
-      toggleRootContent(
-        RootContent.LEDGER,
-        [RootContent.LEDGER],
-        RootContent.CONFIG,
+      toggleContent(
+        Content.LEDGER,
+        [Content.LEDGER],
+        Content.CONFIG,
       ),
     ).toEqual({
-      content: RootContent.CONFIG,
-      history: [RootContent.LEDGER],
+      content: Content.CONFIG,
+      history: [Content.LEDGER],
     });
   });
 });
@@ -90,7 +90,7 @@ describe("toggling", () => {
 describe("sidebar visibility", () => {
   test("toggles one sidebar without changing the other", () => {
     expect(
-      toggleRootSidebarVisibility(
+      toggleSidebarVisibility(
         {
           showConfig: true,
           showItem: false,
@@ -103,7 +103,7 @@ describe("sidebar visibility", () => {
     });
 
     expect(
-      toggleRootSidebarVisibility(
+      toggleSidebarVisibility(
         {
           showConfig: true,
           showItem: false,
@@ -119,17 +119,17 @@ describe("sidebar visibility", () => {
 
 describe("mobile content visibility", () => {
   test("opens the matching mobile content surface", () => {
-    expect(getRootMobileContentVisibility(RootContent.LEDGER)).toEqual({
+    expect(getMobileContentVisibility(Content.LEDGER)).toEqual({
       isMobileConfigOpen: false,
       isMobileSearchOpen: false,
     });
 
-    expect(getRootMobileContentVisibility(RootContent.CONFIG)).toEqual({
+    expect(getMobileContentVisibility(Content.CONFIG)).toEqual({
       isMobileConfigOpen: true,
       isMobileSearchOpen: false,
     });
 
-    expect(getRootMobileContentVisibility(RootContent.SEARCH)).toEqual({
+    expect(getMobileContentVisibility(Content.SEARCH)).toEqual({
       isMobileConfigOpen: false,
       isMobileSearchOpen: true,
     });

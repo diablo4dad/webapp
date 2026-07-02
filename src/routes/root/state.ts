@@ -1,35 +1,35 @@
 import type { SidebarVisibility } from "../../common";
 
-enum RootContent {
+enum Content {
   LEDGER = "ledger",
   CONFIG = "config",
   SEARCH = "search",
 }
 
-type RootContentState = {
-  content: RootContent;
-  history: RootContent[];
+type ContentState = {
+  content: Content;
+  history: Content[];
 };
 
-type RootMobileContentVisibility = {
+type MobileContentVisibility = {
   isMobileConfigOpen: boolean;
   isMobileSearchOpen: boolean;
 };
 
-const DEFAULT_ROOT_CONTENT = RootContent.LEDGER;
-const transientContent = [RootContent.CONFIG, RootContent.SEARCH];
+const DEFAULT_CONTENT = Content.LEDGER;
+const transientContent = [Content.CONFIG, Content.SEARCH];
 
-function getInitialRootContentState(): RootContentState {
+function getInitialContentState(): ContentState {
   return {
-    content: DEFAULT_ROOT_CONTENT,
-    history: [DEFAULT_ROOT_CONTENT],
+    content: DEFAULT_CONTENT,
+    history: [DEFAULT_CONTENT],
   };
 }
 
-function openRootContent(
-  history: RootContent[],
-  content: RootContent,
-): RootContentState {
+function openContent(
+  history: Content[],
+  content: Content,
+): ContentState {
   if (transientContent.includes(content)) {
     return {
       content,
@@ -50,24 +50,24 @@ function openRootContent(
   };
 }
 
-function closeRootContent(history: RootContent[]): RootContentState {
+function closeContent(history: Content[]): ContentState {
   return {
-    content: history[history.length - 1] ?? DEFAULT_ROOT_CONTENT,
+    content: history[history.length - 1] ?? DEFAULT_CONTENT,
     history: history.slice(0, -1),
   };
 }
 
-function toggleRootContent(
-  currentContent: RootContent,
-  history: RootContent[],
-  content: RootContent,
-): RootContentState {
+function toggleContent(
+  currentContent: Content,
+  history: Content[],
+  content: Content,
+): ContentState {
   return currentContent === content
-    ? closeRootContent(history)
-    : openRootContent(history, content);
+    ? closeContent(history)
+    : openContent(history, content);
 }
 
-function toggleRootSidebarVisibility(
+function toggleSidebarVisibility(
   sidebarVisibility: SidebarVisibility,
   key: keyof SidebarVisibility,
 ): SidebarVisibility {
@@ -77,24 +77,24 @@ function toggleRootSidebarVisibility(
   };
 }
 
-function getRootMobileContentVisibility(
-  content: RootContent,
-): RootMobileContentVisibility {
+function getMobileContentVisibility(
+  content: Content,
+): MobileContentVisibility {
   return {
-    isMobileConfigOpen: content === RootContent.CONFIG,
-    isMobileSearchOpen: content === RootContent.SEARCH,
+    isMobileConfigOpen: content === Content.CONFIG,
+    isMobileSearchOpen: content === Content.SEARCH,
   };
 }
 
 export {
-  DEFAULT_ROOT_CONTENT,
-  RootContent,
-  closeRootContent,
-  getInitialRootContentState,
-  getRootMobileContentVisibility,
-  openRootContent,
-  toggleRootContent,
-  toggleRootSidebarVisibility,
-  type RootMobileContentVisibility,
-  type RootContentState,
+  DEFAULT_CONTENT,
+  Content,
+  closeContent,
+  getInitialContentState,
+  getMobileContentVisibility,
+  openContent,
+  toggleContent,
+  toggleSidebarVisibility,
+  type MobileContentVisibility,
+  type ContentState,
 };

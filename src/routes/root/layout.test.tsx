@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import { RootLayout } from "./layout";
+import { Layout } from "./layout";
 
 describe("shell slots", () => {
   test("renders header, main, and footer content", () => {
     render(
-      <RootLayout
+      <Layout
         footer={<div>footer slot</div>}
         header={<div>header slot</div>}
         main={<div>main slot</div>}

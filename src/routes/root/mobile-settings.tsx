@@ -1,8 +1,8 @@
 import type { DadUser } from "../../auth/type";
 import { Close, Pencil } from "../../components/Icons";
 import ConfigSidebar from "../../settings/ConfigSidebar";
-import { RootAuthActions } from "./auth";
-import { RootMobileDrawerLayout } from "./mobile-layout";
+import { AuthActions } from "./auth";
+import { MobileDrawerLayout } from "./mobile-layout";
 import styles from "./mobile-settings.module.css";
 
 type MobileSettingsDrawerProps = {
@@ -30,7 +30,7 @@ function MobileSettingsDrawer({
   user,
 }: MobileSettingsDrawerProps) {
   return (
-    <RootMobileDrawerLayout
+    <MobileDrawerLayout
       onClose={onClose}
       header={
         <>
@@ -56,7 +56,7 @@ function MobileSettingsDrawer({
         </>
       }
       footer={
-        <RootAuthActions
+        <AuthActions
           onSignIn={onSignIn}
           onSignOut={onSignOut}
           user={user}

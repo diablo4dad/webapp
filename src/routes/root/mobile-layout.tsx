@@ -15,7 +15,7 @@ type DrawerProps = {
   onClose: () => void;
 };
 
-function RootMobileSearchOverlayLayout({
+function MobileSearchOverlayLayout({
   actions,
   body,
   header,
@@ -39,7 +39,7 @@ function RootMobileSearchOverlayLayout({
   );
 }
 
-function RootMobileDrawerLayout({
+function MobileDrawerLayout({
   body,
   footer,
   header,
@@ -66,6 +66,6 @@ function stopOverlayPropagation(event: MouseEvent) {
 }
 
 export {
-  RootMobileDrawerLayout,
-  RootMobileSearchOverlayLayout,
+  MobileDrawerLayout,
+  MobileSearchOverlayLayout,
 };

@@ -6,13 +6,13 @@ import { useData } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor/context";
 import {
-  RootContent,
-  closeRootContent,
-  getInitialRootContentState,
-  toggleRootContent,
-  toggleRootSidebarVisibility,
+  Content,
+  closeContent,
+  getInitialContentState,
+  toggleContent,
+  toggleSidebarVisibility,
 } from "./state";
-import { RootView } from "./view";
+import { View } from "./view";
 
 function RootRoute(): ReactElement {
   const {
@@ -29,18 +29,18 @@ function RootRoute(): ReactElement {
     new Image().src = placeholder;
   }, []);
 
-  const [contentState, setContentState] = useState(getInitialRootContentState);
+  const [contentState, setContentState] = useState(getInitialContentState);
   const content = contentState.content;
 
   function onToggleItemSidebar() {
     setSidebarVisibility(
-      toggleRootSidebarVisibility(sidebarVisibility, "showItem"),
+      toggleSidebarVisibility(sidebarVisibility, "showItem"),
     );
   }
 
   function onToggleConfig() {
     setSidebarVisibility(
-      toggleRootSidebarVisibility(sidebarVisibility, "showConfig"),
+      toggleSidebarVisibility(sidebarVisibility, "showConfig"),
     );
   }
 
@@ -50,22 +50,22 @@ function RootRoute(): ReactElement {
 
   function onCloseMobileContent() {
     setContentState((currentContentState) =>
-      closeRootContent(currentContentState.history),
+      closeContent(currentContentState.history),
     );
   }
 
   function onToggleMobileConfig() {
     setContentState((currentContentState) =>
-      toggleRootContent(
+      toggleContent(
         currentContentState.content,
         currentContentState.history,
-        RootContent.CONFIG,
+        Content.CONFIG,
       ),
     );
   }
 
   return (
-    <RootView
+    <View
       canEditCatalog={canEditCatalog}
       content={content}
       isEditMode={isEditMode}

@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import { RootHeaderLayout } from "./header-layout";
+import { HeaderLayout } from "./header-layout";
 
 describe("header slots", () => {
   test("renders structural regions from provided content", () => {
     render(
-      <RootHeaderLayout
+      <HeaderLayout
         actions={<button>actions slot</button>}
         auth={<div>auth slot</div>}
         logo={<div>logo slot</div>}

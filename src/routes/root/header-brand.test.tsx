@@ -1,12 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import {
-  RootHeaderLogo,
-  RootHeaderTitle,
+  HeaderLogo,
+  HeaderTitle,
 } from "./header-brand";
 
 describe("logo", () => {
   test("renders the game logo", () => {
-    render(<RootHeaderLogo />);
+    render(<HeaderLogo />);
 
     expect(screen.getByRole("img", { name: "Diablo IV" }))
       .toBeInTheDocument();
@@ -15,7 +15,7 @@ describe("logo", () => {
 
 describe("title", () => {
   test("renders the site name and tagline", () => {
-    render(<RootHeaderTitle />);
+    render(<HeaderTitle />);
 
     expect(screen.getByText("Diablo IV")).toBeInTheDocument();
     expect(screen.getByText("Dad")).toBeInTheDocument();

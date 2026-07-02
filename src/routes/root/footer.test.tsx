@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import { RootFooter } from "./footer";
+import { Footer } from "./footer";
 
 describe("footer content", () => {
   test("renders community and version links", () => {
-    render(<RootFooter />);
+    render(<Footer />);
 
     expect(screen.getByText("Join the Discord Server")).toBeInTheDocument();
     expect(screen.getByText(/Site Version/)).toBeInTheDocument();

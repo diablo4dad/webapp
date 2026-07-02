@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { DadUser } from "../../auth/type";
-import { RootMain } from "./main";
+import { Main } from "./main";
 
-type Props = Parameters<typeof RootMain>[0];
+type Props = Parameters<typeof Main>[0];
 
 type Options = Partial<Props>;
 
@@ -91,7 +91,7 @@ function renderMain(options: Options = {}) {
     searchTerm: "",
     ...options,
   };
-  const renderResult = render(<RootMain {...props} />);
+  const renderResult = render(<Main {...props} />);
 
   return {
     ...renderResult,

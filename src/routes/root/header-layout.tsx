@@ -9,7 +9,7 @@ type Props = {
   title: ReactNode;
 };
 
-function RootHeaderLayout({
+function HeaderLayout({
   actions,
   auth,
   logo,
@@ -32,4 +32,4 @@ function RootHeaderLayout({
   );
 }
 
-export { RootHeaderLayout };
+export { HeaderLayout };

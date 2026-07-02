@@ -1,15 +1,15 @@
 import type { DadUser } from "../../auth/type";
 import type { SidebarVisibility } from "../../common";
-import { RootAuthActions } from "./auth";
-import { RootHeaderActions } from "./header-actions";
+import { AuthActions } from "./auth";
+import { HeaderActions } from "./header-actions";
 import {
-  RootHeaderLogo,
-  RootHeaderTitle,
+  HeaderLogo,
+  HeaderTitle,
 } from "./header-brand";
-import { RootHeaderLayout } from "./header-layout";
-import { RootSearchField } from "./search";
+import { HeaderLayout } from "./header-layout";
+import { SearchField } from "./search";
 
-type RootHeaderProps = {
+type Props = {
   canEditCatalog: boolean;
   isMobileConfigOpen: boolean;
   isEditMode: boolean;
@@ -26,7 +26,7 @@ type RootHeaderProps = {
   user?: DadUser;
 };
 
-function RootHeader({
+function Header({
   canEditCatalog,
   isMobileConfigOpen,
   isEditMode,
@@ -41,20 +41,20 @@ function RootHeader({
   searchTerm,
   sidebarVisibility,
   user,
-}: RootHeaderProps) {
+}: Props) {
   return (
-    <RootHeaderLayout
-      logo={<RootHeaderLogo />}
-      title={<RootHeaderTitle />}
+    <HeaderLayout
+      logo={<HeaderLogo />}
+      title={<HeaderTitle />}
       search={
-        <RootSearchField
+        <SearchField
           value={searchTerm}
           onChange={onSearchChange}
           onClear={onClearSearch}
         />
       }
       actions={
-        <RootHeaderActions
+        <HeaderActions
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           isMobileConfigOpen={isMobileConfigOpen}
@@ -66,7 +66,7 @@ function RootHeader({
         />
       }
       auth={
-        <RootAuthActions
+        <AuthActions
           onSignIn={onSignIn}
           onSignOut={onSignOut}
           user={user}
@@ -76,4 +76,4 @@ function RootHeader({
   );
 }
 
-export { RootHeader };
+export { Header };

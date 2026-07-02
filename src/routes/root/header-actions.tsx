@@ -33,7 +33,7 @@ type ToggleProps = {
   tooltip: string;
 };
 
-function RootHeaderActions({
+function HeaderActions({
   canEditCatalog,
   isEditMode,
   isMobileConfigOpen,
@@ -45,7 +45,7 @@ function RootHeaderActions({
 }: Props) {
   return (
     <>
-      <RootHeaderToggle
+      <HeaderToggle
         isPressed={sidebarVisibility.showItem}
         onToggle={onToggleItemSidebar}
         tooltip={
@@ -53,8 +53,8 @@ function RootHeaderActions({
         }
       >
         <SidebarLeft />
-      </RootHeaderToggle>
-      <RootHeaderToggle
+      </HeaderToggle>
+      <HeaderToggle
         isPressed={sidebarVisibility.showConfig}
         onToggle={onToggleConfig}
         tooltip={
@@ -64,16 +64,16 @@ function RootHeaderActions({
         }
       >
         <SidebarRight />
-      </RootHeaderToggle>
+      </HeaderToggle>
       {canEditCatalog && (
-        <RootHeaderToggle
+        <HeaderToggle
           ariaLabel={isEditMode ? "Disable editor mode" : "Enable editor mode"}
           isPressed={isEditMode}
           onToggle={onToggleEditMode}
           tooltip={isEditMode ? "Disable Editor Mode" : "Enable Editor Mode"}
         >
           <Pencil />
-        </RootHeaderToggle>
+        </HeaderToggle>
       )}
       <Button
         aria-label="Settings menu"
@@ -88,7 +88,7 @@ function RootHeaderActions({
   );
 }
 
-function RootHeaderToggle({
+function HeaderToggle({
   ariaLabel,
   children,
   isPressed,
@@ -116,4 +116,4 @@ function RootHeaderToggle({
   );
 }
 
-export { RootHeaderActions };
+export { HeaderActions };

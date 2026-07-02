@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { DadUser } from "../../auth/type";
 import type { SidebarVisibility } from "../../common";
-import { RootHeader } from "./header";
+import { Header } from "./header";
 
-type Props = Parameters<typeof RootHeader>[0];
+type Props = Parameters<typeof Header>[0];
 
 type Options = Partial<Props>;
 
@@ -33,7 +33,7 @@ vi.mock("../../components/Search", () => ({
 }));
 
 vi.mock("./auth", () => ({
-  RootAuthActions: ({
+  AuthActions: ({
     onSignIn,
     onSignOut,
     user,
@@ -50,7 +50,7 @@ vi.mock("./auth", () => ({
 }));
 
 vi.mock("./header-actions", () => ({
-  RootHeaderActions: ({
+  HeaderActions: ({
     canEditCatalog,
     isEditMode,
     isMobileConfigOpen,
@@ -117,7 +117,7 @@ function renderHeader(options: Options = {}) {
     sidebarVisibility: getDefaultSidebarVisibility(),
     ...options,
   };
-  const renderResult = render(<RootHeader {...props} />);
+  const renderResult = render(<Header {...props} />);
 
   return {
     ...renderResult,
@@ -210,7 +210,7 @@ describe("auth", () => {
 
     expect(props.onSignIn).toHaveBeenCalledTimes(1);
 
-    rerender(<RootHeader {...props} user={signedInUser} />);
+    rerender(<Header {...props} user={signedInUser} />);
 
     await user.click(
       screen.getByRole("button", { name: "sign out dad@example.com" }),

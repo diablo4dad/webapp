@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import {
-  RootMobileDrawerLayout,
-  RootMobileSearchOverlayLayout,
+  MobileDrawerLayout,
+  MobileSearchOverlayLayout,
 } from "./mobile-layout";
 
 describe("mobile overlays", () => {
@@ -12,7 +12,7 @@ describe("mobile overlays", () => {
     const onClose = vi.fn();
 
     const { container } = render(
-      <RootMobileSearchOverlayLayout
+      <MobileSearchOverlayLayout
         actions={<div>search actions</div>}
         body={<button>search panel</button>}
         header={<div>search header</div>}
@@ -38,7 +38,7 @@ describe("mobile overlays", () => {
     const onClose = vi.fn();
 
     const { container } = render(
-      <RootMobileDrawerLayout
+      <MobileDrawerLayout
         body={<button>drawer panel</button>}
         footer={<div>drawer footer</div>}
         header={<div>drawer header</div>}
