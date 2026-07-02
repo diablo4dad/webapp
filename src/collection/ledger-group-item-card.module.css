@@ -1,4 +1,4 @@
-.Item {
+.LedgerGroupItem {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -6,7 +6,7 @@
   cursor: pointer;
 }
 
-.ItemDragHandle {
+.LedgerGroupItemDragHandle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -21,26 +21,26 @@
   cursor: grab;
 }
 
-.ItemDragHandle:hover {
+.LedgerGroupItemDragHandle:hover {
   border-color: var(--drag-handle-border-hover);
   color: var(--drag-handle-text-hover);
 }
 
-.ItemDragHandle:active {
+.LedgerGroupItemDragHandle:active {
   cursor: grabbing;
 }
 
-.ItemDragHandle svg {
+.LedgerGroupItemDragHandle svg {
   width: 1.25rem;
   height: 1.25rem;
 }
 
-.ItemReorderSaving {
+.LedgerGroupItemReorderSaving {
   opacity: 0.6;
   pointer-events: none;
 }
 
-.ItemDragGhost {
+.LedgerGroupItemDragGhost {
   position: fixed !important;
   z-index: 1000;
   pointer-events: none;
@@ -49,15 +49,15 @@
   transform: scale(1.01);
 }
 
-.ItemDragGhost .ItemImage {
+.LedgerGroupItemDragGhost .LedgerGroupItemImage {
   filter: brightness(125%) !important;
 }
 
-.ItemDragGhost .ItemInfo {
+.LedgerGroupItemDragGhost .LedgerGroupItemInfo {
   opacity: 1;
 }
 
-.ItemDropPlaceholder {
+.LedgerGroupItemDropPlaceholder {
   min-height: 7rem;
   border: 1px dashed var(--drag-handle-border-hover);
   background: var(--drop-placeholder-background) !important;
@@ -65,7 +65,7 @@
   cursor: default;
 }
 
-.ItemDropPlaceholderVisual {
+.LedgerGroupItemDropPlaceholderVisual {
   flex-shrink: 0;
   width: 4rem;
   height: 6rem;
@@ -74,37 +74,37 @@
   background-color: var(--drop-placeholder-visual-background);
 }
 
-.ItemDropPlaceholderInfo {
+.LedgerGroupItemDropPlaceholderInfo {
   flex: 1;
 }
 
-.Item:hover {
+.LedgerGroupItem:hover {
   opacity: 1;
 }
 
-.ItemImage {
+.LedgerGroupItemImage {
   width: 4rem;
   filter: brightness(50%);
 }
 
-.ItemImageWrapper {
+.LedgerGroupItemImageWrapper {
   width: 4rem;
   height: 6rem;
 }
 
-.ItemInfo {
+.LedgerGroupItemInfo {
   flex: 1;
   padding: 0 1rem;
   opacity: 0.5;
 }
 
-.ItemName {
+.LedgerGroupItemName {
   margin-bottom: 0.125rem;
   color: var(--link-color-action);
   font-size: 1.25rem;
 }
 
-.ItemType {
+.LedgerGroupItemType {
   display: block;
   margin-bottom: 0.25rem;
   color: var(--app-text-muted);
@@ -112,86 +112,82 @@
   text-transform: uppercase;
 }
 
-.Claim {
-  text-transform: uppercase;
-}
-
-.ItemClaimDescription {
+.LedgerGroupItemClaimDescription {
   margin-bottom: 0.25rem;
 }
 
-.ItemIcon:not(:last-child) {
+.LedgerGroupItemIcon:not(:last-child) {
   margin-right: 0.5rem;
 }
 
-.ItemIcons svg {
+.LedgerGroupItemIcons svg {
   width: 2rem;
 }
 
-.ItemIcon svg {
+.LedgerGroupItemIcon svg {
   fill: var(--app-surface-muted);
   opacity: 0;
 }
 
-.ItemHidden .ItemName {
+.LedgerGroupItemHidden .LedgerGroupItemName {
   color: var(--app-text-disabled) !important;
   text-decoration: line-through;
 }
 
-.Item:hover .ItemImage {
+.LedgerGroupItem:hover .LedgerGroupItemImage {
   filter: brightness(125%) !important;
 }
 
-.Item:hover .ItemInfo {
+.LedgerGroupItem:hover .LedgerGroupItemInfo {
   opacity: 1;
 }
 
-.ItemCollected .ItemInfo {
+.LedgerGroupItemCollected .LedgerGroupItemInfo {
   opacity: 1;
 }
 
-.ItemUnique .ItemName {
+.LedgerGroupItemUnique .LedgerGroupItemName {
   color: var(--rarity-unique-color) !important;
 }
 
-.ItemMythic .ItemName {
+.LedgerGroupItemMythic .LedgerGroupItemName {
   color: var(--rarity-mythic-color) !important;
 }
 
-.ItemRare .ItemName {
+.LedgerGroupItemRare .LedgerGroupItemName {
   color: var(--rarity-rare-color) !important;
 }
 
-.ItemIconCollection svg {
+.LedgerGroupItemIconCollection svg {
   fill: var(--feedback-success-fill);
   margin: calc(0.5rem + 1px);
 }
 
-.ItemIconHidden svg {
+.LedgerGroupItemIconHidden svg {
   fill: var(--feedback-danger-fill);
   margin: calc(0.5rem + 1px);
 }
 
-.ItemHidden .ItemIconHidden svg,
-.ItemCollected .ItemIconCollection svg {
+.LedgerGroupItemHidden .LedgerGroupItemIconHidden svg,
+.LedgerGroupItemCollected .LedgerGroupItemIconCollection svg {
   opacity: 1;
 }
 
-.ItemIconPremium svg {
+.LedgerGroupItemIconPremium svg {
   display: none;
 }
 
-.ItemIconPremiumTitle svg {
+.LedgerGroupItemIconPremiumTitle svg {
   display: inline-block;
   width: 0.875rem;
   margin-left: 0.25rem;
 }
 
-.Item:nth-child(even) {
+.LedgerGroupItem:nth-child(even) {
   background-color: var(--app-surface-raised);
 }
 
-:global([data-ledger-view="card"]) .Item {
+:global([data-ledger-view="card"]) .LedgerGroupItem {
   position: relative;
   flex: 1;
   flex-direction: column;
@@ -202,7 +198,7 @@
   opacity: 1;
 }
 
-:global([data-ledger-view="card"]) .ItemDragHandle {
+:global([data-ledger-view="card"]) .LedgerGroupItemDragHandle {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
@@ -213,106 +209,102 @@
   background-color: var(--drag-handle-background-strong);
 }
 
-:global([data-ledger-view="card"]) .ItemDragGhost {
+:global([data-ledger-view="card"]) .LedgerGroupItemDragGhost {
   width: var(--drag-ghost-width) !important;
   height: var(--drag-ghost-height) !important;
 }
 
-:global([data-ledger-view="card"]) .ItemDropPlaceholder {
+:global([data-ledger-view="card"]) .LedgerGroupItemDropPlaceholder {
   justify-content: flex-start;
   min-height: 0;
   padding: 0.5rem 0.5rem 0;
   border-style: dashed;
 }
 
-:global([data-ledger-view="card"]) .ItemDropPlaceholderVisual {
+:global([data-ledger-view="card"]) .LedgerGroupItemDropPlaceholderVisual {
   width: 100%;
   height: auto;
   aspect-ratio: 2/3;
 }
 
-:global([data-ledger-view="card"]) .ItemDropPlaceholderInfo {
+:global([data-ledger-view="card"]) .LedgerGroupItemDropPlaceholderInfo {
   width: 100%;
   min-height: 2.5rem;
 }
 
-:global([data-ledger-view="card"]) .ItemImageWrapper,
-:global([data-ledger-view="card"]) .ItemImage {
+:global([data-ledger-view="card"]) .LedgerGroupItemImageWrapper,
+:global([data-ledger-view="card"]) .LedgerGroupItemImage {
   width: 100%;
   height: auto;
   aspect-ratio: 2/3;
 }
 
-:global([data-ledger-view="card"]) .ItemInfo {
+:global([data-ledger-view="card"]) .LedgerGroupItemInfo {
   padding: 0.5rem;
   text-align: center;
 }
 
-:global([data-ledger-view="card"]) .ItemName {
+:global([data-ledger-view="card"]) .LedgerGroupItemName {
   color: var(--color-neutral-400);
   font-size: 0.875rem;
 }
 
-:global([data-ledger-view="card"]) .ItemType {
+:global([data-ledger-view="card"]) .LedgerGroupItemType {
   display: none;
 }
 
-:global([data-ledger-view="card"]) .Claim {
+:global([data-ledger-view="card"]) .LedgerGroupItemClaimDescription {
   display: none;
 }
 
-:global([data-ledger-view="card"]) .ItemClaimDescription {
-  display: none;
-}
-
-:global([data-ledger-view="card"]) .ItemIcons {
+:global([data-ledger-view="card"]) .LedgerGroupItemIcons {
   position: absolute;
   top: 0.425rem;
   right: 0.425rem;
   left: 0.425rem;
 }
 
-:global([data-ledger-view="card"]) .ItemIcons svg {
+:global([data-ledger-view="card"]) .LedgerGroupItemIcons svg {
   width: 1rem;
   margin-left: 0.125rem;
 }
 
-:global([data-ledger-view="card"]) .ItemIcon:not(:last-child) {
+:global([data-ledger-view="card"]) .LedgerGroupItemIcon:not(:last-child) {
   margin-right: 0;
 }
 
-:global([data-ledger-view="card"]) .ItemIconHidden svg,
-:global([data-ledger-view="card"]) .ItemIconCollection svg {
+:global([data-ledger-view="card"]) .LedgerGroupItemIconHidden svg,
+:global([data-ledger-view="card"]) .LedgerGroupItemIconCollection svg {
   position: absolute;
   right: 0;
   margin: 0;
 }
 
-:global([data-ledger-view="card"]) .ItemIconPremium svg {
+:global([data-ledger-view="card"]) .LedgerGroupItemIconPremium svg {
   position: absolute;
   left: 0;
   display: none;
   opacity: 0;
 }
 
-:global([data-ledger-view="card"]) .ItemCollected,
-:global([data-ledger-view="card"]) .ItemHidden {
+:global([data-ledger-view="card"]) .LedgerGroupItemCollected,
+:global([data-ledger-view="card"]) .LedgerGroupItemHidden {
   border-top: 1px solid var(--card-border-top);
   border-bottom: 1px solid var(--card-border-bottom);
   background-color: var(--card-surface);
   box-shadow: var(--card-shadow);
 }
 
-:global([data-ledger-view="card"]) .ItemIconCollection svg {
+:global([data-ledger-view="card"]) .LedgerGroupItemIconCollection svg {
   fill: var(--item-collected-color-dark);
 }
 
-:global([data-ledger-view="card"]) .ItemIconHidden svg {
+:global([data-ledger-view="card"]) .LedgerGroupItemIconHidden svg {
   fill: var(--item-hidden-color-dark);
 }
 
-:global([data-ledger-view="card"]) .ItemCollected:before,
-:global([data-ledger-view="card"]) .ItemHidden:before {
+:global([data-ledger-view="card"]) .LedgerGroupItemCollected:before,
+:global([data-ledger-view="card"]) .LedgerGroupItemHidden:before {
   content: "";
   position: absolute;
   top: 0;
@@ -324,44 +316,44 @@
   border-top-right-radius: 0.5rem;
 }
 
-:global([data-ledger-view="card"]) .ItemHidden:before {
+:global([data-ledger-view="card"]) .LedgerGroupItemHidden:before {
   border-top-color: var(--feedback-danger-fill);
 }
 
-:global([data-ledger-view="card"]) .ItemPremium .ItemIconPremium svg {
+:global([data-ledger-view="card"]) .LedgerGroupItemPremium .LedgerGroupItemIconPremium svg {
   opacity: 1;
 }
 
-:global([data-ledger-view="card"]) .ItemCollected .ItemName {
+:global([data-ledger-view="card"]) .LedgerGroupItemCollected .LedgerGroupItemName {
   color: var(--app-text);
 }
 
-.ItemHidden .ItemImage,
-.ItemCollected .ItemImage {
+.LedgerGroupItemHidden .LedgerGroupItemImage,
+.LedgerGroupItemCollected .LedgerGroupItemImage {
   filter: none;
 }
 
-:global([data-ledger-inverse="true"]) .Item {
+:global([data-ledger-inverse="true"]) .LedgerGroupItem {
   border-top: 1px solid var(--card-border-top);
   border-bottom: 1px solid var(--card-border-bottom);
   background-color: var(--card-surface);
   box-shadow: var(--card-shadow);
 }
 
-:global([data-ledger-inverse="true"]) .ItemImage {
+:global([data-ledger-inverse="true"]) .LedgerGroupItemImage {
   filter: none;
 }
 
-:global([data-ledger-inverse="true"]) .ItemName {
+:global([data-ledger-inverse="true"]) .LedgerGroupItemName {
   color: var(--app-text);
 }
 
-:global([data-ledger-inverse="true"]) .ItemInfo {
+:global([data-ledger-inverse="true"]) .LedgerGroupItemInfo {
   opacity: 1;
 }
 
-:global([data-ledger-inverse="true"]) .ItemCollected,
-:global([data-ledger-inverse="true"]) .ItemHidden {
+:global([data-ledger-inverse="true"]) .LedgerGroupItemCollected,
+:global([data-ledger-inverse="true"]) .LedgerGroupItemHidden {
   border-top: none;
   border-bottom: none;
   background-color: var(--card-surface-muted);
@@ -369,15 +361,15 @@
   color: var(--app-text-muted);
 }
 
-:global([data-ledger-inverse="true"]) .ItemCollected .ItemInfo {
+:global([data-ledger-inverse="true"]) .LedgerGroupItemCollected .LedgerGroupItemInfo {
   opacity: 0.5;
 }
 
-.ItemGlow {
+.LedgerGroupItemGlow {
   animation: glow 1s infinite alternate;
 }
 
-:global([data-ledger-inverse="true"]) .ItemGlow {
+:global([data-ledger-inverse="true"]) .LedgerGroupItemGlow {
   animation: glow-inverse 1s infinite alternate;
 }
 
@@ -400,16 +392,16 @@
 }
 
 @media screen and (min-width: 1200px) {
-  .Item {
+  .LedgerGroupItem {
     padding: 0.5rem 2rem;
   }
 
-  .ItemIcons svg {
+  .LedgerGroupItemIcons svg {
     width: 3rem;
   }
 
-  .ItemIconHidden svg,
-  .ItemIconCollection svg {
+  .LedgerGroupItemIconHidden svg,
+  .LedgerGroupItemIconCollection svg {
     margin: 0;
   }
 }

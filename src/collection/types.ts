@@ -20,7 +20,7 @@ type LedgerGroupProps = LedgerProps & {
   collectionSiblingIds: string[];
 };
 
-type ItemDragState = {
+type LedgerGroupItemDragState = {
   draggedItemId: number;
   height: number;
   insertIndex: number;
@@ -65,7 +65,7 @@ type CollectionDragController = {
 export type {
   CollectionDragController,
   CollectionDragState,
-  ItemDragState,
+  LedgerGroupItemDragState,
   LedgerGroupProps,
   LedgerProps,
 };

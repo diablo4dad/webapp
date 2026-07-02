@@ -1,8 +1,14 @@
 import { act, renderHook } from "@testing-library/react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { describe, expect, test, vi } from "vitest";
-import { MagicType, type Collection, type CollectionItem, type DadDb, type Item } from "../data";
-import { useItemReorder } from "./item-reorder";
+import {
+  MagicType,
+  type Collection,
+  type CollectionItem,
+  type DadDb,
+  type Item,
+} from "../data";
+import { useLedgerGroupItemReorder } from "./ledger-group-item-reorder";
 
 vi.mock("../store/catalog", () => ({
   updateCatalogCollectionItemOrder: vi.fn(),
@@ -86,11 +92,11 @@ function pointerEvent(
   } as unknown as ReactPointerEvent<HTMLElement>;
 }
 
-describe("item reorder", () => {
+describe("ledger group item reorder", () => {
   test("starts a drag and suppresses the next item click", () => {
     const targetCollection = collection();
     const { result } = renderHook(() =>
-      useItemReorder({
+      useLedgerGroupItemReorder({
         canReorder: true,
         collection: targetCollection,
         collectionItemIds: [1, 2],
@@ -122,7 +128,7 @@ describe("item reorder", () => {
   test("does not start a drag when reordering is disabled", () => {
     const targetCollection = collection();
     const { result } = renderHook(() =>
-      useItemReorder({
+      useLedgerGroupItemReorder({
         canReorder: false,
         collection: targetCollection,
         collectionItemIds: [1, 2],

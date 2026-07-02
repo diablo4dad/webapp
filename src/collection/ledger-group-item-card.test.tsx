@@ -2,12 +2,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import { MagicType, type CollectionItem, type Item } from "../data";
 import {
-  ItemCard,
-  ItemDragGhost,
-  ItemDropPlaceholder,
-} from "./item-card";
-import type { ItemView } from "./item-view";
-import type { ItemDragState } from "./types";
+  LedgerGroupItemCard,
+  LedgerGroupItemDragGhost,
+  LedgerGroupItemDropPlaceholder,
+} from "./ledger-group-item-card";
+import type { LedgerGroupItemView } from "./ledger-group-item-view";
+import type { LedgerGroupItemDragState } from "./types";
 
 vi.mock("../bucket", () => ({
   getIcon: (fileName: string) => `/assets/${fileName}`,
@@ -47,7 +47,7 @@ const collectionItem: CollectionItem = {
   premium: true,
 };
 
-const itemView: ItemView = {
+const itemView: LedgerGroupItemView = {
   icon: item.icon,
   isCollected: true,
   item,
@@ -55,7 +55,7 @@ const itemView: ItemView = {
   showExcluded: false,
 };
 
-const dragState: ItemDragState = {
+const dragState: LedgerGroupItemDragState = {
   draggedItemId: collectionItem.id,
   height: 40,
   insertIndex: 0,
@@ -66,7 +66,7 @@ const dragState: ItemDragState = {
   width: 180,
 };
 
-describe("item card", () => {
+describe("ledger group item card", () => {
   test("renders details and forwards actions", () => {
     const onClick = vi.fn();
     const onQueueReorder = vi.fn();
@@ -74,7 +74,7 @@ describe("item card", () => {
     const onToggle = vi.fn();
 
     render(
-      <ItemCard
+      <LedgerGroupItemCard
         canReorder={true}
         collectionItem={collectionItem}
         isDragging={false}
@@ -115,8 +115,8 @@ describe("item card", () => {
   test("renders drag placeholder and ghost", () => {
     const { container } = render(
       <>
-        <ItemDropPlaceholder />
-        <ItemDragGhost
+        <LedgerGroupItemDropPlaceholder />
+        <LedgerGroupItemDragGhost
           collectionItem={collectionItem}
           dragState={dragState}
           itemView={itemView}

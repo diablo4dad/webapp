@@ -4,12 +4,12 @@ import {
   type CollectionItem,
   type Item,
 } from "../data";
-import type { ItemDragState } from "./types";
+import type { LedgerGroupItemDragState } from "./types";
 import {
-  createItemDragState,
-  getNextItemDragState,
-  getRenderedCollectionItemIds,
-} from "./item-reorder-state";
+  createLedgerGroupItemDragState,
+  getNextLedgerGroupItemDragState,
+  getRenderedLedgerGroupItemIds,
+} from "./ledger-group-item-reorder-state";
 
 function item(id: number): Item {
   return {
@@ -35,7 +35,9 @@ function collectionItem(id: number): CollectionItem {
   };
 }
 
-function dragState(overrides: Partial<ItemDragState> = {}): ItemDragState {
+function dragState(
+  overrides: Partial<LedgerGroupItemDragState> = {},
+): LedgerGroupItemDragState {
   return {
     draggedItemId: 1,
     height: 40,
@@ -68,10 +70,10 @@ function reorderElement(top = 0, height = 20) {
   return element;
 }
 
-describe("item reorder state", () => {
+describe("ledger group item reorder state", () => {
   test("creates drag state from pointer and item bounds", () => {
     expect(
-      createItemDragState({
+      createLedgerGroupItemDragState({
         collectionItem: collectionItem(2),
         collectionItemIds: [1, 2, 3],
         pointerX: 35,
@@ -97,7 +99,7 @@ describe("item reorder state", () => {
 
   test("does not create drag state for unknown items", () => {
     expect(
-      createItemDragState({
+      createLedgerGroupItemDragState({
         collectionItem: collectionItem(4),
         collectionItemIds: [1, 2, 3],
         pointerX: 35,
@@ -114,7 +116,7 @@ describe("item reorder state", () => {
 
   test("renders dragged item at its insert index", () => {
     expect(
-      getRenderedCollectionItemIds({
+      getRenderedLedgerGroupItemIds({
         canReorder: true,
         collectionItemIds: [1, 2, 3],
         dragState: dragState({
@@ -127,7 +129,7 @@ describe("item reorder state", () => {
 
   test("keeps item order when reorder is disabled", () => {
     expect(
-      getRenderedCollectionItemIds({
+      getRenderedLedgerGroupItemIds({
         canReorder: false,
         collectionItemIds: [1, 2, 3],
         dragState: dragState({
@@ -143,7 +145,7 @@ describe("item reorder state", () => {
     listElement.append(reorderElement(0), reorderElement(20));
 
     expect(
-      getNextItemDragState({
+      getNextLedgerGroupItemDragState({
         currentDragState: dragState(),
         itemListElement: listElement,
         pointerX: 20,
@@ -158,7 +160,7 @@ describe("item reorder state", () => {
 
   test("keeps insert index without a list", () => {
     expect(
-      getNextItemDragState({
+      getNextLedgerGroupItemDragState({
         currentDragState: dragState({
           insertIndex: 2,
         }),

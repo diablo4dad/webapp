@@ -1,4 +1,9 @@
-import type { CharacterClass, CharacterGender, CollectionItem, Item } from "../data";
+import type {
+  CharacterClass,
+  CharacterGender,
+  CollectionItem,
+  Item,
+} from "../data";
 import { getDefaultItem } from "../data";
 import {
   getClassIconVariant,
@@ -8,7 +13,7 @@ import {
 import type { CollectionLog } from "./type";
 import { isItemCollected, isItemHidden } from "./predicate";
 
-type ItemView = {
+type LedgerGroupItemView = {
   icon: string;
   isCollected: boolean;
   item: Item;
@@ -23,12 +28,12 @@ type Options = {
   preferredGender: CharacterGender;
 };
 
-function getItemView({
+function getLedgerGroupItemView({
   collectionItem,
   log,
   preferredClass,
   preferredGender,
-}: Options): ItemView {
+}: Options): LedgerGroupItemView {
   const item =
     getClassItemVariant(collectionItem, preferredClass) ??
     getDefaultItem(collectionItem);
@@ -50,5 +55,5 @@ function getItemView({
   };
 }
 
-export { getItemView };
-export type { ItemView };
+export { getLedgerGroupItemView };
+export type { LedgerGroupItemView };

@@ -15,7 +15,7 @@ type QueueOptions = {
 
 const ITEM_DRAG_START_DISTANCE = 6;
 
-function canQueueItemReorder({
+function canQueueLedgerGroupItemReorder({
   button,
   canReorder,
   isReordering,
@@ -31,7 +31,7 @@ function canQueueItemReorder({
   );
 }
 
-function queueItemDragStart({
+function queueLedgerGroupItemDragStart({
   onStart,
   pointerId,
   startX,
@@ -79,4 +79,4 @@ function isElementInsideButton(target: EventTarget | null): boolean {
   return target instanceof HTMLElement && target.closest("button") !== null;
 }
 
-export { canQueueItemReorder, queueItemDragStart };
+export { canQueueLedgerGroupItemReorder, queueLedgerGroupItemDragStart };

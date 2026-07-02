@@ -8,7 +8,7 @@ import {
   type Item,
 } from "../data";
 import type { CollectionLog } from "./type";
-import { getItemView } from "./item-view";
+import { getLedgerGroupItemView } from "./ledger-group-item-view";
 
 function item(overrides: Partial<Item> = {}): Item {
   return {
@@ -46,7 +46,7 @@ function log(overrides: Partial<CollectionLog> = {}): CollectionLog {
   };
 }
 
-describe("item view", () => {
+describe("ledger group item view", () => {
   test("selects the preferred class item and icon", () => {
     const barbarianItem = item({
       id: 1,
@@ -67,7 +67,7 @@ describe("item view", () => {
       usableByClass: [0, 0, 0, 1, 0, 0, 0],
     });
 
-    const view = getItemView({
+    const view = getLedgerGroupItemView({
       collectionItem: collectionItem({
         items: [barbarianItem, rogueItem],
       }),
@@ -85,7 +85,7 @@ describe("item view", () => {
     const itemHash = hashCode([candidate.items[0].id]);
 
     expect(
-      getItemView({
+      getLedgerGroupItemView({
         collectionItem: candidate,
         log: log({ collected: [itemHash] }),
         preferredClass: CharacterClass.BARBARIAN,
@@ -98,7 +98,7 @@ describe("item view", () => {
     });
 
     expect(
-      getItemView({
+      getLedgerGroupItemView({
         collectionItem: candidate,
         log: log({ collected: [itemHash], hidden: [itemHash] }),
         preferredClass: CharacterClass.BARBARIAN,
@@ -111,7 +111,7 @@ describe("item view", () => {
     });
 
     expect(
-      getItemView({
+      getLedgerGroupItemView({
         collectionItem: collectionItem({ unobtainable: true }),
         log: log({ collected: [itemHash] }),
         preferredClass: CharacterClass.BARBARIAN,

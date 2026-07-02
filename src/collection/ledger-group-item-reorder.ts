@@ -8,15 +8,15 @@ import {
   type DragScrollTarget,
 } from "./reorder-drag";
 import {
-  createItemDragState,
-  getNextItemDragState,
-  getRenderedCollectionItemIds,
-} from "./item-reorder-state";
+  createLedgerGroupItemDragState,
+  getNextLedgerGroupItemDragState,
+  getRenderedLedgerGroupItemIds,
+} from "./ledger-group-item-reorder-state";
 import {
-  canQueueItemReorder,
-  queueItemDragStart,
-} from "./item-reorder-queue";
-import type { ItemDragState } from "./types";
+  canQueueLedgerGroupItemReorder,
+  queueLedgerGroupItemDragStart,
+} from "./ledger-group-item-reorder-queue";
+import type { LedgerGroupItemDragState } from "./types";
 import {
   areItemOrdersEqual,
   moveItemIdToIndex,
@@ -32,7 +32,7 @@ type Options = {
   sourceCollection?: Collection;
 };
 
-function useItemReorder({
+function useLedgerGroupItemReorder({
   canReorder,
   collection,
   collectionItemIds,
@@ -41,15 +41,15 @@ function useItemReorder({
   sourceCollection,
 }: Options) {
   const itemListRef = useRef<HTMLDivElement>(null);
-  const dragStateRef = useRef<ItemDragState | undefined>(undefined);
+  const dragStateRef = useRef<LedgerGroupItemDragState | undefined>(undefined);
   const itemDragScrollTargetRef = useRef<DragScrollTarget | undefined>(
     undefined,
   );
   const suppressItemClickRef = useRef(false);
-  const [dragState, setDragState] = useState<ItemDragState>();
+  const [dragState, setDragState] = useState<LedgerGroupItemDragState>();
   const [isReordering, setIsReordering] = useState(false);
   const [reorderError, setReorderError] = useState<string>();
-  const renderedCollectionItemIds = getRenderedCollectionItemIds({
+  const renderedCollectionItemIds = getRenderedLedgerGroupItemIds({
     canReorder,
     collectionItemIds,
     dragState,
@@ -65,7 +65,7 @@ function useItemReorder({
     pointerX: number,
     pointerY: number,
   ) {
-    const nextDragState = createItemDragState({
+    const nextDragState = createLedgerGroupItemDragState({
       collectionItem,
       collectionItemIds,
       pointerX,
@@ -110,7 +110,7 @@ function useItemReorder({
     collectionItem: CollectionItem,
   ) {
     if (
-      !canQueueItemReorder({
+      !canQueueLedgerGroupItemReorder({
         button: event.button,
         canReorder,
         isReordering,
@@ -122,7 +122,7 @@ function useItemReorder({
     }
 
     const itemElement = event.currentTarget;
-    queueItemDragStart({
+    queueLedgerGroupItemDragStart({
       onStart: (pointerX, pointerY) =>
         beginItemReorder(collectionItem, itemElement, pointerX, pointerY),
       pointerId: event.pointerId,
@@ -131,7 +131,7 @@ function useItemReorder({
     });
   }
 
-  async function commitItemReorder(committedDragState: ItemDragState) {
+  async function commitItemReorder(committedDragState: LedgerGroupItemDragState) {
     if (!canReorder || !sourceCollection || isReordering) {
       dragStateRef.current = undefined;
       itemDragScrollTargetRef.current = undefined;
@@ -192,7 +192,7 @@ function useItemReorder({
         return;
       }
 
-      const nextDragState = getNextItemDragState({
+      const nextDragState = getNextLedgerGroupItemDragState({
         currentDragState,
         itemListElement: itemListRef.current,
         pointerX,
@@ -278,4 +278,4 @@ function useItemReorder({
   };
 }
 
-export { useItemReorder };
+export { useLedgerGroupItemReorder };

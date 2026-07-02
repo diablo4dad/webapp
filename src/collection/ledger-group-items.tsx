@@ -5,18 +5,18 @@ import type {
   CollectionItem,
 } from "../data";
 import {
-  ItemCard,
-  ItemDragGhost,
-  ItemDropPlaceholder,
-} from "./item-card";
-import { getItemView } from "./item-view";
-import type { ItemDragState } from "./types";
+  LedgerGroupItemCard,
+  LedgerGroupItemDragGhost,
+  LedgerGroupItemDropPlaceholder,
+} from "./ledger-group-item-card";
+import { getLedgerGroupItemView } from "./ledger-group-item-view";
+import type { LedgerGroupItemDragState } from "./types";
 import type { CollectionLog } from "./type";
 
 type Props = {
   canReorder: boolean;
   collectionItemsById: Map<number, CollectionItem>;
-  dragState?: ItemDragState;
+  dragState?: LedgerGroupItemDragState;
   draggedCollectionItem?: CollectionItem;
   isReordering: boolean;
   log: CollectionLog;
@@ -57,7 +57,7 @@ function LedgerGroupItems({
       {renderedCollectionItemIds.map((collectionItemId) => {
         if (dragState?.draggedItemId === collectionItemId) {
           return (
-            <ItemDropPlaceholder
+            <LedgerGroupItemDropPlaceholder
               key={`drop-placeholder-${collectionItemId}`}
             />
           );
@@ -68,7 +68,7 @@ function LedgerGroupItems({
           return null;
         }
 
-        const itemView = getItemView({
+        const itemView = getLedgerGroupItemView({
           collectionItem,
           log,
           preferredClass,
@@ -76,7 +76,7 @@ function LedgerGroupItems({
         });
 
         return (
-          <ItemCard
+          <LedgerGroupItemCard
             key={collectionItem.id}
             canReorder={canReorder}
             collectionItem={collectionItem}
@@ -99,10 +99,10 @@ function LedgerGroupItems({
         );
       })}
       {dragState && draggedCollectionItem && (
-        <ItemDragGhost
+        <LedgerGroupItemDragGhost
           collectionItem={draggedCollectionItem}
           dragState={dragState}
-          itemView={getItemView({
+          itemView={getLedgerGroupItemView({
             collectionItem: draggedCollectionItem,
             log,
             preferredClass,

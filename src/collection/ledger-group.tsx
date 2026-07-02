@@ -10,9 +10,9 @@ import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isLedgerInverse, isLedgerView } from "../settings/predicate";
 import { LedgerView } from "../settings/type";
-import { AddCard } from "./add-card";
+import { LedgerGroupAddCard } from "./ledger-group-add-card";
 import { useCollection } from "./context";
-import { useItemReorder } from "./item-reorder";
+import { useLedgerGroupItemReorder } from "./ledger-group-item-reorder";
 import type { LedgerGroupProps, LedgerProps } from "./types";
 import { LedgerGroupHeader } from "./ledger-group-header";
 import { LedgerGroupItems } from "./ledger-group-items";
@@ -118,7 +118,7 @@ const LedgerGroup = ({
     reorderError,
     shouldSuppressItemClick,
     startItemReorder,
-  } = useItemReorder({
+  } = useLedgerGroupItemReorder({
     canReorder: canReorderCollectionItems,
     collection,
     collectionItemIds,
@@ -239,13 +239,13 @@ const LedgerGroup = ({
               </div>
             )}
             {shouldRenderAddItemCard && (
-              <AddCard
+              <LedgerGroupAddCard
                 label="Add Item"
                 onClick={() => openCollectionItemEditor(collection)}
               />
             )}
             {shouldRenderAddSubcollectionCard && (
-              <AddCard
+              <LedgerGroupAddCard
                 label="Add Subcollection"
                 onClick={() => openCollectionCreator(collection, group)}
               />

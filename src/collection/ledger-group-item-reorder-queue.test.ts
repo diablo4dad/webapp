@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
 import {
-  canQueueItemReorder,
-  queueItemDragStart,
-} from "./item-reorder-queue";
+  canQueueLedgerGroupItemReorder,
+  queueLedgerGroupItemDragStart,
+} from "./ledger-group-item-reorder-queue";
 
 function pointerEvent(
   type: "pointermove" | "pointerup" | "pointercancel",
@@ -31,10 +31,10 @@ function pointerEvent(
   return event;
 }
 
-describe("item reorder queue", () => {
+describe("ledger group item reorder queue", () => {
   test("allows mouse reorder when editable and idle", () => {
     expect(
-      canQueueItemReorder({
+      canQueueLedgerGroupItemReorder({
         button: 0,
         canReorder: true,
         isReordering: false,
@@ -48,7 +48,7 @@ describe("item reorder queue", () => {
     const button = document.createElement("button");
 
     expect(
-      canQueueItemReorder({
+      canQueueLedgerGroupItemReorder({
         button: 0,
         canReorder: false,
         isReordering: false,
@@ -57,7 +57,7 @@ describe("item reorder queue", () => {
       }),
     ).toBe(false);
     expect(
-      canQueueItemReorder({
+      canQueueLedgerGroupItemReorder({
         button: 0,
         canReorder: true,
         isReordering: false,
@@ -66,7 +66,7 @@ describe("item reorder queue", () => {
       }),
     ).toBe(false);
     expect(
-      canQueueItemReorder({
+      canQueueLedgerGroupItemReorder({
         button: 1,
         canReorder: true,
         isReordering: false,
@@ -75,7 +75,7 @@ describe("item reorder queue", () => {
       }),
     ).toBe(false);
     expect(
-      canQueueItemReorder({
+      canQueueLedgerGroupItemReorder({
         button: 0,
         canReorder: true,
         isReordering: false,
@@ -94,7 +94,7 @@ describe("item reorder queue", () => {
     });
     const preventDefault = vi.spyOn(moveEvent, "preventDefault");
 
-    queueItemDragStart({
+    queueLedgerGroupItemDragStart({
       onStart,
       pointerId: 1,
       startX: 0,
@@ -109,7 +109,7 @@ describe("item reorder queue", () => {
   test("waits below the threshold and cleans up on pointer up", () => {
     const onStart = vi.fn();
 
-    queueItemDragStart({
+    queueLedgerGroupItemDragStart({
       onStart,
       pointerId: 1,
       startX: 0,
@@ -141,7 +141,7 @@ describe("item reorder queue", () => {
   test("ignores a different pointer id", () => {
     const onStart = vi.fn();
 
-    queueItemDragStart({
+    queueLedgerGroupItemDragStart({
       onStart,
       pointerId: 1,
       startX: 0,

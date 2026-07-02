@@ -8,7 +8,7 @@ import {
   type CollectionItem,
   type Item,
 } from "../data";
-import type { ItemDragState } from "./types";
+import type { LedgerGroupItemDragState } from "./types";
 import { LedgerGroupItems } from "./ledger-group-items";
 import type { CollectionLog } from "./type";
 
@@ -70,7 +70,9 @@ function log(overrides: Partial<CollectionLog> = {}): CollectionLog {
   };
 }
 
-function dragState(overrides: Partial<ItemDragState> = {}): ItemDragState {
+function dragState(
+  overrides: Partial<LedgerGroupItemDragState> = {},
+): LedgerGroupItemDragState {
   return {
     draggedItemId: 1,
     height: 40,

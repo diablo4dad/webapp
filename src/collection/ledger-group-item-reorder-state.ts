@@ -1,7 +1,7 @@
 import type { CollectionItem } from "../data";
 import { moveItemIdToIndex } from "./order";
 import { getItemInsertIndexFromPointer } from "./reorder-drag";
-import type { ItemDragState } from "./types";
+import type { LedgerGroupItemDragState } from "./types";
 
 type DragRect = Pick<DOMRect, "height" | "left" | "top" | "width">;
 
@@ -16,23 +16,23 @@ type DragStateOptions = {
 type RenderedIdsOptions = {
   canReorder: boolean;
   collectionItemIds: number[];
-  dragState?: ItemDragState;
+  dragState?: LedgerGroupItemDragState;
 };
 
 type NextDragStateOptions = {
-  currentDragState: ItemDragState;
+  currentDragState: LedgerGroupItemDragState;
   itemListElement: HTMLElement | null;
   pointerX: number;
   pointerY: number;
 };
 
-function createItemDragState({
+function createLedgerGroupItemDragState({
   collectionItem,
   collectionItemIds,
   pointerX,
   pointerY,
   rect,
-}: DragStateOptions): ItemDragState | undefined {
+}: DragStateOptions): LedgerGroupItemDragState | undefined {
   const draggedIndex = collectionItemIds.indexOf(collectionItem.id);
 
   if (draggedIndex === -1) {
@@ -51,7 +51,7 @@ function createItemDragState({
   };
 }
 
-function getRenderedCollectionItemIds({
+function getRenderedLedgerGroupItemIds({
   canReorder,
   collectionItemIds,
   dragState,
@@ -65,12 +65,12 @@ function getRenderedCollectionItemIds({
     : collectionItemIds;
 }
 
-function getNextItemDragState({
+function getNextLedgerGroupItemDragState({
   currentDragState,
   itemListElement,
   pointerX,
   pointerY,
-}: NextDragStateOptions): ItemDragState {
+}: NextDragStateOptions): LedgerGroupItemDragState {
   const insertIndex = itemListElement
     ? getItemInsertIndexFromPointer(itemListElement, pointerX, pointerY)
     : currentDragState.insertIndex;
@@ -84,7 +84,7 @@ function getNextItemDragState({
 }
 
 export {
-  createItemDragState,
-  getNextItemDragState,
-  getRenderedCollectionItemIds,
+  createLedgerGroupItemDragState,
+  getNextLedgerGroupItemDragState,
+  getRenderedLedgerGroupItemIds,
 };

@@ -11,16 +11,16 @@ import { MagicType, type CollectionItem } from "../data";
 import { getItemName, getItemType } from "../data/getters";
 import { getItemDescription } from "../i18n";
 import placeholder from "../image/placeholder.webp";
-import type { ItemDragState } from "./types";
-import type { ItemView } from "./item-view";
-import styles from "./item-card.module.css";
+import type { LedgerGroupItemDragState } from "./types";
+import type { LedgerGroupItemView } from "./ledger-group-item-view";
+import styles from "./ledger-group-item-card.module.css";
 
 type Props = {
   canReorder: boolean;
   collectionItem: CollectionItem;
   isDragging: boolean;
   isReordering: boolean;
-  itemView: ItemView;
+  itemView: LedgerGroupItemView;
   onClick: () => void;
   onQueueReorder: (event: ReactPointerEvent<HTMLDivElement>) => void;
   onStartReorder: (event: ReactPointerEvent<HTMLElement>) => void;
@@ -29,14 +29,14 @@ type Props = {
 
 type GhostProps = {
   collectionItem: CollectionItem;
-  dragState: ItemDragState;
-  itemView: ItemView;
+  dragState: LedgerGroupItemDragState;
+  itemView: LedgerGroupItemView;
 };
 
 type ContentProps = {
   canReorder: boolean;
   collectionItem: CollectionItem;
-  itemView: ItemView;
+  itemView: LedgerGroupItemView;
   onStartReorder?: (event: ReactPointerEvent<HTMLElement>) => void;
   showDragHandle: boolean;
 };
@@ -47,10 +47,10 @@ type ClassNameOptions = {
   isDragging: boolean;
   isGhost?: boolean;
   isReordering: boolean;
-  itemView: ItemView;
+  itemView: LedgerGroupItemView;
 };
 
-function ItemCard({
+function LedgerGroupItemCard({
   canReorder,
   collectionItem,
   isDragging,
@@ -87,7 +87,11 @@ function ItemCard({
   );
 }
 
-function ItemDragGhost({ collectionItem, dragState, itemView }: GhostProps) {
+function LedgerGroupItemDragGhost({
+  collectionItem,
+  dragState,
+  itemView,
+}: GhostProps) {
   return (
     <div
       className={getItemClassName({
@@ -119,14 +123,17 @@ function ItemDragGhost({ collectionItem, dragState, itemView }: GhostProps) {
   );
 }
 
-function ItemDropPlaceholder() {
+function LedgerGroupItemDropPlaceholder() {
   return (
     <div
-      className={classNames(styles.Item, styles.ItemDropPlaceholder)}
+      className={classNames(
+        styles.LedgerGroupItem,
+        styles.LedgerGroupItemDropPlaceholder,
+      )}
       aria-hidden="true"
     >
-      <div className={styles.ItemDropPlaceholderVisual} />
-      <div className={styles.ItemDropPlaceholderInfo} />
+      <div className={styles.LedgerGroupItemDropPlaceholderVisual} />
+      <div className={styles.LedgerGroupItemDropPlaceholderInfo} />
     </div>
   );
 }
@@ -145,7 +152,7 @@ function ItemContent({
       {showDragHandle && canReorder && onStartReorder && (
         <button
           type="button"
-          className={styles.ItemDragHandle}
+          className={styles.LedgerGroupItemDragHandle}
           aria-label={`Reorder ${itemName}`}
           title="Reorder item"
           onClick={(event) => {
@@ -160,41 +167,59 @@ function ItemContent({
         </button>
       )}
       <FallbackLazyImage
-        wrapperClassName={styles.ItemImageWrapper}
+        wrapperClassName={styles.LedgerGroupItemImageWrapper}
         placeholderSrc={placeholder}
-        className={styles.ItemImage}
+        className={styles.LedgerGroupItemImage}
         src={getIcon(itemView.icon)}
         alt={itemName}
       />
-      <div className={styles.ItemInfo}>
-        <div className={styles.ItemName}>{itemName}</div>
-        <div className={styles.ItemType}>
+      <div className={styles.LedgerGroupItemInfo}>
+        <div className={styles.LedgerGroupItemName}>{itemName}</div>
+        <div className={styles.LedgerGroupItemType}>
           <span>
             {getItemType(collectionItem, itemView.item)} |{" "}
             {collectionItem.claim}
           </span>
           <span
-            className={styles.ItemIconPremiumTitle}
+            className={styles.LedgerGroupItemIconPremiumTitle}
             hidden={!collectionItem.premium}
           >
             <Currency />
           </span>
         </div>
-        <div className={styles.ItemClaimDescription}>
+        <div className={styles.LedgerGroupItemClaimDescription}>
           {getItemDescription(collectionItem)}
         </div>
       </div>
-      <div className={styles.ItemIcons}>
-        <span className={styles.ItemIcon + " " + styles.ItemIconPremium}>
+      <div className={styles.LedgerGroupItemIcons}>
+        <span
+          className={
+            styles.LedgerGroupItemIcon +
+            " " +
+            styles.LedgerGroupItemIconPremium
+          }
+        >
           <Currency />
         </span>
         {itemView.isCollected && (
-          <span className={styles.ItemIcon + " " + styles.ItemIconCollection}>
+          <span
+            className={
+              styles.LedgerGroupItemIcon +
+              " " +
+              styles.LedgerGroupItemIconCollection
+            }
+          >
             <TickCircle />
           </span>
         )}
         {itemView.showExcluded && (
-          <span className={styles.ItemIcon + " " + styles.ItemIconHidden}>
+          <span
+            className={
+              styles.LedgerGroupItemIcon +
+              " " +
+              styles.LedgerGroupItemIconHidden
+            }
+          >
             <Close />
           </span>
         )}
@@ -212,16 +237,21 @@ function getItemClassName({
   itemView,
 }: ClassNameOptions) {
   return classNames({
-    [styles.Item]: true,
-    [styles.ItemDragReady]: canReorder && !isGhost && !isDragging,
-    [styles.ItemDragGhost]: isGhost,
-    [styles.ItemReorderSaving]: isReordering && !isGhost,
-    [styles.ItemCollected]: itemView.showCollected,
-    [styles.ItemHidden]: itemView.showExcluded,
-    [styles.ItemPremium]: collectionItem.premium,
-    [styles.ItemUnique]: itemView.item.magicType === MagicType.UNIQUE,
-    [styles.ItemMythic]: itemView.item.magicType === MagicType.MYTHIC,
+    [styles.LedgerGroupItem]: true,
+    [styles.LedgerGroupItemDragReady]: canReorder && !isGhost && !isDragging,
+    [styles.LedgerGroupItemDragGhost]: isGhost,
+    [styles.LedgerGroupItemReorderSaving]: isReordering && !isGhost,
+    [styles.LedgerGroupItemCollected]: itemView.showCollected,
+    [styles.LedgerGroupItemHidden]: itemView.showExcluded,
+    [styles.LedgerGroupItemPremium]: collectionItem.premium,
+    [styles.LedgerGroupItemUnique]:
+      itemView.item.magicType === MagicType.UNIQUE,
+    [styles.LedgerGroupItemMythic]: itemView.item.magicType === MagicType.MYTHIC,
   });
 }
 
-export { ItemCard, ItemDragGhost, ItemDropPlaceholder };
+export {
+  LedgerGroupItemCard,
+  LedgerGroupItemDragGhost,
+  LedgerGroupItemDropPlaceholder,
+};
