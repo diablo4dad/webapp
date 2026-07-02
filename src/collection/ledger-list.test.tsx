@@ -4,7 +4,7 @@ import { describe, expect, test, vi } from "vitest";
 import { MasterGroup } from "../common";
 import type { Collection } from "../data";
 import type { CollectionDragController } from "./ledger-types";
-import { LedgerListView, type RenderCollectionInput } from "./ledger-list";
+import { LedgerView, type RenderCollectionInput } from "./ledger-list";
 
 vi.mock("@szhsin/react-accordion", () => ({
   Accordion: ({
@@ -82,7 +82,7 @@ function renderView({
   const collectionIds = collections.map((candidate) => candidate.id);
 
   render(
-    <LedgerListView
+    <LedgerView
       activeCollectionDragController={activeCollectionDragController}
       addCollectionLabel="Add Collection"
       addCollectionParent={addCollectionParent}

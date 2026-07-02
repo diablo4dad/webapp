@@ -13,7 +13,7 @@ type Options = {
   sidebarVisibility?: SidebarVisibility;
 };
 
-vi.mock("../../collection/EmptyCollection", () => ({
+vi.mock("../../collection/empty-collection", () => ({
   default: () => <div>empty collection</div>,
 }));
 
@@ -24,13 +24,13 @@ vi.mock("../../item-sidebar", () => ({
   ItemSidebarSkeleton: () => <div>item sidebar loading</div>,
 }));
 
-vi.mock("../../collection/Ledger", () => ({
+vi.mock("../../collection/ledger", () => ({
   default: ({ collections }: { collections: Collection[] }) => (
     <div>ledger {collections.length}</div>
   ),
 }));
 
-vi.mock("../../collection/LedgerSkeleton", () => ({
+vi.mock("../../collection/ledger-skeleton", () => ({
   default: () => <div>ledger loading</div>,
 }));
 

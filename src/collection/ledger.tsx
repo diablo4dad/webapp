@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useData } from "../data/context";
 import { useEditor } from "../editor/context";
 import { useCollectionReorder } from "./collection-reorder";
-import { LedgerListView } from "./ledger-list";
+import { LedgerView } from "./ledger-list";
 import { LedgerSection } from "./ledger-section";
 import {
   getAddCollectionState,
@@ -65,7 +65,7 @@ const Ledger = ({
   });
 
   return (
-    <LedgerListView
+    <LedgerView
       activeCollectionDragController={activeCollectionDragController}
       addCollectionLabel={addCollectionLabel}
       addCollectionParent={addCollectionParent}

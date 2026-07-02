@@ -1,4 +1,4 @@
-import styles from "./EmptyCollection.module.css";
+import styles from "./empty-collection.module.css";
 
 function EmptyCollection() {
   return (

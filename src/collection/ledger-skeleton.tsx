@@ -1,4 +1,4 @@
-import styles from "./Ledger.module.css";
+import styles from "./ledger.module.css";
 import React from "react";
 import classNames from "classnames";
 

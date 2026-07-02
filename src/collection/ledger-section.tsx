@@ -19,7 +19,7 @@ import { getSectionRules } from "./section-rules";
 import { getSectionState } from "./section-state";
 import { SectionHeader } from "./section-header";
 import { useSectionToggles } from "./section-toggles";
-import styles from "./Ledger.module.css";
+import styles from "./ledger.module.css";
 
 type Props = LedgerSectionProps & {
   renderSubcollections: (props: LedgerProps) => ReactNode;

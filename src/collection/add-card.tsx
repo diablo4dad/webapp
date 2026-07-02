@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { Plus } from "../components/Icons";
-import styles from "./Ledger.module.css";
+import styles from "./ledger.module.css";
 
 type Props = {
   label: string;

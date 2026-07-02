@@ -13,7 +13,7 @@ import { getItemDescription } from "../i18n";
 import placeholder from "../image/placeholder.webp";
 import type { ItemDragState } from "./ledger-types";
 import type { ItemView } from "./item-view";
-import styles from "./Ledger.module.css";
+import styles from "./ledger.module.css";
 
 type Props = {
   canReorder: boolean;

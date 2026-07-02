@@ -5,7 +5,7 @@ import type { MasterGroup } from "../common";
 import type { Collection } from "../data";
 import type { CollectionDragController } from "./ledger-types";
 import type { CollectionParentId } from "./reorder";
-import styles from "./Ledger.module.css";
+import styles from "./ledger.module.css";
 
 type RenderCollectionInput = {
   collection: Collection;
@@ -34,7 +34,7 @@ type Props = {
   renderedCollectionIds: string[];
 };
 
-function LedgerListView({
+function LedgerView({
   activeCollectionDragController,
   addCollectionLabel,
   addCollectionParent,
@@ -147,5 +147,5 @@ function LedgerListView({
   );
 }
 
-export { LedgerListView };
+export { LedgerView };
 export type { RenderCollectionInput };

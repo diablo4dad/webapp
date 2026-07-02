@@ -5,7 +5,7 @@ import btnStyles from "../components/Button.module.css";
 import { GripVertical, Pencil, Tick } from "../components/Icons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
 import type { Collection } from "../data";
-import styles from "./Ledger.module.css";
+import styles from "./ledger.module.css";
 
 type Props = {
   canEdit: boolean;

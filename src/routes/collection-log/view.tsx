@@ -1,6 +1,6 @@
-import Ledger from "../../collection/Ledger";
-import LedgerSkeleton from "../../collection/LedgerSkeleton";
-import EmptyCollection from "../../collection/EmptyCollection";
+import EmptyCollection from "../../collection/empty-collection";
+import Ledger from "../../collection/ledger";
+import LedgerSkeleton from "../../collection/ledger-skeleton";
 import { ItemSidebar, ItemSidebarSkeleton } from "../../item-sidebar";
 import { Progress } from "../../progress";
 import { Season } from "../../season";
