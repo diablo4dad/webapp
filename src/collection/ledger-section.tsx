@@ -12,14 +12,9 @@ import { isLedgerInverse, isLedgerView } from "../settings/predicate";
 import { LedgerView } from "../settings/type";
 import { AddCard } from "./add-card";
 import { useCollection } from "./context";
-import {
-  ItemCard,
-  ItemDragGhost,
-  ItemDropPlaceholder,
-} from "./item-card";
 import { useItemReorder } from "./item-reorder";
-import { getItemView } from "./item-view";
 import type { LedgerProps, LedgerSectionProps } from "./ledger-types";
+import { SectionItems } from "./section-items";
 import { getSectionRules } from "./section-rules";
 import { getSectionState } from "./section-state";
 import { SectionHeader } from "./section-header";
@@ -215,68 +210,26 @@ const LedgerSection = ({
                 : styles.LedgerRow
             }
           >
-            {renderedCollectionItemIds.map((collectionItemId) => {
-              if (dragState?.draggedItemId === collectionItemId) {
-                return (
-                  <ItemDropPlaceholder
-                    key={`drop-placeholder-${collectionItemId}`}
-                  />
-                );
+            <SectionItems
+              canReorder={canReorderCollectionItems}
+              collectionItemsById={collectionItemsById}
+              dragState={dragState}
+              draggedCollectionItem={draggedCollectionItem}
+              isReordering={isReordering}
+              log={log}
+              onClickItem={(collectionItem) =>
+                onClickItem(collectionItem, collection)
               }
-
-              const collectionItem = collectionItemsById.get(collectionItemId);
-              if (!collectionItem) {
-                return null;
+              onQueueReorder={queueItemReorder}
+              onStartReorder={startItemReorder}
+              onToggleItem={(collectionItem, isCollected) =>
+                toggleItem(collectionItem)(isCollected)
               }
-
-              const itemView = getItemView({
-                collectionItem,
-                log,
-                preferredClass,
-                preferredGender,
-              });
-
-              return (
-                <ItemCard
-                  key={collectionItem.id}
-                  canReorder={canReorderCollectionItems}
-                  collectionItem={collectionItem}
-                  isDragging={dragState !== undefined}
-                  isReordering={isReordering}
-                  itemView={itemView}
-                  onClick={() => {
-                    if (shouldSuppressItemClick()) {
-                      return;
-                    }
-
-                    if (!dragState) {
-                      onClickItem(collectionItem, collection);
-                    }
-                  }}
-                  onQueueReorder={(event) =>
-                    queueItemReorder(event, collectionItem)
-                  }
-                  onStartReorder={(event) =>
-                    startItemReorder(event, collectionItem)
-                  }
-                  onToggle={() =>
-                    toggleItem(collectionItem)(!itemView.isCollected)
-                  }
-                />
-              );
-            })}
-            {dragState && draggedCollectionItem && (
-              <ItemDragGhost
-                collectionItem={draggedCollectionItem}
-                dragState={dragState}
-                itemView={getItemView({
-                  collectionItem: draggedCollectionItem,
-                  log,
-                  preferredClass,
-                  preferredGender,
-                })}
-              />
-            )}
+              preferredClass={preferredClass}
+              preferredGender={preferredGender}
+              renderedCollectionItemIds={renderedCollectionItemIds}
+              shouldSuppressItemClick={shouldSuppressItemClick}
+            />
             {reorderError && (
               <div className={styles.ItemReorderError}>{reorderError}</div>
             )}
