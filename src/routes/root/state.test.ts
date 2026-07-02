@@ -2,6 +2,7 @@ import {
   RootContent,
   closeRootContent,
   getInitialRootContentState,
+  getRootMobileContentVisibility,
   openRootContent,
   toggleRootContent,
   toggleRootSidebarVisibility,
@@ -112,6 +113,25 @@ describe("sidebar visibility", () => {
     ).toEqual({
       showConfig: false,
       showItem: false,
+    });
+  });
+});
+
+describe("mobile content visibility", () => {
+  test("opens the matching mobile content surface", () => {
+    expect(getRootMobileContentVisibility(RootContent.LEDGER)).toEqual({
+      isMobileConfigOpen: false,
+      isMobileSearchOpen: false,
+    });
+
+    expect(getRootMobileContentVisibility(RootContent.CONFIG)).toEqual({
+      isMobileConfigOpen: true,
+      isMobileSearchOpen: false,
+    });
+
+    expect(getRootMobileContentVisibility(RootContent.SEARCH)).toEqual({
+      isMobileConfigOpen: false,
+      isMobileSearchOpen: true,
     });
   });
 });

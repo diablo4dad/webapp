@@ -11,6 +11,11 @@ type RootContentState = {
   history: RootContent[];
 };
 
+type RootMobileContentVisibility = {
+  isMobileConfigOpen: boolean;
+  isMobileSearchOpen: boolean;
+};
+
 const DEFAULT_ROOT_CONTENT = RootContent.LEDGER;
 const transientContent = [RootContent.CONFIG, RootContent.SEARCH];
 
@@ -72,13 +77,24 @@ function toggleRootSidebarVisibility(
   };
 }
 
+function getRootMobileContentVisibility(
+  content: RootContent,
+): RootMobileContentVisibility {
+  return {
+    isMobileConfigOpen: content === RootContent.CONFIG,
+    isMobileSearchOpen: content === RootContent.SEARCH,
+  };
+}
+
 export {
   DEFAULT_ROOT_CONTENT,
   RootContent,
   closeRootContent,
   getInitialRootContentState,
+  getRootMobileContentVisibility,
   openRootContent,
   toggleRootContent,
   toggleRootSidebarVisibility,
+  type RootMobileContentVisibility,
   type RootContentState,
 };

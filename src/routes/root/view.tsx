@@ -5,7 +5,10 @@ import { RootFooter } from "./footer";
 import { RootHeader } from "./header";
 import { RootLayout } from "./layout";
 import { RootMain } from "./main";
-import { RootContent } from "./state";
+import {
+  RootContent,
+  getRootMobileContentVisibility,
+} from "./state";
 
 type Props = {
   canEditCatalog: boolean;
@@ -44,8 +47,10 @@ function RootView({
   sidebarVisibility,
   user,
 }: Props) {
-  const isMobileConfigOpen = content === RootContent.CONFIG;
-  const isMobileSearchOpen = content === RootContent.SEARCH;
+  const {
+    isMobileConfigOpen,
+    isMobileSearchOpen,
+  } = getRootMobileContentVisibility(content);
 
   return (
     <RootLayout
