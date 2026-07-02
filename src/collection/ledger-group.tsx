@@ -16,9 +16,9 @@ import { useItemReorder } from "./item-reorder";
 import type { LedgerGroupProps, LedgerProps } from "./types";
 import { LedgerGroupHeader } from "./ledger-group-header";
 import { LedgerGroupItems } from "./ledger-group-items";
-import { getSectionRules } from "./section-rules";
-import { getSectionState } from "./section-state";
-import { useSectionToggles } from "./section-toggles";
+import { getLedgerGroupRules } from "./ledger-group-rules";
+import { getLedgerGroupState } from "./ledger-group-state";
+import { useLedgerGroupToggles } from "./ledger-group-toggles";
 import styles from "./ledger-group.module.css";
 
 type Props = LedgerGroupProps & {
@@ -56,7 +56,7 @@ const LedgerGroup = ({
     () => selectCollectionById(db.collections, collection.id),
     [db.collections, collection.id],
   );
-  const { toggleCollection, toggleItem } = useSectionToggles({
+  const { toggleCollection, toggleItem } = useLedgerGroupToggles({
     onToggleCollection,
     onToggleItem,
   });
@@ -66,7 +66,7 @@ const LedgerGroup = ({
     headingLabel,
     isComplete,
     isOpen: ledgerIsOpen,
-  } = getSectionState({
+  } = getLedgerGroupState({
     collection,
     log,
     openCollections,
@@ -85,7 +85,7 @@ const LedgerGroup = ({
     canReorderCollections,
     shouldRenderAddItemCard,
     shouldRenderAddSubcollectionCard,
-  } = getSectionRules({
+  } = getLedgerGroupRules({
     collection,
     depth,
     group,

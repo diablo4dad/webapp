@@ -1,7 +1,12 @@
 import { describe, expect, test } from "vitest";
 import { MasterGroup } from "../common";
-import { MagicType, type Collection, type CollectionItem, type Item } from "../data";
-import { getSectionRules } from "./section-rules";
+import {
+  MagicType,
+  type Collection,
+  type CollectionItem,
+  type Item,
+} from "../data";
+import { getLedgerGroupRules } from "./ledger-group-rules";
 
 function item(id: number): Item {
   return {
@@ -38,10 +43,12 @@ function collection(overrides: Partial<Collection> = {}): Collection {
   };
 }
 
-function rules(overrides: Partial<Parameters<typeof getSectionRules>[0]> = {}) {
+function rules(
+  overrides: Partial<Parameters<typeof getLedgerGroupRules>[0]> = {},
+) {
   const targetCollection = overrides.collection ?? collection();
 
-  return getSectionRules({
+  return getLedgerGroupRules({
     collection: targetCollection,
     depth: 0,
     group: MasterGroup.GENERAL,
@@ -54,7 +61,7 @@ function rules(overrides: Partial<Parameters<typeof getSectionRules>[0]> = {}) {
   });
 }
 
-describe("section rules", () => {
+describe("ledger group rules", () => {
   test("allows edit and add actions for editable catalog collections", () => {
     expect(rules()).toMatchObject({
       canAddCollectionItems: true,

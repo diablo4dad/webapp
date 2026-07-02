@@ -10,7 +10,7 @@ type Options = {
   onToggleItem?: (item: CollectionItem) => void;
 };
 
-function useSectionToggles({
+function useLedgerGroupToggles({
   onToggleCollection,
   onToggleItem,
 }: Options) {
@@ -45,4 +45,4 @@ function useSectionToggles({
   };
 }
 
-export { useSectionToggles };
+export { useLedgerGroupToggles };

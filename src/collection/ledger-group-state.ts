@@ -13,7 +13,7 @@ type Options = {
   parentCollection?: Collection;
 };
 
-type SectionState = {
+type LedgerGroupState = {
   counterLabel: string;
   descriptionLabel?: string;
   headingLabel: string;
@@ -21,12 +21,12 @@ type SectionState = {
   isOpen: boolean;
 };
 
-function getSectionState({
+function getLedgerGroupState({
   collection,
   log,
   openCollections,
   parentCollection,
-}: Options): SectionState {
+}: Options): LedgerGroupState {
   const collected = countItemsInCollectionOwned(log, collection);
   const total =
     countAllItemsInCollection(collection) -
@@ -44,4 +44,4 @@ function getSectionState({
   };
 }
 
-export { getSectionState };
+export { getLedgerGroupState };

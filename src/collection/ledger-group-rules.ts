@@ -12,7 +12,7 @@ type Options = {
   sourceCollection?: Collection;
 };
 
-type SectionRules = {
+type LedgerGroupRules = {
   canAddCollectionItems: boolean;
   canAddSubcollections: boolean;
   canEditCollection: boolean;
@@ -22,7 +22,7 @@ type SectionRules = {
   shouldRenderAddSubcollectionCard: boolean;
 };
 
-function getSectionRules({
+function getLedgerGroupRules({
   collection,
   depth,
   group,
@@ -31,7 +31,7 @@ function getSectionRules({
   parentCollection,
   searchTerm,
   sourceCollection,
-}: Options): SectionRules {
+}: Options): LedgerGroupRules {
   const isEditableCatalogCollection =
     isEditMode &&
     collection.id !== "888" &&
@@ -73,5 +73,5 @@ function getSectionRules({
   };
 }
 
-export { getSectionRules };
-export type { SectionRules };
+export { getLedgerGroupRules };
+export type { LedgerGroupRules };

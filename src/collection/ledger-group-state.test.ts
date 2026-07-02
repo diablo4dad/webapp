@@ -7,7 +7,7 @@ import {
   type CollectionItem,
   type Item,
 } from "../data";
-import { getSectionState } from "./section-state";
+import { getLedgerGroupState } from "./ledger-group-state";
 import type { CollectionLog } from "./type";
 
 function item(id: number): Item {
@@ -53,7 +53,7 @@ function log(overrides: Partial<CollectionLog> = {}): CollectionLog {
   };
 }
 
-describe("section state", () => {
+describe("ledger group state", () => {
   test("counts collected visible items", () => {
     const targetCollection = collection({
       collectionItems: [
@@ -64,7 +64,7 @@ describe("section state", () => {
     });
 
     expect(
-      getSectionState({
+      getLedgerGroupState({
         collection: targetCollection,
         log: log({
           collected: [hashCode([1]), hashCode([2])],
@@ -80,7 +80,7 @@ describe("section state", () => {
 
   test("uses collection labels and open state", () => {
     expect(
-      getSectionState({
+      getLedgerGroupState({
         collection: collection({
           description: "Earned from quests",
           id: "quests",
@@ -98,7 +98,7 @@ describe("section state", () => {
 
   test("falls back to the parent name when child has no description", () => {
     expect(
-      getSectionState({
+      getLedgerGroupState({
         collection: collection({
           description: undefined,
         }),

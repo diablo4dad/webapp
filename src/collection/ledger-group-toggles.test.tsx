@@ -2,13 +2,18 @@ import { act, renderHook } from "@testing-library/react";
 import type { Dispatch } from "react";
 import type { ReactNode } from "react";
 import { describe, expect, test, vi } from "vitest";
-import { MagicType, type Collection, type CollectionItem, type Item } from "../data";
+import {
+  MagicType,
+  type Collection,
+  type CollectionItem,
+  type Item,
+} from "../data";
 import {
   type CollectionAction,
   CollectionActionType,
   CollectionDispatchContext,
 } from "./context";
-import { useSectionToggles } from "./section-toggles";
+import { useLedgerGroupToggles } from "./ledger-group-toggles";
 
 function item(id: number): Item {
   return {
@@ -54,13 +59,13 @@ function wrapper(dispatch: Dispatch<CollectionAction>) {
   };
 }
 
-describe("section toggles", () => {
+describe("ledger group toggles", () => {
   test("dispatches item toggles", () => {
     const dispatch = vi.fn();
     const onToggleItem = vi.fn();
     const targetItem = collectionItem(1);
     const { result } = renderHook(
-      () => useSectionToggles({ onToggleItem }),
+      () => useLedgerGroupToggles({ onToggleItem }),
       { wrapper: wrapper(dispatch as Dispatch<CollectionAction>) },
     );
 
@@ -89,7 +94,7 @@ describe("section toggles", () => {
       ],
     });
     const { result } = renderHook(
-      () => useSectionToggles({ onToggleCollection }),
+      () => useLedgerGroupToggles({ onToggleCollection }),
       { wrapper: wrapper(dispatch as Dispatch<CollectionAction>) },
     );
 
