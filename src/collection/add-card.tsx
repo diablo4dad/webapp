@@ -1,6 +1,5 @@
-import classNames from "classnames";
 import { Plus } from "../components/Icons";
-import styles from "./ledger.module.css";
+import styles from "./add-card.module.css";
 
 type Props = {
   label: string;
@@ -11,16 +10,16 @@ function AddCard({ label, onClick }: Props) {
   return (
     <button
       type="button"
-      className={classNames(styles.Item, styles.ItemAdd)}
+      className={styles.AddCard}
       onClick={onClick}
     >
-      <div className={styles.ItemAddVisual}>
-        <span className={styles.ItemAddIcon}>
+      <div className={styles.AddCardVisual}>
+        <span className={styles.AddCardIcon}>
           <Plus />
         </span>
       </div>
-      <div className={styles.ItemAddInfo}>
-        <div className={styles.ItemAddText}>{label}</div>
+      <div className={styles.AddCardInfo}>
+        <div className={styles.AddCardText}>{label}</div>
       </div>
     </button>
   );

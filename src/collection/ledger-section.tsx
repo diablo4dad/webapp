@@ -73,11 +73,13 @@ const LedgerSection = ({
     parentCollection,
   });
 
+  const isCardView = isLedgerView(settings, LedgerView.CARD);
+  const isInverseCardView = isLedgerInverse(settings);
   const className = classNames({
     [styles.Ledger]: true,
     [styles.LedgerComplete]: isComplete,
-    [styles.LedgerCards]: isLedgerView(settings, LedgerView.CARD),
-    [styles.LedgerCardsInverse]: isLedgerInverse(settings),
+    [styles.LedgerCards]: isCardView,
+    [styles.LedgerCardsInverse]: isInverseCardView,
   });
   const {
     canEditCollection,
@@ -204,6 +206,8 @@ const LedgerSection = ({
         return (
           <div
             ref={itemListRef}
+            data-ledger-inverse={isInverseCardView ? "true" : undefined}
+            data-ledger-view={isCardView ? "card" : "list"}
             className={
               collection.subcollections.length
                 ? styles.LedgerSubCollection
