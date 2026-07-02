@@ -38,7 +38,7 @@ import {
 } from "./aggregate";
 import { onTouchStart } from "../common/dom";
 import placeholder from "../image/placeholder.webp";
-import { Accordion, AccordionItem } from "@szhsin/react-accordion";
+import { AccordionItem } from "@szhsin/react-accordion";
 import { useSettings } from "../settings/context";
 import { LedgerView } from "../settings/type";
 import classNames from "classnames";
@@ -63,6 +63,14 @@ import {
   updateCatalogCollectionNodeOrder,
   updateCatalogCollectionItemOrder,
 } from "../store/catalog";
+import { LedgerListView } from "./ledger-list";
+import type {
+  CollectionDragController,
+  CollectionDragState,
+  ItemDragState,
+  LedgerInnerProps,
+  LedgerProps,
+} from "./ledger-types";
 import {
   areCollectionOrdersEqual,
   areItemOrdersEqual,
@@ -82,66 +90,6 @@ import {
   type DragScrollTarget,
 } from "./drag";
 
-type Props = {
-  collections: Collection[];
-  collectionDragController?: CollectionDragController;
-  parentCollection?: Collection;
-  onClickItem: (item: CollectionItem, collection: Collection) => void;
-  onToggleItem?: (item: CollectionItem) => void;
-  onToggleCollection?: (collection: Collection) => void;
-  onCollectionChange: (collectionId: string, isOpen: boolean) => void;
-  openCollections: string[];
-  depth?: number;
-};
-
-type PropsInner = Props & {
-  collection: Collection;
-  collectionIndex: number;
-  collectionSiblingIds: string[];
-};
-
-type ItemDragState = {
-  draggedItemId: number;
-  height: number;
-  insertIndex: number;
-  offsetX: number;
-  offsetY: number;
-  pointerX: number;
-  pointerY: number;
-  width: number;
-};
-
-type CollectionDragState = {
-  category: MasterGroup;
-  collectionId: string;
-  height: number;
-  offsetX: number;
-  offsetY: number;
-  pointerX: number;
-  pointerY: number;
-  sourceParentId: CollectionParentId;
-  sourceSiblingIds: string[];
-  targetIndex: number;
-  targetParentId: CollectionParentId;
-  targetSiblingIds: string[];
-  width: number;
-};
-
-type CollectionDragController = {
-  beginCollectionReorder: (
-    collection: Collection,
-    parentCollection: Collection | undefined,
-    sourceIndex: number,
-    sourceSiblingIds: string[],
-    element: HTMLElement,
-    pointerX: number,
-    pointerY: number,
-  ) => void;
-  collectionDragError?: string;
-  collectionDragState?: CollectionDragState;
-  collectionReordering: boolean;
-};
-
 const Ledger = ({
   collections,
   collectionDragController,
@@ -152,7 +100,7 @@ const Ledger = ({
   onCollectionChange,
   openCollections,
   depth = 0,
-}: Props) => {
+}: LedgerProps) => {
   const { db, group, searchTerm, setDb } = useData();
   const { isEditMode, openCollectionCreator } = useEditor();
   const collectionDragStateRef = useRef<CollectionDragState | undefined>(
@@ -491,111 +439,43 @@ const Ledger = ({
           );
 
   return (
-    <div
-      className={styles.CollectionList}
-      data-collection-category={group}
-      data-collection-drop-list="true"
-      data-collection-parent-id={collectionParentId ?? "root"}
-    >
-      <Accordion
-        transition
-        transitionTimeout={250}
-        allowMultiple
-        onStateChange={(e) => {
-          if (e.current.isResolved) {
-            onCollectionChange(String(e.key), e.current.isEnter);
-          }
-        }}
-      >
-        {renderedCollectionIds.map((collectionId) => {
-          if (
-            activeCollectionDragController.collectionDragState?.collectionId ===
-              collectionId &&
-            activeCollectionDragController.collectionDragState
-              .targetParentId === collectionParentId
-          ) {
-            return (
-              <div
-                key={`collection-placeholder-${collectionId}`}
-                className={styles.CollectionDropPlaceholder}
-                style={
-                  {
-                    "--collection-placeholder-height": `${
-                      activeCollectionDragController.collectionDragState.height
-                    }px`,
-                  } as CSSProperties
-                }
-              />
-            );
-          }
-
-          const collection = collectionsById.get(collectionId);
-          if (!collection) {
-            return null;
-          }
-
-          return (
-            <LedgerInner
-              key={collection.id}
-              collection={collection}
-              collectionDragController={activeCollectionDragController}
-              collectionIndex={collectionIds.indexOf(collection.id)}
-              collectionSiblingIds={collectionIds}
-              collections={collections}
-              depth={depth}
-              parentCollection={parentCollection}
-              openCollections={openCollections}
-              onCollectionChange={onCollectionChange}
-              onClickItem={onClickItem}
-              onToggleItem={onToggleItem}
-              onToggleCollection={onToggleCollection}
-            />
-          );
-        })}
-      </Accordion>
-      {canAddCollection && (
-        <button
-          type="button"
-          className={styles.CollectionAdd}
-          onClick={() => openCollectionCreator(addCollectionParent, group)}
-        >
-          <span className={styles.CollectionAddIcon}>
-            <Plus />
-          </span>
-          <span>{addCollectionLabel}</span>
-        </button>
+    <LedgerListView
+      activeCollectionDragController={activeCollectionDragController}
+      addCollectionLabel={addCollectionLabel}
+      addCollectionParent={addCollectionParent}
+      canAddCollection={canAddCollection}
+      collectionIds={collectionIds}
+      collectionParentId={collectionParentId}
+      collectionsById={collectionsById}
+      draggedCollection={draggedCollection}
+      group={group}
+      isCollectionDragRoot={isCollectionDragRoot}
+      onCollectionChange={onCollectionChange}
+      onOpenCollectionCreator={openCollectionCreator}
+      renderedCollectionIds={renderedCollectionIds}
+      renderCollection={({
+        collection,
+        collectionDragController,
+        collectionIndex,
+        collectionSiblingIds,
+      }) => (
+        <LedgerInner
+          key={collection.id}
+          collection={collection}
+          collectionDragController={collectionDragController}
+          collectionIndex={collectionIndex}
+          collectionSiblingIds={collectionSiblingIds}
+          collections={collections}
+          depth={depth}
+          parentCollection={parentCollection}
+          openCollections={openCollections}
+          onCollectionChange={onCollectionChange}
+          onClickItem={onClickItem}
+          onToggleItem={onToggleItem}
+          onToggleCollection={onToggleCollection}
+        />
       )}
-      {isCollectionDragRoot && collectionDragError && (
-        <div className={styles.CollectionReorderError}>
-          {collectionDragError}
-        </div>
-      )}
-      {isCollectionDragRoot && collectionDragState && draggedCollection && (
-        <div
-          className={styles.CollectionDragGhost}
-          style={{
-            height: collectionDragState.height,
-            left: collectionDragState.pointerX - collectionDragState.offsetX,
-            top: collectionDragState.pointerY - collectionDragState.offsetY,
-            width: collectionDragState.width,
-          }}
-        >
-          <span className={styles.CollectionDragHandle}>
-            <GripVertical />
-          </span>
-          <div>
-            <h1 className={styles.LedgerTitle}>
-              <span className={styles.LedgerCollectionName}>
-                {draggedCollection.name}
-              </span>
-            </h1>
-            <div className={styles.LedgerDescription}>
-              {draggedCollection.description}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    />
   );
 };
 
@@ -611,7 +491,7 @@ const LedgerInner = ({
   onToggleCollection,
   onCollectionChange,
   openCollections,
-}: PropsInner) => {
+}: LedgerInnerProps) => {
   const settings = useSettings();
   const log = useCollection();
   const dispatch = useCollectionDispatch();
