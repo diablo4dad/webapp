@@ -5,9 +5,13 @@ import { updateCatalogCollectionItemOrder } from "../store/catalog";
 import {
   createDragAutoScroller,
   getDragScrollTarget,
-  getItemInsertIndexFromPointer,
   type DragScrollTarget,
 } from "./drag";
+import {
+  createItemDragState,
+  getNextItemDragState,
+  getRenderedCollectionItemIds,
+} from "./item-reorder-state";
 import type { ItemDragState } from "./ledger-types";
 import {
   areItemOrdersEqual,
@@ -41,14 +45,11 @@ function useItemReorder({
   const [dragState, setDragState] = useState<ItemDragState>();
   const [isReordering, setIsReordering] = useState(false);
   const [reorderError, setReorderError] = useState<string>();
-  const renderedCollectionItemIds =
-    dragState && canReorder
-      ? moveItemIdToIndex(
-          collectionItemIds,
-          dragState.draggedItemId,
-          dragState.insertIndex,
-        )
-      : collectionItemIds;
+  const renderedCollectionItemIds = getRenderedCollectionItemIds({
+    canReorder,
+    collectionItemIds,
+    dragState,
+  });
 
   useEffect(() => {
     dragStateRef.current = dragState;
@@ -60,23 +61,17 @@ function useItemReorder({
     pointerX: number,
     pointerY: number,
   ) {
-    const draggedIndex = collectionItemIds.indexOf(collectionItem.id);
-
-    if (draggedIndex === -1) {
-      return;
-    }
-
-    const rect = itemElement.getBoundingClientRect();
-    const nextDragState = {
-      draggedItemId: collectionItem.id,
-      height: rect.height,
-      insertIndex: draggedIndex,
-      offsetX: pointerX - rect.left,
-      offsetY: pointerY - rect.top,
+    const nextDragState = createItemDragState({
+      collectionItem,
+      collectionItemIds,
       pointerX,
       pointerY,
-      width: rect.width,
-    };
+      rect: itemElement.getBoundingClientRect(),
+    });
+
+    if (!nextDragState) {
+      return;
+    }
 
     setReorderError(undefined);
     suppressItemClickRef.current = true;
@@ -229,16 +224,12 @@ function useItemReorder({
         return;
       }
 
-      const insertIndex = itemListRef.current
-        ? getItemInsertIndexFromPointer(itemListRef.current, pointerX, pointerY)
-        : currentDragState.insertIndex;
-
-      const nextDragState = {
-        ...currentDragState,
-        insertIndex,
+      const nextDragState = getNextItemDragState({
+        currentDragState,
+        itemListElement: itemListRef.current,
         pointerX,
         pointerY,
-      };
+      });
 
       dragStateRef.current = nextDragState;
       setDragState(nextDragState);
