@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MasterGroup } from "../common";
+import type { MasterGroup } from "../common";
 import type { Collection, DadDb } from "../data";
 import { selectCollectionById } from "../data/reducers";
 import { updateCatalogCollectionNodeOrder } from "../store/catalog";
@@ -21,6 +21,10 @@ import {
   moveCollectionInDb,
 } from "./reorder";
 import { isCollectionDropAllowed } from "./reorder-rules";
+import {
+  canStartCollectionReorder,
+  createCollectionDragState,
+} from "./reorder-state";
 
 type Options = {
   collectionDragController?: CollectionDragController;
@@ -67,30 +71,25 @@ function useCollectionReorder({
     pointerY: number,
   ) {
     if (
-      collectionReordering ||
-      searchTerm.trim() !== "" ||
-      group === MasterGroup.UNIVERSAL
+      !canStartCollectionReorder({
+        group,
+        isReordering: collectionReordering,
+        searchTerm,
+      })
     ) {
       return;
     }
 
-    const rect = element.getBoundingClientRect();
-    const sourceParentId = sourceParentCollection?.id ?? null;
-    const nextDragState: CollectionDragState = {
-      category: group,
-      collectionId: collection.id,
-      height: rect.height,
-      offsetX: pointerX - rect.left,
-      offsetY: pointerY - rect.top,
+    const nextDragState = createCollectionDragState({
+      collection,
+      group,
       pointerX,
       pointerY,
-      sourceParentId,
+      rect: element.getBoundingClientRect(),
+      sourceIndex,
+      sourceParentCollection,
       sourceSiblingIds,
-      targetIndex: sourceIndex,
-      targetParentId: sourceParentId,
-      targetSiblingIds: sourceSiblingIds,
-      width: rect.width,
-    };
+    });
 
     setCollectionDragError(undefined);
     collectionDragScrollTargetRef.current = getDragScrollTarget(element);
