@@ -19,8 +19,8 @@ import {
   getCollectionListIds,
   moveCollectionIdToIndex,
   moveCollectionInDb,
-  type CollectionParentId,
 } from "./reorder";
+import { isCollectionDropAllowed } from "./reorder-rules";
 
 type Options = {
   collectionDragController?: CollectionDragController;
@@ -56,39 +56,6 @@ function useCollectionReorder({
   useEffect(() => {
     collectionDragStateRef.current = collectionDragState;
   }, [collectionDragState]);
-
-  function isCollectionDropAllowed(
-    dragState: CollectionDragState,
-    targetParentId: CollectionParentId,
-  ): boolean {
-    if (targetParentId === null) {
-      return true;
-    }
-
-    if (targetParentId === dragState.collectionId) {
-      return false;
-    }
-
-    const draggedCollection = selectCollectionById(
-      db.collections,
-      dragState.collectionId,
-    );
-    const targetParent = selectCollectionById(db.collections, targetParentId);
-
-    if (!draggedCollection || !targetParent) {
-      return false;
-    }
-
-    if (targetParent.category !== group) {
-      return false;
-    }
-
-    if (targetParent.collectionItems.length > 0) {
-      return false;
-    }
-
-    return draggedCollection.subcollections.length === 0;
-  }
 
   function beginCollectionReorder(
     collection: Collection,
@@ -231,7 +198,12 @@ function useCollectionReorder({
         if (
           isHeaderCenterBand &&
           targetCollection.id !== currentDragState.collectionId &&
-          isCollectionDropAllowed(currentDragState, targetCollection.id)
+          isCollectionDropAllowed({
+            collections: db.collections,
+            dragState: currentDragState,
+            group,
+            targetParentId: targetCollection.id,
+          })
         ) {
           nextDragState.targetParentId = targetCollection.id;
           nextDragState.targetIndex = targetCollection.subcollections.length;
@@ -253,7 +225,14 @@ function useCollectionReorder({
             ? null
             : listElement.dataset.collectionParentId ?? null;
 
-        if (isCollectionDropAllowed(currentDragState, targetParentId)) {
+        if (
+          isCollectionDropAllowed({
+            collections: db.collections,
+            dragState: currentDragState,
+            group,
+            targetParentId,
+          })
+        ) {
           nextDragState.targetParentId = targetParentId;
           nextDragState.targetIndex = getCollectionInsertIndexFromPointer(
             listElement,
