@@ -1,6 +1,6 @@
 import type { CollectionItem } from "../data";
 import { getItemInsertIndexFromPointer } from "./drag";
-import type { ItemDragState } from "./ledger-types";
+import type { ItemDragState } from "./types";
 import { moveItemIdToIndex } from "./reorder";
 
 type DragRect = Pick<DOMRect, "height" | "left" | "top" | "width">;

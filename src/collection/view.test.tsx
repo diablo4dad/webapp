@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { describe, expect, test, vi } from "vitest";
 import { MasterGroup } from "../common";
 import type { Collection } from "../data";
-import type { CollectionDragController } from "./ledger-types";
+import type { CollectionDragController } from "./types";
 import { LedgerView, type RenderCollectionInput } from "./view";
 
 vi.mock("@szhsin/react-accordion", () => ({

@@ -11,7 +11,7 @@ import {
 import type {
   CollectionDragController,
   CollectionDragState,
-} from "./ledger-types";
+} from "./types";
 import {
   areCollectionOrdersEqual,
   moveCollectionIdToIndex,

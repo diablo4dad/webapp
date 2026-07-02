@@ -1,6 +1,6 @@
-import EmptyCollection from "../../collection/empty-collection";
 import Ledger from "../../collection";
-import LedgerSkeleton from "../../collection/ledger-skeleton";
+import EmptyState from "../../collection/empty-state";
+import CollectionSkeleton from "../../collection/skeleton";
 import { ItemSidebar, ItemSidebarSkeleton } from "../../item-sidebar";
 import { Progress } from "../../progress";
 import { Season } from "../../season";
@@ -116,7 +116,7 @@ function MainContent({
   openCollections,
 }: MainContentProps) {
   if (isLoading) {
-    return <LedgerSkeleton />;
+    return <CollectionSkeleton />;
   }
 
   if (catalogError) {
@@ -133,7 +133,7 @@ function MainContent({
         onClickItem={onClickItem}
         onCollectionChange={onCollectionChange}
       />
-      {isEmpty && <EmptyCollection />}
+      {isEmpty && <EmptyState />}
     </>
   );
 }

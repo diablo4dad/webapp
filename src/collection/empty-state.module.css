@@ -1,0 +1,13 @@
+.EmptyState {
+  padding: 1rem;
+}
+
+.EmptyStateHeading {
+  margin-top: 0;
+}
+
+@media screen and (min-width: 1200px) {
+  .EmptyState {
+    padding: 2rem;
+  }
+}

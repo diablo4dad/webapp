@@ -16,7 +16,7 @@ import {
   canQueueItemReorder,
   queueItemDragStart,
 } from "./item-reorder-queue";
-import type { ItemDragState } from "./ledger-types";
+import type { ItemDragState } from "./types";
 import {
   areItemOrdersEqual,
   moveItemIdToIndex,

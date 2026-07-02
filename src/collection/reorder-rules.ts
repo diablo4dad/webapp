@@ -1,7 +1,7 @@
 import type { MasterGroup } from "../common";
 import type { Collection } from "../data";
 import { selectCollectionById } from "../data/reducers";
-import type { CollectionDragState } from "./ledger-types";
+import type { CollectionDragState } from "./types";
 import type { CollectionParentId } from "./reorder";
 
 type Options = {

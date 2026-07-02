@@ -3,7 +3,7 @@ import { Accordion } from "@szhsin/react-accordion";
 import { GripVertical, Plus } from "../components/Icons";
 import type { MasterGroup } from "../common";
 import type { Collection } from "../data";
-import type { CollectionDragController } from "./ledger-types";
+import type { CollectionDragController } from "./types";
 import type { CollectionParentId } from "./reorder";
 import styles from "./view.module.css";
 

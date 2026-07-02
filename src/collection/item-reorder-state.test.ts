@@ -4,7 +4,7 @@ import {
   type CollectionItem,
   type Item,
 } from "../data";
-import type { ItemDragState } from "./ledger-types";
+import type { ItemDragState } from "./types";
 import {
   createItemDragState,
   getNextItemDragState,

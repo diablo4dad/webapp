@@ -6,7 +6,7 @@ import {
   type CollectionItem,
   type Item,
 } from "../data";
-import type { CollectionDragState } from "./ledger-types";
+import type { CollectionDragState } from "./types";
 import { isCollectionDropAllowed } from "./reorder-rules";
 
 function item(id: number): Item {

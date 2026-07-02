@@ -8,7 +8,7 @@ import {
   type CollectionItem,
   type Item,
 } from "../data";
-import type { ItemDragState } from "./ledger-types";
+import type { ItemDragState } from "./types";
 import { LedgerGroupItems } from "./ledger-group-items";
 import type { CollectionLog } from "./type";
 

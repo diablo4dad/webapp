@@ -7,7 +7,7 @@ import {
   ItemDropPlaceholder,
 } from "./item-card";
 import type { ItemView } from "./item-view";
-import type { ItemDragState } from "./ledger-types";
+import type { ItemDragState } from "./types";
 
 vi.mock("../bucket", () => ({
   getIcon: (fileName: string) => `/assets/${fileName}`,

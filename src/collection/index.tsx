@@ -6,8 +6,8 @@ import { LedgerGroup } from "./ledger-group";
 import {
   getAddCollectionState,
   getRenderedCollectionIds,
-} from "./ledger-state";
-import type { LedgerProps } from "./ledger-types";
+} from "./state";
+import type { LedgerProps } from "./types";
 import { getCollectionListIds } from "./reorder";
 import { LedgerView } from "./view";
 

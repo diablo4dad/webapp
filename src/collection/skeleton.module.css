@@ -1,12 +1,12 @@
-.LedgerSkeleton {
+.Skeleton {
   width: 100%;
 }
 
-.LedgerSkeletonHeader {
+.SkeletonHeader {
   position: static;
 }
 
-.LedgerSkeletonButton {
+.SkeletonButton {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -24,7 +24,7 @@
   cursor: pointer;
 }
 
-.LedgerSkeletonTitle {
+.SkeletonTitle {
   display: inline-block;
   margin: 0 0.5rem 0.25rem 0;
   background-color: var(--skeleton-background);
@@ -33,11 +33,11 @@
   text-align: left;
 }
 
-.LedgerSkeletonTitle span {
+.SkeletonTitle span {
   visibility: hidden;
 }
 
-.LedgerSkeletonDescription {
+.SkeletonDescription {
   background-color: var(--skeleton-background);
   color: var(--app-text-muted);
   font-family: "Ubuntu", sans-serif;
@@ -45,27 +45,27 @@
   font-weight: 300;
 }
 
-.LedgerSkeletonDescription span {
+.SkeletonDescription span {
   visibility: hidden;
 }
 
-.LedgerSkeletonActions {
+.SkeletonActions {
   display: flex;
   gap: 0.5rem;
   color: var(--app-text-muted);
   font-size: 0.875rem;
 }
 
-.LedgerSkeletonActions span {
+.SkeletonActions span {
   width: 3rem;
   height: 3rem;
   padding: 0.5rem;
   background-color: var(--skeleton-background);
 }
 
-.LedgerSkeletonTitle,
-.LedgerSkeletonDescription,
-.LedgerSkeletonActions span {
+.SkeletonTitle,
+.SkeletonDescription,
+.SkeletonActions span {
   animation: skeleton-loading 0.75s linear infinite alternate;
 }
 
@@ -79,7 +79,7 @@
 }
 
 @media screen and (min-width: 1200px) {
-  .LedgerSkeletonButton {
+  .SkeletonButton {
     top: 0;
     height: 6rem;
     padding: 2rem 2rem;

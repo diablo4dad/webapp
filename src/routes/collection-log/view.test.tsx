@@ -13,7 +13,7 @@ type Options = {
   sidebarVisibility?: SidebarVisibility;
 };
 
-vi.mock("../../collection/empty-collection", () => ({
+vi.mock("../../collection/empty-state", () => ({
   default: () => <div>empty collection</div>,
 }));
 
@@ -30,7 +30,7 @@ vi.mock("../../collection", () => ({
   ),
 }));
 
-vi.mock("../../collection/ledger-skeleton", () => ({
+vi.mock("../../collection/skeleton", () => ({
   default: () => <div>ledger loading</div>,
 }));
 

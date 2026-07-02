@@ -5,7 +5,7 @@ import {
   getCollectionIdsForDropList,
   getCollectionInsertIndexFromPointer,
 } from "./drag";
-import type { CollectionDragState } from "./ledger-types";
+import type { CollectionDragState } from "./types";
 import { getCollectionListIds, type CollectionParentId } from "./reorder";
 import { isCollectionDropAllowed } from "./reorder-rules";
 

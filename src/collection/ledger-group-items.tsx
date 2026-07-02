@@ -10,7 +10,7 @@ import {
   ItemDropPlaceholder,
 } from "./item-card";
 import { getItemView } from "./item-view";
-import type { ItemDragState } from "./ledger-types";
+import type { ItemDragState } from "./types";
 import type { CollectionLog } from "./type";
 
 type Props = {

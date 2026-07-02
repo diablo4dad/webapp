@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { MasterGroup } from "../common";
 import type { Collection } from "../data";
-import type { CollectionDragState } from "./ledger-types";
+import type { CollectionDragState } from "./types";
 import { getNextCollectionDragState } from "./reorder-target";
 
 function collection(overrides: Partial<Collection> = {}): Collection {

@@ -11,7 +11,7 @@ import { MagicType, type CollectionItem } from "../data";
 import { getItemName, getItemType } from "../data/getters";
 import { getItemDescription } from "../i18n";
 import placeholder from "../image/placeholder.webp";
-import type { ItemDragState } from "./ledger-types";
+import type { ItemDragState } from "./types";
 import type { ItemView } from "./item-view";
 import styles from "./item-card.module.css";
 

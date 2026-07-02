@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import { MasterGroup } from "../common";
 import type { Collection, DadDb } from "../data";
-import type { CollectionDragController } from "./ledger-types";
+import type { CollectionDragController } from "./types";
 import { useCollectionReorder } from "./collection-reorder";
 
 vi.mock("../store/catalog", () => ({

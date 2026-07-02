@@ -13,7 +13,7 @@ import { LedgerView } from "../settings/type";
 import { AddCard } from "./add-card";
 import { useCollection } from "./context";
 import { useItemReorder } from "./item-reorder";
-import type { LedgerGroupProps, LedgerProps } from "./ledger-types";
+import type { LedgerGroupProps, LedgerProps } from "./types";
 import { LedgerGroupHeader } from "./ledger-group-header";
 import { LedgerGroupItems } from "./ledger-group-items";
 import { getSectionRules } from "./section-rules";

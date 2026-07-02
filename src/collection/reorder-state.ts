@@ -1,6 +1,6 @@
 import { MasterGroup } from "../common";
 import type { Collection } from "../data";
-import type { CollectionDragState } from "./ledger-types";
+import type { CollectionDragState } from "./types";
 
 type StartOptions = {
   group: MasterGroup;
