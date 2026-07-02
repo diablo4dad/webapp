@@ -5,20 +5,48 @@ description: Dependency and toolchain maintenance workflow. Use when updating np
 
 # Dependency Maintenance
 
-- Treat dependency changes as their own commit unless they are required by the active fix.
-- Check currently installed and locked versions before changing package ranges.
-- Keep `dependencies` limited to runtime app libraries; put test, type, lint, build, analysis, and local tooling packages in `devDependencies`.
+## Scope
+
+- Treat dependency changes as their own commit unless required by the active fix.
+- Keep root app dependencies separate from `functions` dependencies.
+- During refactors, record redundant packages or duplicate helper code as separate cleanup gates.
+
+## Package Placement
+
+- Keep `dependencies` limited to runtime app libraries.
+- Put test, type, lint, build, analysis, and local tooling packages in `devDependencies`.
 - Keep package entries alphabetized within each dependency group.
-- Prefer self-authored code and existing local primitives before adding runtime dependencies; add a package only when it clearly pays for its bundle, maintenance, accessibility, or correctness cost.
-- During refactors, look for redundant dependencies and duplicated helper code that can be removed in a separate cleanup gate.
-- Remove unused packages from both `package.json` and `package-lock.json`; verify no imports remain before handing over.
+- Prefer self-authored code and existing local primitives before adding runtime dependencies.
+- Add a package only when it justifies its bundle, maintenance, accessibility, or correctness cost.
+
+## Version Changes
+
+- Check installed and locked versions before changing package ranges.
+- Review upstream release notes for major, Firebase, React, TypeScript, react-scripts, or Cypress updates.
+- Target Node.js 22; raise the minor or patch floor only when a maintained dependency or Firebase requires it.
+- Update `package-lock.json` with `package.json`.
+- Do not hand-edit lockfile content.
+
+## Upgrades And Audits
+
 - Prefer incremental toolchain migrations with an explicit user evaluation gate after each phase.
-- Apply audit fixes incrementally: run non-forced fixes first, and treat forced major upgrades as separate review gates.
-- Treat Oxlint as an evaluated lint layer until explicitly promoted; do not remove other quality gates just because Oxlint passes.
-- Preserve Oxlint's intended rule surface during upgrades; evaluate newly default plugins or noisy rules in separate cleanup gates.
-- Target Node.js 22 and raise the minor or patch floor when a maintained dependency or Firebase explicitly requires it.
-- Review upstream release notes for major, Firebase, React, TypeScript, react-scripts, or Cypress updates before applying them.
-- Update `package-lock.json` with `package.json`; do not hand-edit lockfile content.
-- Check root app dependencies separately from `functions` dependencies.
+- Apply audit fixes incrementally.
+- Run non-forced audit fixes first.
+- Treat forced major upgrades as separate review gates.
+
+## Removal
+
+- Remove unused packages from both `package.json` and `package-lock.json`.
+- Verify no imports remain before handing over.
+
+## Oxlint
+
+- Treat Oxlint as an evaluated lint layer until explicitly promoted.
+- Do not remove other quality gates just because Oxlint passes.
+- Preserve Oxlint's intended rule surface during upgrades.
+- Evaluate newly default plugins or noisy rules in separate cleanup gates.
+
+## Verification And Handoff
+
 - Verify dependency or toolchain changes with `npm run check` unless the user asks for a narrower gate.
-- Call out migrations, deprecations, or follow-up risks in the final response.
+- Call out migrations, deprecations, and follow-up risks in the final response.

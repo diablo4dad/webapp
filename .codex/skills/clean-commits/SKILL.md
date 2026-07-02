@@ -5,14 +5,34 @@ description: Clean commit preparation for agentic work. Use before committing, p
 
 # Clean Commits
 
-- Start and end by checking `git status --short`.
-- Keep commits scoped to one purpose: feature, fix, refactor, tests, docs/guidance, dependency update, or generated output.
-- Treat broad refactors as a sequence of explicit gates. State the gate's module/workflow, intended boundary, risk, and verification before editing.
-- Keep mechanical moves, import rewrites, behavior changes, test additions, dependency removals, and guidance updates in separate commits unless they are inseparable for the gate.
-- Do not opportunistically refactor adjacent modules because they are visible; record follow-up gates instead.
-- Do not include `.env.local`, function env files, Firebase debug logs, emulator state, `tmp`, `build`, `node_modules`, or unrelated IDE files.
-- Stage intentional newly-created repository files once they are part of the active gate; add transient generated artifacts to `.gitignore` instead of leaving them as visible untracked noise.
-- Preserve unrelated user changes; do not clean, reset, or reformat files outside the task.
+## Status
+
+- Start by checking `git status --short`.
+- End by checking `git status --short`.
+- Preserve unrelated user changes.
+- Do not clean, reset, revert, or reformat files outside the task.
+
+## Scope
+
+- Keep each commit scoped to one purpose: feature, fix, refactor, tests, docs/guidance, dependency update, or generated output.
+- Treat broad refactors as explicit gates.
+- State each gate's module/workflow, intended boundary, risk, and verification before editing.
+- Record follow-up gates instead of opportunistically refactoring adjacent modules.
+
+## Commit Boundaries
+
+- Separate mechanical moves, import rewrites, behavior changes, test additions, dependency removals, and guidance updates when they can stand alone.
+- Combine changes only when they are inseparable for the active gate.
 - Include AGENTS/SKILL updates when the work introduced a firm future directive or repeatable process lesson.
+
+## Worktree Hygiene
+
+- Do not commit `.env.local`, function env files, Firebase debug logs, emulator state, `tmp`, `build`, `node_modules`, or unrelated IDE files.
+- Stage intentional new repository files once they are part of the active gate.
+- Add transient generated artifacts to `.gitignore` instead of leaving visible untracked noise.
+
+## Verification And Handoff
+
 - Run the relevant verification before considering the commit clean.
-- Summarize changed files and verification honestly, including skipped checks.
+- Summarize changed files and verification honestly.
+- Call out skipped checks and residual risk.

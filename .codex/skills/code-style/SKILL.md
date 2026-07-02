@@ -5,33 +5,75 @@ description: Code style and TypeScript/React conventions for this repository. Us
 
 # Code Style
 
-- Follow existing Vite, React 19, TypeScript strict-mode style.
+## Baseline
+
+- Follow the existing Vite, React 19, and TypeScript strict-mode style.
 - Use `.tsx` for React components and `.ts` for non-React logic.
-- Prefer lowercase kebab-case file and folder names for new modules. Use short, broad names when the parent folder supplies context, avoid repeating parent context in filenames, and reserve PascalCase filenames for a deliberate compatibility reason.
-- In complex UI modules, prefer conventional file names such as `route.tsx`, `view.tsx`, `layout.tsx`, `state.ts`, `links.ts`, and `loading.ts` when the parent folder supplies the feature context.
-- Prefer named exports for reusable logic unless nearby code uses a default export.
-- Inside a feature or route module, omit parent/module prefixes such as `Root` from exports, components, helpers, and local types unless the symbol is consumed outside that owning module or the prefix prevents a real collision. Keep private module-scoped type names short, such as `Props` or `Options`, when the file context is enough.
-- Order top-level declarations after imports as types/interfaces/enums first, then constants/static maps, then functions/components/hooks. Within functions/components, put the public entrypoint first and local helpers after it in reading order. Preserve required framework or test setup ordering, such as `vi.hoisted` and `vi.mock`, when runtime behavior depends on it.
-- Group top-level constants by logical naming family. Keep related prefixes or suffixes contiguous, such as `DEFAULT_*` constants together and `*_SLUG` constants together; place dependency constants before aliases that reference them.
-- Use `npm run lint:fix` for Oxlint auto-fixes; manually correct remaining Oxlint violations that cannot be resolved by `--fix`.
-- Do not bulk-normalize existing modules solely for export grouping; apply Oxlint's grouped, bottom-of-file export style to source files as they are touched for active work.
-- Keep provider, reducer, predicate, getter, and persistence logic in their existing module families.
-- Prefer small single-file React components over large monoliths; split by responsibility before adding more behavior to an already large component.
-- Keep tightly coupled one-off child render components in the parent file when they only support that view. Extract them to sibling files only when reuse, size, testing, async loading, or distinct ownership justifies the file boundary.
-- Keep components single-responsibility; build larger feature experiences through composition instead of accumulating unrelated state, effects, and markup in one component.
-- Keep components readable: move complex derivations into named helpers when JSX becomes hard to scan.
-- Keep render components pure where practical: pass data, derived state, and event handlers through props instead of reading context, loading data, or performing persistence from the view.
-- Use CSS modules for component-specific styles and existing shared components before adding new styling patterns.
-- Keep CSS modules self-contained: a module should style the owning component and only tightly coupled private subcomponents; move shared layout, placement, and reusable primitives to the appropriate layout or component module.
-- Name CSS module classes with the UpperCamelCase module filename as the first segment, then append hierarchical role segments in reading order. For example, `layout.module.css` uses `Layout`, `LayoutHeading`, and `LayoutHeadingTitle`; `header.module.css` uses `HeaderLogo`.
-- Keep CSS class hierarchy shallow and meaningful. CSS modules scope class names, so omit route or feature prefixes such as `Root` or `CollectionLog` unless they disambiguate multiple owners in the same CSS module; avoid naming by incidental DOM tags, colors, or implementation details.
-- Group CSS properties by purpose: positioning and stacking, layout/display, box model and sizing, visual treatment, typography, interaction/state, then animation/transition. Use that order when editing a rule, without reordering untouched CSS solely for churn.
-- Place breakpoint/media-query blocks at the end of each CSS module. Order breakpoints by ascending width, from smaller viewport conditions to larger ones, and keep related responsive overrides together.
-- Use the established breakpoint scale for new media queries: `480px` for narrow component affordances, `720px` and `900px` for editor/form layouts, `1200px` for the primary desktop layout, `1600px` for wide layouts, and `2600px` for ultra-wide collection layouts. Keep `320px` reserved for the global typography ramp in `src/index.css`.
-- Avoid introducing off-scale breakpoints such as `960px` in new CSS unless the component has a measured layout need that the established scale cannot satisfy. Keep breakpoint values literal in `@media` conditions because plain CSS custom properties are not portable there in this stack.
-- Use CSS custom properties for values shared across modules or repeated as site-wide concepts. Keep one-off component-specific values local until reuse or semantic importance justifies a variable.
-- Define shared CSS variables in `src/index.css`, grouped logically under `:root`. Put low-level base tokens first, such as color palettes, spacing steps, radius/shadow values, and typography scales; then define semantic application tokens, such as panel backgrounds or heading sizes, by referencing those bases where practical.
-- Prefer self-authored components and existing local primitives before adding UI libraries; reach for a library only when accessibility, positioning, virtualization, parsing, or other complexity justifies the dependency.
-- Keep reusable component CSS focused on the component's own appearance and intrinsic affordances. Put screen positioning, page sizing, and fixed layout constraints in layout components or parent wrappers.
-- Preserve current formatting style in touched files; do not introduce repo-wide formatting churn.
-- Prefer accessible controls with real buttons, labels, and keyboard behavior for interactive UI.
+- Preserve local formatting in touched files; avoid repo-wide formatting churn.
+- Keep provider, reducer, predicate, getter, and persistence logic in their established module families.
+
+## Files And Folders
+
+- Prefer lowercase kebab-case file and folder names for new modules.
+- Use short, broad file names when the parent folder supplies context.
+- Avoid repeating the parent or feature name in child filenames.
+- Reserve PascalCase filenames for deliberate compatibility reasons.
+- In complex UI modules, prefer conventional names such as `route.tsx`, `view.tsx`, `layout.tsx`, `state.ts`, `links.ts`, and `loading.ts`.
+
+## Exports And Names
+
+- Prefer named exports for reusable logic unless nearby code uses default exports.
+- Inside a feature or route module, omit parent/module prefixes unless the symbol is consumed externally or prevents a real collision.
+- Keep private module-scoped types short when file context is enough, such as `Props`, `Options`, or `State`.
+- Apply grouped, bottom-of-file export style to source files as they are touched.
+- Do not bulk-normalize exports outside the active work.
+
+## Declaration Order
+
+- Order top-level declarations after imports as types/interfaces/enums, constants/static maps, then functions/components/hooks.
+- Group constants by logical naming family, such as `DEFAULT_*` or `*_SLUG`.
+- Put dependency constants before aliases that reference them.
+- Within functions/components, put the public entrypoint first and local helpers after it in reading order.
+- Preserve runtime-sensitive test/mock ordering such as `vi.hoisted` and `vi.mock`.
+
+## React Components
+
+- Prefer focused single-responsibility components over monoliths.
+- Split large components by responsibility before adding more behavior.
+- Keep tightly coupled one-off child render helpers in the parent file.
+- Extract child components when reuse, size, testing, async loading, or ownership justifies the file boundary.
+- Move complex JSX derivations into named helpers.
+- Keep render components pure where practical; pass data, derived state, and handlers through props.
+- Prefer existing local primitives and self-authored components before adding UI libraries.
+
+## CSS Modules
+
+- Use CSS modules for component-specific styles.
+- Keep CSS modules scoped to the owning component and tightly coupled private children.
+- Put shared layout, placement, and reusable primitives in the appropriate layout or component module.
+- Name classes with the UpperCamelCase module filename first, then role segments in reading order.
+- Keep class hierarchy shallow and semantic; avoid incidental tag, color, or implementation-detail names.
+- Omit route/feature prefixes unless they disambiguate multiple owners in the same CSS module.
+
+## CSS Structure
+
+- Order properties by purpose: positioning/stacking, layout/display, box model/sizing, visual treatment, typography, interaction/state, then animation/transition.
+- Do not reorder untouched CSS solely for churn.
+- Place breakpoint/media-query blocks at the end of each CSS module.
+- Order breakpoints by ascending width and keep related responsive overrides together.
+
+## Breakpoints And Tokens
+
+- Use established breakpoints: `480px`, `720px`, `900px`, `1200px`, `1600px`, and `2600px`.
+- Keep `320px` reserved for the global typography ramp in `src/index.css`.
+- Avoid off-scale breakpoints unless measured layout need requires one.
+- Keep breakpoint values literal in `@media` conditions.
+- Use CSS custom properties for shared or semantic values.
+- Keep one-off component values local until reuse or semantic importance justifies a variable.
+- Define shared CSS variables in `src/index.css`, with base tokens before semantic app tokens.
+
+## Tooling And Accessibility
+
+- Use `npm run lint:fix` for Oxlint auto-fixes, then review edits and rerun lint.
+- Manually fix Oxlint violations that `--fix` cannot resolve.
+- Prefer accessible controls with real buttons, labels, and keyboard behavior.

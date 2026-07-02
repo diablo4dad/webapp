@@ -5,17 +5,46 @@ description: Testing and verification workflow for this repository. Use when cha
 
 # Testing
 
-- Identify the smallest verification that can catch the changed risk.
-- Current baseline for code behavior is `npm test`.
-- Keep `npm run lint` non-mutating. Use `npm run lint:fix` as the explicit lint cleanup shortcut, review any edits, then rerun `npm run lint`.
+## Verification Scope
+
+- Choose the smallest verification that catches the changed risk.
+- Use focused checks first when nearby coverage exists.
+- Broaden before handoff when behavior, module boundaries, dependencies, or toolchain behavior changed.
+
+## Command Baselines
+
+- Use `npm test` as the current baseline for code behavior.
 - Use `npm run check` before handing over dependency, toolchain, or broad refactor changes.
-- Run focused Vitest tests first when a nearby test exists; broaden to the full test suite before finishing behavior changes.
-- Add characterization tests before splitting or moving risky modules, especially large components, providers, persistence adapters, reducers, routing, or async loading flows.
-- Prefer tests around pure planners, reducers, selectors, and adapters before component rewrites; keep UI tests focused on behavior that pure tests cannot cover.
-- Prefer short behavioral test descriptions over implementation or exported function names. Use concise nested `describe` blocks for logic branches and `test`/`it` names for outcomes, such as `describe("opening")` with `test("adds the id")` and `test("does not duplicate ids")`.
 - Use `npm run build` when touching app bootstrapping, routing, TypeScript boundaries, dependencies, production config, or Firebase integration.
-- Use `npm run e2e` or browser verification for critical user workflows that Vitest does not cover; `npm run e2e` starts Vite and runs Cypress headless.
-- Keep Cypress browser-exposed env disabled unless a test explicitly needs public, non-sensitive config.
-- Keep tests close to pure logic where possible; isolate Firebase, localStorage, DOM size, and image-loading dependencies behind fixtures or existing boundaries.
+- Use `npm run e2e` or browser verification for critical user workflows that Vitest does not cover.
+
+## Lint
+
+- Keep `npm run lint` non-mutating.
+- Use `npm run lint:fix` only as the explicit lint cleanup shortcut.
+- Review lint auto-fix edits, then rerun `npm run lint`.
+
+## Test Placement
+
+- Keep tests close to the pure logic or behavior they cover.
+- Prefer tests around planners, reducers, selectors, predicates, adapters, and pure state helpers before component rewrites.
+- Add characterization tests before splitting or moving risky modules.
+- Treat large components, providers, persistence adapters, reducers, routing, and async loading flows as risky moves.
+- Keep UI tests focused on behavior pure tests cannot cover.
+
+## Test Style
+
+- Prefer short behavioral test descriptions.
+- Avoid implementation names in test titles unless they are the behavior users or callers observe.
+- Use concise nested `describe` blocks for logic branches and `test`/`it` names for outcomes.
+
+## Boundaries
+
+- Isolate Firebase, localStorage, DOM size, image loading, and remote dependencies behind fixtures or existing boundaries.
 - Do not use live Firebase writes, uploads, or local secrets as a substitute for tests.
-- In the final response, state what ran and any remaining test gap.
+- Keep Cypress browser-exposed env disabled unless a test explicitly needs public, non-sensitive config.
+
+## Reporting
+
+- State what verification ran in the final response.
+- State skipped verification and remaining test gaps.
