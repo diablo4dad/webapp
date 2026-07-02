@@ -14,6 +14,12 @@ import {
 } from "./state";
 import { View } from "./view";
 
+type ContentControls = {
+  content: Content;
+  onCloseMobileContent: () => void;
+  onToggleMobileConfig: () => void;
+};
+
 function RootRoute(): ReactElement {
   const {
     searchTerm,
@@ -29,8 +35,11 @@ function RootRoute(): ReactElement {
     new Image().src = placeholder;
   }, []);
 
-  const [contentState, setContentState] = useState(getInitialContentState);
-  const content = contentState.content;
+  const {
+    content,
+    onCloseMobileContent,
+    onToggleMobileConfig,
+  } = useContentControls();
 
   function onToggleItemSidebar() {
     setSidebarVisibility(
@@ -46,22 +55,6 @@ function RootRoute(): ReactElement {
 
   function onClearSearch() {
     setSearchTerm("");
-  }
-
-  function onCloseMobileContent() {
-    setContentState((currentContentState) =>
-      closeContent(currentContentState.history),
-    );
-  }
-
-  function onToggleMobileConfig() {
-    setContentState((currentContentState) =>
-      toggleContent(
-        currentContentState.content,
-        currentContentState.history,
-        Content.CONFIG,
-      ),
-    );
   }
 
   return (
@@ -84,6 +77,32 @@ function RootRoute(): ReactElement {
       user={user}
     />
   );
+}
+
+function useContentControls(): ContentControls {
+  const [contentState, setContentState] = useState(getInitialContentState);
+
+  function onCloseMobileContent() {
+    setContentState((currentContentState) =>
+      closeContent(currentContentState.history),
+    );
+  }
+
+  function onToggleMobileConfig() {
+    setContentState((currentContentState) =>
+      toggleContent(
+        currentContentState.content,
+        currentContentState.history,
+        Content.CONFIG,
+      ),
+    );
+  }
+
+  return {
+    content: contentState.content,
+    onCloseMobileContent,
+    onToggleMobileConfig,
+  };
 }
 
 export default RootRoute;

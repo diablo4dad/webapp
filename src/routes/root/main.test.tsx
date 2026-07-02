@@ -17,7 +17,7 @@ vi.mock("../../editor/CollectionItemEditor", () => ({
 }));
 
 vi.mock("./mobile-search", () => ({
-  MobileSearchOverlay: ({
+  MobileSearch: ({
     onClearSearch,
     onClose,
     onSearchChange,
@@ -38,7 +38,7 @@ vi.mock("./mobile-search", () => ({
 }));
 
 vi.mock("./mobile-settings", () => ({
-  MobileSettingsDrawer: ({
+  MobileSettings: ({
     canEditCatalog,
     isEditMode,
     onClose,
