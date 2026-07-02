@@ -1,26 +1,22 @@
-import styles from "./ledger.module.css";
-import React from "react";
-import classNames from "classnames";
+import styles from "./ledger-skeleton.module.css";
 
 function LedgerSkeleton() {
-  const classNameStr = classNames(styles.Ledger, styles.Skeleton);
-
   return (
-    <div className={classNameStr}>
+    <div className={styles.LedgerSkeleton}>
       {Array.from({ length: 5 }, (_, k) => (
-        <div className={styles.LedgerHeader} key={k}>
-          <div className={styles.LedgerButton}>
+        <div className={styles.LedgerSkeletonHeader} key={k}>
+          <div className={styles.LedgerSkeletonButton}>
             <div>
-              <h1 className={styles.LedgerTitle}>
+              <h1 className={styles.LedgerSkeletonTitle}>
                 <span>{"Loading... Loading..."}</span>
               </h1>
-              <div className={styles.LedgerDescription}>
+              <div className={styles.LedgerSkeletonDescription}>
                 <span>
                   {"Loading... Loading... Loading... Loading... Loading..."}
                 </span>
               </div>
             </div>
-            <span className={styles.LedgerActions}>
+            <span className={styles.LedgerSkeletonActions}>
               <span />
             </span>
           </div>
