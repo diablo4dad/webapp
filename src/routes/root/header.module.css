@@ -27,20 +27,6 @@
     color: #ccc;
 }
 
-.HeaderToggleTooltip {
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    background-color: #d8c29a;
-    box-shadow: 2px 3px 8px rgba(8, 10, 13, 0.18);
-    color: #1b1e24;
-    font-size: 0.875rem;
-    line-height: 1.2;
-}
-
-.HeaderToggleTooltip svg {
-    fill: #d8c29a;
-}
-
 @media screen and (min-width: 1200px) {
     .HeaderTitleTagLine {
         display: block;
