@@ -5,7 +5,7 @@ import { AuthActions } from "./auth";
 import { MobileDrawerLayout } from "./mobile-layout";
 import styles from "./mobile-settings.module.css";
 
-type MobileSettingsDrawerProps = {
+type Props = {
   canEditCatalog: boolean;
   isEditMode: boolean;
   onClose: () => void;
@@ -15,7 +15,7 @@ type MobileSettingsDrawerProps = {
   user?: DadUser;
 };
 
-type MobileEditorControlProps = {
+type EditorControlProps = {
   isEditMode: boolean;
   onToggleEditMode: () => void;
 };
@@ -28,7 +28,7 @@ function MobileSettingsDrawer({
   onSignOut,
   onToggleEditMode,
   user,
-}: MobileSettingsDrawerProps) {
+}: Props) {
   return (
     <MobileDrawerLayout
       onClose={onClose}
@@ -69,7 +69,7 @@ function MobileSettingsDrawer({
 function MobileEditorControl({
   isEditMode,
   onToggleEditMode,
-}: MobileEditorControlProps) {
+}: EditorControlProps) {
   return (
     <div className={styles.MobileSettingsEditor}>
       <div className={styles.MobileSettingsEditorMeta}>
