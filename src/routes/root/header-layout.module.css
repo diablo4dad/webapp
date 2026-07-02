@@ -1,0 +1,127 @@
+.HeaderLayout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.HeaderLayoutBrand {
+    display: contents;
+}
+
+.HeaderLayoutLogo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: 0;
+    padding: 1rem 0;
+}
+
+.HeaderLayoutTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    padding: 1rem 0;
+}
+
+.HeaderLayoutControls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 0.5rem 0;
+}
+
+.HeaderLayoutSearch {
+    display: none;
+}
+
+.HeaderLayoutSearch > :global(.Search) {
+    flex: 0 1 30rem;
+    max-width: 30rem;
+    min-width: 0;
+}
+
+.HeaderLayoutSpacer {
+    display: none;
+    padding: 1rem 1px 1rem 0;
+    background-color: #303640;
+}
+
+.HeaderLayoutAuth {
+    display: none;
+    align-items: center;
+    min-width: 0;
+}
+
+.HeaderLayoutAuth > * {
+    min-width: 0;
+}
+
+.HeaderLayoutButtons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+@media screen and (min-width: 1200px) {
+    .HeaderLayout {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        align-items: center;
+        gap: 1rem;
+        padding: 0 2rem;
+    }
+
+    .HeaderLayoutBrand {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        grid-column: 1 / span 3;
+        min-width: 0;
+    }
+
+    .HeaderLayoutLogo {
+        flex: 0 0 auto;
+        width: auto;
+        padding: 1rem 0;
+    }
+
+    .HeaderLayoutTitle {
+        flex: 0 1 auto;
+        justify-content: flex-start;
+        padding: 1rem 0;
+    }
+
+    .HeaderLayoutControls {
+        display: flex;
+        justify-content: flex-end;
+        grid-column: 4 / span 3;
+        width: 100%;
+        padding: 1rem 0;
+    }
+
+    .HeaderLayoutSearch {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+    }
+
+    .HeaderLayoutSpacer {
+        display: block;
+        padding: 1rem 1px 1rem 0;
+        background-color: #303640;
+    }
+
+    .HeaderLayoutAuth {
+        display: flex;
+        justify-content: flex-end;
+        flex-shrink: 0;
+    }
+}

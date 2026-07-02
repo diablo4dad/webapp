@@ -18,7 +18,7 @@ import i18n from "../../i18n";
 import logo from "../../image/d4dad-badge@1x.png";
 import { RootAuthActions } from "./auth";
 import styles from "./header.module.css";
-import { RootHeaderLayout } from "./layout";
+import { RootHeaderLayout } from "./header-layout";
 
 type RootHeaderProps = {
   canEditCatalog: boolean;

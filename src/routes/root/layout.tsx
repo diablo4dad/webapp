@@ -7,14 +7,6 @@ type Props = {
   main: ReactNode;
 };
 
-type HeaderProps = {
-  actions: ReactNode;
-  auth: ReactNode;
-  logo: ReactNode;
-  search: ReactNode;
-  title: ReactNode;
-};
-
 type MobileSearchProps = {
   actions: ReactNode;
   body: ReactNode;
@@ -40,29 +32,6 @@ function RootLayout({ header, main }: Props) {
         </footer>
       </div>
     </div>
-  );
-}
-
-function RootHeaderLayout({
-  actions,
-  auth,
-  logo,
-  search,
-  title,
-}: HeaderProps) {
-  return (
-    <header className={styles.LayoutHeaderContent}>
-      <div className={styles.LayoutHeaderBrand}>
-        <div className={styles.LayoutHeaderLogo}>{logo}</div>
-        <div className={styles.LayoutHeaderTitle}>{title}</div>
-      </div>
-      <div className={styles.LayoutHeaderControls}>
-        <div className={styles.LayoutHeaderSearch}>{search}</div>
-        <div className={styles.LayoutHeaderButtons}>{actions}</div>
-        <div className={styles.LayoutHeaderSpacer} />
-        <div className={styles.LayoutHeaderAuth}>{auth}</div>
-      </div>
-    </header>
   );
 }
 
@@ -117,7 +86,6 @@ function stopOverlayPropagation(event: MouseEvent) {
 }
 
 export {
-  RootHeaderLayout,
   RootLayout,
   RootMobileDrawerLayout,
   RootMobileSearchOverlayLayout,
