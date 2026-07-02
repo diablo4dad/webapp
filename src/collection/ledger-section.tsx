@@ -2,10 +2,8 @@ import { AccordionItem } from "@szhsin/react-accordion";
 import classNames from "classnames";
 import { useMemo } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
-import type { Collection, CollectionItem } from "../data";
 import { countAllItemsInCollection } from "../data/aggregate";
 import { useData } from "../data/context";
-import { getAllCollectionItems, getItemIds } from "../data/getters";
 import { isCollectionEmpty } from "../data/predicates";
 import { selectCollectionById } from "../data/reducers";
 import { useEditor } from "../editor/context";
@@ -18,11 +16,7 @@ import {
   countItemsInCollectionOwned,
 } from "./aggregate";
 import { AddCard } from "./add-card";
-import {
-  CollectionActionType,
-  useCollection,
-  useCollectionDispatch,
-} from "./context";
+import { useCollection } from "./context";
 import {
   ItemCard,
   ItemDragGhost,
@@ -33,6 +27,7 @@ import { getItemView } from "./item-view";
 import type { LedgerProps, LedgerSectionProps } from "./ledger-types";
 import { getSectionRules } from "./section-rules";
 import { SectionHeader } from "./section-header";
+import { useSectionToggles } from "./section-toggles";
 import styles from "./Ledger.module.css";
 
 type Props = LedgerSectionProps & {
@@ -55,7 +50,6 @@ const LedgerSection = ({
 }: Props) => {
   const settings = useSettings();
   const log = useCollection();
-  const dispatch = useCollectionDispatch();
   const { db, group, searchTerm, setDb } = useData();
   const {
     isEditMode,
@@ -71,32 +65,10 @@ const LedgerSection = ({
     () => selectCollectionById(db.collections, collection.id),
     [db.collections, collection.id],
   );
-
-  const toggleItem = (dci: CollectionItem) => (collected: boolean) => {
-    if (onToggleItem) {
-      onToggleItem(dci);
-    }
-
-    dispatch({
-      type: CollectionActionType.COLLECT,
-      itemId: getItemIds(dci),
-      toggle: collected,
-    });
-  };
-
-  const toggleCollection = (dc: Collection) => (collected: boolean) => {
-    if (onToggleCollection) {
-      onToggleCollection(dc);
-    }
-
-    getAllCollectionItems(dc).forEach((dci) => {
-      dispatch({
-        type: CollectionActionType.COLLECT,
-        itemId: getItemIds(dci),
-        toggle: collected,
-      });
-    });
-  };
+  const { toggleCollection, toggleItem } = useSectionToggles({
+    onToggleCollection,
+    onToggleItem,
+  });
 
   const collected = countItemsInCollectionOwned(log, collection);
   const total =
