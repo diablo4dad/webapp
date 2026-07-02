@@ -5,7 +5,7 @@ import type { MasterGroup } from "../common";
 import type { Collection } from "../data";
 import type { CollectionDragController } from "./ledger-types";
 import type { CollectionParentId } from "./reorder";
-import styles from "./ledger.module.css";
+import styles from "./ledger-list.module.css";
 
 type RenderCollectionInput = {
   collection: Collection;
@@ -54,7 +54,7 @@ function LedgerView({
 
   return (
     <div
-      className={styles.CollectionList}
+      className={styles.LedgerList}
       data-collection-category={group}
       data-collection-drop-list="true"
       data-collection-parent-id={collectionParentId ?? "root"}
@@ -77,7 +77,7 @@ function LedgerView({
             return (
               <div
                 key={`collection-placeholder-${collectionId}`}
-                className={styles.CollectionDropPlaceholder}
+                className={styles.LedgerListDropPlaceholder}
                 style={
                   {
                     "--collection-placeholder-height": `${collectionDragState.height}px`,
@@ -103,10 +103,10 @@ function LedgerView({
       {canAddCollection && (
         <button
           type="button"
-          className={styles.CollectionAdd}
+          className={styles.LedgerListAdd}
           onClick={() => onOpenCollectionCreator(addCollectionParent, group)}
         >
-          <span className={styles.CollectionAddIcon}>
+          <span className={styles.LedgerListAddIcon}>
             <Plus />
           </span>
           <span>{addCollectionLabel}</span>
@@ -114,13 +114,13 @@ function LedgerView({
       )}
       {isCollectionDragRoot &&
         activeCollectionDragController.collectionDragError && (
-          <div className={styles.CollectionReorderError}>
+          <div className={styles.LedgerListReorderError}>
             {activeCollectionDragController.collectionDragError}
           </div>
         )}
       {isCollectionDragRoot && collectionDragState && draggedCollection && (
         <div
-          className={styles.CollectionDragGhost}
+          className={styles.LedgerListDragGhost}
           style={{
             height: collectionDragState.height,
             left: collectionDragState.pointerX - collectionDragState.offsetX,
@@ -128,16 +128,16 @@ function LedgerView({
             width: collectionDragState.width,
           }}
         >
-          <span className={styles.CollectionDragHandle}>
+          <span className={styles.LedgerListDragHandle}>
             <GripVertical />
           </span>
           <div>
-            <h1 className={styles.LedgerTitle}>
-              <span className={styles.LedgerCollectionName}>
+            <h1 className={styles.LedgerListTitle}>
+              <span className={styles.LedgerListCollectionName}>
                 {draggedCollection.name}
               </span>
             </h1>
-            <div className={styles.LedgerDescription}>
+            <div className={styles.LedgerListDescription}>
               {draggedCollection.description}
             </div>
           </div>

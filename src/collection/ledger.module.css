@@ -39,10 +39,6 @@
   flex: 1;
 }
 
-.CollectionList {
-  width: 100%;
-}
-
 .CollectionDragHandle {
   width: 2rem;
   height: 2rem;
@@ -72,43 +68,8 @@
   height: 1.25rem;
 }
 
-.CollectionDropPlaceholder {
-  min-height: var(--collection-placeholder-height, 5rem);
-  border: 1px dashed var(--drag-handle-border-hover);
-  background: var(--drop-placeholder-background);
-  box-shadow: var(--drop-placeholder-shadow);
-}
-
-.CollectionDragGhost {
-  position: fixed;
-  z-index: 1000;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 1rem 2rem;
-  background-color: var(--card-surface);
-  border-top: 1px solid var(--card-border-top);
-  border-bottom: 1px solid var(--card-border-bottom);
-  box-shadow: var(--shadow-drag);
-  opacity: 0.94;
-}
-
-.CollectionDragGhost .CollectionDragHandle {
-  cursor: grabbing;
-}
-
 .CollectionReorderSaving {
   opacity: 0.6;
-}
-
-.CollectionReorderError {
-  padding: 0.75rem 2rem;
-  background-color: var(--feedback-danger-background);
-  border-top: 1px solid var(--feedback-danger-border);
-  border-bottom: 1px solid var(--feedback-danger-border);
-  color: var(--feedback-danger-text);
-  font-size: 0.875rem;
 }
 
 .LedgerTitle {
@@ -244,42 +205,6 @@
   border-bottom: 1px solid var(--feedback-danger-border);
   color: var(--feedback-danger-text);
   font-size: 0.875rem;
-}
-
-.CollectionAdd {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
-  border: 1px dashed var(--drag-handle-border);
-  background: linear-gradient(
-    180deg,
-    var(--add-placeholder-background-start) 0%,
-    var(--add-placeholder-background-end) 100%
-  );
-  box-shadow: inset 0 0 0 1px var(--add-placeholder-shadow-color);
-  color: var(--drag-handle-text);
-  cursor: pointer;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.CollectionAdd:hover {
-  border-color: var(--drag-handle-border-hover);
-  color: var(--drag-handle-text-hover);
-}
-
-.CollectionAddIcon {
-  width: 1.35rem;
-  height: 1.35rem;
-  display: inline-flex;
-}
-
-.CollectionAddIcon svg {
-  width: 100%;
-  height: 100%;
 }
 
 .LedgerCards .ItemReorderError {
