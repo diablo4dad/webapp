@@ -3,9 +3,7 @@ import classNames from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { MasterGroup } from "../common";
-import btnStyles from "../components/Button.module.css";
-import { GripVertical, Pencil, Plus, Tick } from "../components/Icons";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
+import { Plus } from "../components/Icons";
 import { getDefaultItem, type Collection, type CollectionItem } from "../data";
 import { countAllItemsInCollection } from "../data/aggregate";
 import { useData } from "../data/context";
@@ -55,6 +53,7 @@ import {
   moveItemIdToIndex,
   reorderCollectionItemsInDb,
 } from "./reorder";
+import { SectionHeader } from "./section-header";
 import styles from "./Ledger.module.css";
 
 type Props = LedgerSectionProps & {
@@ -85,7 +84,6 @@ const LedgerSection = ({
     openCollectionEditor,
     openCollectionItemEditor,
   } = useEditor();
-  const toggleCountDown = useRef<NodeJS.Timeout | undefined>(undefined);
   const itemListRef = useRef<HTMLDivElement>(null);
   const dragStateRef = useRef<ItemDragState | undefined>(undefined);
   const itemDragScrollTargetRef = useRef<DragScrollTarget | undefined>(
@@ -526,91 +524,18 @@ const LedgerSection = ({
         className: styles.LedgerContent,
       }}
       header={
-        <span
-          className={styles.LedgerHeaderContent}
-          data-collection-id={collection.id}
-          data-collection-reorder-item="true"
-        >
-          {canReorderCollections && (
-            <span
-              className={styles.CollectionDragHandle}
-              aria-label={`Reorder ${collection.name}`}
-              role="button"
-              tabIndex={0}
-              title="Reorder collection"
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-              }}
-              onPointerDown={startCollectionReorder}
-            >
-              <GripVertical />
-            </span>
-          )}
-          <div>
-            <h1 className={styles.LedgerTitle}>
-              <span className={styles.LedgerCollectionName}>
-                {headingLabel}
-              </span>
-              <span className={styles.LedgerCounter}>{counterLabel}</span>
-            </h1>
-            <div className={styles.LedgerDescription}>{descriptionLabel}</div>
-          </div>
-          <span className={styles.LedgerActions}>
-            {canEditCollection && (
-              <Tooltip placement={"left"}>
-                <TooltipTrigger asChild={true}>
-                  <span
-                    className={classNames(btnStyles.Btn, btnStyles.BtnGrey)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openCollectionEditor(collection, parentCollection);
-                    }}
-                    aria-label="Edit collection"
-                  >
-                    <Pencil />
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>Edit collection</TooltipContent>
-              </Tooltip>
-            )}
-            <Tooltip placement={"left"}>
-              <TooltipTrigger asChild={true}>
-                <span
-                  className={classNames({
-                    [btnStyles.Btn]: true,
-                    [btnStyles.BtnGreen]: isComplete,
-                    [btnStyles.BtnGrey]: !isComplete,
-                  })}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  onMouseDown={() => {
-                    clearTimeout(toggleCountDown.current);
-                    toggleCountDown.current = setTimeout(() => {
-                      toggleCollection(collection)(!isComplete);
-                    }, 500);
-                  }}
-                  onMouseUp={() => {
-                    clearTimeout(toggleCountDown.current);
-                  }}
-                  onTouchStart={() => {
-                    clearTimeout(toggleCountDown.current);
-                    toggleCountDown.current = setTimeout(() => {
-                      toggleCollection(collection)(!isComplete);
-                    }, 500);
-                  }}
-                  onTouchEnd={() => {
-                    clearTimeout(toggleCountDown.current);
-                  }}
-                >
-                  <Tick></Tick>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>Hold down to toggle</TooltipContent>
-            </Tooltip>
-          </span>
-        </span>
+        <SectionHeader
+          canEdit={canEditCollection}
+          canReorder={canReorderCollections}
+          collection={collection}
+          counterLabel={counterLabel}
+          descriptionLabel={descriptionLabel}
+          headingLabel={headingLabel}
+          isComplete={isComplete}
+          onEdit={() => openCollectionEditor(collection, parentCollection)}
+          onStartReorder={startCollectionReorder}
+          onToggle={() => toggleCollection(collection)(!isComplete)}
+        />
       }
     >
       {({ state }) => {
