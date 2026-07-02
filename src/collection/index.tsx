@@ -2,14 +2,14 @@ import { useMemo } from "react";
 import { useData } from "../data/context";
 import { useEditor } from "../editor/context";
 import { useCollectionReorder } from "./collection-reorder";
-import { LedgerView } from "./ledger-list";
-import { LedgerSection } from "./ledger-section";
+import { LedgerGroup } from "./ledger-group";
 import {
   getAddCollectionState,
   getRenderedCollectionIds,
 } from "./ledger-state";
 import type { LedgerProps } from "./ledger-types";
 import { getCollectionListIds } from "./reorder";
+import { LedgerView } from "./view";
 
 const Ledger = ({
   collections,
@@ -85,7 +85,7 @@ const Ledger = ({
         collectionIndex,
         collectionSiblingIds,
       }) => (
-        <LedgerSection
+        <LedgerGroup
           key={collection.id}
           collection={collection}
           collectionDragController={collectionDragController}

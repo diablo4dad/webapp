@@ -24,7 +24,7 @@ vi.mock("../../item-sidebar", () => ({
   ItemSidebarSkeleton: () => <div>item sidebar loading</div>,
 }));
 
-vi.mock("../../collection/ledger", () => ({
+vi.mock("../../collection", () => ({
   default: ({ collections }: { collections: Collection[] }) => (
     <div>ledger {collections.length}</div>
   ),

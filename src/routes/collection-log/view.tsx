@@ -1,5 +1,5 @@
 import EmptyCollection from "../../collection/empty-collection";
-import Ledger from "../../collection/ledger";
+import Ledger from "../../collection";
 import LedgerSkeleton from "../../collection/ledger-skeleton";
 import { ItemSidebar, ItemSidebarSkeleton } from "../../item-sidebar";
 import { Progress } from "../../progress";

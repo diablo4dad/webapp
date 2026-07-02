@@ -5,7 +5,7 @@ import btnStyles from "../components/Button.module.css";
 import { GripVertical, Pencil, Tick } from "../components/Icons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
 import type { Collection } from "../data";
-import styles from "./section-header.module.css";
+import styles from "./ledger-group-header.module.css";
 
 type Props = {
   canEdit: boolean;
@@ -21,7 +21,7 @@ type Props = {
   onToggle: () => void;
 };
 
-function SectionHeader({
+function LedgerGroupHeader({
   canEdit,
   canReorder,
   collection,
@@ -53,13 +53,13 @@ function SectionHeader({
 
   return (
     <span
-      className={styles.SectionHeaderContent}
+      className={styles.LedgerGroupHeaderContent}
       data-collection-id={collection.id}
       data-collection-reorder-item="true"
     >
       {canReorder && (
         <span
-          className={styles.SectionHeaderDragHandle}
+          className={styles.LedgerGroupHeaderDragHandle}
           aria-label={`Reorder ${collection.name}`}
           role="button"
           tabIndex={0}
@@ -75,20 +75,22 @@ function SectionHeader({
       )}
       <div>
         <h1
-          className={classNames(styles.SectionHeaderTitle, {
-            [styles.SectionHeaderTitleSubcollection]: isSubcollection,
+          className={classNames(styles.LedgerGroupHeaderTitle, {
+            [styles.LedgerGroupHeaderTitleSubcollection]: isSubcollection,
           })}
         >
-          <span className={styles.SectionHeaderCollectionName}>
+          <span className={styles.LedgerGroupHeaderCollectionName}>
             {headingLabel}
           </span>
-          <span className={styles.SectionHeaderCounter}>{counterLabel}</span>
+          <span className={styles.LedgerGroupHeaderCounter}>
+            {counterLabel}
+          </span>
         </h1>
-        <div className={styles.SectionHeaderDescription}>
+        <div className={styles.LedgerGroupHeaderDescription}>
           {descriptionLabel}
         </div>
       </div>
-      <span className={styles.SectionHeaderActions}>
+      <span className={styles.LedgerGroupHeaderActions}>
         {canEdit && (
           <Tooltip placement={"left"}>
             <TooltipTrigger asChild={true}>
@@ -133,4 +135,4 @@ function SectionHeader({
   );
 }
 
-export { SectionHeader };
+export { LedgerGroupHeader };

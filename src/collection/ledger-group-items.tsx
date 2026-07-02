@@ -36,7 +36,7 @@ type Props = {
   shouldSuppressItemClick: () => boolean;
 };
 
-function SectionItems({
+function LedgerGroupItems({
   canReorder,
   collectionItemsById,
   dragState,
@@ -114,4 +114,4 @@ function SectionItems({
   );
 }
 
-export { SectionItems };
+export { LedgerGroupItems };

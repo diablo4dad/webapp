@@ -13,19 +13,19 @@ import { LedgerView } from "../settings/type";
 import { AddCard } from "./add-card";
 import { useCollection } from "./context";
 import { useItemReorder } from "./item-reorder";
-import type { LedgerProps, LedgerSectionProps } from "./ledger-types";
-import { SectionItems } from "./section-items";
+import type { LedgerGroupProps, LedgerProps } from "./ledger-types";
+import { LedgerGroupHeader } from "./ledger-group-header";
+import { LedgerGroupItems } from "./ledger-group-items";
 import { getSectionRules } from "./section-rules";
 import { getSectionState } from "./section-state";
-import { SectionHeader } from "./section-header";
 import { useSectionToggles } from "./section-toggles";
-import styles from "./ledger-section.module.css";
+import styles from "./ledger-group.module.css";
 
-type Props = LedgerSectionProps & {
+type Props = LedgerGroupProps & {
   renderSubcollections: (props: LedgerProps) => ReactNode;
 };
 
-const LedgerSection = ({
+const LedgerGroup = ({
   collection,
   collectionDragController,
   collectionIndex,
@@ -76,8 +76,8 @@ const LedgerSection = ({
   const isCardView = isLedgerView(settings, LedgerView.CARD);
   const isInverseCardView = isLedgerInverse(settings);
   const className = classNames({
-    [styles.LedgerSection]: true,
-    [styles.LedgerSectionCards]: isCardView,
+    [styles.LedgerGroup]: true,
+    [styles.LedgerGroupCards]: isCardView,
   });
   const {
     canEditCollection,
@@ -169,19 +169,19 @@ const LedgerSection = ({
       itemKey={collection.id}
       className={className}
       headingProps={{
-        className: styles.LedgerSectionHeader,
+        className: styles.LedgerGroupHeader,
       }}
       buttonProps={{
-        className: classNames(styles.LedgerSectionButton, {
-          [styles.LedgerSectionReorderSaving]:
+        className: classNames(styles.LedgerGroupButton, {
+          [styles.LedgerGroupReorderSaving]:
             collectionDragController?.collectionReordering,
         }),
       }}
       contentProps={{
-        className: styles.LedgerSectionContent,
+        className: styles.LedgerGroupContent,
       }}
       header={
-        <SectionHeader
+        <LedgerGroupHeader
           canEdit={canEditCollection}
           canReorder={canReorderCollections}
           collection={collection}
@@ -209,11 +209,11 @@ const LedgerSection = ({
             data-ledger-view={isCardView ? "card" : "list"}
             className={
               collection.subcollections.length
-                ? styles.LedgerSectionSubcollection
-                : styles.LedgerSectionRow
+                ? styles.LedgerGroupSubcollection
+                : styles.LedgerGroupRow
             }
           >
-            <SectionItems
+            <LedgerGroupItems
               canReorder={canReorderCollectionItems}
               collectionItemsById={collectionItemsById}
               dragState={dragState}
@@ -234,7 +234,7 @@ const LedgerSection = ({
               shouldSuppressItemClick={shouldSuppressItemClick}
             />
             {reorderError && (
-              <div className={styles.LedgerSectionItemReorderError}>
+              <div className={styles.LedgerGroupItemReorderError}>
                 {reorderError}
               </div>
             )}
@@ -268,4 +268,4 @@ const LedgerSection = ({
   );
 };
 
-export { LedgerSection };
+export { LedgerGroup };

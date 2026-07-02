@@ -1,14 +1,14 @@
-.LedgerSection {
+.LedgerGroup {
   width: 100%;
 }
 
-.LedgerSectionHeader {
+.LedgerGroupHeader {
   position: sticky;
   top: 0;
   z-index: 1;
 }
 
-.LedgerSectionButton {
+.LedgerGroupButton {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -29,20 +29,20 @@
   cursor: pointer;
 }
 
-.LedgerSectionReorderSaving {
+.LedgerGroupReorderSaving {
   opacity: 0.6;
 }
 
-.LedgerSectionContent {
+.LedgerGroupContent {
   transition: height 0.25s cubic-bezier(0, 0, 0, 1);
 }
 
-.LedgerSectionRow {
+.LedgerGroupRow {
   display: flex;
   flex-direction: column;
 }
 
-.LedgerSectionCards .LedgerSectionRow {
+.LedgerGroupCards .LedgerGroupRow {
   --grid-layout-gap: 10px;
   --grid-column-count: 24;
   --grid-item--min-width: 96px;
@@ -66,15 +66,15 @@
   flex-direction: row;
 }
 
-.LedgerSectionCards .LedgerSectionHeader {
+.LedgerGroupCards .LedgerGroupHeader {
   position: static;
 }
 
-.LedgerSectionSubcollection .LedgerSectionButton {
+.LedgerGroupSubcollection .LedgerGroupButton {
   background-color: var(--ledger-subcollection-background);
 }
 
-.LedgerSectionItemReorderError {
+.LedgerGroupItemReorderError {
   padding: 0.75rem 2rem;
   background-color: var(--feedback-danger-background);
   border-top: 1px solid var(--feedback-danger-border);
@@ -83,18 +83,18 @@
   font-size: 0.875rem;
 }
 
-.LedgerSectionCards .LedgerSectionItemReorderError {
+.LedgerGroupCards .LedgerGroupItemReorderError {
   grid-column: 1 / -1;
 }
 
 @media screen and (min-width: 1200px) {
-  .LedgerSectionButton {
+  .LedgerGroupButton {
     top: 0;
     height: 6rem;
     padding: 2rem 2rem;
   }
 
-  .LedgerSectionCards .LedgerSectionRow {
+  .LedgerGroupCards .LedgerGroupRow {
     --grid-item--min-width: 120px;
 
     padding: 2rem;

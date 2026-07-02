@@ -1,15 +1,15 @@
-.LedgerList {
+.LedgerView {
   width: 100%;
 }
 
-.LedgerListDropPlaceholder {
+.LedgerViewDropPlaceholder {
   min-height: var(--collection-placeholder-height, 5rem);
   border: 1px dashed var(--drag-handle-border-hover);
   background: var(--drop-placeholder-background);
   box-shadow: var(--drop-placeholder-shadow);
 }
 
-.LedgerListAdd {
+.LedgerViewAdd {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,23 +29,23 @@
   cursor: pointer;
 }
 
-.LedgerListAdd:hover {
+.LedgerViewAdd:hover {
   border-color: var(--drag-handle-border-hover);
   color: var(--drag-handle-text-hover);
 }
 
-.LedgerListAddIcon {
+.LedgerViewAddIcon {
   display: inline-flex;
   width: 1.35rem;
   height: 1.35rem;
 }
 
-.LedgerListAddIcon svg {
+.LedgerViewAddIcon svg {
   width: 100%;
   height: 100%;
 }
 
-.LedgerListReorderError {
+.LedgerViewReorderError {
   padding: 0.75rem 2rem;
   border-top: 1px solid var(--feedback-danger-border);
   border-bottom: 1px solid var(--feedback-danger-border);
@@ -54,7 +54,7 @@
   font-size: 0.875rem;
 }
 
-.LedgerListDragGhost {
+.LedgerViewDragGhost {
   position: fixed;
   z-index: 1000;
   display: flex;
@@ -69,7 +69,7 @@
   pointer-events: none;
 }
 
-.LedgerListDragHandle {
+.LedgerViewDragHandle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -84,12 +84,12 @@
   cursor: grabbing;
 }
 
-.LedgerListDragHandle svg {
+.LedgerViewDragHandle svg {
   width: 1.25rem;
   height: 1.25rem;
 }
 
-.LedgerListTitle {
+.LedgerViewTitle {
   display: inline-block;
   margin: 0 0.5rem 0.25rem 0;
   color: var(--app-text);
@@ -97,7 +97,7 @@
   text-align: left;
 }
 
-.LedgerListCollectionName {
+.LedgerViewCollectionName {
   display: inline-block;
   margin-right: 0.25rem;
   font-family: "PT Serif", serif;
@@ -106,7 +106,7 @@
   text-shadow: 1px 1px 3px var(--color-black);
 }
 
-.LedgerListDescription {
+.LedgerViewDescription {
   color: var(--app-text-muted);
   font-family: "Ubuntu", sans-serif;
   font-size: 0.875rem;

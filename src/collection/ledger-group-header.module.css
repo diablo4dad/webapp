@@ -1,14 +1,14 @@
-.SectionHeaderContent {
+.LedgerGroupHeaderContent {
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.SectionHeaderContent > div:first-of-type {
+.LedgerGroupHeaderContent > div:first-of-type {
   flex: 1;
 }
 
-.SectionHeaderDragHandle {
+.LedgerGroupHeaderDragHandle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -23,21 +23,21 @@
   cursor: grab;
 }
 
-.SectionHeaderDragHandle:hover {
+.LedgerGroupHeaderDragHandle:hover {
   border-color: var(--drag-handle-border-hover);
   color: var(--drag-handle-text-hover);
 }
 
-.SectionHeaderDragHandle:active {
+.LedgerGroupHeaderDragHandle:active {
   cursor: grabbing;
 }
 
-.SectionHeaderDragHandle svg {
+.LedgerGroupHeaderDragHandle svg {
   width: 1.25rem;
   height: 1.25rem;
 }
 
-.SectionHeaderTitle {
+.LedgerGroupHeaderTitle {
   display: inline-block;
   margin: 0 0.5rem 0.25rem 0;
   color: var(--app-text);
@@ -45,12 +45,12 @@
   text-align: left;
 }
 
-.SectionHeaderTitleSubcollection {
+.LedgerGroupHeaderTitleSubcollection {
   color: var(--app-text-muted);
   font-size: 1.125rem;
 }
 
-.SectionHeaderCollectionName {
+.LedgerGroupHeaderCollectionName {
   display: inline-block;
   margin-right: 0.25rem;
   font-family: "PT Serif", serif;
@@ -59,7 +59,7 @@
   text-shadow: 1px 1px 3px var(--color-black);
 }
 
-.SectionHeaderCounter {
+.LedgerGroupHeaderCounter {
   display: inline-block;
   margin-left: 0.25rem;
   color: var(--link-color-action);
@@ -67,14 +67,14 @@
   font-weight: 400;
 }
 
-.SectionHeaderDescription {
+.LedgerGroupHeaderDescription {
   color: var(--app-text-muted);
   font-family: "Ubuntu", sans-serif;
   font-size: 0.875rem;
   font-weight: 300;
 }
 
-.SectionHeaderActions {
+.LedgerGroupHeaderActions {
   display: flex;
   gap: 0.5rem;
   color: var(--app-text-muted);

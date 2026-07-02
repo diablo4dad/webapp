@@ -9,7 +9,7 @@ import {
   type Item,
 } from "../data";
 import type { ItemDragState } from "./ledger-types";
-import { SectionItems } from "./section-items";
+import { LedgerGroupItems } from "./ledger-group-items";
 import type { CollectionLog } from "./type";
 
 vi.mock("../bucket", () => ({
@@ -85,7 +85,7 @@ function dragState(overrides: Partial<ItemDragState> = {}): ItemDragState {
 }
 
 function renderItems(
-  overrides: Partial<Parameters<typeof SectionItems>[0]> = {},
+  overrides: Partial<Parameters<typeof LedgerGroupItems>[0]> = {},
 ) {
   const firstItem = collectionItem(1);
   const secondItem = collectionItem(2);
@@ -94,7 +94,7 @@ function renderItems(
   });
 
   return render(
-    <SectionItems
+    <LedgerGroupItems
       canReorder={true}
       collectionItemsById={
         new Map(
@@ -119,7 +119,7 @@ function renderItems(
   );
 }
 
-describe("section items", () => {
+describe("ledger group items", () => {
   test("renders item cards and forwards item actions", () => {
     const onClickItem = vi.fn();
     const onQueueReorder = vi.fn();

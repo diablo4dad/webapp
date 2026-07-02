@@ -14,7 +14,7 @@ type LedgerProps = {
   depth?: number;
 };
 
-type LedgerSectionProps = LedgerProps & {
+type LedgerGroupProps = LedgerProps & {
   collection: Collection;
   collectionIndex: number;
   collectionSiblingIds: string[];
@@ -66,6 +66,6 @@ export type {
   CollectionDragController,
   CollectionDragState,
   ItemDragState,
+  LedgerGroupProps,
   LedgerProps,
-  LedgerSectionProps,
 };

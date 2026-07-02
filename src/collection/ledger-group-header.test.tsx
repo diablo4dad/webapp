@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import type { Collection } from "../data";
-import { SectionHeader } from "./section-header";
+import { LedgerGroupHeader } from "./ledger-group-header";
 
 vi.mock("../components/Tooltip", () => ({
   Tooltip: ({ children }: { children: ReactNode }) => <>{children}</>,
@@ -37,7 +37,7 @@ function renderHeader({
   onToggle?: () => void;
 } = {}) {
   render(
-    <SectionHeader
+    <LedgerGroupHeader
       canEdit={canEdit}
       canReorder={canReorder}
       collection={collection}
@@ -63,7 +63,7 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe("section header", () => {
+describe("ledger group header", () => {
   test("renders collection labels and actions", () => {
     renderHeader();
 

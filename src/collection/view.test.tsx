@@ -4,7 +4,7 @@ import { describe, expect, test, vi } from "vitest";
 import { MasterGroup } from "../common";
 import type { Collection } from "../data";
 import type { CollectionDragController } from "./ledger-types";
-import { LedgerView, type RenderCollectionInput } from "./ledger-list";
+import { LedgerView, type RenderCollectionInput } from "./view";
 
 vi.mock("@szhsin/react-accordion", () => ({
   Accordion: ({
@@ -120,7 +120,7 @@ function renderRow({
   );
 }
 
-describe("ledger list", () => {
+describe("ledger view", () => {
   test("renders collections through the render callback", () => {
     renderView();
 
