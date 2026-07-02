@@ -1,46 +1,49 @@
-.HeaderLogo {
+.HeaderBrandLogo {
     width: auto;
     height: 3rem;
 }
 
-.HeaderTitle {
+.HeaderBrandTitle {
     min-width: 0;
+
     text-align: center;
 }
 
-.HeaderTitleName {
+.HeaderBrandTitleName {
+    color: #f1ede4;
+
     font-family: "PT Serif", serif;
     font-size: 1.5rem;
     font-style: normal;
     font-weight: 700;
     line-height: 1.1;
-    color: #f1ede4;
 }
 
-.HeaderTitleNameAccent {
+.HeaderBrandTitleNameAccent {
     color: var(--secondary-color);
     text-shadow: 1px 2px 5px #111;
 }
 
-.HeaderTitleTagLine {
-    font-size: 0.875rem;
+.HeaderBrandTitleTagLine {
     color: #ccc;
+
+    font-size: 0.875rem;
 }
 
 @media screen and (min-width: 1200px) {
-    .HeaderTitleTagLine {
-        display: block;
-    }
-
-    .HeaderLogo {
+    .HeaderBrandLogo {
         height: 4.5rem;
     }
 
-    .HeaderTitle {
+    .HeaderBrandTitle {
         text-align: left;
     }
 
-    .HeaderTitleName {
+    .HeaderBrandTitleName {
         font-size: 2rem;
+    }
+
+    .HeaderBrandTitleTagLine {
+        display: block;
     }
 }

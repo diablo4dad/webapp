@@ -1,11 +1,12 @@
 import type { DadUser } from "../../auth/type";
 import type { SidebarVisibility } from "../../common";
 import Search from "../../components/Search";
-import i18n from "../../i18n";
-import logo from "../../image/d4dad-badge@1x.png";
 import { RootAuthActions } from "./auth";
 import { RootHeaderActions } from "./header-actions";
-import styles from "./header.module.css";
+import {
+  RootHeaderLogo,
+  RootHeaderTitle,
+} from "./header-brand";
 import { RootHeaderLayout } from "./header-layout";
 
 type RootHeaderProps = {
@@ -43,24 +44,8 @@ function RootHeader({
 }: RootHeaderProps) {
   return (
     <RootHeaderLayout
-      logo={
-        <img
-          className={styles.HeaderLogo}
-          src={logo}
-          alt={i18n.gameName}
-        />
-      }
-      title={
-        <div className={styles.HeaderTitle}>
-          <div className={styles.HeaderTitleName}>
-            <span className={styles.HeaderTitleNameAccent}>Diablo IV</span>{" "}
-            <span>Dad</span>
-          </div>
-          <div className={styles.HeaderTitleTagLine}>
-            {i18n.siteTagLine}
-          </div>
-        </div>
-      }
+      logo={<RootHeaderLogo />}
+      title={<RootHeaderTitle />}
       search={
         <Search
           value={searchTerm}
