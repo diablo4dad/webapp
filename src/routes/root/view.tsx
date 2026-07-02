@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { DadUser } from "../../auth/type";
 import type { SidebarVisibility } from "../../common";
+import { RootFooter } from "./footer";
 import { RootHeader } from "./header";
 import { RootLayout } from "./layout";
 import { RootMain } from "./main";
@@ -83,6 +84,7 @@ function RootView({
           user={user}
         />
       }
+      footer={<RootFooter />}
     />
   );
 }
