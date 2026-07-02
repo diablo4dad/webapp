@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { useMemo } from "react";
 import { useCollection } from "../collection/context";
 import { ItemGroup, itemGroups } from "../common";
@@ -24,6 +25,11 @@ type ProgressCardConfig = {
 
 type ProgressCardProps = ProgressCardConfig & {
   collections: CollectionGroup;
+};
+
+type Props = {
+  className?: string;
+  layout?: "expanded" | "stacked";
 };
 
 const progressCards: readonly ProgressCardConfig[] = [
@@ -135,11 +141,19 @@ function CollectionProgressCard({
 
 const itemGroupsMap = itemGroups;
 
-const Progress = () => {
+const Progress = ({ className, layout = "expanded" }: Props) => {
   const { countedDb } = useData();
+  const progressClassName = classNames(
+    styles.ProgressList,
+    className,
+    {
+      [styles.ProgressListExpanded]: layout === "expanded",
+      [styles.ProgressListStacked]: layout === "stacked",
+    },
+  );
 
   return (
-    <div className={styles.ProgressList}>
+    <div className={progressClassName}>
       {progressCards.map((card) => (
         <CollectionProgressCard
           key={card.title}

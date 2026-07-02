@@ -4,6 +4,10 @@
     padding: 0 1rem;
 }
 
+.ProgressListStacked {
+    display: grid;
+}
+
 .ProgressCard {
     position: relative;
     overflow: hidden;
@@ -123,12 +127,16 @@
 }
 
 @media screen and (min-width: 1200px) {
-    .ProgressList {
+    .ProgressListExpanded {
         display: contents;
         padding: 0;
     }
 
-    .ProgressCard {
+    .ProgressListStacked {
+        padding: 0;
+    }
+
+    .ProgressListExpanded .ProgressCard {
         display: flex;
         flex-direction: column;
         align-items: stretch;
@@ -139,7 +147,7 @@
         grid-column: span 1;
     }
 
-    .ProgressCardIcon {
+    .ProgressListExpanded .ProgressCardIcon {
         position: absolute;
         top: 1rem;
         right: 1rem;
@@ -147,7 +155,7 @@
         height: 5rem;
     }
 
-    .ProgressCardLabel {
+    .ProgressListExpanded .ProgressCardLabel {
         display: block;
         margin-bottom: 0.75rem;
         color: var(--app-text-disabled);
@@ -157,7 +165,7 @@
         text-transform: uppercase;
     }
 
-    .ProgressCardSummary {
+    .ProgressListExpanded .ProgressCardSummary {
         display: flex;
         flex-direction: column;
         align-items: stretch;
@@ -167,7 +175,7 @@
         gap: 0;
     }
 
-    .ProgressCardTitle {
+    .ProgressListExpanded .ProgressCardTitle {
         margin-bottom: 0.75rem;
         flex: initial;
         width: calc(100% - 4rem);
@@ -175,7 +183,7 @@
         line-height: 1.2;
     }
 
-    .ProgressCardStats {
+    .ProgressListExpanded .ProgressCardStats {
         flex: 0 0 auto;
         margin-top: auto;
         margin-bottom: 1rem;
@@ -183,15 +191,15 @@
         font-size: 1rem;
     }
 
-    .ProgressCardCurrent {
+    .ProgressListExpanded .ProgressCardCurrent {
         font-size: 1.5rem;
     }
 
-    .ProgressCardBar {
+    .ProgressListExpanded .ProgressCardBar {
         margin-bottom: 0.85rem;
     }
 
-    .ProgressCardDetail {
+    .ProgressListExpanded .ProgressCardDetail {
         display: flex;
         align-items: center;
         gap: 0.125rem;
@@ -204,7 +212,7 @@
 }
 
 @media screen and (min-width: 1200px) and (max-width: 2600px) {
-    .ProgressCard {
+    .ProgressListExpanded .ProgressCard {
         grid-column: span 2;
     }
 }
