@@ -19,7 +19,7 @@ import { getSectionRules } from "./section-rules";
 import { getSectionState } from "./section-state";
 import { SectionHeader } from "./section-header";
 import { useSectionToggles } from "./section-toggles";
-import styles from "./ledger.module.css";
+import styles from "./ledger-section.module.css";
 
 type Props = LedgerSectionProps & {
   renderSubcollections: (props: LedgerProps) => ReactNode;
@@ -76,10 +76,8 @@ const LedgerSection = ({
   const isCardView = isLedgerView(settings, LedgerView.CARD);
   const isInverseCardView = isLedgerInverse(settings);
   const className = classNames({
-    [styles.Ledger]: true,
-    [styles.LedgerComplete]: isComplete,
-    [styles.LedgerCards]: isCardView,
-    [styles.LedgerCardsInverse]: isInverseCardView,
+    [styles.LedgerSection]: true,
+    [styles.LedgerSectionCards]: isCardView,
   });
   const {
     canEditCollection,
@@ -171,16 +169,16 @@ const LedgerSection = ({
       itemKey={collection.id}
       className={className}
       headingProps={{
-        className: styles.LedgerHeader,
+        className: styles.LedgerSectionHeader,
       }}
       buttonProps={{
-        className: classNames(styles.LedgerButton, {
-          [styles.CollectionReorderSaving]:
+        className: classNames(styles.LedgerSectionButton, {
+          [styles.LedgerSectionReorderSaving]:
             collectionDragController?.collectionReordering,
         }),
       }}
       contentProps={{
-        className: styles.LedgerContent,
+        className: styles.LedgerSectionContent,
       }}
       header={
         <SectionHeader
@@ -211,8 +209,8 @@ const LedgerSection = ({
             data-ledger-view={isCardView ? "card" : "list"}
             className={
               collection.subcollections.length
-                ? styles.LedgerSubCollection
-                : styles.LedgerRow
+                ? styles.LedgerSectionSubcollection
+                : styles.LedgerSectionRow
             }
           >
             <SectionItems
@@ -236,7 +234,9 @@ const LedgerSection = ({
               shouldSuppressItemClick={shouldSuppressItemClick}
             />
             {reorderError && (
-              <div className={styles.ItemReorderError}>{reorderError}</div>
+              <div className={styles.LedgerSectionItemReorderError}>
+                {reorderError}
+              </div>
             )}
             {shouldRenderAddItemCard && (
               <AddCard
