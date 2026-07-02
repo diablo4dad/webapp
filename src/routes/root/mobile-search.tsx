@@ -22,11 +22,11 @@ function MobileSearch({
       onClose={onClose}
       header={
         <>
-          <div className={styles.MobileSearchOverlayTitle}>
+          <div className={styles.MobileSearchTitle}>
             Transmog Search
           </div>
           <button
-            className={styles.MobileSearchOverlayClose}
+            className={styles.MobileSearchClose}
             onClick={onClose}
             aria-label="Close search"
           >
@@ -35,7 +35,7 @@ function MobileSearch({
         </>
       }
       body={
-        <div className={styles.MobileSearchOverlayField}>
+        <div className={styles.MobileSearchField}>
           <SearchField
             value={searchTerm}
             onChange={onSearchChange}
@@ -47,14 +47,14 @@ function MobileSearch({
       actions={
         <>
           <Button
-            className={styles.MobileSearchOverlayActionPrimary}
+            className={styles.MobileSearchActionPrimary}
             colour={BtnColours.Dark}
             onClick={onClose}
           >
             Search
           </Button>
           <Button
-            className={styles.MobileSearchOverlayAction}
+            className={styles.MobileSearchAction}
             colour={BtnColours.Dark}
             onClick={onClearSearch}
           >

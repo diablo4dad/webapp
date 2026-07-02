@@ -1,4 +1,4 @@
-.MobileSearchOverlayTitle {
+.MobileSearchTitle {
     color: #d0b07c;
 
     font-family: "PT Serif", serif;
@@ -7,7 +7,7 @@
     text-shadow: 1px 1px 2px #111;
 }
 
-.MobileSearchOverlayClose {
+.MobileSearchClose {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -21,24 +21,24 @@
     cursor: pointer;
 }
 
-.MobileSearchOverlayClose svg {
+.MobileSearchClose svg {
     width: 1.75rem;
     height: 1.75rem;
 
     fill: currentColor;
 }
 
-.MobileSearchOverlayField {
+.MobileSearchField {
     display: flex;
     flex-direction: column;
 }
 
-.MobileSearchOverlayField > :global(.Search) {
+.MobileSearchField > :global(.Search) {
     width: 100%;
 }
 
-.MobileSearchOverlayAction,
-.MobileSearchOverlayActionPrimary {
+.MobileSearchAction,
+.MobileSearchActionPrimary {
     display: inline-flex;
     justify-content: center;
 
@@ -50,14 +50,14 @@
     font-weight: 700;
 }
 
-.MobileSearchOverlayActionPrimary {
+.MobileSearchActionPrimary {
     border-color: #b16558;
 
     background: linear-gradient(180deg, #8d433a 0%, #6d342e 100%);
     box-shadow: 2px 3px 8px rgba(8, 10, 13, 0.35);
 }
 
-.MobileSearchOverlayAction {
+.MobileSearchAction {
     border-color: #5b6877;
 
     background: linear-gradient(180deg, #45505e 0%, #353d48 100%);
