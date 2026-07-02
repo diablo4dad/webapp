@@ -1,6 +1,5 @@
 import type { DadUser } from "../../auth/type";
 import type { SidebarVisibility } from "../../common";
-import Search from "../../components/Search";
 import { RootAuthActions } from "./auth";
 import { RootHeaderActions } from "./header-actions";
 import {
@@ -8,6 +7,7 @@ import {
   RootHeaderTitle,
 } from "./header-brand";
 import { RootHeaderLayout } from "./header-layout";
+import { RootSearchField } from "./search";
 
 type RootHeaderProps = {
   canEditCatalog: boolean;
@@ -47,11 +47,10 @@ function RootHeader({
       logo={<RootHeaderLogo />}
       title={<RootHeaderTitle />}
       search={
-        <Search
+        <RootSearchField
           value={searchTerm}
           onChange={onSearchChange}
           onClear={onClearSearch}
-          placeholder={"Search transmogs"}
         />
       }
       actions={

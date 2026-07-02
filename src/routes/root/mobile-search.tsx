@@ -1,7 +1,7 @@
 import Button, { BtnColours } from "../../components/Button";
 import { Close } from "../../components/Icons";
-import Search from "../../components/Search";
 import { RootMobileSearchOverlayLayout } from "./mobile-layout";
+import { RootSearchField } from "./search";
 import styles from "./mobile-search.module.css";
 
 type Props = {
@@ -36,12 +36,11 @@ function MobileSearchOverlay({
       }
       body={
         <div className={styles.MobileSearchOverlayField}>
-          <Search
+          <RootSearchField
             value={searchTerm}
             onChange={onSearchChange}
             onClear={onClearSearch}
             autoFocus={true}
-            placeholder={"Search transmogs"}
           />
         </div>
       }
