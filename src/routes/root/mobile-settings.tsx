@@ -15,6 +15,22 @@ type Props = {
   user?: DadUser;
 };
 
+type HeaderProps = {
+  onClose: () => void;
+};
+
+type BodyProps = {
+  canEditCatalog: boolean;
+  isEditMode: boolean;
+  onToggleEditMode: () => void;
+};
+
+type FooterProps = {
+  onSignIn: () => void;
+  onSignOut: () => void;
+  user?: DadUser;
+};
+
 type EditorControlProps = {
   isEditMode: boolean;
   onToggleEditMode: () => void;
@@ -33,35 +49,69 @@ function MobileSettings({
     <MobileSettingsLayout
       onClose={onClose}
       header={
-        <>
-          <div className={styles.MobileSettingsTitle}>Settings</div>
-          <button
-            className={styles.MobileSettingsClose}
-            onClick={onClose}
-            aria-label="Close settings"
-          >
-            <Close />
-          </button>
-        </>
+        <Header onClose={onClose} />
       }
       body={
-        <>
-          {canEditCatalog && (
-            <MobileEditorControl
-              isEditMode={isEditMode}
-              onToggleEditMode={onToggleEditMode}
-            />
-          )}
-          <ConfigSidebar />
-        </>
+        <Body
+          canEditCatalog={canEditCatalog}
+          isEditMode={isEditMode}
+          onToggleEditMode={onToggleEditMode}
+        />
       }
       footer={
-        <AuthActions
+        <Footer
           onSignIn={onSignIn}
           onSignOut={onSignOut}
           user={user}
         />
       }
+    />
+  );
+}
+
+function Header({ onClose }: HeaderProps) {
+  return (
+    <>
+      <div className={styles.MobileSettingsTitle}>Settings</div>
+      <button
+        className={styles.MobileSettingsClose}
+        onClick={onClose}
+        aria-label="Close settings"
+      >
+        <Close />
+      </button>
+    </>
+  );
+}
+
+function Body({
+  canEditCatalog,
+  isEditMode,
+  onToggleEditMode,
+}: BodyProps) {
+  return (
+    <>
+      {canEditCatalog && (
+        <MobileEditorControl
+          isEditMode={isEditMode}
+          onToggleEditMode={onToggleEditMode}
+        />
+      )}
+      <ConfigSidebar />
+    </>
+  );
+}
+
+function Footer({
+  onSignIn,
+  onSignOut,
+  user,
+}: FooterProps) {
+  return (
+    <AuthActions
+      onSignIn={onSignIn}
+      onSignOut={onSignOut}
+      user={user}
     />
   );
 }
