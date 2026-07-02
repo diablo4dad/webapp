@@ -1,0 +1,415 @@
+.Item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  cursor: pointer;
+}
+
+.ItemDragHandle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.75rem;
+  border: 1px solid var(--drag-handle-border);
+  border-radius: 0.375rem;
+  background-color: var(--drag-handle-background);
+  color: var(--drag-handle-text);
+  cursor: grab;
+}
+
+.ItemDragHandle:hover {
+  border-color: var(--drag-handle-border-hover);
+  color: var(--drag-handle-text-hover);
+}
+
+.ItemDragHandle:active {
+  cursor: grabbing;
+}
+
+.ItemDragHandle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.ItemReorderSaving {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.ItemDragGhost {
+  position: fixed !important;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.92 !important;
+  box-shadow: var(--shadow-drag);
+  transform: scale(1.01);
+}
+
+.ItemDragGhost .ItemImage {
+  filter: brightness(125%) !important;
+}
+
+.ItemDragGhost .ItemInfo {
+  opacity: 1;
+}
+
+.ItemDropPlaceholder {
+  min-height: 7rem;
+  border: 1px dashed var(--drag-handle-border-hover);
+  background: var(--drop-placeholder-background) !important;
+  box-shadow: var(--drop-placeholder-shadow);
+  cursor: default;
+}
+
+.ItemDropPlaceholderVisual {
+  flex-shrink: 0;
+  width: 4rem;
+  height: 6rem;
+  border: 1px dashed var(--drop-placeholder-border-soft);
+  border-radius: 0.375rem;
+  background-color: var(--drop-placeholder-visual-background);
+}
+
+.ItemDropPlaceholderInfo {
+  flex: 1;
+}
+
+.Item:hover {
+  opacity: 1;
+}
+
+.ItemImage {
+  width: 4rem;
+  filter: brightness(50%);
+}
+
+.ItemImageWrapper {
+  width: 4rem;
+  height: 6rem;
+}
+
+.ItemInfo {
+  flex: 1;
+  padding: 0 1rem;
+  opacity: 0.5;
+}
+
+.ItemName {
+  margin-bottom: 0.125rem;
+  color: var(--link-color-action);
+  font-size: 1.25rem;
+}
+
+.ItemType {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--app-text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.Claim {
+  text-transform: uppercase;
+}
+
+.ItemClaimDescription {
+  margin-bottom: 0.25rem;
+}
+
+.ItemIcon:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
+.ItemIcons svg {
+  width: 2rem;
+}
+
+.ItemIcon svg {
+  fill: var(--app-surface-muted);
+  opacity: 0;
+}
+
+.ItemHidden .ItemName {
+  color: var(--app-text-disabled) !important;
+  text-decoration: line-through;
+}
+
+.Item:hover .ItemImage {
+  filter: brightness(125%) !important;
+}
+
+.Item:hover .ItemInfo {
+  opacity: 1;
+}
+
+.ItemCollected .ItemInfo {
+  opacity: 1;
+}
+
+.ItemUnique .ItemName {
+  color: var(--rarity-unique-color) !important;
+}
+
+.ItemMythic .ItemName {
+  color: var(--rarity-mythic-color) !important;
+}
+
+.ItemRare .ItemName {
+  color: var(--rarity-rare-color) !important;
+}
+
+.ItemIconCollection svg {
+  fill: var(--feedback-success-fill);
+  margin: calc(0.5rem + 1px);
+}
+
+.ItemIconHidden svg {
+  fill: var(--feedback-danger-fill);
+  margin: calc(0.5rem + 1px);
+}
+
+.ItemHidden .ItemIconHidden svg,
+.ItemCollected .ItemIconCollection svg {
+  opacity: 1;
+}
+
+.ItemIconPremium svg {
+  display: none;
+}
+
+.ItemIconPremiumTitle svg {
+  display: inline-block;
+  width: 0.875rem;
+  margin-left: 0.25rem;
+}
+
+.Item:nth-child(even) {
+  background-color: var(--app-surface-raised);
+}
+
+:global([data-ledger-view="card"]) .Item {
+  position: relative;
+  flex: 1;
+  flex-direction: column;
+  align-items: inherit;
+  padding: 0.5rem 0.5rem 0;
+  border-radius: 0.5rem;
+  background-color: var(--card-surface-muted);
+  opacity: 1;
+}
+
+:global([data-ledger-view="card"]) .ItemDragHandle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  width: 1.875rem;
+  height: 1.875rem;
+  margin-right: 0;
+  background-color: var(--drag-handle-background-strong);
+}
+
+:global([data-ledger-view="card"]) .ItemDragGhost {
+  width: var(--drag-ghost-width) !important;
+  height: var(--drag-ghost-height) !important;
+}
+
+:global([data-ledger-view="card"]) .ItemDropPlaceholder {
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 0.5rem 0.5rem 0;
+  border-style: dashed;
+}
+
+:global([data-ledger-view="card"]) .ItemDropPlaceholderVisual {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+}
+
+:global([data-ledger-view="card"]) .ItemDropPlaceholderInfo {
+  width: 100%;
+  min-height: 2.5rem;
+}
+
+:global([data-ledger-view="card"]) .ItemImageWrapper,
+:global([data-ledger-view="card"]) .ItemImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+}
+
+:global([data-ledger-view="card"]) .ItemInfo {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+:global([data-ledger-view="card"]) .ItemName {
+  color: var(--color-neutral-400);
+  font-size: 0.875rem;
+}
+
+:global([data-ledger-view="card"]) .ItemType {
+  display: none;
+}
+
+:global([data-ledger-view="card"]) .Claim {
+  display: none;
+}
+
+:global([data-ledger-view="card"]) .ItemClaimDescription {
+  display: none;
+}
+
+:global([data-ledger-view="card"]) .ItemIcons {
+  position: absolute;
+  top: 0.425rem;
+  right: 0.425rem;
+  left: 0.425rem;
+}
+
+:global([data-ledger-view="card"]) .ItemIcons svg {
+  width: 1rem;
+  margin-left: 0.125rem;
+}
+
+:global([data-ledger-view="card"]) .ItemIcon:not(:last-child) {
+  margin-right: 0;
+}
+
+:global([data-ledger-view="card"]) .ItemIconHidden svg,
+:global([data-ledger-view="card"]) .ItemIconCollection svg {
+  position: absolute;
+  right: 0;
+  margin: 0;
+}
+
+:global([data-ledger-view="card"]) .ItemIconPremium svg {
+  position: absolute;
+  left: 0;
+  display: none;
+  opacity: 0;
+}
+
+:global([data-ledger-view="card"]) .ItemCollected,
+:global([data-ledger-view="card"]) .ItemHidden {
+  border-top: 1px solid var(--card-border-top);
+  border-bottom: 1px solid var(--card-border-bottom);
+  background-color: var(--card-surface);
+  box-shadow: var(--card-shadow);
+}
+
+:global([data-ledger-view="card"]) .ItemIconCollection svg {
+  fill: var(--item-collected-color-dark);
+}
+
+:global([data-ledger-view="card"]) .ItemIconHidden svg {
+  fill: var(--item-hidden-color-dark);
+}
+
+:global([data-ledger-view="card"]) .ItemCollected:before,
+:global([data-ledger-view="card"]) .ItemHidden:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  border-top: 3rem solid var(--feedback-success-fill);
+  border-right: 0;
+  border-left: 3rem solid transparent;
+  border-top-right-radius: 0.5rem;
+}
+
+:global([data-ledger-view="card"]) .ItemHidden:before {
+  border-top-color: var(--feedback-danger-fill);
+}
+
+:global([data-ledger-view="card"]) .ItemPremium .ItemIconPremium svg {
+  opacity: 1;
+}
+
+:global([data-ledger-view="card"]) .ItemCollected .ItemName {
+  color: var(--app-text);
+}
+
+.ItemHidden .ItemImage,
+.ItemCollected .ItemImage {
+  filter: none;
+}
+
+:global([data-ledger-inverse="true"]) .Item {
+  border-top: 1px solid var(--card-border-top);
+  border-bottom: 1px solid var(--card-border-bottom);
+  background-color: var(--card-surface);
+  box-shadow: var(--card-shadow);
+}
+
+:global([data-ledger-inverse="true"]) .ItemImage {
+  filter: none;
+}
+
+:global([data-ledger-inverse="true"]) .ItemName {
+  color: var(--app-text);
+}
+
+:global([data-ledger-inverse="true"]) .ItemInfo {
+  opacity: 1;
+}
+
+:global([data-ledger-inverse="true"]) .ItemCollected,
+:global([data-ledger-inverse="true"]) .ItemHidden {
+  border-top: none;
+  border-bottom: none;
+  background-color: var(--card-surface-muted);
+  box-shadow: none;
+  color: var(--app-text-muted);
+}
+
+:global([data-ledger-inverse="true"]) .ItemCollected .ItemInfo {
+  opacity: 0.5;
+}
+
+.ItemGlow {
+  animation: glow 1s infinite alternate;
+}
+
+:global([data-ledger-inverse="true"]) .ItemGlow {
+  animation: glow-inverse 1s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: var(--card-shadow);
+  }
+  to {
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+@keyframes glow-inverse {
+  from {
+    box-shadow: var(--shadow-glow-muted-start);
+  }
+  to {
+    box-shadow: var(--shadow-glow-muted);
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .Item {
+    padding: 0.5rem 2rem;
+  }
+
+  .ItemIcons svg {
+    width: 3rem;
+  }
+
+  .ItemIconHidden svg,
+  .ItemIconCollection svg {
+    margin: 0;
+  }
+}
