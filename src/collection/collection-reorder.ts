@@ -5,8 +5,6 @@ import { selectCollectionById } from "../data/reducers";
 import { updateCatalogCollectionNodeOrder } from "../store/catalog";
 import {
   createDragAutoScroller,
-  getCollectionIdsForDropList,
-  getCollectionInsertIndexFromPointer,
   getDragScrollTarget,
   type DragScrollTarget,
 } from "./drag";
@@ -16,15 +14,14 @@ import type {
 } from "./ledger-types";
 import {
   areCollectionOrdersEqual,
-  getCollectionListIds,
   moveCollectionIdToIndex,
   moveCollectionInDb,
 } from "./reorder";
-import { isCollectionDropAllowed } from "./reorder-rules";
 import {
   canStartCollectionReorder,
   createCollectionDragState,
 } from "./reorder-state";
+import { getNextCollectionDragState } from "./reorder-target";
 
 type Options = {
   collectionDragController?: CollectionDragController;
@@ -170,77 +167,14 @@ function useCollectionReorder({
         return;
       }
 
-      const hitElement = document.elementFromPoint(pointerX, pointerY);
-      const collectionElement = hitElement?.closest<HTMLElement>(
-        "[data-collection-reorder-item='true']",
-      );
-      const listElement = hitElement?.closest<HTMLElement>(
-        "[data-collection-drop-list='true']",
-      );
-      const nextDragState: CollectionDragState = {
-        ...currentDragState,
+      const nextDragState = getNextCollectionDragState({
+        collections: db.collections,
+        currentDragState,
+        group,
+        hitElement: document.elementFromPoint(pointerX, pointerY),
         pointerX,
         pointerY,
-      };
-      const targetCollectionId = collectionElement?.dataset.collectionId;
-      const targetCollection =
-        targetCollectionId === undefined
-          ? undefined
-          : selectCollectionById(db.collections, targetCollectionId);
-
-      if (collectionElement && targetCollection) {
-        const rect = collectionElement.getBoundingClientRect();
-        const isHeaderCenterBand =
-          pointerY > rect.top + rect.height * 0.25 &&
-          pointerY < rect.bottom - rect.height * 0.25;
-
-        if (
-          isHeaderCenterBand &&
-          targetCollection.id !== currentDragState.collectionId &&
-          isCollectionDropAllowed({
-            collections: db.collections,
-            dragState: currentDragState,
-            group,
-            targetParentId: targetCollection.id,
-          })
-        ) {
-          nextDragState.targetParentId = targetCollection.id;
-          nextDragState.targetIndex = targetCollection.subcollections.length;
-          nextDragState.targetSiblingIds = getCollectionListIds(
-            targetCollection.subcollections,
-          );
-          collectionDragStateRef.current = nextDragState;
-          setCollectionDragState(nextDragState);
-          return;
-        }
-      }
-
-      if (
-        listElement &&
-        listElement.dataset.collectionCategory === currentDragState.category
-      ) {
-        const targetParentId =
-          listElement.dataset.collectionParentId === "root"
-            ? null
-            : listElement.dataset.collectionParentId ?? null;
-
-        if (
-          isCollectionDropAllowed({
-            collections: db.collections,
-            dragState: currentDragState,
-            group,
-            targetParentId,
-          })
-        ) {
-          nextDragState.targetParentId = targetParentId;
-          nextDragState.targetIndex = getCollectionInsertIndexFromPointer(
-            listElement,
-            pointerY,
-          );
-          nextDragState.targetSiblingIds =
-            getCollectionIdsForDropList(listElement);
-        }
-      }
+      });
 
       collectionDragStateRef.current = nextDragState;
       setCollectionDragState(nextDragState);
