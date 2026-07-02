@@ -12,6 +12,10 @@ import {
   getNextItemDragState,
   getRenderedCollectionItemIds,
 } from "./item-reorder-state";
+import {
+  canQueueItemReorder,
+  queueItemDragStart,
+} from "./item-reorder-queue";
 import type { ItemDragState } from "./ledger-types";
 import {
   areItemOrdersEqual,
@@ -106,61 +110,25 @@ function useItemReorder({
     collectionItem: CollectionItem,
   ) {
     if (
-      !canReorder ||
-      isReordering ||
-      event.button !== 0 ||
-      event.pointerType === "touch" ||
-      (event.target as HTMLElement).closest("button")
+      !canQueueItemReorder({
+        button: event.button,
+        canReorder,
+        isReordering,
+        pointerType: event.pointerType,
+        target: event.target,
+      })
     ) {
       return;
     }
 
     const itemElement = event.currentTarget;
-    const pointerId = event.pointerId;
-    const startX = event.clientX;
-    const startY = event.clientY;
-
-    function cleanup() {
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
-      window.removeEventListener("pointercancel", onPointerUp);
-    }
-
-    function onPointerMove(pointerEvent: PointerEvent) {
-      if (pointerEvent.pointerId !== pointerId) {
-        return;
-      }
-
-      const distance = Math.hypot(
-        pointerEvent.clientX - startX,
-        pointerEvent.clientY - startY,
-      );
-
-      if (distance < 6) {
-        return;
-      }
-
-      pointerEvent.preventDefault();
-      cleanup();
-      beginItemReorder(
-        collectionItem,
-        itemElement,
-        pointerEvent.clientX,
-        pointerEvent.clientY,
-      );
-    }
-
-    function onPointerUp(pointerEvent: PointerEvent) {
-      if (pointerEvent.pointerId !== pointerId) {
-        return;
-      }
-
-      cleanup();
-    }
-
-    window.addEventListener("pointermove", onPointerMove, { passive: false });
-    window.addEventListener("pointerup", onPointerUp);
-    window.addEventListener("pointercancel", onPointerUp);
+    queueItemDragStart({
+      onStart: (pointerX, pointerY) =>
+        beginItemReorder(collectionItem, itemElement, pointerX, pointerY),
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+    });
   }
 
   async function commitItemReorder(committedDragState: ItemDragState) {
