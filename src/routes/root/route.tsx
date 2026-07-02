@@ -8,10 +8,12 @@ import { useEditor } from "../../editor/context";
 import { toggleSidebarVisibility } from "./state";
 import { View } from "./view";
 
-type MobileConfigControls = {
+type MobileContentControls = {
   isMobileConfigOpen: boolean;
+  isMobileSearchOpen: boolean;
   onCloseMobileContent: () => void;
   onToggleMobileConfig: () => void;
+  onToggleMobileSearch: () => void;
 };
 
 type SidebarControls = {
@@ -36,9 +38,11 @@ function RootRoute(): ReactElement {
 
   const {
     isMobileConfigOpen,
+    isMobileSearchOpen,
     onCloseMobileContent,
     onToggleMobileConfig,
-  } = useMobileConfigControls();
+    onToggleMobileSearch,
+  } = useMobileContentControls();
   const {
     onToggleConfig,
     onToggleItemSidebar,
@@ -53,7 +57,7 @@ function RootRoute(): ReactElement {
       canEditCatalog={canEditCatalog}
       isEditMode={isEditMode}
       isMobileConfigOpen={isMobileConfigOpen}
-      isMobileSearchOpen={false}
+      isMobileSearchOpen={isMobileSearchOpen}
       onClearSearch={onClearSearch}
       onCloseMobileContent={onCloseMobileContent}
       onSearchChange={setSearchTerm}
@@ -63,6 +67,7 @@ function RootRoute(): ReactElement {
       onToggleEditMode={toggleEditMode}
       onToggleItemSidebar={onToggleItemSidebar}
       onToggleMobileConfig={onToggleMobileConfig}
+      onToggleMobileSearch={onToggleMobileSearch}
       routeOutlet={<Outlet />}
       searchTerm={searchTerm}
       sidebarVisibility={sidebarVisibility}
@@ -71,23 +76,41 @@ function RootRoute(): ReactElement {
   );
 }
 
-function useMobileConfigControls(): MobileConfigControls {
+function useMobileContentControls(): MobileContentControls {
   const [isMobileConfigOpen, setIsMobileConfigOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   function onCloseMobileContent() {
     setIsMobileConfigOpen(false);
+    setIsMobileSearchOpen(false);
   }
 
   function onToggleMobileConfig() {
-    setIsMobileConfigOpen((currentIsMobileConfigOpen) =>
-      !currentIsMobileConfigOpen,
-    );
+    if (isMobileConfigOpen) {
+      setIsMobileConfigOpen(false);
+      return;
+    }
+
+    setIsMobileSearchOpen(false);
+    setIsMobileConfigOpen(true);
+  }
+
+  function onToggleMobileSearch() {
+    if (isMobileSearchOpen) {
+      setIsMobileSearchOpen(false);
+      return;
+    }
+
+    setIsMobileConfigOpen(false);
+    setIsMobileSearchOpen(true);
   }
 
   return {
     isMobileConfigOpen,
+    isMobileSearchOpen,
     onCloseMobileContent,
     onToggleMobileConfig,
+    onToggleMobileSearch,
   };
 }
 

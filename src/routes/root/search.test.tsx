@@ -15,16 +15,23 @@ vi.mock("../../components/Search", () => ({
     autoFocus,
     onChange,
     onClear,
+    onSubmit,
     placeholder = "search",
     value,
   }: {
     autoFocus?: boolean;
     onChange: (value: string) => void;
     onClear: () => void;
+    onSubmit?: () => void;
     placeholder?: string;
     value: string;
   }) => (
-    <div>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSubmit?.();
+      }}
+    >
       <input
         aria-label={placeholder}
         autoFocus={autoFocus}
@@ -32,7 +39,7 @@ vi.mock("../../components/Search", () => ({
         value={value}
       />
       <button onClick={onClear}>clear {placeholder}</button>
-    </div>
+    </form>
   ),
 }));
 
@@ -80,5 +87,18 @@ describe("field", () => {
 
     expect(props.onChange).toHaveBeenCalledWith("sword");
     expect(props.onClear).toHaveBeenCalledTimes(1);
+  });
+
+  test("passes submit action through", () => {
+    const { props } = renderSearch({
+      onSubmit: vi.fn(),
+    });
+    const searchField = screen.getByRole("textbox", {
+      name: SEARCH_PLACEHOLDER,
+    });
+
+    fireEvent.submit(searchField.closest("form")!);
+
+    expect(props.onSubmit).toHaveBeenCalledTimes(1);
   });
 });

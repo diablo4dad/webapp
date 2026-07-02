@@ -273,3 +273,59 @@ describe("mobile settings", () => {
     expect(screen.getByText("Settings")).toBeInTheDocument();
   });
 });
+
+describe("mobile search", () => {
+  test("opens search overlay from the mobile search button", async () => {
+    const user = userEvent.setup();
+    renderRoute();
+    const mobileSearchButton = screen.getByRole("button", {
+      name: "Search menu",
+    });
+
+    await user.click(mobileSearchButton);
+
+    expect(screen.getByText("Transmog Search")).toBeInTheDocument();
+    const mobileSearchField = screen.getAllByPlaceholderText(
+      "Search transmogs",
+    )[1];
+
+    expect(mobileSearchField).toHaveValue("");
+
+    fireEvent.change(mobileSearchField, {
+      target: {
+        value: "sword",
+      },
+    });
+    fireEvent.submit(mobileSearchField.closest("form")!);
+
+    expect(mocks.setSearchTerm).toHaveBeenCalledWith("sword");
+    expect(screen.queryByText("Transmog Search")).not.toBeInTheDocument();
+    expect(screen.getByText("route outlet")).toBeInTheDocument();
+  });
+
+  test("clears active search filters from the mobile header", async () => {
+    const user = userEvent.setup();
+    renderRoute({
+      searchTerm: "helm",
+    });
+
+    expect(
+      screen.queryByRole("button", { name: "Search menu" }),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+
+    expect(mocks.setSearchTerm).toHaveBeenCalledWith("");
+  });
+
+  test("replaces search overlay when the settings drawer opens", async () => {
+    const user = userEvent.setup();
+    renderRoute();
+
+    await user.click(screen.getByRole("button", { name: "Search menu" }));
+    await user.click(screen.getByRole("button", { name: "Settings menu" }));
+
+    expect(screen.queryByText("Transmog Search")).not.toBeInTheDocument();
+    expect(screen.getByText("Settings")).toBeInTheDocument();
+  });
+});

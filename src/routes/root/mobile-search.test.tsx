@@ -12,16 +12,23 @@ vi.mock("../../components/Search", () => ({
     autoFocus,
     onChange,
     onClear,
+    onSubmit,
     placeholder = "search",
     value,
   }: {
     autoFocus?: boolean;
     onChange: (value: string) => void;
     onClear: () => void;
+    onSubmit?: () => void;
     placeholder?: string;
     value: string;
   }) => (
-    <div>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSubmit?.();
+      }}
+    >
       <input
         aria-label={placeholder}
         autoFocus={autoFocus}
@@ -29,7 +36,7 @@ vi.mock("../../components/Search", () => ({
         value={value}
       />
       <button onClick={onClear}>clear {placeholder}</button>
-    </div>
+    </form>
   ),
 }));
 
@@ -88,5 +95,16 @@ describe("closing", () => {
     await user.click(screen.getByRole("button", { name: "Search" }));
 
     expect(props.onClose).toHaveBeenCalledTimes(2);
+  });
+
+  test("closes when the search field is submitted", async () => {
+    const { props } = renderOverlay();
+    const searchField = screen.getByRole("textbox", {
+      name: "Search transmogs",
+    });
+
+    fireEvent.submit(searchField.closest("form")!);
+
+    expect(props.onClose).toHaveBeenCalledTimes(1);
   });
 });

@@ -17,6 +17,7 @@ type HeaderProps = {
 
 type BodyProps = {
   onClearSearch: () => void;
+  onClose: () => void;
   onSearchChange: (value: string) => void;
   searchTerm: string;
 };
@@ -41,6 +42,7 @@ function MobileSearch({
       body={
         <Body
           onClearSearch={onClearSearch}
+          onClose={onClose}
           onSearchChange={onSearchChange}
           searchTerm={searchTerm}
         />
@@ -74,6 +76,7 @@ function Header({ onClose }: HeaderProps) {
 
 function Body({
   onClearSearch,
+  onClose,
   onSearchChange,
   searchTerm,
 }: BodyProps) {
@@ -83,6 +86,7 @@ function Body({
         value={searchTerm}
         onChange={onSearchChange}
         onClear={onClearSearch}
+        onSubmit={onClose}
         autoFocus={true}
       />
     </div>

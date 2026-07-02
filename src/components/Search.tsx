@@ -1,24 +1,35 @@
+import type { FormEvent } from "react";
+import classNames from "classnames";
 import styles from "./Search.module.css";
 import { Close, SearchIcon } from "./Icons";
-import classNames from "classnames";
 
 type Props = {
-  value: string;
+  autoFocus?: boolean;
   onChange: (value: string) => void;
   onClear: () => void;
-  autoFocus?: boolean;
+  onSubmit?: () => void;
   placeholder?: string;
+  value: string;
 };
 
 function Search({
-  value,
+  autoFocus = false,
   onChange,
   onClear,
-  autoFocus = false,
+  onSubmit,
   placeholder,
+  value,
 }: Props) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    onSubmit?.();
+  }
+
   return (
-    <div className={styles.Search}>
+    <form
+      className={styles.Search}
+      onSubmit={handleSubmit}
+    >
       <input
         className={styles.Input}
         value={value}
@@ -36,7 +47,7 @@ function Search({
         {!value && <SearchIcon />}
         {value && <Close />}
       </span>
-    </div>
+    </form>
   );
 }
 

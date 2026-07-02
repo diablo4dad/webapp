@@ -20,6 +20,7 @@ type Props = {
   onToggleEditMode: () => void;
   onToggleItemSidebar: () => void;
   onToggleMobileConfig: () => void;
+  onToggleMobileSearch: () => void;
   routeOutlet: ReactNode;
   searchTerm: string;
   sidebarVisibility: SidebarVisibility;
@@ -40,6 +41,7 @@ function View({
   onToggleEditMode,
   onToggleItemSidebar,
   onToggleMobileConfig,
+  onToggleMobileSearch,
   routeOutlet,
   searchTerm,
   sidebarVisibility,
@@ -51,6 +53,7 @@ function View({
         <Header
           canEditCatalog={canEditCatalog}
           isMobileConfigOpen={isMobileConfigOpen}
+          isMobileSearchOpen={isMobileSearchOpen}
           isEditMode={isEditMode}
           onClearSearch={onClearSearch}
           onSearchChange={onSearchChange}
@@ -60,6 +63,7 @@ function View({
           onToggleEditMode={onToggleEditMode}
           onToggleItemSidebar={onToggleItemSidebar}
           onToggleMobileConfig={onToggleMobileConfig}
+          onToggleMobileSearch={onToggleMobileSearch}
           searchTerm={searchTerm}
           sidebarVisibility={sidebarVisibility}
           user={user}

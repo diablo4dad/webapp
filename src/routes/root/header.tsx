@@ -12,6 +12,7 @@ import { SearchField } from "./search";
 type Props = {
   canEditCatalog: boolean;
   isMobileConfigOpen: boolean;
+  isMobileSearchOpen: boolean;
   isEditMode: boolean;
   onClearSearch: () => void;
   onSearchChange: (value: string) => void;
@@ -21,6 +22,7 @@ type Props = {
   onToggleEditMode: () => void;
   onToggleItemSidebar: () => void;
   onToggleMobileConfig: () => void;
+  onToggleMobileSearch: () => void;
   searchTerm: string;
   sidebarVisibility: SidebarVisibility;
   user?: DadUser;
@@ -29,6 +31,7 @@ type Props = {
 function Header({
   canEditCatalog,
   isMobileConfigOpen,
+  isMobileSearchOpen,
   isEditMode,
   onClearSearch,
   onSearchChange,
@@ -38,6 +41,7 @@ function Header({
   onToggleEditMode,
   onToggleItemSidebar,
   onToggleMobileConfig,
+  onToggleMobileSearch,
   searchTerm,
   sidebarVisibility,
   user,
@@ -56,12 +60,16 @@ function Header({
       actions={
         <HeaderActions
           canEditCatalog={canEditCatalog}
+          hasSearchFilter={searchTerm.length > 0}
           isEditMode={isEditMode}
           isMobileConfigOpen={isMobileConfigOpen}
+          isMobileSearchOpen={isMobileSearchOpen}
+          onClearSearch={onClearSearch}
           onToggleConfig={onToggleConfig}
           onToggleEditMode={onToggleEditMode}
           onToggleItemSidebar={onToggleItemSidebar}
           onToggleMobileConfig={onToggleMobileConfig}
+          onToggleMobileSearch={onToggleMobileSearch}
           sidebarVisibility={sidebarVisibility}
         />
       }

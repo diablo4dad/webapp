@@ -52,21 +52,29 @@ vi.mock("./auth", () => ({
 vi.mock("./header-actions", () => ({
   HeaderActions: ({
     canEditCatalog,
+    hasSearchFilter,
     isEditMode,
     isMobileConfigOpen,
+    isMobileSearchOpen,
+    onClearSearch,
     onToggleConfig,
     onToggleEditMode,
     onToggleItemSidebar,
     onToggleMobileConfig,
+    onToggleMobileSearch,
     sidebarVisibility,
   }: {
     canEditCatalog: boolean;
+    hasSearchFilter: boolean;
     isEditMode: boolean;
     isMobileConfigOpen: boolean;
+    isMobileSearchOpen: boolean;
+    onClearSearch: () => void;
     onToggleConfig: () => void;
     onToggleEditMode: () => void;
     onToggleItemSidebar: () => void;
     onToggleMobileConfig: () => void;
+    onToggleMobileSearch: () => void;
     sidebarVisibility: SidebarVisibility;
   }) => (
     <div>
@@ -75,12 +83,16 @@ vi.mock("./header-actions", () => ({
         settings sidebar {sidebarVisibility.showConfig ? "shown" : "hidden"}
       </div>
       <div>mobile config {isMobileConfigOpen ? "open" : "closed"}</div>
+      <div>mobile search {isMobileSearchOpen ? "open" : "closed"}</div>
+      <div>search filter {hasSearchFilter ? "active" : "inactive"}</div>
       <div>catalog {canEditCatalog ? "editable" : "readonly"}</div>
       <div>editor {isEditMode ? "on" : "off"}</div>
       <button onClick={onToggleItemSidebar}>toggle item sidebar</button>
       <button onClick={onToggleConfig}>toggle settings sidebar</button>
       <button onClick={onToggleEditMode}>toggle editor</button>
       <button onClick={onToggleMobileConfig}>toggle mobile config</button>
+      <button onClick={onToggleMobileSearch}>toggle mobile search</button>
+      <button onClick={onClearSearch}>clear mobile search</button>
     </div>
   ),
 }));
@@ -105,6 +117,7 @@ function renderHeader(options: Options = {}) {
     canEditCatalog: false,
     isEditMode: false,
     isMobileConfigOpen: false,
+    isMobileSearchOpen: false,
     onClearSearch: vi.fn(),
     onSearchChange: vi.fn(),
     onSignIn: vi.fn(),
@@ -113,6 +126,7 @@ function renderHeader(options: Options = {}) {
     onToggleEditMode: vi.fn(),
     onToggleItemSidebar: vi.fn(),
     onToggleMobileConfig: vi.fn(),
+    onToggleMobileSearch: vi.fn(),
     searchTerm: "",
     sidebarVisibility: getDefaultSidebarVisibility(),
     ...options,
@@ -171,6 +185,8 @@ describe("actions", () => {
       canEditCatalog: true,
       isEditMode: true,
       isMobileConfigOpen: true,
+      isMobileSearchOpen: true,
+      searchTerm: "helm",
       sidebarVisibility: {
         showConfig: false,
         showItem: true,
@@ -180,6 +196,8 @@ describe("actions", () => {
     expect(screen.getByText("item sidebar shown")).toBeInTheDocument();
     expect(screen.getByText("settings sidebar hidden")).toBeInTheDocument();
     expect(screen.getByText("mobile config open")).toBeInTheDocument();
+    expect(screen.getByText("mobile search open")).toBeInTheDocument();
+    expect(screen.getByText("search filter active")).toBeInTheDocument();
     expect(screen.getByText("catalog editable")).toBeInTheDocument();
     expect(screen.getByText("editor on")).toBeInTheDocument();
 
@@ -193,11 +211,17 @@ describe("actions", () => {
     await user.click(
       screen.getByRole("button", { name: "toggle mobile config" }),
     );
+    await user.click(
+      screen.getByRole("button", { name: "toggle mobile search" }),
+    );
+    await user.click(screen.getByRole("button", { name: "clear mobile search" }));
 
     expect(props.onToggleItemSidebar).toHaveBeenCalledTimes(1);
     expect(props.onToggleConfig).toHaveBeenCalledTimes(1);
     expect(props.onToggleEditMode).toHaveBeenCalledTimes(1);
     expect(props.onToggleMobileConfig).toHaveBeenCalledTimes(1);
+    expect(props.onToggleMobileSearch).toHaveBeenCalledTimes(1);
+    expect(props.onClearSearch).toHaveBeenCalledTimes(1);
   });
 });
 

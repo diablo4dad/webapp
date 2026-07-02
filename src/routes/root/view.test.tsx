@@ -109,6 +109,7 @@ function renderView(options: Options = {}) {
     onToggleEditMode: vi.fn(),
     onToggleItemSidebar: vi.fn(),
     onToggleMobileConfig: vi.fn(),
+    onToggleMobileSearch: vi.fn(),
     routeOutlet: <div>route outlet</div>,
     searchTerm: "",
     sidebarVisibility: getDefaultSidebarVisibility(),
@@ -135,13 +136,18 @@ describe("shell", () => {
       .toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: "Hide Settings Sidebar" }))
       .toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.queryByRole("button", { name: "Search menu" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Clear search" }))
+      .toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Settings menu" }))
       .toHaveAttribute("aria-pressed", "false");
     expect(screen.getByRole("textbox", { name: "Search transmogs" }))
       .toHaveValue("helm");
   });
 
-  test("passes header actions through props", async () => {
+  test("passes header actions through props without a search filter", async () => {
     const user = userEvent.setup();
     const { props } = renderView();
 
@@ -149,6 +155,7 @@ describe("shell", () => {
     await user.click(
       screen.getByRole("button", { name: "Hide Settings Sidebar" }),
     );
+    await user.click(screen.getByRole("button", { name: "Search menu" }));
     fireEvent.change(screen.getByRole("textbox", { name: "Search transmogs" }), {
       target: {
         value: "sword",
@@ -160,8 +167,21 @@ describe("shell", () => {
 
     expect(props.onToggleItemSidebar).toHaveBeenCalledTimes(1);
     expect(props.onToggleConfig).toHaveBeenCalledTimes(1);
+    expect(props.onToggleMobileSearch).toHaveBeenCalledTimes(1);
     expect(props.onSearchChange).toHaveBeenCalledWith("sword");
     expect(props.onClearSearch).toHaveBeenCalledTimes(1);
+  });
+
+  test("passes mobile clear search action through props", async () => {
+    const user = userEvent.setup();
+    const { props } = renderView({
+      searchTerm: "helm",
+    });
+
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+
+    expect(props.onClearSearch).toHaveBeenCalledTimes(1);
+    expect(props.onToggleMobileSearch).not.toHaveBeenCalled();
   });
 });
 

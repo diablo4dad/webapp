@@ -2,8 +2,10 @@ import type { ReactNode } from "react";
 import type { SidebarVisibility } from "../../common";
 import Button, { BtnColours } from "../../components/Button";
 import {
+  Close,
   Hamburger,
   Pencil,
+  SearchIcon,
   SidebarLeft,
   SidebarRight,
 } from "../../components/Icons";
@@ -16,12 +18,16 @@ import styles from "./header-actions.module.css";
 
 type Props = {
   canEditCatalog: boolean;
+  hasSearchFilter: boolean;
   isEditMode: boolean;
   isMobileConfigOpen: boolean;
+  isMobileSearchOpen: boolean;
+  onClearSearch: () => void;
   onToggleConfig: () => void;
   onToggleEditMode: () => void;
   onToggleItemSidebar: () => void;
   onToggleMobileConfig: () => void;
+  onToggleMobileSearch: () => void;
   sidebarVisibility: SidebarVisibility;
 };
 
@@ -44,12 +50,16 @@ type SidebarToggleProps = {
 
 function HeaderActions({
   canEditCatalog,
+  hasSearchFilter,
   isEditMode,
   isMobileConfigOpen,
+  isMobileSearchOpen,
+  onClearSearch,
   onToggleConfig,
   onToggleEditMode,
   onToggleItemSidebar,
   onToggleMobileConfig,
+  onToggleMobileSearch,
   sidebarVisibility,
 }: Props) {
   return (
@@ -77,6 +87,25 @@ function HeaderActions({
         >
           <Pencil />
         </HeaderToggle>
+      )}
+      {hasSearchFilter ? (
+        <Button
+          aria-label="Clear search"
+          onClick={onClearSearch}
+          showOnly={"mobile"}
+        >
+          <Close />
+        </Button>
+      ) : (
+        <Button
+          aria-label="Search menu"
+          aria-pressed={isMobileSearchOpen}
+          onClick={onToggleMobileSearch}
+          pressed={isMobileSearchOpen}
+          showOnly={"mobile"}
+        >
+          <SearchIcon />
+        </Button>
       )}
       <Button
         aria-label="Settings menu"

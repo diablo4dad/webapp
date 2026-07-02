@@ -4,6 +4,7 @@ type Props = {
   autoFocus?: boolean;
   onChange: (value: string) => void;
   onClear: () => void;
+  onSubmit?: () => void;
   value: string;
 };
 
@@ -13,6 +14,7 @@ function SearchField({
   autoFocus = false,
   onChange,
   onClear,
+  onSubmit,
   value,
 }: Props) {
   return (
@@ -21,6 +23,7 @@ function SearchField({
       value={value}
       onChange={onChange}
       onClear={onClear}
+      onSubmit={onSubmit}
       placeholder={SEARCH_PLACEHOLDER}
     />
   );

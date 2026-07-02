@@ -18,12 +18,16 @@ function getDefaultSidebarVisibility(): SidebarVisibility {
 function renderActions(options: Options = {}) {
   const props: Props = {
     canEditCatalog: false,
+    hasSearchFilter: false,
     isEditMode: false,
     isMobileConfigOpen: false,
+    isMobileSearchOpen: false,
+    onClearSearch: vi.fn(),
     onToggleConfig: vi.fn(),
     onToggleEditMode: vi.fn(),
     onToggleItemSidebar: vi.fn(),
     onToggleMobileConfig: vi.fn(),
+    onToggleMobileSearch: vi.fn(),
     sidebarVisibility: getDefaultSidebarVisibility(),
     ...options,
   };
@@ -94,6 +98,36 @@ describe("editor action", () => {
 });
 
 describe("mobile menu action", () => {
+  test("reflects search overlay state and passes toggle action through", async () => {
+    const user = userEvent.setup();
+    const { props } = renderActions({
+      isMobileSearchOpen: true,
+    });
+    const button = screen.getByRole("button", { name: "Search menu" });
+
+    expect(button).toHaveAttribute("aria-pressed", "true");
+
+    await user.click(button);
+
+    expect(props.onToggleMobileSearch).toHaveBeenCalledTimes(1);
+  });
+
+  test("replaces search action with clear action when filtering", async () => {
+    const user = userEvent.setup();
+    const { props } = renderActions({
+      hasSearchFilter: true,
+    });
+
+    expect(
+      screen.queryByRole("button", { name: "Search menu" }),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+
+    expect(props.onClearSearch).toHaveBeenCalledTimes(1);
+    expect(props.onToggleMobileSearch).not.toHaveBeenCalled();
+  });
+
   test("reflects drawer state and passes toggle action through", async () => {
     const user = userEvent.setup();
     const { props } = renderActions({
