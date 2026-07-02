@@ -20,7 +20,7 @@ type EditorControlProps = {
   onToggleEditMode: () => void;
 };
 
-function MobileSettingsDrawer({
+function MobileSettings({
   canEditCatalog,
   isEditMode,
   onClose,
@@ -94,4 +94,4 @@ function MobileEditorControl({
   );
 }
 
-export { MobileSettingsDrawer };
+export { MobileSettings };

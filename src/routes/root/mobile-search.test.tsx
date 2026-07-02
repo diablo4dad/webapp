@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { MobileSearchOverlay } from "./mobile-search";
+import { MobileSearch } from "./mobile-search";
 
-type Props = Parameters<typeof MobileSearchOverlay>[0];
+type Props = Parameters<typeof MobileSearch>[0];
 
 type Options = Partial<Props>;
 
@@ -41,7 +41,7 @@ function renderOverlay(options: Options = {}) {
     searchTerm: "helm",
     ...options,
   };
-  const renderResult = render(<MobileSearchOverlay {...props} />);
+  const renderResult = render(<MobileSearch {...props} />);
 
   return {
     ...renderResult,

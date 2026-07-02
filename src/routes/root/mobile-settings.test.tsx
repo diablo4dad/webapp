@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { DadUser } from "../../auth/type";
-import { MobileSettingsDrawer } from "./mobile-settings";
+import { MobileSettings } from "./mobile-settings";
 
-type Props = Parameters<typeof MobileSettingsDrawer>[0];
+type Props = Parameters<typeof MobileSettings>[0];
 
 type Options = Partial<Props>;
 
@@ -52,7 +52,7 @@ function renderDrawer(options: Options = {}) {
     onToggleEditMode: vi.fn(),
     ...options,
   };
-  const renderResult = render(<MobileSettingsDrawer {...props} />);
+  const renderResult = render(<MobileSettings {...props} />);
 
   return {
     ...renderResult,
@@ -96,7 +96,7 @@ describe("editor control", () => {
     expect(screen.queryByRole("button", { name: "Off" }))
       .not.toBeInTheDocument();
 
-    rerender(<MobileSettingsDrawer {...props} canEditCatalog={true} />);
+    rerender(<MobileSettings {...props} canEditCatalog={true} />);
 
     expect(screen.getByRole("button", { name: "Off" }))
       .toHaveAttribute("aria-pressed", "false");

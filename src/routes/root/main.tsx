@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import type { DadUser } from "../../auth/type";
 import CollectionEditor from "../../editor/CollectionEditor";
 import CollectionItemEditor from "../../editor/CollectionItemEditor";
-import { MobileSearchOverlay } from "./mobile-search";
-import { MobileSettingsDrawer } from "./mobile-settings";
+import { MobileSearch } from "./mobile-search";
+import { MobileSettings } from "./mobile-settings";
 
 type Props = {
   canEditCatalog: boolean;
@@ -91,7 +91,7 @@ function MobileContent({
   return (
     <>
       {isMobileSearchOpen && (
-        <MobileSearchOverlay
+        <MobileSearch
           onClearSearch={onClearSearch}
           onClose={onClose}
           onSearchChange={onSearchChange}
@@ -99,7 +99,7 @@ function MobileContent({
         />
       )}
       {isMobileConfigOpen && (
-        <MobileSettingsDrawer
+        <MobileSettings
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           onClose={onClose}

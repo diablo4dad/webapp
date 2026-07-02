@@ -11,7 +11,7 @@ type Props = {
   searchTerm: string;
 };
 
-function MobileSearchOverlay({
+function MobileSearch({
   onClearSearch,
   onClose,
   onSearchChange,
@@ -66,4 +66,4 @@ function MobileSearchOverlay({
   );
 }
 
-export { MobileSearchOverlay };
+export { MobileSearch };
