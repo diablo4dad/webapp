@@ -1,0 +1,64 @@
+.MobileSearchOverlayTitle {
+    color: #d0b07c;
+
+    font-family: "PT Serif", serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px #111;
+}
+
+.MobileSearchOverlayClose {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    border: 0;
+
+    background: transparent;
+    color: #cfd5dc;
+
+    cursor: pointer;
+}
+
+.MobileSearchOverlayClose svg {
+    width: 1.75rem;
+    height: 1.75rem;
+
+    fill: currentColor;
+}
+
+.MobileSearchOverlayField {
+    display: flex;
+    flex-direction: column;
+}
+
+.MobileSearchOverlayField > :global(.Search) {
+    width: 100%;
+}
+
+.MobileSearchOverlayAction,
+.MobileSearchOverlayActionPrimary {
+    display: inline-flex;
+    justify-content: center;
+
+    min-width: 8rem;
+    min-height: 3rem;
+    padding: 0.8rem 1.25rem;
+
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.MobileSearchOverlayActionPrimary {
+    border-color: #b16558;
+
+    background: linear-gradient(180deg, #8d433a 0%, #6d342e 100%);
+    box-shadow: 2px 3px 8px rgba(8, 10, 13, 0.35);
+}
+
+.MobileSearchOverlayAction {
+    border-color: #5b6877;
+
+    background: linear-gradient(180deg, #45505e 0%, #353d48 100%);
+}
