@@ -1,32 +1,12 @@
 import { AccordionItem } from "@szhsin/react-accordion";
 import classNames from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type {
-  CSSProperties,
-  PointerEvent as ReactPointerEvent,
-  ReactNode,
-} from "react";
-import { getIcon } from "../bucket";
+import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { MasterGroup } from "../common";
-import { onTouchStart } from "../common/dom";
 import btnStyles from "../components/Button.module.css";
-import {
-  Close,
-  Currency,
-  GripVertical,
-  Pencil,
-  Plus,
-  Tick,
-  TickCircle,
-} from "../components/Icons";
-import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
+import { GripVertical, Pencil, Plus, Tick } from "../components/Icons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
-import {
-  getDefaultItem,
-  MagicType,
-  type Collection,
-  type CollectionItem,
-} from "../data";
+import { getDefaultItem, type Collection, type CollectionItem } from "../data";
 import { countAllItemsInCollection } from "../data/aggregate";
 import { useData } from "../data/context";
 import {
@@ -34,14 +14,10 @@ import {
   getClassIconVariant,
   getClassItemVariant,
   getItemIds,
-  getItemName,
-  getItemType,
 } from "../data/getters";
 import { isCollectionEmpty } from "../data/predicates";
 import { selectCollectionById } from "../data/reducers";
 import { useEditor } from "../editor/context";
-import { getItemDescription } from "../i18n";
-import placeholder from "../image/placeholder.webp";
 import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isLedgerInverse, isLedgerView } from "../settings/predicate";
@@ -62,6 +38,12 @@ import {
   getItemInsertIndexFromPointer,
   type DragScrollTarget,
 } from "./drag";
+import {
+  ItemCard,
+  ItemDragGhost,
+  ItemDropPlaceholder,
+  type ItemView,
+} from "./item-card";
 import type {
   ItemDragState,
   LedgerProps,
@@ -503,7 +485,7 @@ const LedgerSection = ({
     };
   }, [dragState?.draggedItemId]);
 
-  function getCollectionItemView(collectionItem: CollectionItem) {
+  function getCollectionItemView(collectionItem: CollectionItem): ItemView {
     const item =
       getClassItemVariant(collectionItem, preferredClass) ??
       getDefaultItem(collectionItem);
@@ -514,7 +496,7 @@ const LedgerSection = ({
     const isHidden = isItemHidden(log, itemIds);
     const showCollected =
       isCollected && !isHidden && !collectionItem.unobtainable;
-    const showExcluded = isHidden || collectionItem.unobtainable;
+    const showExcluded = isHidden || collectionItem.unobtainable === true;
 
     return {
       icon,
@@ -523,96 +505,6 @@ const LedgerSection = ({
       showCollected,
       showExcluded,
     };
-  }
-
-  function getCollectionItemClassName(
-    collectionItem: CollectionItem,
-    item: ReturnType<typeof getCollectionItemView>["item"],
-    options: { isGhost?: boolean } = {},
-  ) {
-    return classNames({
-      [styles.Item]: true,
-      [styles.ItemDragReady]:
-        canReorderCollectionItems && !options.isGhost && !dragState,
-      [styles.ItemDragGhost]: options.isGhost,
-      [styles.ItemReorderSaving]: isReordering && !options.isGhost,
-      [styles.ItemCollected]:
-        getCollectionItemView(collectionItem).showCollected,
-      [styles.ItemHidden]: getCollectionItemView(collectionItem).showExcluded,
-      [styles.ItemPremium]: collectionItem.premium,
-      [styles.ItemUnique]: item.magicType === MagicType.UNIQUE,
-      [styles.ItemMythic]: item.magicType === MagicType.MYTHIC,
-    });
-  }
-
-  function renderCollectionItemContent(
-    collectionItem: CollectionItem,
-    item: ReturnType<typeof getCollectionItemView>["item"],
-    icon: string,
-    showDragHandle: boolean,
-  ) {
-    return (
-      <>
-        {showDragHandle && canReorderCollectionItems && (
-          <button
-            type="button"
-            className={styles.ItemDragHandle}
-            aria-label={`Reorder ${getItemName(collectionItem, item)}`}
-            title="Reorder item"
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-            }}
-            onMouseDown={(event) => event.stopPropagation()}
-            onPointerDown={(event) => startItemReorder(event, collectionItem)}
-            onTouchStart={(event) => event.stopPropagation()}
-          >
-            <GripVertical />
-          </button>
-        )}
-        <FallbackLazyImage
-          wrapperClassName={styles.ItemImageWrapper}
-          placeholderSrc={placeholder}
-          className={styles.ItemImage}
-          src={getIcon(icon)}
-          alt={getItemName(collectionItem, item)}
-        />
-        <div className={styles.ItemInfo}>
-          <div className={styles.ItemName}>
-            {getItemName(collectionItem, item)}
-          </div>
-          <div className={styles.ItemType}>
-            <span>
-              {getItemType(collectionItem, item)} | {collectionItem.claim}
-            </span>
-            <span
-              className={styles.ItemIconPremiumTitle}
-              hidden={!collectionItem.premium}
-            >
-              <Currency />
-            </span>
-          </div>
-          <div className={styles.ItemClaimDescription}>
-            {getItemDescription(collectionItem)}
-          </div>
-        </div>
-        <div className={styles.ItemIcons}>
-          <span className={styles.ItemIcon + " " + styles.ItemIconPremium}>
-            <Currency></Currency>
-          </span>
-          {getCollectionItemView(collectionItem).isCollected && (
-            <span className={styles.ItemIcon + " " + styles.ItemIconCollection}>
-              <TickCircle></TickCircle>
-            </span>
-          )}
-          {getCollectionItemView(collectionItem).showExcluded && (
-            <span className={styles.ItemIcon + " " + styles.ItemIconHidden}>
-              <Close></Close>
-            </span>
-          )}
-        </div>
-      </>
-    );
   }
 
   return (
@@ -739,17 +631,9 @@ const LedgerSection = ({
             {renderedCollectionItemIds.map((collectionItemId) => {
               if (dragState?.draggedItemId === collectionItemId) {
                 return (
-                  <div
+                  <ItemDropPlaceholder
                     key={`drop-placeholder-${collectionItemId}`}
-                    className={classNames(
-                      styles.Item,
-                      styles.ItemDropPlaceholder,
-                    )}
-                    aria-hidden="true"
-                  >
-                    <div className={styles.ItemDropPlaceholderVisual} />
-                    <div className={styles.ItemDropPlaceholderInfo} />
-                  </div>
+                  />
                 );
               }
 
@@ -761,15 +645,13 @@ const LedgerSection = ({
               const itemView = getCollectionItemView(collectionItem);
 
               return (
-                <div
-                  className={getCollectionItemClassName(
-                    collectionItem,
-                    itemView.item,
-                  )}
-                  data-reorder-item="true"
-                  onPointerDown={(event) =>
-                    queueItemReorder(event, collectionItem)
-                  }
+                <ItemCard
+                  key={collectionItem.id}
+                  canReorder={canReorderCollectionItems}
+                  collectionItem={collectionItem}
+                  isDragging={dragState !== undefined}
+                  isReordering={isReordering}
+                  itemView={itemView}
                   onClick={() => {
                     if (suppressItemClickRef.current) {
                       suppressItemClickRef.current = false;
@@ -780,48 +662,24 @@ const LedgerSection = ({
                       onClickItem(collectionItem, collection);
                     }
                   }}
-                  onDoubleClick={() =>
+                  onQueueReorder={(event) =>
+                    queueItemReorder(event, collectionItem)
+                  }
+                  onStartReorder={(event) =>
+                    startItemReorder(event, collectionItem)
+                  }
+                  onToggle={() =>
                     toggleItem(collectionItem)(!itemView.isCollected)
                   }
-                  onTouchStart={onTouchStart(() =>
-                    toggleItem(collectionItem)(!itemView.isCollected),
-                  )}
-                  key={collectionItem.id}
-                >
-                  {renderCollectionItemContent(
-                    collectionItem,
-                    itemView.item,
-                    itemView.icon,
-                    true,
-                  )}
-                </div>
+                />
               );
             })}
             {dragState && draggedCollectionItem && (
-              <div
-                className={getCollectionItemClassName(
-                  draggedCollectionItem,
-                  getCollectionItemView(draggedCollectionItem).item,
-                  { isGhost: true },
-                )}
-                style={
-                  {
-                    "--drag-ghost-height": `${dragState.height}px`,
-                    "--drag-ghost-width": `${dragState.width}px`,
-                    height: dragState.height,
-                    left: dragState.pointerX - dragState.offsetX,
-                    top: dragState.pointerY - dragState.offsetY,
-                    width: dragState.width,
-                  } as CSSProperties
-                }
-              >
-                {renderCollectionItemContent(
-                  draggedCollectionItem,
-                  getCollectionItemView(draggedCollectionItem).item,
-                  getCollectionItemView(draggedCollectionItem).icon,
-                  false,
-                )}
-              </div>
+              <ItemDragGhost
+                collectionItem={draggedCollectionItem}
+                dragState={dragState}
+                itemView={getCollectionItemView(draggedCollectionItem)}
+              />
             )}
             {reorderError && (
               <div className={styles.ItemReorderError}>{reorderError}</div>
