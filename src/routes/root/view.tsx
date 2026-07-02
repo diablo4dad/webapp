@@ -5,15 +5,12 @@ import { Footer } from "./footer";
 import { Header } from "./header";
 import { Layout } from "./layout";
 import { Main } from "./main";
-import {
-  Content,
-  getMobileContentVisibility,
-} from "./state";
 
 type Props = {
   canEditCatalog: boolean;
-  content: Content;
   isEditMode: boolean;
+  isMobileConfigOpen: boolean;
+  isMobileSearchOpen: boolean;
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
   onSearchChange: (value: string) => void;
@@ -31,8 +28,9 @@ type Props = {
 
 function View({
   canEditCatalog,
-  content,
   isEditMode,
+  isMobileConfigOpen,
+  isMobileSearchOpen,
   onClearSearch,
   onCloseMobileContent,
   onSearchChange,
@@ -47,11 +45,6 @@ function View({
   sidebarVisibility,
   user,
 }: Props) {
-  const {
-    isMobileConfigOpen,
-    isMobileSearchOpen,
-  } = getMobileContentVisibility(content);
-
   return (
     <Layout
       header={

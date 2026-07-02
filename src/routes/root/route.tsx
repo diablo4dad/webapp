@@ -9,6 +9,7 @@ import {
   Content,
   closeContent,
   getInitialContentState,
+  getMobileContentVisibility,
   toggleContent,
   toggleSidebarVisibility,
 } from "./state";
@@ -46,6 +47,10 @@ function RootRoute(): ReactElement {
     onToggleMobileConfig,
   } = useContentControls();
   const {
+    isMobileConfigOpen,
+    isMobileSearchOpen,
+  } = getMobileContentVisibility(content);
+  const {
     onToggleConfig,
     onToggleItemSidebar,
   } = getSidebarControls(sidebarVisibility, setSidebarVisibility);
@@ -57,8 +62,9 @@ function RootRoute(): ReactElement {
   return (
     <View
       canEditCatalog={canEditCatalog}
-      content={content}
       isEditMode={isEditMode}
+      isMobileConfigOpen={isMobileConfigOpen}
+      isMobileSearchOpen={isMobileSearchOpen}
       onClearSearch={onClearSearch}
       onCloseMobileContent={onCloseMobileContent}
       onSearchChange={setSearchTerm}

@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { SidebarVisibility } from "../../common";
 import type { DadUser } from "../../auth/type";
-import { Content } from "./state";
 import { View } from "./view";
 
 type Props = Parameters<typeof View>[0];
@@ -98,8 +97,9 @@ function getDefaultSidebarVisibility(): SidebarVisibility {
 function renderView(options: Options = {}) {
   const props: Props = {
     canEditCatalog: false,
-    content: Content.LEDGER,
     isEditMode: false,
+    isMobileConfigOpen: false,
+    isMobileSearchOpen: false,
     onClearSearch: vi.fn(),
     onCloseMobileContent: vi.fn(),
     onSearchChange: vi.fn(),
@@ -189,7 +189,7 @@ describe("mobile settings", () => {
     const user = userEvent.setup();
     const { props } = renderView({
       canEditCatalog: true,
-      content: Content.CONFIG,
+      isMobileConfigOpen: true,
     });
 
     expect(screen.getByRole("button", { name: "Settings menu" }))
@@ -209,7 +209,7 @@ describe("mobile search", () => {
   test("renders search overlay from content state", async () => {
     const user = userEvent.setup();
     const { props } = renderView({
-      content: Content.SEARCH,
+      isMobileSearchOpen: true,
       searchTerm: "helm",
     });
     const mobileSearchField = screen.getAllByRole("textbox", {
