@@ -9,7 +9,7 @@ import Welcome from "../../collection/Welcome";
 import type { Collection, CollectionItem } from "../../data";
 import type { SidebarVisibility } from "../../common";
 import ConfigSidebar from "../../settings/ConfigSidebar";
-import { CollectionLogLayout } from "./layout";
+import { Layout } from "./layout";
 import styles from "./view.module.css";
 
 type Props = {
@@ -42,7 +42,7 @@ type MainContentProps = {
   openCollections: string[];
 };
 
-function CollectionLogView({
+function View({
   catalogError,
   collections,
   focusCollection,
@@ -56,7 +56,7 @@ function CollectionLogView({
   sidebarVisibility,
 }: Props) {
   return (
-    <CollectionLogLayout
+    <Layout
       hero={<Hero />}
       leftSidebar={
         sidebarVisibility.showItem ? (
@@ -81,7 +81,7 @@ function CollectionLogView({
           openCollections={openCollections}
         />
       }
-    ></CollectionLogLayout>
+    ></Layout>
   );
 }
 
@@ -139,4 +139,4 @@ function MainContent({
   );
 }
 
-export { CollectionLogView };
+export { View };

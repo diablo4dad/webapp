@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
-import { CollectionLogLayout } from "./layout";
+import { Layout } from "./layout";
 import styles from "./layout.module.css";
 
-type LayoutOptions = {
+type Options = {
   leftSidebar?: boolean;
   rightSidebar?: boolean;
 };
@@ -10,9 +10,9 @@ type LayoutOptions = {
 function renderLayout({
   leftSidebar = false,
   rightSidebar = false,
-}: LayoutOptions = {}) {
+}: Options = {}) {
   render(
-    <CollectionLogLayout
+    <Layout
       hero={<div>hero</div>}
       leftSidebar={leftSidebar ? <div>left</div> : undefined}
       main={<div>main</div>}

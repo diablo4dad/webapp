@@ -4,17 +4,15 @@ import { useLoaderData } from "react-router-dom";
 import { useData } from "../../data/context";
 import { useAuth } from "../../auth/context";
 import { useEditor } from "../../editor/context";
-import { loader as collectionLogLoader } from "./loader";
+import { loader } from "./loader";
 import type { LoaderPayload } from "./loader";
 import { useCatalogLoading } from "./loading";
 import {
   getFocusTarget,
-  getCollectionLogViewState,
-  useCollectionLogState,
+  getViewState,
+  useOpenCollections,
 } from "./state";
-import { CollectionLogView } from "./view";
-
-const loader = collectionLogLoader;
+import { View } from "./view";
 
 function Component() {
   const { group } = useLoaderData() as LoaderPayload;
@@ -33,7 +31,7 @@ function Component() {
   } = useData();
   const { isLoading: isAuthLoading } = useAuth();
   const { canEditCatalog } = useEditor();
-  const { openCollections, setOpenCollection } = useCollectionLogState();
+  const { openCollections, setOpenCollection } = useOpenCollections();
   const { catalogError, isCatalogLoading } = useCatalogLoading({
     canEditCatalog,
     catalogGroupSources,
@@ -42,7 +40,7 @@ function Component() {
     loadedCatalogGroups,
     setCatalogCategoryDb,
   });
-  const viewState = getCollectionLogViewState({
+  const viewState = getViewState({
     catalogCollections: db.collections,
     focusCollectionId,
     focusItemId,
@@ -66,7 +64,7 @@ function Component() {
   }
 
   return (
-    <CollectionLogView
+    <View
       catalogError={catalogError}
       collections={viewState.collections}
       focusCollection={viewState.focusCollection}

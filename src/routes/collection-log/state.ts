@@ -12,29 +12,29 @@ type CollectionLogViewModel = {
   openCollections: string[];
 };
 
-type CollectionLogFocusInput = {
+type FocusInput = {
   collections: CollectionGroup;
   focusCollectionId?: string;
   focusItemId: number;
 };
 
-type CollectionLogFocusState = {
+type FocusState = {
   focusCollection?: Collection;
   focusItem: CollectionItem;
   isItemSidebarLoading: boolean;
 };
 
-type CollectionLogFocusTargetInput = {
+type FocusTargetInput = {
   collection: Collection;
   collectionItem: CollectionItem;
 };
 
-type CollectionLogFocusTarget = {
+type FocusTarget = {
   collectionId: string;
   itemId: number;
 };
 
-type CollectionLogViewStateInput = {
+type ViewStateInput = {
   catalogCollections: CollectionGroup;
   focusCollectionId?: string;
   focusItemId: number;
@@ -43,13 +43,13 @@ type CollectionLogViewStateInput = {
   visibleCollections: CollectionGroup;
 };
 
-type CollectionLogViewState = CollectionLogFocusState & {
+type ViewState = FocusState & {
   collections: CollectionGroup;
   isEmpty: boolean;
   isLoading: boolean;
 };
 
-type CollectionLogState = {
+type State = {
   openCollections: string[];
   setOpenCollection: (collectionId: string, isOpen: boolean) => void;
 };
@@ -75,7 +75,7 @@ function getFocusState({
   collections,
   focusCollectionId,
   focusItemId,
-}: CollectionLogFocusInput): CollectionLogFocusState {
+}: FocusInput): FocusState {
   return {
     focusCollection: selectCollectionById(collections, focusCollectionId),
     focusItem: selectItemOrDefault(collections, focusItemId),
@@ -86,25 +86,25 @@ function getFocusState({
 function getFocusTarget({
   collection,
   collectionItem,
-}: CollectionLogFocusTargetInput): CollectionLogFocusTarget {
+}: FocusTargetInput): FocusTarget {
   return {
     collectionId: collection.id,
     itemId: collectionItem.id,
   };
 }
 
-function isCollectionLogEmpty(collections: CollectionGroup): boolean {
+function hasNoItems(collections: CollectionGroup): boolean {
   return countAllItemsDabDb(collections) === 0;
 }
 
-function getCollectionLogViewState({
+function getViewState({
   catalogCollections,
   focusCollectionId,
   focusItemId,
   isAuthLoading,
   isCatalogLoading,
   visibleCollections,
-}: CollectionLogViewStateInput): CollectionLogViewState {
+}: ViewStateInput): ViewState {
   return {
     ...getFocusState({
       collections: catalogCollections,
@@ -112,12 +112,12 @@ function getCollectionLogViewState({
       focusItemId,
     }),
     collections: visibleCollections,
-    isEmpty: isCollectionLogEmpty(visibleCollections),
+    isEmpty: hasNoItems(visibleCollections),
     isLoading: isAuthLoading || isCatalogLoading,
   };
 }
 
-function useCollectionLogState(): CollectionLogState {
+function useOpenCollections(): State {
   const [viewModel, setViewModel] = useState<CollectionLogViewModel>(
     getCollectionLogViewModel,
   );
@@ -139,18 +139,18 @@ function useCollectionLogState(): CollectionLogState {
 }
 
 export {
-  getCollectionLogViewState,
+  getViewState,
   getFocusState,
   getFocusTarget,
-  isCollectionLogEmpty,
+  hasNoItems,
   setCollectionOpen,
-  useCollectionLogState,
-  type CollectionLogFocusInput,
-  type CollectionLogFocusState,
-  type CollectionLogFocusTarget,
-  type CollectionLogFocusTargetInput,
-  type CollectionLogState,
+  useOpenCollections,
+  type FocusInput,
+  type FocusState,
+  type FocusTarget,
+  type FocusTargetInput,
+  type State,
   type CollectionLogViewModel,
-  type CollectionLogViewState,
-  type CollectionLogViewStateInput,
+  type ViewState,
+  type ViewStateInput,
 };

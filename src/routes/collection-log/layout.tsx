@@ -9,7 +9,7 @@ type Props = {
   rightSidebar?: ReactNode;
 };
 
-export function CollectionLogLayout({
+export function Layout({
   leftSidebar,
   rightSidebar,
   main,

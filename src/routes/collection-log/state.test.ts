@@ -11,11 +11,11 @@ import {
 import {
   getFocusState,
   getFocusTarget,
-  getCollectionLogViewState,
-  isCollectionLogEmpty,
+  getViewState,
+  hasNoItems,
   setCollectionOpen,
   type CollectionLogViewModel,
-  useCollectionLogState,
+  useOpenCollections,
 } from "./state";
 
 function item(id: number): CollectionItem {
@@ -175,7 +175,7 @@ describe("view model state", () => {
 describe("empty state", () => {
   test("detects empty logs", () => {
     expect(
-      isCollectionLogEmpty([
+      hasNoItems([
         collection("general-001", []),
         collection("season-002", []),
         collection("challenge-003", []),
@@ -184,7 +184,7 @@ describe("empty state", () => {
   });
 
   test("detects direct items", () => {
-    expect(isCollectionLogEmpty([collection("general-001", [item(101)])])).toBe(
+    expect(hasNoItems([collection("general-001", [item(101)])])).toBe(
       false,
     );
   });
@@ -201,7 +201,7 @@ describe("view state", () => {
   test("combines derived props", () => {
     const visibleCollections = [collection("season-002", [])];
 
-    const viewState = getCollectionLogViewState({
+    const viewState = getViewState({
       catalogCollections,
       focusCollectionId: "general-001",
       focusItemId: 101,
@@ -221,7 +221,7 @@ describe("view state", () => {
   });
 
   test("settles loading", () => {
-    const viewState = getCollectionLogViewState({
+    const viewState = getViewState({
       catalogCollections,
       focusCollectionId: "season-002",
       focusItemId: 202,
@@ -241,7 +241,7 @@ describe("persisted state", () => {
       openCollections: ["general-001", "season-002", "challenge-003"],
     });
 
-    const { result } = renderHook(() => useCollectionLogState());
+    const { result } = renderHook(() => useOpenCollections());
 
     expect(result.current.openCollections).toEqual([
       "general-001",
@@ -251,7 +251,7 @@ describe("persisted state", () => {
   });
 
   test("saves open ids", () => {
-    const { result } = renderHook(() => useCollectionLogState());
+    const { result } = renderHook(() => useOpenCollections());
 
     act(() => {
       result.current.setOpenCollection("general-001", true);

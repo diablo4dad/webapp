@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import type { SidebarVisibility } from "../../common";
 import type { Collection, CollectionItem } from "../../data";
-import { CollectionLogView } from "./view";
+import { View } from "./view";
 
-type ViewOptions = {
+type Options = {
   catalogError?: string;
   collections?: Collection[];
   isEmpty?: boolean;
@@ -80,11 +80,11 @@ function renderView({
   isItemSidebarLoading = false,
   isLoading = false,
   sidebarVisibility = { showConfig: false, showItem: false },
-}: ViewOptions = {}) {
+}: Options = {}) {
   const focusItem = item(101);
 
   render(
-    <CollectionLogView
+    <View
       catalogError={catalogError}
       collections={collections}
       focusCollection={collections[0]}

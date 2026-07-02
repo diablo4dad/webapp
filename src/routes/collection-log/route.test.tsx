@@ -4,11 +4,11 @@ import { vi } from "vitest";
 import { MasterGroup } from "../../common";
 import type { Collection, CollectionItem } from "../../data";
 import { Component } from "./route";
-import type { CollectionLogView } from "./view";
+import type { View } from "./view";
 
-type ViewProps = Parameters<typeof CollectionLogView>[0];
+type ViewProps = Parameters<typeof View>[0];
 
-type RouteOptions = {
+type Options = {
   canEditCatalog?: boolean;
   catalogError?: string;
   isAuthLoading?: boolean;
@@ -45,7 +45,7 @@ vi.mock("./loading", () => ({
 }));
 
 vi.mock("./view", () => ({
-  CollectionLogView: (props: ViewProps) => {
+  View: (props: ViewProps) => {
     mocks.renderView(props);
 
     return (
@@ -99,7 +99,7 @@ function renderRoute({
   catalogError,
   isAuthLoading = false,
   isCatalogLoading = true,
-}: RouteOptions = {}) {
+}: Options = {}) {
   const generalItem = item(101);
   const seasonItem = item(202);
   const generalCollection = collection("general-001", [generalItem]);
