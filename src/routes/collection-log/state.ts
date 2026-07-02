@@ -6,11 +6,8 @@ import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
 import {
   getCollectionLogViewModel,
   saveCollectionLogViewModel,
+  type CollectionLogViewModel,
 } from "../../store/local";
-
-type CollectionLogViewModel = {
-  openCollections: string[];
-};
 
 type FocusInput = {
   collections: CollectionGroup;

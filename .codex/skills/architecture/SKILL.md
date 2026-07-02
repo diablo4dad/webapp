@@ -9,8 +9,8 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 
 - `src/app`: provider composition and router setup.
 - `src/routes`: route orchestration, route state, route loading, and screen composition.
-- `src/collection`: core collection state, predicates, aggregates, and ledger UI.
-- `src/data`: catalog types, getters, reducers, filters, factories, and transforms.
+- `src/<feature>`: feature-specific UI, state, domain helpers, skeletons, and tests.
+- `src/data`: shared catalog types, getters, reducers, filters, factories, and transforms.
 - `src/store`: localStorage, Firestore, catalog persistence, and persistence adapters.
 - `src/auth`: authentication context and account/auth UI.
 - `functions`: Firebase Cloud Functions.
@@ -21,7 +21,6 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 - Keep feature UI, state, helpers, skeletons, and tests near the feature.
 - Use `src/components`, `src/common`, and `src/config` only for app-wide shared code.
 - Keep module internals shallow; add one lowercase hyphenated subdirectory per feature/workflow when several support files are needed.
-- Keep collection-adjacent surfaces such as `src/item-sidebar`, `src/progress`, `src/season`, and `src/welcome` as top-level feature modules.
 
 ## Routes
 
