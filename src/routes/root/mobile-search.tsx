@@ -1,6 +1,6 @@
 import Button, { BtnColours } from "../../components/Button";
 import { Close } from "../../components/Icons";
-import { MobileSearchOverlayLayout } from "./mobile-layout";
+import { MobileSearchLayout } from "./mobile-search-layout";
 import { SearchField } from "./search";
 import styles from "./mobile-search.module.css";
 
@@ -18,7 +18,7 @@ function MobileSearchOverlay({
   searchTerm,
 }: Props) {
   return (
-    <MobileSearchOverlayLayout
+    <MobileSearchLayout
       onClose={onClose}
       header={
         <>

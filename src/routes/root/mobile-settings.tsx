@@ -2,7 +2,7 @@ import type { DadUser } from "../../auth/type";
 import { Close, Pencil } from "../../components/Icons";
 import ConfigSidebar from "../../settings/ConfigSidebar";
 import { AuthActions } from "./auth";
-import { MobileDrawerLayout } from "./mobile-layout";
+import { MobileSettingsLayout } from "./mobile-settings-layout";
 import styles from "./mobile-settings.module.css";
 
 type Props = {
@@ -30,7 +30,7 @@ function MobileSettingsDrawer({
   user,
 }: Props) {
   return (
-    <MobileDrawerLayout
+    <MobileSettingsLayout
       onClose={onClose}
       header={
         <>

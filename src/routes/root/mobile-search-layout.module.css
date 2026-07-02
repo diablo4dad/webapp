@@ -1,0 +1,78 @@
+.MobileSearchLayout {
+    position: fixed;
+    inset: 0;
+    z-index: 5500;
+
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow-y: auto;
+
+    box-sizing: border-box;
+
+    background: rgba(11, 12, 16, 0.46);
+    backdrop-filter: blur(0.35rem);
+
+    animation: search-overlay-in 180ms ease-out;
+}
+
+.MobileSearchLayoutPanel {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1.75rem;
+
+    width: 100%;
+    min-height: 100%;
+    padding: 1.5rem 1.5rem 2rem;
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(180deg, rgba(24, 28, 36, 0.96) 0%, rgba(22, 25, 32, 0.96) 100%),
+        radial-gradient(circle at top right, rgba(132, 48, 44, 0.28) 0%, rgba(132, 48, 44, 0) 36%),
+        radial-gradient(circle at bottom left, rgba(66, 88, 118, 0.22) 0%, rgba(66, 88, 118, 0) 42%);
+
+    animation: search-panel-in 200ms ease-out;
+}
+
+.MobileSearchLayoutHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.MobileSearchLayoutBody {
+    flex: 1 1 auto;
+}
+
+.MobileSearchLayoutActions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+@keyframes search-overlay-in {
+    from {
+        background: rgba(12, 14, 18, 0);
+    }
+    to {
+        background: rgba(11, 12, 16, 0.46);
+    }
+}
+
+@keyframes search-panel-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .MobileSearchLayout {
+        display: none;
+    }
+}
