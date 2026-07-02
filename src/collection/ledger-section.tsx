@@ -2,7 +2,6 @@ import { AccordionItem } from "@szhsin/react-accordion";
 import classNames from "classnames";
 import { useMemo } from "react";
 import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
-import { MasterGroup } from "../common";
 import type { Collection, CollectionItem } from "../data";
 import { countAllItemsInCollection } from "../data/aggregate";
 import { useData } from "../data/context";
@@ -32,6 +31,7 @@ import {
 import { useItemReorder } from "./item-reorder";
 import { getItemView } from "./item-view";
 import type { LedgerProps, LedgerSectionProps } from "./ledger-types";
+import { getSectionRules } from "./section-rules";
 import { SectionHeader } from "./section-header";
 import styles from "./Ledger.module.css";
 
@@ -118,35 +118,22 @@ const LedgerSection = ({
     [styles.LedgerCards]: isLedgerView(settings, LedgerView.CARD),
     [styles.LedgerCardsInverse]: isLedgerInverse(settings),
   });
-  const isEditableCatalogCollection =
-    isEditMode &&
-    collection.id !== "888" &&
-    collection.category !== MasterGroup.UNIVERSAL &&
-    parentCollection?.category !== MasterGroup.UNIVERSAL;
-  const hasCollectionItems = collection.collectionItems.length > 0;
-  const hasSubcollections = collection.subcollections.length > 0;
-  const canAddCollectionItems =
-    isEditableCatalogCollection && !hasSubcollections;
-  const canAddSubcollections =
-    isEditableCatalogCollection && depth === 0 && !hasCollectionItems;
-  const shouldRenderAddItemCard = canAddCollectionItems;
-  const shouldRenderAddSubcollectionCard =
-    canAddSubcollections &&
-    !hasSubcollections &&
-    group !== MasterGroup.UNIVERSAL;
-  const canEditCollection = isEditableCatalogCollection;
-  const canReorderCollections =
-    canEditCollection &&
-    searchTerm.trim() === "" &&
-    collectionDragController !== undefined &&
-    group !== MasterGroup.UNIVERSAL;
-  const canReorderCollectionItems =
-    isEditableCatalogCollection &&
-    searchTerm.trim() === "" &&
-    sourceCollection !== undefined &&
-    collection.collectionItems.length > 1 &&
-    collection.collectionItems.length ===
-      sourceCollection.collectionItems.length;
+  const {
+    canEditCollection,
+    canReorderCollectionItems,
+    canReorderCollections,
+    shouldRenderAddItemCard,
+    shouldRenderAddSubcollectionCard,
+  } = getSectionRules({
+    collection,
+    depth,
+    group,
+    hasCollectionDragController: collectionDragController !== undefined,
+    isEditMode,
+    parentCollection,
+    searchTerm,
+    sourceCollection,
+  });
   const collectionItemsById = useMemo(
     () =>
       new Map(
