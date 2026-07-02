@@ -1,4 +1,4 @@
-.MobileSettingsDrawerTitle {
+.MobileSettingsTitle {
     color: #d0b07c;
 
     font-family: "PT Serif", serif;
@@ -7,7 +7,7 @@
     text-shadow: 1px 1px 2px #111;
 }
 
-.MobileSettingsDrawerClose {
+.MobileSettingsClose {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -21,14 +21,14 @@
     cursor: pointer;
 }
 
-.MobileSettingsDrawerClose svg {
+.MobileSettingsClose svg {
     width: 1.75rem;
     height: 1.75rem;
 
     fill: currentColor;
 }
 
-.MobileEditorControl {
+.MobileSettingsEditor {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -39,21 +39,21 @@
     background-color: #23272e;
 }
 
-.MobileEditorControlMeta {
+.MobileSettingsEditorMeta {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     min-width: 0;
 }
 
-.MobileEditorControlTitle {
+.MobileSettingsEditorTitle {
     font-size: 1rem;
     font-weight: 700;
     color: #d0b07c;
 }
 
-.MobileEditorControlToggle,
-.MobileEditorControlToggleActive {
+.MobileSettingsEditorToggle,
+.MobileSettingsEditorToggleActive {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -67,19 +67,19 @@
     cursor: pointer;
 }
 
-.MobileEditorControlToggleActive {
+.MobileSettingsEditorToggleActive {
     border-color: #595259;
     background-color: #2f2830;
     color: #d7dbe0;
 }
 
-.MobileEditorControlToggleIcon {
+.MobileSettingsEditorToggleIcon {
     display: inline-flex;
     width: 1.125rem;
     height: 1.125rem;
 }
 
-.MobileEditorControlToggleIcon svg {
+.MobileSettingsEditorToggleIcon svg {
     width: 100%;
     height: 100%;
 }

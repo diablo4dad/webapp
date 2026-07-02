@@ -5,8 +5,8 @@ import CollectionEditor from "../../editor/CollectionEditor";
 import CollectionItemEditor from "../../editor/CollectionItemEditor";
 import { RootHeader } from "./header";
 import { RootLayout } from "./layout";
-import { MobileSettingsDrawer } from "./mobile";
 import { MobileSearchOverlay } from "./mobile-search";
+import { MobileSettingsDrawer } from "./mobile-settings";
 import { RootContent } from "./state";
 
 type Props = {

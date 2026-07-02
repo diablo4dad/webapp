@@ -3,7 +3,7 @@ import { Close, Pencil } from "../../components/Icons";
 import ConfigSidebar from "../../settings/ConfigSidebar";
 import { RootAuthActions } from "./auth";
 import { RootMobileDrawerLayout } from "./mobile-layout";
-import styles from "./mobile.module.css";
+import styles from "./mobile-settings.module.css";
 
 type MobileSettingsDrawerProps = {
   canEditCatalog: boolean;
@@ -34,9 +34,9 @@ function MobileSettingsDrawer({
       onClose={onClose}
       header={
         <>
-          <div className={styles.MobileSettingsDrawerTitle}>Settings</div>
+          <div className={styles.MobileSettingsTitle}>Settings</div>
           <button
-            className={styles.MobileSettingsDrawerClose}
+            className={styles.MobileSettingsClose}
             onClick={onClose}
             aria-label="Close settings"
           >
@@ -71,21 +71,21 @@ function MobileEditorControl({
   onToggleEditMode,
 }: MobileEditorControlProps) {
   return (
-    <div className={styles.MobileEditorControl}>
-      <div className={styles.MobileEditorControlMeta}>
-        <div className={styles.MobileEditorControlTitle}>Editor Mode</div>
+    <div className={styles.MobileSettingsEditor}>
+      <div className={styles.MobileSettingsEditorMeta}>
+        <div className={styles.MobileSettingsEditorTitle}>Editor Mode</div>
       </div>
       <button
         className={
           isEditMode
-            ? styles.MobileEditorControlToggleActive
-            : styles.MobileEditorControlToggle
+            ? styles.MobileSettingsEditorToggleActive
+            : styles.MobileSettingsEditorToggle
         }
         onClick={onToggleEditMode}
         type="button"
         aria-pressed={isEditMode}
       >
-        <span className={styles.MobileEditorControlToggleIcon}>
+        <span className={styles.MobileSettingsEditorToggleIcon}>
           <Pencil />
         </span>
         <span>{isEditMode ? "On" : "Off"}</span>
