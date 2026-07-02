@@ -33,6 +33,15 @@ type ToggleProps = {
   tooltip: string;
 };
 
+type SidebarName = "Item" | "Settings";
+
+type SidebarToggleProps = {
+  children: ReactNode;
+  isPressed: boolean;
+  onToggle: () => void;
+  sidebarName: SidebarName;
+};
+
 function HeaderActions({
   canEditCatalog,
   isEditMode,
@@ -45,26 +54,20 @@ function HeaderActions({
 }: Props) {
   return (
     <>
-      <HeaderToggle
+      <SidebarToggle
         isPressed={sidebarVisibility.showItem}
         onToggle={onToggleItemSidebar}
-        tooltip={
-          sidebarVisibility.showItem ? "Hide Item Sidebar" : "Show Item Sidebar"
-        }
+        sidebarName="Item"
       >
         <SidebarLeft />
-      </HeaderToggle>
-      <HeaderToggle
+      </SidebarToggle>
+      <SidebarToggle
         isPressed={sidebarVisibility.showConfig}
         onToggle={onToggleConfig}
-        tooltip={
-          sidebarVisibility.showConfig
-            ? "Hide Settings Sidebar"
-            : "Show Settings Sidebar"
-        }
+        sidebarName="Settings"
       >
         <SidebarRight />
-      </HeaderToggle>
+      </SidebarToggle>
       {canEditCatalog && (
         <HeaderToggle
           ariaLabel={isEditMode ? "Disable editor mode" : "Enable editor mode"}
@@ -85,6 +88,23 @@ function HeaderActions({
         <Hamburger />
       </Button>
     </>
+  );
+}
+
+function SidebarToggle({
+  children,
+  isPressed,
+  onToggle,
+  sidebarName,
+}: SidebarToggleProps) {
+  return (
+    <HeaderToggle
+      isPressed={isPressed}
+      onToggle={onToggle}
+      tooltip={getSidebarToggleTooltip(sidebarName, isPressed)}
+    >
+      {children}
+    </HeaderToggle>
   );
 }
 
@@ -114,6 +134,13 @@ function HeaderToggle({
       </TooltipContent>
     </Tooltip>
   );
+}
+
+function getSidebarToggleTooltip(
+  sidebarName: SidebarName,
+  isVisible: boolean,
+) {
+  return `${isVisible ? "Hide" : "Show"} ${sidebarName} Sidebar`;
 }
 
 export { HeaderActions };
