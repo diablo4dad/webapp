@@ -10,10 +10,10 @@
 }
 
 .HeaderBrandTitleName {
-    color: #f1ede4;
+    color: var(--app-text-strong);
 
     font-family: "PT Serif", serif;
-    font-size: 1.5rem;
+    font-size: var(--font-size-xl);
     font-style: normal;
     font-weight: 700;
     line-height: 1.1;
@@ -21,13 +21,13 @@
 
 .HeaderBrandTitleNameAccent {
     color: var(--secondary-color);
-    text-shadow: 1px 2px 5px #111;
+    text-shadow: var(--shadow-text-raised);
 }
 
 .HeaderBrandTitleTagLine {
-    color: #ccc;
+    color: var(--app-text-muted);
 
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
 }
 
 @media screen and (min-width: 1200px) {
@@ -40,7 +40,7 @@
     }
 
     .HeaderBrandTitleName {
-        font-size: 2rem;
+        font-size: var(--font-size-2xl);
     }
 
     .HeaderBrandTitleTagLine {

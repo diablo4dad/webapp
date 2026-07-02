@@ -1,15 +1,15 @@
 .HeaderActionsToggleTooltip {
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
 
-    background-color: #d8c29a;
-    box-shadow: 2px 3px 8px rgba(8, 10, 13, 0.18);
-    color: #1b1e24;
+    background-color: var(--tooltip-background);
+    box-shadow: var(--shadow-tooltip);
+    color: var(--tooltip-text);
 
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     line-height: 1.2;
 }
 
 .HeaderActionsToggleTooltip svg {
-    fill: #d8c29a;
+    fill: var(--tooltip-background);
 }

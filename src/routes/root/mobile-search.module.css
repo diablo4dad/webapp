@@ -1,10 +1,10 @@
 .MobileSearchTitle {
-    color: #d0b07c;
+    color: var(--app-text-accent);
 
     font-family: "PT Serif", serif;
-    font-size: 1.4rem;
+    font-size: var(--font-size-lg);
     font-weight: 700;
-    text-shadow: 1px 1px 2px #111;
+    text-shadow: var(--shadow-text-subtle);
 }
 
 .MobileSearchClose {
@@ -16,14 +16,14 @@
     border: 0;
 
     background: transparent;
-    color: #cfd5dc;
+    color: var(--app-text-secondary);
 
     cursor: pointer;
 }
 
 .MobileSearchClose svg {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: var(--space-7);
+    height: var(--space-7);
 
     fill: currentColor;
 }
@@ -44,21 +44,21 @@
 
     min-width: 8rem;
     min-height: 3rem;
-    padding: 0.8rem 1.25rem;
+    padding: 0.8rem var(--space-5);
 
-    font-size: 1rem;
+    font-size: var(--font-size-md);
     font-weight: 700;
 }
 
 .MobileSearchActionPrimary {
-    border-color: #b16558;
+    border-color: var(--action-primary-border);
 
-    background: linear-gradient(180deg, #8d433a 0%, #6d342e 100%);
-    box-shadow: 2px 3px 8px rgba(8, 10, 13, 0.35);
+    background: var(--action-primary-background);
+    box-shadow: var(--shadow-action);
 }
 
 .MobileSearchAction {
-    border-color: #5b6877;
+    border-color: var(--action-secondary-border);
 
-    background: linear-gradient(180deg, #45505e 0%, #353d48 100%);
+    background: var(--action-secondary-background);
 }

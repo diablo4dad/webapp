@@ -1,10 +1,10 @@
 .MobileSettingsTitle {
-    color: #d0b07c;
+    color: var(--app-text-accent);
 
     font-family: "PT Serif", serif;
-    font-size: 1.4rem;
+    font-size: var(--font-size-lg);
     font-weight: 700;
-    text-shadow: 1px 1px 2px #111;
+    text-shadow: var(--shadow-text-subtle);
 }
 
 .MobileSettingsClose {
@@ -16,14 +16,14 @@
     border: 0;
 
     background: transparent;
-    color: #cfd5dc;
+    color: var(--app-text-secondary);
 
     cursor: pointer;
 }
 
 .MobileSettingsClose svg {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: var(--space-7);
+    height: var(--space-7);
 
     fill: currentColor;
 }
@@ -32,24 +32,25 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding: 0.875rem 1rem;
-    border: 1px solid #303640;
-    border-radius: 0.5rem;
-    background-color: #23272e;
+    gap: var(--space-4);
+    padding: 0.875rem var(--space-4);
+    border: 1px solid var(--app-border-subtle);
+    border-radius: var(--radius-md);
+    background-color: var(--app-surface-raised);
 }
 
 .MobileSettingsEditorMeta {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--space-1);
     min-width: 0;
 }
 
 .MobileSettingsEditorTitle {
-    font-size: 1rem;
+    color: var(--app-text-accent);
+
+    font-size: var(--font-size-md);
     font-weight: 700;
-    color: #d0b07c;
 }
 
 .MobileSettingsEditorToggle,
@@ -57,20 +58,20 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     min-width: 6rem;
     padding: 0.625rem 0.875rem;
-    border: 1px solid #39404d;
-    border-radius: 0.5rem;
-    background-color: #303640;
-    color: #8f98a3;
+    border: 1px solid var(--color-neutral-800);
+    border-radius: var(--radius-md);
+    background-color: var(--app-surface-muted);
+    color: var(--app-text-disabled);
     cursor: pointer;
 }
 
 .MobileSettingsEditorToggleActive {
-    border-color: #595259;
-    background-color: #2f2830;
-    color: #d7dbe0;
+    border-color: var(--editor-toggle-active-border);
+    background-color: var(--editor-toggle-active-background);
+    color: var(--color-neutral-250);
 }
 
 .MobileSettingsEditorToggleIcon {

@@ -2,9 +2,9 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    gap: 1rem;
+    gap: var(--space-4);
     width: 100%;
-    padding: 0 1rem;
+    padding: 0 var(--space-4);
     box-sizing: border-box;
 }
 
@@ -18,7 +18,7 @@
     justify-content: flex-start;
     width: 100%;
     min-width: 0;
-    padding: 1rem 0;
+    padding: var(--space-4) 0;
 }
 
 .HeaderLayoutTitle {
@@ -26,16 +26,16 @@
     align-items: center;
     justify-content: center;
     min-width: 0;
-    padding: 1rem 0;
+    padding: var(--space-4) 0;
 }
 
 .HeaderLayoutControls {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 0.75rem;
+    gap: var(--space-3);
     min-width: 0;
-    padding: 0.5rem 0;
+    padding: var(--space-2) 0;
 }
 
 .HeaderLayoutSearch {
@@ -50,8 +50,8 @@
 
 .HeaderLayoutSpacer {
     display: none;
-    padding: 1rem 1px 1rem 0;
-    background-color: #303640;
+    padding: var(--space-4) 1px var(--space-4) 0;
+    background-color: var(--app-border-subtle);
 }
 
 .HeaderLayoutAuth {
@@ -67,7 +67,7 @@
 .HeaderLayoutButtons {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-3);
     flex-shrink: 0;
 }
 
@@ -75,14 +75,14 @@
     .HeaderLayout {
         grid-template-columns: repeat(6, minmax(0, 1fr));
         align-items: center;
-        gap: 1rem;
-        padding: 0 2rem;
+        gap: var(--space-4);
+        padding: 0 var(--space-8);
     }
 
     .HeaderLayoutBrand {
         display: flex;
         align-items: center;
-        gap: 1.25rem;
+        gap: var(--space-5);
         grid-column: 1 / span 3;
         min-width: 0;
     }
@@ -90,13 +90,13 @@
     .HeaderLayoutLogo {
         flex: 0 0 auto;
         width: auto;
-        padding: 1rem 0;
+        padding: var(--space-4) 0;
     }
 
     .HeaderLayoutTitle {
         flex: 0 1 auto;
         justify-content: flex-start;
-        padding: 1rem 0;
+        padding: var(--space-4) 0;
     }
 
     .HeaderLayoutControls {
@@ -104,7 +104,7 @@
         justify-content: flex-end;
         grid-column: 4 / span 3;
         width: 100%;
-        padding: 1rem 0;
+        padding: var(--space-4) 0;
     }
 
     .HeaderLayoutSearch {
@@ -115,8 +115,8 @@
 
     .HeaderLayoutSpacer {
         display: block;
-        padding: 1rem 1px 1rem 0;
-        background-color: #303640;
+        padding: var(--space-4) 1px var(--space-4) 0;
+        background-color: var(--app-border-subtle);
     }
 
     .HeaderLayoutAuth {

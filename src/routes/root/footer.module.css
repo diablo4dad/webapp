@@ -3,8 +3,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
-    margin: 0 0 1.5rem;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-6);
     padding: 0;
     text-align: center;
 }
@@ -24,24 +24,24 @@
 
 .FooterDiscordInviteInfoLink {
     display: inline-block;
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--space-1);
     text-decoration: none;
 }
 
 .FooterDiscordInviteInfoSlugs {
-    font-size: 0.875rem;
-    color: #ccc;
+    color: var(--app-text-muted);
+    font-size: var(--font-size-sm);
 }
 
 .FooterVersionInfo {
     padding: 0;
-    color: #ccc;
-    font-size: 0.875rem;
+    color: var(--app-text-muted);
+    font-size: var(--font-size-sm);
     text-align: center;
 }
 
 .FooterVersionInfo div:not(:last-child) {
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--space-1);
 }
 
 @media screen and (min-width: 1200px) {
@@ -64,7 +64,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 0.25rem;
+        gap: var(--space-1);
         margin: 0;
         padding: 0;
     }
