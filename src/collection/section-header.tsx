@@ -5,7 +5,7 @@ import btnStyles from "../components/Button.module.css";
 import { GripVertical, Pencil, Tick } from "../components/Icons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
 import type { Collection } from "../data";
-import styles from "./ledger.module.css";
+import styles from "./section-header.module.css";
 
 type Props = {
   canEdit: boolean;
@@ -15,6 +15,7 @@ type Props = {
   descriptionLabel?: string;
   headingLabel: string;
   isComplete: boolean;
+  isSubcollection: boolean;
   onEdit: () => void;
   onStartReorder: (event: ReactPointerEvent<HTMLElement>) => void;
   onToggle: () => void;
@@ -28,6 +29,7 @@ function SectionHeader({
   descriptionLabel,
   headingLabel,
   isComplete,
+  isSubcollection,
   onEdit,
   onStartReorder,
   onToggle,
@@ -51,13 +53,13 @@ function SectionHeader({
 
   return (
     <span
-      className={styles.LedgerHeaderContent}
+      className={styles.SectionHeaderContent}
       data-collection-id={collection.id}
       data-collection-reorder-item="true"
     >
       {canReorder && (
         <span
-          className={styles.CollectionDragHandle}
+          className={styles.SectionHeaderDragHandle}
           aria-label={`Reorder ${collection.name}`}
           role="button"
           tabIndex={0}
@@ -72,13 +74,21 @@ function SectionHeader({
         </span>
       )}
       <div>
-        <h1 className={styles.LedgerTitle}>
-          <span className={styles.LedgerCollectionName}>{headingLabel}</span>
-          <span className={styles.LedgerCounter}>{counterLabel}</span>
+        <h1
+          className={classNames(styles.SectionHeaderTitle, {
+            [styles.SectionHeaderTitleSubcollection]: isSubcollection,
+          })}
+        >
+          <span className={styles.SectionHeaderCollectionName}>
+            {headingLabel}
+          </span>
+          <span className={styles.SectionHeaderCounter}>{counterLabel}</span>
         </h1>
-        <div className={styles.LedgerDescription}>{descriptionLabel}</div>
+        <div className={styles.SectionHeaderDescription}>
+          {descriptionLabel}
+        </div>
       </div>
-      <span className={styles.LedgerActions}>
+      <span className={styles.SectionHeaderActions}>
         {canEdit && (
           <Tooltip placement={"left"}>
             <TooltipTrigger asChild={true}>

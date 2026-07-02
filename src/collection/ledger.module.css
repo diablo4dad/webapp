@@ -29,45 +29,6 @@
   cursor: pointer;
 }
 
-.LedgerHeaderContent {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.LedgerHeaderContent > div:first-of-type {
-  flex: 1;
-}
-
-.CollectionDragHandle {
-  width: 2rem;
-  height: 2rem;
-  margin-right: 1rem;
-  border: 1px solid var(--drag-handle-border);
-  border-radius: 0.375rem;
-  background-color: var(--drag-handle-background);
-  color: var(--drag-handle-text);
-  cursor: grab;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.CollectionDragHandle:hover {
-  border-color: var(--drag-handle-border-hover);
-  color: var(--drag-handle-text-hover);
-}
-
-.CollectionDragHandle:active {
-  cursor: grabbing;
-}
-
-.CollectionDragHandle svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
 .CollectionReorderSaving {
   opacity: 0.6;
 }
@@ -103,49 +64,11 @@
   font-weight: 300;
 }
 
-.LedgerCollectionName {
-  display: inline-block;
-  margin-right: 0.25rem;
-
-  font-family: "PT Serif", serif;
-  font-style: normal;
-  font-weight: 700;
-  text-shadow: 1px 1px 3px var(--color-black);
-}
-
-.LedgerCounter {
-  display: inline-block;
-  font-size: 1rem;
-  color: var(--link-color-action);
-  font-weight: 400;
-  margin-left: 0.25rem;
-}
-
-.LedgerEdit {
-  display: inline-block;
-  font-size: 1rem;
-  margin-left: 0.25rem;
-  font-weight: 400;
-  color: var(--app-text-muted);
-}
-
 .LedgerActions {
   display: flex;
   gap: 0.5rem;
   font-size: 0.875rem;
   color: var(--app-text-muted);
-}
-
-.LedgerSelectBtn {
-  background: none;
-  border: none;
-  padding: 0;
-  color: white;
-  cursor: pointer;
-}
-
-.LedgerSelectBtn:hover {
-  color: var(--link-color-action);
 }
 
 .LedgerRow {
@@ -191,11 +114,6 @@
 
 .LedgerSubCollection .LedgerButton {
   background-color: var(--ledger-subcollection-background);
-}
-
-.LedgerSubCollection .LedgerTitle {
-  color: var(--app-text-muted);
-  font-size: 1.125rem;
 }
 
 .ItemReorderError {

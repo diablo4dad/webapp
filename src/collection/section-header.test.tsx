@@ -23,6 +23,7 @@ function renderHeader({
   canEdit = true,
   canReorder = true,
   isComplete = false,
+  isSubcollection = false,
   onEdit = vi.fn(),
   onStartReorder = vi.fn(),
   onToggle = vi.fn(),
@@ -30,6 +31,7 @@ function renderHeader({
   canEdit?: boolean;
   canReorder?: boolean;
   isComplete?: boolean;
+  isSubcollection?: boolean;
   onEdit?: () => void;
   onStartReorder?: () => void;
   onToggle?: () => void;
@@ -43,6 +45,7 @@ function renderHeader({
       descriptionLabel="Parent"
       headingLabel="Alpha"
       isComplete={isComplete}
+      isSubcollection={isSubcollection}
       onEdit={onEdit}
       onStartReorder={onStartReorder}
       onToggle={onToggle}

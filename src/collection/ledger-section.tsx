@@ -191,6 +191,7 @@ const LedgerSection = ({
           descriptionLabel={descriptionLabel}
           headingLabel={headingLabel}
           isComplete={isComplete}
+          isSubcollection={depth > 0}
           onEdit={() => openCollectionEditor(collection, parentCollection)}
           onStartReorder={startCollectionReorder}
           onToggle={() => toggleCollection(collection)(!isComplete)}
