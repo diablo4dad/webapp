@@ -1,6 +1,6 @@
 import type { MasterGroup } from "../common";
 import type { Collection, CollectionItem } from "../data";
-import type { CollectionParentId } from "./reorder";
+import type { CollectionParentId } from "./order";
 
 type LedgerProps = {
   collections: Collection[];

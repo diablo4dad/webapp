@@ -2,7 +2,7 @@ import type { MasterGroup } from "../common";
 import type { Collection } from "../data";
 import { selectCollectionById } from "../data/reducers";
 import type { CollectionDragState } from "./types";
-import type { CollectionParentId } from "./reorder";
+import type { CollectionParentId } from "./order";
 
 type Options = {
   collections: Collection[];

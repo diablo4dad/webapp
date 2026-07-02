@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import { useData } from "../data/context";
 import { useEditor } from "../editor/context";
-import { useCollectionReorder } from "./collection-reorder";
 import { LedgerGroup } from "./ledger-group";
+import { getCollectionListIds } from "./order";
+import { useCollectionReorder } from "./reorder";
 import {
   getAddCollectionState,
   getRenderedCollectionIds,
 } from "./state";
 import type { LedgerProps } from "./types";
-import { getCollectionListIds } from "./reorder";
 import { LedgerView } from "./view";
 
 const Ledger = ({

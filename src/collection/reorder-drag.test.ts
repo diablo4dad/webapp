@@ -4,7 +4,7 @@ import {
   getCollectionInsertIndexFromPointer,
   getDragScrollTarget,
   getItemInsertIndexFromPointer,
-} from "./drag";
+} from "./reorder-drag";
 
 type RectInput = {
   bottom: number;

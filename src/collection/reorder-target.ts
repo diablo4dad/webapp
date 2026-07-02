@@ -4,9 +4,9 @@ import { selectCollectionById } from "../data/reducers";
 import {
   getCollectionIdsForDropList,
   getCollectionInsertIndexFromPointer,
-} from "./drag";
+} from "./reorder-drag";
 import type { CollectionDragState } from "./types";
-import { getCollectionListIds, type CollectionParentId } from "./reorder";
+import { getCollectionListIds, type CollectionParentId } from "./order";
 import { isCollectionDropAllowed } from "./reorder-rules";
 
 type Options = {

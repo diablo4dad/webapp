@@ -6,7 +6,7 @@ import {
   createDragAutoScroller,
   getDragScrollTarget,
   type DragScrollTarget,
-} from "./drag";
+} from "./reorder-drag";
 import {
   createItemDragState,
   getNextItemDragState,
@@ -21,7 +21,7 @@ import {
   areItemOrdersEqual,
   moveItemIdToIndex,
   reorderCollectionItemsInDb,
-} from "./reorder";
+} from "./order";
 
 type Options = {
   canReorder: boolean;

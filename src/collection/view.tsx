@@ -4,7 +4,7 @@ import { GripVertical, Plus } from "../components/Icons";
 import type { MasterGroup } from "../common";
 import type { Collection } from "../data";
 import type { CollectionDragController } from "./types";
-import type { CollectionParentId } from "./reorder";
+import type { CollectionParentId } from "./order";
 import styles from "./view.module.css";
 
 type RenderCollectionInput = {

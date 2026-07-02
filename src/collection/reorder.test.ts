@@ -1,38 +1,22 @@
-import { describe, expect, test } from "vitest";
+import { act, renderHook } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
 import { MasterGroup } from "../common";
-import type { Collection, CollectionItem, DadDb } from "../data";
-import {
-  areCollectionOrdersEqual,
-  areItemOrdersEqual,
-  getCollectionListIds,
-  moveCollectionIdToIndex,
-  moveCollectionInDb,
-  moveItemIdToIndex,
-  reorderCollectionItemsInDb,
-} from "./reorder";
+import type { Collection, DadDb } from "../data";
+import type { CollectionDragController } from "./types";
+import { useCollectionReorder } from "./reorder";
 
-function item(id: number): CollectionItem {
-  return {
-    claim: "",
-    id,
-    items: [],
-  };
-}
+vi.mock("../store/catalog", () => ({
+  updateCatalogCollectionNodeOrder: vi.fn(),
+}));
 
-function collection(
-  id: string,
-  options: {
-    category?: MasterGroup;
-    collectionItems?: CollectionItem[];
-    subcollections?: Collection[];
-  } = {},
-): Collection {
+function collection(overrides: Partial<Collection> = {}): Collection {
   return {
-    id,
-    name: id,
-    category: options.category,
-    collectionItems: options.collectionItems ?? [],
-    subcollections: options.subcollections ?? [],
+    category: MasterGroup.GENERAL,
+    id: "alpha",
+    name: "Alpha",
+    collectionItems: [],
+    subcollections: [],
+    ...overrides,
   };
 }
 
@@ -44,152 +28,113 @@ function db(collections: Collection[]): DadDb {
   };
 }
 
-describe("item order", () => {
-  test("moves ids to a clamped index", () => {
-    expect(moveItemIdToIndex([1, 2, 3], 2, 0)).toEqual([2, 1, 3]);
-    expect(moveItemIdToIndex([1, 2, 3], 2, 99)).toEqual([1, 3, 2]);
-    expect(moveItemIdToIndex([1, 2, 3], 2, -1)).toEqual([2, 1, 3]);
-  });
+function dragElement() {
+  const element = document.createElement("div");
 
-  test("compares ordered item ids", () => {
-    expect(areItemOrdersEqual([1, 2, 3], [1, 2, 3])).toBe(true);
-    expect(areItemOrdersEqual([1, 2, 3], [1, 3, 2])).toBe(false);
-    expect(areItemOrdersEqual([1, 2, 3], [1, 2])).toBe(false);
-  });
+  element.getBoundingClientRect = () =>
+    ({
+      bottom: 64,
+      height: 44,
+      left: 10,
+      right: 130,
+      top: 20,
+      width: 120,
+      x: 10,
+      y: 20,
+      toJSON: () => undefined,
+    }) as DOMRect;
 
-  test("reorders items in a nested collection", () => {
-    const source = db([
-      collection("root", {
-        subcollections: [
-          collection("nested", {
-            collectionItems: [item(101), item(102), item(103)],
-          }),
-        ],
+  return element;
+}
+
+describe("collection reorder", () => {
+  test("starts root collection drag state", () => {
+    const alpha = collection();
+    const beta = collection({ id: "beta", name: "Beta" });
+    const { result } = renderHook(() =>
+      useCollectionReorder({
+        db: db([alpha, beta]),
+        group: MasterGroup.GENERAL,
+        searchTerm: "",
+        setDb: vi.fn(),
       }),
-    ]);
-
-    expect(
-      reorderCollectionItemsInDb(source, "nested", [103, 101, 102])
-        .collections[0].subcollections[0].collectionItems.map(
-          (collectionItem) => collectionItem.id,
-        ),
-    ).toEqual([103, 101, 102]);
-  });
-
-  test("returns the original db when the collection is missing", () => {
-    const source = db([collection("root", { collectionItems: [item(101)] })]);
-
-    expect(reorderCollectionItemsInDb(source, "missing", [101])).toBe(source);
-  });
-});
-
-describe("collection order", () => {
-  test("moves ids to a clamped index", () => {
-    expect(moveCollectionIdToIndex(["a", "b", "c"], "b", 0)).toEqual([
-      "b",
-      "a",
-      "c",
-    ]);
-    expect(moveCollectionIdToIndex(["a", "b", "c"], "b", 99)).toEqual([
-      "a",
-      "c",
-      "b",
-    ]);
-  });
-
-  test("compares ordered collection ids", () => {
-    expect(areCollectionOrdersEqual(["a", "b"], ["a", "b"])).toBe(true);
-    expect(areCollectionOrdersEqual(["a", "b"], ["b", "a"])).toBe(false);
-    expect(areCollectionOrdersEqual(["a", "b"], ["a"])).toBe(false);
-  });
-
-  test("lists collection ids", () => {
-    expect(getCollectionListIds([collection("a"), collection("b")])).toEqual([
-      "a",
-      "b",
-    ]);
-  });
-
-  test("reorders root collections within a category", () => {
-    const source = db([
-      collection("general-a", { category: MasterGroup.GENERAL }),
-      collection("shop", { category: MasterGroup.SHOP_ITEMS }),
-      collection("general-b", { category: MasterGroup.GENERAL }),
-    ]);
-
-    expect(
-      moveCollectionInDb(
-        source,
-        "general-b",
-        null,
-        ["general-b", "general-a"],
-        MasterGroup.GENERAL,
-      ).collections.map((candidate) => candidate.id),
-    ).toEqual(["general-b", "general-a", "shop"]);
-  });
-
-  test("moves a root collection into a parent", () => {
-    const source = db([
-      collection("parent", {
-        category: MasterGroup.GENERAL,
-        subcollections: [collection("child-a")],
-      }),
-      collection("child-b", { category: MasterGroup.GENERAL }),
-    ]);
-
-    const result = moveCollectionInDb(
-      source,
-      "child-b",
-      "parent",
-      ["child-a", "child-b"],
-      MasterGroup.GENERAL,
     );
 
-    expect(result.collections.map((candidate) => candidate.id)).toEqual([
-      "parent",
-    ]);
-    expect(result.collections[0].subcollections.map((candidate) => candidate.id))
-      .toEqual(["child-a", "child-b"]);
-    expect(result.collections[0].subcollections[1].category).toBeUndefined();
+    act(() => {
+      result.current.activeCollectionDragController.beginCollectionReorder(
+        alpha,
+        undefined,
+        0,
+        ["alpha", "beta"],
+        dragElement(),
+        35,
+        50,
+      );
+    });
+
+    expect(result.current.isCollectionDragRoot).toBe(true);
+    expect(result.current.draggedCollection).toBe(alpha);
+    expect(
+      result.current.activeCollectionDragController.collectionDragState,
+    ).toMatchObject({
+      category: MasterGroup.GENERAL,
+      collectionId: "alpha",
+      height: 44,
+      offsetX: 25,
+      offsetY: 30,
+      sourceParentId: null,
+      sourceSiblingIds: ["alpha", "beta"],
+      targetIndex: 0,
+      targetParentId: null,
+      targetSiblingIds: ["alpha", "beta"],
+      width: 120,
+    });
   });
 
-  test("moves a subcollection to category roots", () => {
-    const source = db([
-      collection("parent", {
-        category: MasterGroup.GENERAL,
-        subcollections: [collection("child")],
+  test("does not start drag while searching", () => {
+    const alpha = collection();
+    const { result } = renderHook(() =>
+      useCollectionReorder({
+        db: db([alpha]),
+        group: MasterGroup.GENERAL,
+        searchTerm: "helm",
+        setDb: vi.fn(),
       }),
-      collection("root", { category: MasterGroup.GENERAL }),
-    ]);
-
-    const result = moveCollectionInDb(
-      source,
-      "child",
-      null,
-      ["child", "parent", "root"],
-      MasterGroup.GENERAL,
     );
 
-    expect(result.collections.map((candidate) => candidate.id)).toEqual([
-      "child",
-      "parent",
-      "root",
-    ]);
-    expect(result.collections[0].category).toBe(MasterGroup.GENERAL);
-    expect(result.collections[1].subcollections).toEqual([]);
-  });
-
-  test("returns the original db when the collection is missing", () => {
-    const source = db([collection("root", { category: MasterGroup.GENERAL })]);
+    act(() => {
+      result.current.activeCollectionDragController.beginCollectionReorder(
+        alpha,
+        undefined,
+        0,
+        ["alpha"],
+        dragElement(),
+        35,
+        50,
+      );
+    });
 
     expect(
-      moveCollectionInDb(
-        source,
-        "missing",
-        null,
-        ["root"],
-        MasterGroup.GENERAL,
-      ),
-    ).toBe(source);
+      result.current.activeCollectionDragController.collectionDragState,
+    ).toBeUndefined();
+  });
+
+  test("uses a provided controller for nested ledgers", () => {
+    const controller: CollectionDragController = {
+      beginCollectionReorder: vi.fn(),
+      collectionReordering: false,
+    };
+    const { result } = renderHook(() =>
+      useCollectionReorder({
+        collectionDragController: controller,
+        db: db([]),
+        group: MasterGroup.GENERAL,
+        searchTerm: "",
+        setDb: vi.fn(),
+      }),
+    );
+
+    expect(result.current.isCollectionDragRoot).toBe(false);
+    expect(result.current.activeCollectionDragController).toBe(controller);
   });
 });

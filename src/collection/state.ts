@@ -4,7 +4,7 @@ import type { CollectionDragState } from "./types";
 import {
   moveCollectionIdToIndex,
   type CollectionParentId,
-} from "./reorder";
+} from "./order";
 
 type AddCollectionOptions = {
   depth: number;
