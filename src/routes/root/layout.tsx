@@ -1,7 +1,6 @@
 import type { MouseEvent, ReactNode } from "react";
-import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "../../config";
-import { Discord } from "../../components/Icons";
 import Shell from "../../layout/Shell";
+import { RootFooter } from "./footer";
 import styles from "./layout.module.css";
 
 type Props = {
@@ -36,12 +35,7 @@ function RootLayout({ header, main }: Props) {
     <Shell
       header={header}
       main={main}
-      footer={
-        <>
-          <DiscordInvite />
-          <VersionInfo />
-        </>
-      }
+      footer={<RootFooter />}
     />
   );
 }
@@ -117,40 +111,6 @@ function RootMobileDrawerLayout({
 
 function stopOverlayPropagation(event: MouseEvent) {
   event.stopPropagation();
-}
-
-function DiscordInvite() {
-  return (
-    <div className={styles.LayoutDiscordInvite}>
-      <div className={styles.LayoutDiscordInviteIcon}>
-        <a href={DISCORD_INVITE_LINK}>
-          <Discord />
-        </a>
-      </div>
-      <div className={styles.LayoutDiscordInviteInfo}>
-        <a
-          className={styles.LayoutDiscordInviteInfoLink}
-          href={DISCORD_INVITE_LINK}
-        >
-          Join the Discord Server
-        </a>
-        <div className={styles.LayoutDiscordInviteInfoSlugs}>
-          Site News | Community | Bragging
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VersionInfo() {
-  return (
-    <div className={styles.LayoutSiteVersion}>
-      <div>Last updated {LAST_UPDATED}</div>
-      <div>
-        Site Version <code>{SITE_VERSION}</code>
-      </div>
-    </div>
-  );
 }
 
 export {

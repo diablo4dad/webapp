@@ -182,52 +182,6 @@
     width: 100%;
 }
 
-.LayoutDiscordInvite {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    margin: 0 0 1.5rem;
-    padding: 0;
-    text-align: center;
-}
-
-.LayoutDiscordInviteIcon {
-    width: 4rem;
-    height: auto;
-    margin: 0;
-}
-
-.LayoutDiscordInviteInfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.LayoutDiscordInviteInfoLink {
-    display: inline-block;
-    margin-bottom: 0.25rem;
-    text-decoration: none;
-}
-
-.LayoutDiscordInviteInfoSlugs {
-    font-size: 0.875rem;
-    color: #ccc;
-}
-
-.LayoutSiteVersion {
-    font-size: 0.875rem;
-    padding: 0;
-    color: #ccc;
-    text-align: center;
-}
-
-.LayoutSiteVersion div:not(:last-child) {
-    margin-bottom: 0.25rem;
-}
-
 @keyframes drawer-backdrop-in {
     from {
         background: rgba(12, 14, 18, 0);
@@ -326,31 +280,4 @@
         display: none;
     }
 
-    .LayoutDiscordInvite {
-        margin: 0;
-        padding: 0;
-        text-align: center;
-    }
-
-    .LayoutDiscordInviteIcon {
-        margin: 0;
-    }
-
-    .LayoutDiscordInviteInfo {
-        align-items: center;
-    }
-
-    .LayoutSiteVersion {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.25rem;
-        margin: 0;
-        padding: 0;
-    }
-
-    .LayoutSiteVersion div:not(:last-child) {
-        margin-bottom: 0;
-    }
 }
