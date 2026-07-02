@@ -1,15 +1,15 @@
 import { useMemo } from "react";
-import { MasterGroup } from "../common";
 import { useData } from "../data/context";
 import { useEditor } from "../editor/context";
 import { useCollectionReorder } from "./collection-reorder";
 import { LedgerListView } from "./ledger-list";
 import { LedgerSection } from "./ledger-section";
-import type { LedgerProps } from "./ledger-types";
 import {
-  getCollectionListIds,
-  moveCollectionIdToIndex,
-} from "./reorder";
+  getAddCollectionState,
+  getRenderedCollectionIds,
+} from "./ledger-state";
+import type { LedgerProps } from "./ledger-types";
+import { getCollectionListIds } from "./reorder";
 
 const Ledger = ({
   collections,
@@ -35,20 +35,17 @@ const Ledger = ({
     searchTerm,
     setDb,
   });
-  const canAddRootCollection = depth === 0;
-  const canAddSubcollectionToParent =
-    depth === 1 &&
-    parentCollection !== undefined &&
-    parentCollection.collectionItems.length === 0 &&
-    parentCollection.subcollections.length > 0;
-  const canAddCollection =
-    isEditMode &&
-    searchTerm.trim() === "" &&
-    group !== MasterGroup.UNIVERSAL &&
-    (canAddRootCollection || canAddSubcollectionToParent);
-  const addCollectionLabel =
-    depth === 0 ? "Add Collection" : "Add Subcollection";
-  const addCollectionParent = depth === 0 ? undefined : parentCollection;
+  const {
+    addCollectionLabel,
+    addCollectionParent,
+    canAddCollection,
+  } = getAddCollectionState({
+    depth,
+    group,
+    isEditMode,
+    parentCollection,
+    searchTerm,
+  });
   const collectionParentId = parentCollection?.id ?? null;
   const collectionIds = useMemo(
     () => getCollectionListIds(collections),
@@ -61,21 +58,11 @@ const Ledger = ({
       ),
     [collections],
   );
-  const renderedCollectionIds =
-    activeCollectionDragController.collectionDragState === undefined
-      ? collectionIds
-      : activeCollectionDragController.collectionDragState.targetParentId ===
-          collectionParentId
-        ? moveCollectionIdToIndex(
-            collectionIds,
-            activeCollectionDragController.collectionDragState.collectionId,
-            activeCollectionDragController.collectionDragState.targetIndex,
-          )
-        : collectionIds.filter(
-            (collectionId) =>
-              collectionId !==
-              activeCollectionDragController.collectionDragState?.collectionId,
-          );
+  const renderedCollectionIds = getRenderedCollectionIds({
+    collectionDragState: activeCollectionDragController.collectionDragState,
+    collectionIds,
+    collectionParentId,
+  });
 
   return (
     <LedgerListView
