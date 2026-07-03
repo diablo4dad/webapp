@@ -6,9 +6,9 @@ import {
 } from "../ledger/context";
 import { saveCollection, saveVersion } from "./local";
 import { VERSION } from "../config";
-import { DadUser } from "../auth/type";
+import type { DadUser } from "../auth";
 import { fetchFromFirestore, saveToFirestore } from "./firestore";
-import { useAuth } from "../auth/context";
+import { useAuth } from "../auth";
 
 export function PersistenceLayer(props: PropsWithChildren) {
   const { user } = useAuth();

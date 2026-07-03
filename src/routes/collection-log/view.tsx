@@ -7,7 +7,7 @@ import { Season } from "../../season";
 import { Welcome } from "../../welcome";
 import type { Collection, CollectionItem } from "../../data";
 import type { SidebarVisibility } from "../../common";
-import ConfigSidebar from "../../settings/ConfigSidebar";
+import { ConfigSidebar } from "../../settings/ui";
 import { Layout } from "./layout";
 import styles from "./view.module.css";
 

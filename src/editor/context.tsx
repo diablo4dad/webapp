@@ -6,7 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "../auth/context";
+import { useAuth } from "../auth";
 import type { Collection, CollectionItem } from "../data";
 
 export type CollectionItemEditorMode = "add" | "edit";

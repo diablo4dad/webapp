@@ -1,37 +1,34 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { DadUser } from "../../auth/type";
+import type { DadUser } from "../../auth";
 import { MobileSettings } from "./mobile-settings";
 
 type Props = Parameters<typeof MobileSettings>[0];
 
 type Options = Partial<Props>;
 
-vi.mock("../../auth/Account", () => ({
-  Direction: {
-    ROW: "row",
-  },
-  default: ({
+vi.mock("../../auth/ui", () => ({
+  Account: ({
     currentUser,
     onLogout,
   }: {
     currentUser: DadUser;
     onLogout: () => void;
   }) => <button onClick={onLogout}>sign out {currentUser.email}</button>,
-}));
-
-vi.mock("../../auth/Authenticate", () => ({
+  Authenticate: ({ onAuth }: { onAuth: () => void }) => (
+    <button onClick={onAuth}>sign in</button>
+  ),
+  Direction: {
+    ROW: "row",
+  },
   Orientation: {
     ROW: "row",
   },
-  default: ({ onAuth }: { onAuth: () => void }) => (
-    <button onClick={onAuth}>sign in</button>
-  ),
 }));
 
-vi.mock("../../settings/ConfigSidebar", () => ({
-  default: () => <div>settings panel</div>,
+vi.mock("../../settings/ui", () => ({
+  ConfigSidebar: () => <div>settings panel</div>,
 }));
 
 const signedInUser: DadUser = {

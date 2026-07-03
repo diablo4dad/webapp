@@ -5,7 +5,7 @@ import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
 import { useData } from "../data/context";
 import { isCollectionEmpty } from "../data/predicates";
 import { selectCollectionById } from "../data/reducers";
-import { useEditor } from "../editor/context";
+import { useEditor } from "../editor";
 import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isLedgerInverse, isLedgerView } from "../settings/predicate";

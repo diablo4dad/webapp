@@ -2,33 +2,30 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { SidebarVisibility } from "../../common";
-import type { DadUser } from "../../auth/type";
+import type { DadUser } from "../../auth";
 import { View } from "./view";
 
 type Props = Parameters<typeof View>[0];
 
 type Options = Partial<Props>;
 
-vi.mock("../../auth/Account", () => ({
-  Direction: {
-    ROW: "row",
-  },
-  default: ({
+vi.mock("../../auth/ui", () => ({
+  Account: ({
     currentUser,
     onLogout,
   }: {
     currentUser: DadUser;
     onLogout: () => void;
   }) => <button onClick={onLogout}>sign out {currentUser.email}</button>,
-}));
-
-vi.mock("../../auth/Authenticate", () => ({
+  Authenticate: ({ onAuth }: { onAuth: () => void }) => (
+    <button onClick={onAuth}>sign in</button>
+  ),
+  Direction: {
+    ROW: "row",
+  },
   Orientation: {
     ROW: "row",
   },
-  default: ({ onAuth }: { onAuth: () => void }) => (
-    <button onClick={onAuth}>sign in</button>
-  ),
 }));
 
 vi.mock("../../components/Search", () => ({
@@ -67,16 +64,13 @@ vi.mock("../../components/Tooltip", () => ({
   ),
 }));
 
-vi.mock("../../editor/CollectionEditor", () => ({
-  default: () => <div>collection editor</div>,
+vi.mock("../../editor/ui", () => ({
+  CollectionEditor: () => <div>collection editor</div>,
+  CollectionItemEditor: () => <div>collection item editor</div>,
 }));
 
-vi.mock("../../editor/CollectionItemEditor", () => ({
-  default: () => <div>collection item editor</div>,
-}));
-
-vi.mock("../../settings/ConfigSidebar", () => ({
-  default: () => <div>settings panel</div>,
+vi.mock("../../settings/ui", () => ({
+  ConfigSidebar: () => <div>settings panel</div>,
 }));
 
 const signedInUser: DadUser = {

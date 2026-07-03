@@ -1,10 +1,10 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { useAuth } from "../../auth/context";
+import { useAuth } from "../../auth";
 import { useData, type DataContextType } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
-import { useEditor } from "../../editor/context";
+import { useEditor } from "../../editor";
 import { toggleSidebarVisibility } from "./state";
 import { View } from "./view";
 

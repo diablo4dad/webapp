@@ -1,19 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { DadUser } from "../../auth/type";
+import type { DadUser } from "../../auth";
 import { Main } from "./main";
 
 type Props = Parameters<typeof Main>[0];
 
 type Options = Partial<Props>;
 
-vi.mock("../../editor/CollectionEditor", () => ({
-  default: () => <div>collection editor</div>,
-}));
-
-vi.mock("../../editor/CollectionItemEditor", () => ({
-  default: () => <div>collection item editor</div>,
+vi.mock("../../editor/ui", () => ({
+  CollectionEditor: () => <div>collection editor</div>,
+  CollectionItemEditor: () => <div>collection item editor</div>,
 }));
 
 vi.mock("./mobile-search", () => ({

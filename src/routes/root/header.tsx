@@ -1,4 +1,4 @@
-import type { DadUser } from "../../auth/type";
+import type { DadUser } from "../../auth";
 import type { SidebarVisibility } from "../../common";
 import { AuthActions } from "./auth";
 import { HeaderActions } from "./header-actions";

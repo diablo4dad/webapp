@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { DadUser } from "../../auth/type";
+import type { DadUser } from "../../auth";
 import type { SidebarVisibility } from "../../common";
 import { Footer } from "./footer";
 import { Header } from "./header";

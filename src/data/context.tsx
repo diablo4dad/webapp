@@ -23,7 +23,7 @@ import {
   getSidebarVisibilityPreference,
 } from "../common";
 import { useDebounceValue } from "usehooks-ts";
-import { useEditor } from "../editor/context";
+import { useEditor } from "../editor";
 
 const defaultDadDb: DadDb = {
   collections: [],

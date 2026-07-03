@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
-import type { DadUser } from "../../auth/type";
-import CollectionEditor from "../../editor/CollectionEditor";
-import CollectionItemEditor from "../../editor/CollectionItemEditor";
+import type { DadUser } from "../../auth";
+import { CollectionEditor, CollectionItemEditor } from "../../editor/ui";
 import { MobileSearch } from "./mobile-search";
 import { MobileSettings } from "./mobile-settings";
 

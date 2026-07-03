@@ -28,7 +28,7 @@ vi.mock("react-router-dom", () => ({
   useLoaderData: mocks.useLoaderData,
 }));
 
-vi.mock("../../auth/context", () => ({
+vi.mock("../../auth", () => ({
   useAuth: mocks.useAuth,
 }));
 
@@ -36,7 +36,7 @@ vi.mock("../../data/context", () => ({
   useData: mocks.useData,
 }));
 
-vi.mock("../../editor/context", () => ({
+vi.mock("../../editor", () => ({
   useEditor: mocks.useEditor,
 }));
 

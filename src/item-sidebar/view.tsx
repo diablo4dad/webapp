@@ -63,7 +63,7 @@ import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isEnabled } from "../settings/predicate";
 import { Option } from "../settings/type";
-import { useEditor } from "../editor/context";
+import { useEditor } from "../editor";
 import { useData } from "../data/context";
 import { MasterGroup } from "../common";
 import styles from "./item-sidebar.module.css";

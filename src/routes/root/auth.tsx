@@ -1,6 +1,10 @@
-import Account, { Direction } from "../../auth/Account";
-import Authenticate, { Orientation } from "../../auth/Authenticate";
-import type { DadUser } from "../../auth/type";
+import type { DadUser } from "../../auth";
+import {
+  Account,
+  Authenticate,
+  Direction,
+  Orientation,
+} from "../../auth/ui";
 
 type Props = {
   onSignIn: () => void;

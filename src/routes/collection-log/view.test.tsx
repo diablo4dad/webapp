@@ -46,8 +46,8 @@ vi.mock("../../welcome", () => ({
   Welcome: () => <div>welcome</div>,
 }));
 
-vi.mock("../../settings/ConfigSidebar", () => ({
-  default: () => <div>config sidebar</div>,
+vi.mock("../../settings/ui", () => ({
+  ConfigSidebar: () => <div>config sidebar</div>,
 }));
 
 function item(id: number): CollectionItem {

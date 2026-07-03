@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useData } from "../data/context";
-import { useEditor } from "../editor/context";
+import { useEditor } from "../editor";
 import { LedgerGroup } from "./ledger-group";
 import { getCollectionListIds } from "./order";
 import { useCollectionReorder } from "./reorder";

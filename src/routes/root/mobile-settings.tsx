@@ -1,6 +1,6 @@
-import type { DadUser } from "../../auth/type";
+import type { DadUser } from "../../auth";
 import { Close, Pencil } from "../../components/Icons";
-import ConfigSidebar from "../../settings/ConfigSidebar";
+import { ConfigSidebar } from "../../settings/ui";
 import { AuthActions } from "./auth";
 import { MobileSettingsLayout } from "./mobile-settings-layout";
 import styles from "./mobile-settings.module.css";

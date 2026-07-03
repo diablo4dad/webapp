@@ -1,14 +1,14 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootRoute from "../routes/root/route";
-import { SettingsProvider } from "../settings/context";
+import { SettingsProvider } from "../settings";
 import { CollectionProvider } from "../ledger/context";
 import { getUserCollectionLog, getUserSettings } from "../store/local";
 import { DataProvider } from "../data/context";
-import { AuthProvider } from "../auth/context";
+import { AuthProvider } from "../auth";
 import { runLocalStorageMigrations } from "../migrations/localstorage";
 import { PersistenceLayer } from "../store/PersistenceLayer";
-import { EditorProvider } from "../editor/context";
+import { EditorProvider } from "../editor";
 
 const router = createBrowserRouter([
   {
