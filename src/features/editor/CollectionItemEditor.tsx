@@ -38,17 +38,17 @@ import {
   selectCollectionItem,
 } from "./collectionItemSelection";
 import i18n from "../../services/i18n";
-import barbarian from "../../image/classes/barbarian.webp";
-import druid from "../../image/classes/druid.webp";
-import necromancer from "../../image/classes/necromancer.webp";
-import paladin from "../../image/classes/paladin.png";
-import rogue from "../../image/classes/rogue.webp";
-import sorceress from "../../image/classes/sorcerer.webp";
-import spiritborn from "../../image/classes/spiritborn.webp";
-import warlock from "../../image/classes/warlock.webp";
-import series from "../../image/miniico/series.webp";
-import transmog from "../../image/icons/transmog.webp";
-import placeholder from "../../image/placeholder.webp";
+import barbarian from "../../assets/images/classes/barbarian.webp";
+import druid from "../../assets/images/classes/druid.webp";
+import necromancer from "../../assets/images/classes/necromancer.webp";
+import paladin from "../../assets/images/classes/paladin.png";
+import rogue from "../../assets/images/classes/rogue.webp";
+import sorceress from "../../assets/images/classes/sorcerer.webp";
+import spiritborn from "../../assets/images/classes/spiritborn.webp";
+import warlock from "../../assets/images/classes/warlock.webp";
+import series from "../../assets/images/miniico/series.webp";
+import transmog from "../../assets/images/icons/transmog.webp";
+import placeholder from "../../assets/images/placeholder.webp";
 import DeleteConfirmationModal from "../../shared/ui/DeleteConfirmationModal";
 import Toggle from "../../shared/ui/Toggle";
 import { flattenDadDb } from "../../services/data/transforms";

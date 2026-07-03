@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../services/auth";
 import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
-import placeholder from "../../image/placeholder.webp";
+import placeholder from "../../assets/images/placeholder.webp";
 import { useEditor } from "../../features/editor";
 import { generateUrl } from "../collection-log/links";
 import { useSidebarVisibility } from "./sidebar";

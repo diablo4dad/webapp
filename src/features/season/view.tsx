@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import season13 from "../../image/season13@1x.webp";
+import season13 from "../../assets/images/season13@1x.webp";
 import styles from "./season.module.css";
 
 function Season() {

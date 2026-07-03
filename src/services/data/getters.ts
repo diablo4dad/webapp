@@ -1,5 +1,5 @@
 import { enumKeys } from "../../shared/lib/enums";
-import missing from "../../image/placeholder.webp";
+import missing from "../../assets/images/placeholder.webp";
 import {
   CharacterClass,
   CharacterGender,

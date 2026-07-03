@@ -1,5 +1,5 @@
 import i18n from "../../services/i18n";
-import logo from "../../image/d4dad-badge@1x.png";
+import logo from "../../assets/images/d4dad-badge@1x.png";
 import styles from "./header-brand.module.css";
 
 function HeaderLogo() {

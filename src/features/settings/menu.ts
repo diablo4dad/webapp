@@ -17,12 +17,12 @@ import i18n from "../../services/i18n";
 import { CollectionLog } from "../ledger/type";
 import { filterDb } from "../../services/data/filters";
 import { countAllItemsDabDb } from "../../services/data/aggregate";
-import GeneralIcon from "../../image/icons/goblin.webp";
-import CashShopIcon from "../../image/icons/purse.webp";
-import PromoIcon from "../../image/icons/chest.webp";
-import SeasonIcon from "../../image/icons/season.webp";
-import ChallengeIcon from "../../image/icons/dungeon.webp";
-import GlobalIcon from "../../image/icons/wardrobe.webp";
+import GeneralIcon from "../../assets/images/icons/goblin.webp";
+import CashShopIcon from "../../assets/images/icons/purse.webp";
+import PromoIcon from "../../assets/images/icons/chest.webp";
+import SeasonIcon from "../../assets/images/icons/season.webp";
+import ChallengeIcon from "../../assets/images/icons/dungeon.webp";
+import GlobalIcon from "../../assets/images/icons/wardrobe.webp";
 
 const collectionMeta = new Map([
   [MasterGroup.GENERAL, { label: "Essential Collection", icon: GeneralIcon }],

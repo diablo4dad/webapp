@@ -10,7 +10,7 @@ import { FallbackLazyImage } from "../../shared/ui/LazyLoadImageFallback";
 import { MagicType, type CollectionItem } from "../../services/data";
 import { getItemName, getItemType } from "../../services/data/getters";
 import { getItemDescription } from "../../services/i18n";
-import placeholder from "../../image/placeholder.webp";
+import placeholder from "../../assets/images/placeholder.webp";
 import type { LedgerGroupItemDragState } from "./types";
 import type { LedgerGroupItemView } from "./ledger-group-item-view";
 import styles from "./ledger-group-item-card.module.css";
