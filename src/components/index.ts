@@ -3,7 +3,6 @@ export { default as Card } from "./Card";
 export { default as DeleteConfirmationModal } from "./DeleteConfirmationModal";
 export { FallbackLazyImage } from "./LazyLoadImageFallback";
 export { default as MobileCloseButton } from "./MobileCloseButton";
-export { default as Progress } from "./Progress";
 export { default as Search } from "./Search";
 export { default as Select } from "./Select";
 export { default as Toggle } from "./Toggle";
