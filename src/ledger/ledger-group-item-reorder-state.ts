@@ -1,4 +1,4 @@
-import type { CollectionItem } from "../data";
+import type { CollectionItem } from "../services/data";
 import { moveItemIdToIndex } from "./order";
 import { getItemInsertIndexFromPointer } from "./reorder-drag";
 import type { LedgerGroupItemDragState } from "./types";

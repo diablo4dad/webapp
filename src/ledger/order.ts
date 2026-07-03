@@ -1,5 +1,5 @@
 import type { MasterGroup } from "../shared/domain";
-import type { Collection, CollectionItem, DadDb } from "../data";
+import type { Collection, CollectionItem, DadDb } from "../services/data";
 
 type CollectionParentId = string | null;
 

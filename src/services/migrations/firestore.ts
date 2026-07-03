@@ -1,4 +1,4 @@
-import { ArtifactMeta } from "../ledger/type";
+import { ArtifactMeta } from "../../ledger/type";
 import { FirebaseData } from "../store";
 import { VERSION } from "../config";
 

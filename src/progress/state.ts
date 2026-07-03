@@ -1,9 +1,9 @@
 import { isItemCollected } from "../ledger/predicate";
 import type { CollectionLog } from "../ledger/type";
 import { ItemGroup, itemGroups } from "../shared/domain";
-import type { CollectionGroup } from "../data";
-import { getItemIds } from "../data/getters";
-import { flattenCollectionItems } from "../data/reducers";
+import type { CollectionGroup } from "../services/data";
+import { getItemIds } from "../services/data/getters";
+import { flattenCollectionItems } from "../services/data/reducers";
 
 type ProgressStats = {
   collected: number;

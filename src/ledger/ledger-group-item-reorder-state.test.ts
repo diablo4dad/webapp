@@ -3,7 +3,7 @@ import {
   MagicType,
   type CollectionItem,
   type Item,
-} from "../data";
+} from "../services/data";
 import type { LedgerGroupItemDragState } from "./types";
 import {
   createLedgerGroupItemDragState,

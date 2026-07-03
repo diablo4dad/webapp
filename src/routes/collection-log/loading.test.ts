@@ -1,10 +1,10 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import { MasterGroup, catalogGroups } from "../../shared/domain";
-import type { DadDb, DadDbRef } from "../../data";
-import type { DataContextType } from "../../data/context";
-import { hydrateDadDb } from "../../data/factory";
-import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
+import type { DadDb, DadDbRef } from "../../services/data";
+import type { DataContextType } from "../../services/data/context";
+import { hydrateDadDb } from "../../services/data/factory";
+import { fetchHybridDadDbRefsByCategory } from "../../services/store/catalog";
 import {
   getCatalogLoadPlan,
   getCatalogLoadStatus,
@@ -20,12 +20,12 @@ const mocks = vi.hoisted(() => ({
   hydrateDadDb: vi.fn(),
 }));
 
-vi.mock("../../store/catalog", () => ({
+vi.mock("../../services/store/catalog", () => ({
   fetchHybridDadDbRefsByCategory: mocks.fetchHybridDadDbRefsByCategory,
 }));
 
-vi.mock("../../data/factory", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("../../data/factory")>()),
+vi.mock("../../services/data/factory", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../services/data/factory")>()),
   hydrateDadDb: mocks.hydrateDadDb,
 }));
 

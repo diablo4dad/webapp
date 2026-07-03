@@ -3,11 +3,11 @@ import {
   DEFAULT_COLLECTION_ITEM,
   type Collection,
   type CollectionItem,
-} from "../../data";
+} from "../../services/data";
 import {
   getCollectionLogViewModel,
   saveCollectionLogViewModel,
-} from "../../store/local";
+} from "../../services/store/local";
 import {
   getFocusState,
   getFocusTarget,

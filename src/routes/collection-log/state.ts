@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { toggleValueInArray } from "../../shared/lib/arrays";
-import type { Collection, CollectionGroup, CollectionItem } from "../../data";
-import { countAllItemsDabDb } from "../../data/aggregate";
-import { getDefaultItemId } from "../../data/getters";
-import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
+import type { Collection, CollectionGroup, CollectionItem } from "../../services/data";
+import { countAllItemsDabDb } from "../../services/data/aggregate";
+import { getDefaultItemId } from "../../services/data/getters";
+import { selectCollectionById, selectItemOrDefault } from "../../services/data/reducers";
 import {
   getCollectionLogViewModel,
   saveCollectionLogViewModel,
   type CollectionLogViewModel,
-} from "../../store/local";
+} from "../../services/store/local";
 
 type FocusInput = {
   collections: CollectionGroup;

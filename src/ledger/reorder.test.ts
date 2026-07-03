@@ -1,11 +1,11 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import { MasterGroup } from "../shared/domain";
-import type { Collection, DadDb } from "../data";
+import type { Collection, DadDb } from "../services/data";
 import type { CollectionDragController } from "./types";
 import { useCollectionReorder } from "./reorder";
 
-vi.mock("../store/catalog", () => ({
+vi.mock("../services/store/catalog", () => ({
   updateCatalogCollectionNodeOrder: vi.fn(),
 }));
 

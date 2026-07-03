@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useState } from "react";
-import { getIcon } from "../bucket";
+import { getIcon } from "../services/bucket";
 import Card from "../shared/ui/Card";
 import { FallbackLazyImage } from "../shared/ui/LazyLoadImageFallback";
 import {
@@ -12,7 +12,7 @@ import { isItemCollected, isItemHidden } from "../ledger/predicate";
 import { enumKeys } from "../shared/lib/enums";
 import { hashCode } from "../shared/lib/hash";
 import Toggle from "../shared/ui/Toggle";
-import { DATA_REPO } from "../config";
+import { DATA_REPO } from "../services/config";
 import {
   CharacterClass,
   Collection,
@@ -21,7 +21,7 @@ import {
   MagicType,
   getDefaultItem,
   Zone,
-} from "../data";
+} from "../services/data";
 import {
   getClassIconVariant,
   getClassItemVariant,
@@ -29,14 +29,14 @@ import {
   getItemIds,
   getItemName,
   getItemType,
-} from "../data/getters";
+} from "../services/data/getters";
 import {
   doesHaveWardrobePlaceholder,
   hasIconVariants,
   hasItemVariation,
   isVesselOfHatredItem,
-} from "../data/predicates";
-import i18n, { getItemDescription } from "../i18n";
+} from "../services/data/predicates";
+import i18n, { getItemDescription } from "../services/i18n";
 import barbarian from "../image/classes/barbarian.webp";
 import druid from "../image/classes/druid.webp";
 import necromancer from "../image/classes/necromancer.webp";
@@ -64,7 +64,7 @@ import { useSettings } from "../settings/context";
 import { isEnabled } from "../settings/predicate";
 import { Option } from "../settings/type";
 import { useEditor } from "../editor";
-import { useData } from "../data/context";
+import { useData } from "../services/data/context";
 import { MasterGroup } from "../shared/domain";
 import styles from "./item-sidebar.module.css";
 

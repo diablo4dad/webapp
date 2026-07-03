@@ -1,4 +1,4 @@
-import { CharacterClass, CharacterGender } from "../data";
+import { CharacterClass, CharacterGender } from "../services/data";
 
 export enum Option {
   // types

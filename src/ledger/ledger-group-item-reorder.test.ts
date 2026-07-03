@@ -7,10 +7,10 @@ import {
   type CollectionItem,
   type DadDb,
   type Item,
-} from "../data";
+} from "../services/data";
 import { useLedgerGroupItemReorder } from "./ledger-group-item-reorder";
 
-vi.mock("../store/catalog", () => ({
+vi.mock("../services/store/catalog", () => ({
   updateCatalogCollectionItemOrder: vi.fn(),
 }));
 

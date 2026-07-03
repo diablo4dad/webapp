@@ -3,13 +3,13 @@ import type {
   CSSProperties,
   PointerEvent as ReactPointerEvent,
 } from "react";
-import { getIcon } from "../bucket";
+import { getIcon } from "../services/bucket";
 import { onTouchStart } from "../shared/lib/dom";
 import { Close, Currency, GripVertical, TickCircle } from "../shared/ui/Icons";
 import { FallbackLazyImage } from "../shared/ui/LazyLoadImageFallback";
-import { MagicType, type CollectionItem } from "../data";
-import { getItemName, getItemType } from "../data/getters";
-import { getItemDescription } from "../i18n";
+import { MagicType, type CollectionItem } from "../services/data";
+import { getItemName, getItemType } from "../services/data/getters";
+import { getItemDescription } from "../services/i18n";
 import placeholder from "../image/placeholder.webp";
 import type { LedgerGroupItemDragState } from "./types";
 import type { LedgerGroupItemView } from "./ledger-group-item-view";

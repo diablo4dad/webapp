@@ -3,11 +3,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootRoute from "../routes/root/route";
 import { SettingsProvider } from "../settings";
 import { CollectionProvider } from "../ledger/context";
-import { getUserCollectionLog, getUserSettings } from "../store/local";
-import { DataProvider } from "../data/context";
+import { getUserCollectionLog, getUserSettings } from "../services/store/local";
+import { DataProvider } from "../services/data/context";
 import { AuthProvider } from "../services/auth";
-import { runLocalStorageMigrations } from "../migrations/localstorage";
-import { PersistenceLayer } from "../store/PersistenceLayer";
+import { runLocalStorageMigrations } from "../services/migrations/localstorage";
+import { PersistenceLayer } from "../services/store/PersistenceLayer";
 import { EditorProvider } from "../editor";
 
 const router = createBrowserRouter([

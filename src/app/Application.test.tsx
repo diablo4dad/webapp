@@ -3,7 +3,7 @@ import { act, render } from "@testing-library/react";
 import { vi } from "vitest";
 import { Application } from "./Application";
 
-vi.mock("../store/catalog", () => ({
+vi.mock("../services/store/catalog", () => ({
   __esModule: true,
   fetchHybridDadDbRef: vi.fn(() =>
     Promise.resolve({

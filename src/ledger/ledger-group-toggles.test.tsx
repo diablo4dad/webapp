@@ -7,7 +7,7 @@ import {
   type Collection,
   type CollectionItem,
   type Item,
-} from "../data";
+} from "../services/data";
 import {
   type CollectionAction,
   CollectionActionType,

@@ -1,6 +1,6 @@
 import { ItemGroup, itemGroups } from "../shared/domain";
 import { enumKeys } from "../shared/lib/enums";
-import { CharacterClass, Item } from "../data";
+import { CharacterClass, Item } from "../services/data";
 
 const armorItemTypeNames = new Set(itemGroups.get(ItemGroup.ARMOR) ?? []);
 

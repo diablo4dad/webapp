@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { MasterGroup } from "../../shared/domain";
-import type { Collection, CollectionItem } from "../../data";
+import type { Collection, CollectionItem } from "../../services/data";
 import { Component } from "./route";
 import type { View } from "./view";
 
@@ -38,11 +38,11 @@ vi.mock("../../services/auth", () => ({
   useAuth: mocks.useAuth,
 }));
 
-vi.mock("../../data/context", () => ({
+vi.mock("../../services/data/context", () => ({
   useData: mocks.useData,
 }));
 
-vi.mock("../../data/filters", () => ({
+vi.mock("../../services/data/filters", () => ({
   filterDb: mocks.filterDb,
 }));
 

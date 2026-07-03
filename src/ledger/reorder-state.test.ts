@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { MasterGroup } from "../shared/domain";
-import type { Collection } from "../data";
+import type { Collection } from "../services/data";
 import {
   canStartCollectionReorder,
   createCollectionDragState,

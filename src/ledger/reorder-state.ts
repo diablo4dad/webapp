@@ -1,5 +1,5 @@
 import { MasterGroup } from "../shared/domain";
-import type { Collection } from "../data";
+import type { Collection } from "../services/data";
 import type { CollectionDragState } from "./types";
 
 type StartOptions = {

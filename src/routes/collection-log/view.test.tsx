@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import type { SidebarVisibility } from "../../shared/domain";
-import type { Collection, CollectionItem } from "../../data";
+import type { Collection, CollectionItem } from "../../services/data";
 import { View } from "./view";
 
 type Options = {

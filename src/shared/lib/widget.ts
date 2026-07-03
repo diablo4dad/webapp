@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 import { SettingsAction } from "../../settings/context";
 import { Option, Settings } from "../../settings/type";
 import { CollectionLog } from "../../ledger/type";
-import { CollectionGroup } from "../../data";
+import { CollectionGroup } from "../../services/data";
 import { MasterGroup } from "../domain";
 
 export enum WidgetType {

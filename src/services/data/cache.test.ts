@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { MasterGroup } from "../shared/domain";
+import { MasterGroup } from "../../shared/domain";
 import type { Collection, DadDb } from "./index";
 import {
   getCatalogCollectionsByGroup,

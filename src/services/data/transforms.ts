@@ -5,8 +5,8 @@ import {
   getDefaultItem,
   ItemType,
 } from "./index";
-import { itemGroups, MasterGroup } from "../shared/domain";
-import { hashCode } from "../shared/lib/hash";
+import { itemGroups, MasterGroup } from "../../shared/domain";
+import { hashCode } from "../../shared/lib/hash";
 import { getItemIds } from "./getters";
 
 export function flattenDadDb(db: CollectionGroup): CollectionItem[] {

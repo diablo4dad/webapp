@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { MasterGroup } from "../shared/domain";
-import type { Collection, DadDb } from "../data";
-import { selectCollectionById } from "../data/reducers";
-import { updateCatalogCollectionNodeOrder } from "../store/catalog";
+import type { Collection, DadDb } from "../services/data";
+import { selectCollectionById } from "../services/data/reducers";
+import { updateCatalogCollectionNodeOrder } from "../services/store/catalog";
 import {
   createDragAutoScroller,
   getDragScrollTarget,

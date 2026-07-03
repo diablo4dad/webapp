@@ -1,5 +1,5 @@
 import { LedgerView, NumberOption, Option, Settings } from "./type";
-import { CharacterClass, CharacterGender } from "../data";
+import { CharacterClass, CharacterGender } from "../services/data";
 
 export function getLedgerViewSetting(settings: Settings): LedgerView {
   return settings[Option.LEDGER_VIEW];

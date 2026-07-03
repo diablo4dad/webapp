@@ -6,7 +6,7 @@ import {
   MagicType,
   type CollectionItem,
   type Item,
-} from "../data";
+} from "../services/data";
 import type { CollectionLog } from "./type";
 import { getLedgerGroupItemView } from "./ledger-group-item-view";
 

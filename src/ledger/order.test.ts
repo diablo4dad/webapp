@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { MasterGroup } from "../shared/domain";
-import type { Collection, CollectionItem, DadDb } from "../data";
+import type { Collection, CollectionItem, DadDb } from "../services/data";
 import {
   areCollectionOrdersEqual,
   areItemOrdersEqual,

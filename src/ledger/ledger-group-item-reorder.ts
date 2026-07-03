@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import type { Collection, CollectionItem, DadDb } from "../data";
-import { updateCatalogCollectionItemOrder } from "../store/catalog";
+import type { Collection, CollectionItem, DadDb } from "../services/data";
+import { updateCatalogCollectionItemOrder } from "../services/store/catalog";
 import {
   createDragAutoScroller,
   getDragScrollTarget,

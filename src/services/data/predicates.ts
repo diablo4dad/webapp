@@ -1,5 +1,5 @@
 import { CharacterClass, Collection, CollectionItem, Item } from "./index";
-import { wardrobeIcons } from "../shared/domain";
+import { wardrobeIcons } from "../../shared/domain";
 
 export function doesHaveWardrobePlaceholder(item: Item): boolean {
   return !!item.isTransmog && wardrobeIcons.includes(item.itemType.name);

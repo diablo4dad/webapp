@@ -1,5 +1,5 @@
-import { Collection, CollectionGroup } from "../data";
-import { getAllCollectionItems, getItemIds } from "../data/getters";
+import { Collection, CollectionGroup } from "../services/data";
+import { getAllCollectionItems, getItemIds } from "../services/data/getters";
 import { CollectionLog } from "./type";
 import { isItemCollected, isItemHidden } from "./predicate";
 

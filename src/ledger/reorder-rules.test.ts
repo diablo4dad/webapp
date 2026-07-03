@@ -5,7 +5,7 @@ import {
   type Collection,
   type CollectionItem,
   type Item,
-} from "../data";
+} from "../services/data";
 import type { CollectionDragState } from "./types";
 import { isCollectionDropAllowed } from "./reorder-rules";
 

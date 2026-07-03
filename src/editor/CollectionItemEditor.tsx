@@ -12,7 +12,7 @@ import {
   fetchHybridDadDbRef,
   moveCatalogCollectionItem,
   updateCatalogCollectionItem,
-} from "../store/catalog";
+} from "../services/store/catalog";
 import {
   CharacterClass,
   Chest,
@@ -21,23 +21,23 @@ import {
   CollectionItemRef,
   Item,
   Zone,
-} from "../data";
+} from "../services/data";
 import { Close, Plus } from "../shared/ui/Icons";
-import { getIcon } from "../bucket";
+import { getIcon } from "../services/bucket";
 import { FallbackLazyImage } from "../shared/ui/LazyLoadImageFallback";
-import { hydrateDadDb } from "../data/factory";
-import { useData } from "../data/context";
+import { hydrateDadDb } from "../services/data/factory";
+import { useData } from "../services/data/context";
 import { useEditor } from "./context";
 import { ItemGroup, MasterGroup, catalogGroups, itemGroups } from "../shared/domain";
 import { enumKeys } from "../shared/lib/enums";
-import { createCollectionItemSettingsFilter } from "../data/filters";
+import { createCollectionItemSettingsFilter } from "../services/data/filters";
 import { useSettings } from "../settings/context";
 import {
   canSelectCollectionItem,
   isPlayerTitle,
   selectCollectionItem,
 } from "./collectionItemSelection";
-import i18n from "../i18n";
+import i18n from "../services/i18n";
 import barbarian from "../image/classes/barbarian.webp";
 import druid from "../image/classes/druid.webp";
 import necromancer from "../image/classes/necromancer.webp";
@@ -51,7 +51,7 @@ import transmog from "../image/icons/transmog.webp";
 import placeholder from "../image/placeholder.webp";
 import DeleteConfirmationModal from "../shared/ui/DeleteConfirmationModal";
 import Toggle from "../shared/ui/Toggle";
-import { flattenDadDb } from "../data/transforms";
+import { flattenDadDb } from "../services/data/transforms";
 import styles from "./CollectionItemEditor.module.css";
 
 type FormState = {

@@ -1,17 +1,17 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import DeleteConfirmationModal from "../shared/ui/DeleteConfirmationModal";
-import { Collection } from "../data";
-import { getDefaultItem } from "../data";
-import { getItemName, getItemType } from "../data/getters";
-import { hydrateDadDb } from "../data/factory";
-import { useData } from "../data/context";
+import { Collection } from "../services/data";
+import { getDefaultItem } from "../services/data";
+import { getItemName, getItemType } from "../services/data/getters";
+import { hydrateDadDb } from "../services/data/factory";
+import { useData } from "../services/data/context";
 import { MasterGroup, catalogGroups } from "../shared/domain";
 import {
   addCatalogCollectionNode,
   deleteCatalogCollectionNode,
   fetchHybridDadDbRef,
   updateCatalogCollectionNode,
-} from "../store/catalog";
+} from "../services/store/catalog";
 import { useEditor } from "./context";
 import drawerStyles from "./CollectionItemEditor.module.css";
 import styles from "./CollectionEditor.module.css";

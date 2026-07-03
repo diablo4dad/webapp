@@ -1,5 +1,5 @@
-import type { Collection } from "../data";
-import { countAllItemsInCollection } from "../data/aggregate";
+import type { Collection } from "../services/data";
+import { countAllItemsInCollection } from "../services/data/aggregate";
 import {
   countItemsInCollectionHidden,
   countItemsInCollectionOwned,

@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
-import { auth } from "../../config/firebase";
+import { auth } from "../config/firebase";
 import { DadUser, EDITOR_ROLE } from "./type";
 
 type AuthType = {

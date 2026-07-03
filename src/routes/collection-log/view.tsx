@@ -5,7 +5,7 @@ import { ItemSidebar, ItemSidebarSkeleton } from "../../item-sidebar";
 import { Progress } from "../../progress";
 import { Season } from "../../season";
 import { Welcome } from "../../welcome";
-import type { Collection, CollectionItem } from "../../data";
+import type { Collection, CollectionItem } from "../../services/data";
 import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
 import { ConfigSidebar } from "../../settings/ui";
 import { Layout } from "./layout";

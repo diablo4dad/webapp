@@ -1,6 +1,6 @@
 import type { MasterGroup } from "../shared/domain";
-import type { Collection } from "../data";
-import { selectCollectionById } from "../data/reducers";
+import type { Collection } from "../services/data";
+import { selectCollectionById } from "../services/data/reducers";
 import {
   getCollectionIdsForDropList,
   getCollectionInsertIndexFromPointer,

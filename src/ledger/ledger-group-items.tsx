@@ -3,7 +3,7 @@ import type {
   CharacterClass,
   CharacterGender,
   CollectionItem,
-} from "../data";
+} from "../services/data";
 import {
   LedgerGroupItemCard,
   LedgerGroupItemDragGhost,

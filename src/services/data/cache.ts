@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { MasterGroup, catalogGroups } from "../shared/domain";
+import { MasterGroup, catalogGroups } from "../../shared/domain";
 import { createGlobalCollection } from "./transforms";
 import type { CollectionGroup, DadDb } from "./index";
 

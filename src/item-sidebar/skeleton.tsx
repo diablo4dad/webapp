@@ -1,4 +1,4 @@
-import { DEFAULT_COLLECTION_ITEM } from "../data";
+import { DEFAULT_COLLECTION_ITEM } from "../services/data";
 import styles from "./item-sidebar.module.css";
 import { ItemSidebar } from "./view";
 

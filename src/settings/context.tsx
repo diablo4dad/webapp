@@ -5,7 +5,7 @@ import {
   useContext,
   useReducer,
 } from "react";
-import { saveSettings } from "../store/local";
+import { saveSettings } from "../services/store/local";
 import {
   BooleanOption,
   LedgerView,
@@ -14,7 +14,7 @@ import {
   Settings,
   StringOption,
 } from "./type";
-import { CharacterClass, CharacterGender } from "../data";
+import { CharacterClass, CharacterGender } from "../services/data";
 
 export const defaultSettings: Settings = {
   // items

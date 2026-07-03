@@ -7,7 +7,7 @@ import { WidgetType } from "../shared/lib/widget";
 import Select from "../shared/ui/Select";
 import ItemFilterWidget from "./ItemFilterWidget";
 import CollectionFilterWidget from "./CollectionFilterWidget";
-import { useData } from "../data/context";
+import { useData } from "../services/data/context";
 import { useCollection } from "../ledger/context";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { ChevronRight } from "../shared/ui/Icons";

@@ -9,8 +9,8 @@ import {
 import { CollectionLog } from "./type";
 import { toggleValueInArray } from "../shared/lib/arrays";
 import { hashCode } from "../shared/lib/hash";
-import { VersionInfo } from "../store";
-import { runCollectionLogMigrations } from "../migrations";
+import { VersionInfo } from "../services/store";
+import { runCollectionLogMigrations } from "../services/migrations";
 
 export const defaultCollection: CollectionLog = {
   collected: [],

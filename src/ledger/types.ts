@@ -1,5 +1,5 @@
 import type { MasterGroup } from "../shared/domain";
-import type { Collection, CollectionItem } from "../data";
+import type { Collection, CollectionItem } from "../services/data";
 import type { CollectionParentId } from "./order";
 
 type LedgerProps = {

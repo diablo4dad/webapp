@@ -5,7 +5,7 @@ import {
   type Collection,
   type CollectionItem,
   type Item,
-} from "../data";
+} from "../services/data";
 import { getLedgerGroupRules } from "./ledger-group-rules";
 
 function item(id: number): Item {

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import type { Collection } from "../data";
+import type { Collection } from "../services/data";
 import { LedgerGroupHeader } from "./ledger-group-header";
 
 vi.mock("../shared/ui/Tooltip", () => ({

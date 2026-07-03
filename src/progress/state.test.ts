@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import type { CollectionLog } from "../ledger/type";
 import { ItemGroup } from "../shared/domain";
 import { hashCode } from "../shared/lib/hash";
-import type { Collection, CollectionGroup, CollectionItem, Item } from "../data";
+import type { Collection, CollectionGroup, CollectionItem, Item } from "../services/data";
 import { getProgressStats } from "./state";
 
 function item(id: number, itemTypeName: string): Item {

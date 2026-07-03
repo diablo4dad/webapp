@@ -7,12 +7,12 @@ import {
   type Collection,
   type CollectionItem,
   type Item,
-} from "../data";
+} from "../services/data";
 import type { LedgerGroupItemDragState } from "./types";
 import { LedgerGroupItems } from "./ledger-group-items";
 import type { CollectionLog } from "./type";
 
-vi.mock("../bucket", () => ({
+vi.mock("../services/bucket", () => ({
   getIcon: (fileName: string) => `/assets/${fileName}`,
 }));
 

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
-import { MagicType, type CollectionItem, type Item } from "../data";
+import { MagicType, type CollectionItem, type Item } from "../services/data";
 import {
   LedgerGroupItemCard,
   LedgerGroupItemDragGhost,
@@ -9,7 +9,7 @@ import {
 import type { LedgerGroupItemView } from "./ledger-group-item-view";
 import type { LedgerGroupItemDragState } from "./types";
 
-vi.mock("../bucket", () => ({
+vi.mock("../services/bucket", () => ({
   getIcon: (fileName: string) => `/assets/${fileName}`,
 }));
 

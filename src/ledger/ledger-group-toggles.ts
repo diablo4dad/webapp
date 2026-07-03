@@ -1,5 +1,5 @@
-import type { Collection, CollectionItem } from "../data";
-import { getAllCollectionItems, getItemIds } from "../data/getters";
+import type { Collection, CollectionItem } from "../services/data";
+import { getAllCollectionItems, getItemIds } from "../services/data/getters";
 import {
   CollectionActionType,
   useCollectionDispatch,

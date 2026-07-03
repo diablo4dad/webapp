@@ -1,9 +1,9 @@
 import { MasterGroup, catalogGroups } from "../../shared/domain";
 import { useEffect, useState } from "react";
-import type { DadDbRef } from "../../data";
-import type { CatalogGroupSource, DataContextType } from "../../data/context";
-import { hydrateDadDb } from "../../data/factory";
-import { fetchHybridDadDbRefsByCategory } from "../../store/catalog";
+import type { DadDbRef } from "../../services/data";
+import type { CatalogGroupSource, DataContextType } from "../../services/data/context";
+import { hydrateDadDb } from "../../services/data/factory";
+import { fetchHybridDadDbRefsByCategory } from "../../services/store/catalog";
 
 type CatalogGroupSources = Partial<Record<MasterGroup, CatalogGroupSource>>;
 

@@ -1,4 +1,4 @@
-import { CharacterClass, Item } from "../data";
+import { CharacterClass, Item } from "../services/data";
 import {
   canSelectCollectionItem,
   selectCollectionItem,

@@ -3,7 +3,7 @@ import {
   LazyLoadImage,
   LazyLoadImageProps,
 } from "react-lazy-load-image-component";
-import { getIcon } from "../../bucket";
+import { getIcon } from "../../services/bucket";
 
 export function FallbackLazyImage({ src, ...props }: LazyLoadImageProps) {
   const [needsFallback, setNeedsFallback] = useState(false);

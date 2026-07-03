@@ -3,13 +3,13 @@ import type {
   CharacterGender,
   CollectionItem,
   Item,
-} from "../data";
-import { getDefaultItem } from "../data";
+} from "../services/data";
+import { getDefaultItem } from "../services/data";
 import {
   getClassIconVariant,
   getClassItemVariant,
   getItemIds,
-} from "../data/getters";
+} from "../services/data/getters";
 import type { CollectionLog } from "./type";
 import { isItemCollected, isItemHidden } from "./predicate";
 
