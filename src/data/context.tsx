@@ -9,7 +9,7 @@ import {
 } from "react";
 import { getDefaultItemId } from "./getters";
 import { CollectionGroup, DadDb } from "./index";
-import { useCollection } from "../collection/context";
+import { useCollection } from "../ledger/context";
 import { useSettings } from "../settings/context";
 import { filterDb } from "./filters";
 import { createGlobalCollection } from "./transforms";

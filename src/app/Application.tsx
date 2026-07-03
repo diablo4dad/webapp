@@ -2,7 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootRoute from "../routes/root/route";
 import { SettingsProvider } from "../settings/context";
-import { CollectionProvider } from "../collection/context";
+import { CollectionProvider } from "../ledger/context";
 import { getUserCollectionLog, getUserSettings } from "../store/local";
 import { DataProvider } from "../data/context";
 import { AuthProvider } from "../auth/context";

@@ -1,7 +1,7 @@
 import { VERSION } from "../config";
 
 import { isScreenSmall } from "../common/dom";
-import { CollectionLog } from "../collection/type";
+import { CollectionLog } from "../ledger/type";
 import { LedgerView, Option, Settings } from "../settings/type";
 import { defaultSettings } from "../settings/context";
 

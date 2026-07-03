@@ -1,6 +1,6 @@
 import Fuse from "fuse.js";
-import { isItemCollected, isItemHidden } from "../collection/predicate";
-import { CollectionLog } from "../collection/type";
+import { isItemCollected, isItemHidden } from "../ledger/predicate";
+import { CollectionLog } from "../ledger/type";
 import { getEnabledClasses, getEnabledItemTypes, MasterGroup } from "../common";
 import { isEnabled } from "../settings/predicate";
 import { Option, Settings } from "../settings/type";

@@ -1,5 +1,5 @@
-import { isItemCollected } from "../collection/predicate";
-import type { CollectionLog } from "../collection/type";
+import { isItemCollected } from "../ledger/predicate";
+import type { CollectionLog } from "../ledger/type";
 import { ItemGroup, itemGroups } from "../common";
 import type { CollectionGroup } from "../data";
 import { getItemIds } from "../data/getters";

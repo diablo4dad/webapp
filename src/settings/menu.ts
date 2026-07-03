@@ -14,7 +14,7 @@ import { getNumberValue } from "./accessor";
 import { enumKeys } from "../common/enums";
 import { CharacterClass, CharacterGender, CollectionGroup } from "../data";
 import i18n from "../i18n";
-import { CollectionLog } from "../collection/type";
+import { CollectionLog } from "../ledger/type";
 import { filterDb } from "../data/filters";
 import { countAllItemsDabDb } from "../data/aggregate";
 import GeneralIcon from "../image/icons/goblin.webp";

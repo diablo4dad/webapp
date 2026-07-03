@@ -7,7 +7,7 @@ import Select from "../components/Select";
 import ItemFilterWidget from "./ItemFilterWidget";
 import CollectionFilterWidget from "./CollectionFilterWidget";
 import { useData } from "../data/context";
-import { useCollection } from "../collection/context";
+import { useCollection } from "../ledger/context";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { ChevronRight } from "../components/Icons";
 import { generateUrl } from "../routes/collection-log/links";

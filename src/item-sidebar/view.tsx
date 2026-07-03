@@ -7,8 +7,8 @@ import {
   CollectionActionType,
   useCollection,
   useCollectionDispatch,
-} from "../collection/context";
-import { isItemCollected, isItemHidden } from "../collection/predicate";
+} from "../ledger/context";
+import { isItemCollected, isItemHidden } from "../ledger/predicate";
 import { enumKeys } from "../common/enums";
 import { hashCode } from "../common/hash";
 import Toggle from "../components/Toggle";

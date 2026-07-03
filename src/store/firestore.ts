@@ -1,7 +1,7 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { firestore } from "../config/firebase";
 import { FirebaseData } from "./index";
-import { CollectionLog } from "../collection/type";
+import { CollectionLog } from "../ledger/type";
 import { VERSION } from "../config";
 import { runFirestoreMigrations } from "../migrations/firestore";
 
