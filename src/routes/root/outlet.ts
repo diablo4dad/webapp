@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import type { SidebarVisibility } from "../../common";
+import type { SidebarVisibility } from "../../shared/domain";
 
 type RootOutletContext = {
   searchTerm: string;

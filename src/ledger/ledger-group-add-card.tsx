@@ -1,4 +1,4 @@
-import { Plus } from "../components/Icons";
+import { Plus } from "../shared/ui/Icons";
 import styles from "./ledger-group-add-card.module.css";
 
 type Props = {

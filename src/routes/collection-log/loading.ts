@@ -1,4 +1,4 @@
-import { MasterGroup, catalogGroups } from "../../common";
+import { MasterGroup, catalogGroups } from "../../shared/domain";
 import { useEffect, useState } from "react";
 import type { DadDbRef } from "../../data";
 import type { CatalogGroupSource, DataContextType } from "../../data/context";

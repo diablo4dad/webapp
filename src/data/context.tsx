@@ -4,7 +4,7 @@ import {
   useContext,
   useMemo,
 } from "react";
-import { MasterGroup } from "../common";
+import { MasterGroup } from "../shared/domain";
 import { DadDb } from "./index";
 import {
   defaultDadDb,

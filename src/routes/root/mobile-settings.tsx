@@ -1,6 +1,6 @@
 import type { DadUser } from "../../auth";
-import type { MasterGroup } from "../../common";
-import { Close, Pencil } from "../../components/Icons";
+import type { MasterGroup } from "../../shared/domain";
+import { Close, Pencil } from "../../shared/ui/Icons";
 import { ConfigSidebar } from "../../settings/ui";
 import { AuthActions } from "./auth";
 import { MobileSettingsLayout } from "./mobile-settings-layout";

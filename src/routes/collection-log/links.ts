@@ -1,4 +1,4 @@
-import { MasterGroup } from "../../common";
+import { MasterGroup } from "../../shared/domain";
 
 const GENERAL_SLUG = "general";
 const SEASONS_SLUG = "seasons";

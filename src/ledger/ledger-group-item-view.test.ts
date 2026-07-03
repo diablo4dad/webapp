@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { hashCode } from "../common/hash";
+import { hashCode } from "../shared/lib/hash";
 import {
   CharacterClass,
   CharacterGender,

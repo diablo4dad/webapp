@@ -6,7 +6,7 @@ import { Progress } from "../../progress";
 import { Season } from "../../season";
 import { Welcome } from "../../welcome";
 import type { Collection, CollectionItem } from "../../data";
-import type { MasterGroup, SidebarVisibility } from "../../common";
+import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
 import { ConfigSidebar } from "../../settings/ui";
 import { Layout } from "./layout";
 import styles from "./view.module.css";

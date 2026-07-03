@@ -1,6 +1,6 @@
-import { CharacterClass } from "../data";
-import { isEnabled } from "../settings/predicate";
-import { Option, type BooleanOption, type Settings } from "../settings/type";
+import { CharacterClass } from "../../data";
+import { isEnabled } from "../../settings/predicate";
+import { Option, type BooleanOption, type Settings } from "../../settings/type";
 
 enum MasterGroup {
   GENERAL = "General",

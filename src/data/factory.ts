@@ -14,7 +14,7 @@ import {
   ItemType,
 } from "./index";
 import { createGlobalCollection } from "./transforms";
-import { hashCodeFromString } from "../common/hash";
+import { hashCodeFromString } from "../shared/lib/hash";
 
 type CollectionItemRefWithTransientId = CollectionItemRef & {
   id: number;

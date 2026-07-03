@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import type { SidebarVisibility } from "../../common";
+import type { SidebarVisibility } from "../../shared/domain";
 import type { Collection, CollectionItem } from "../../data";
 import { View } from "./view";
 

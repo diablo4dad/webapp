@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
+import DeleteConfirmationModal from "../shared/ui/DeleteConfirmationModal";
 import { Collection } from "../data";
 import { getDefaultItem } from "../data";
 import { getItemName, getItemType } from "../data/getters";
 import { hydrateDadDb } from "../data/factory";
 import { useData } from "../data/context";
-import { MasterGroup, catalogGroups } from "../common";
+import { MasterGroup, catalogGroups } from "../shared/domain";
 import {
   addCatalogCollectionNode,
   deleteCatalogCollectionNode,

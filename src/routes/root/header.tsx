@@ -1,5 +1,5 @@
 import type { DadUser } from "../../auth";
-import type { SidebarVisibility } from "../../common";
+import type { SidebarVisibility } from "../../shared/domain";
 import { AuthActions } from "./auth";
 import { HeaderActions } from "./header-actions";
 import {

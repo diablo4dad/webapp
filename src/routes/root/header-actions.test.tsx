@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { SidebarVisibility } from "../../common";
+import type { SidebarVisibility } from "../../shared/domain";
 import { HeaderActions } from "./header-actions";
 
 type Props = Parameters<typeof HeaderActions>[0];

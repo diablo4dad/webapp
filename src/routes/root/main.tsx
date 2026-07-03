@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { DadUser } from "../../auth";
-import type { MasterGroup } from "../../common";
+import type { MasterGroup } from "../../shared/domain";
 import { CollectionEditor, CollectionItemEditor } from "../../editor/ui";
 import { MobileSearch } from "./mobile-search";
 import { MobileSettings } from "./mobile-settings";

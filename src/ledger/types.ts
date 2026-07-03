@@ -1,4 +1,4 @@
-import type { MasterGroup } from "../common";
+import type { MasterGroup } from "../shared/domain";
 import type { Collection, CollectionItem } from "../data";
 import type { CollectionParentId } from "./order";
 

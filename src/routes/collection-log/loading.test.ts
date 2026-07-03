@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
-import { MasterGroup, catalogGroups } from "../../common";
+import { MasterGroup, catalogGroups } from "../../shared/domain";
 import type { DadDb, DadDbRef } from "../../data";
 import type { DataContextType } from "../../data/context";
 import { hydrateDadDb } from "../../data/factory";

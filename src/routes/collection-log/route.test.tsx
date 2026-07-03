@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { MasterGroup } from "../../common";
+import { MasterGroup } from "../../shared/domain";
 import type { Collection, CollectionItem } from "../../data";
 import { Component } from "./route";
 import type { View } from "./view";

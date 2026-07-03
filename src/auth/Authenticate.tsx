@@ -1,6 +1,6 @@
 import styles from "./Authenticate.module.css";
-import Button from "../components/Button";
-import { Google } from "../components/Icons";
+import Button from "../shared/ui/Button";
+import { Google } from "../shared/ui/Icons";
 import React from "react";
 
 enum AuthGiant {

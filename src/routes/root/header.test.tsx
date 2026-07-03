@@ -2,14 +2,14 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { DadUser } from "../../auth";
-import type { SidebarVisibility } from "../../common";
+import type { SidebarVisibility } from "../../shared/domain";
 import { Header } from "./header";
 
 type Props = Parameters<typeof Header>[0];
 
 type Options = Partial<Props>;
 
-vi.mock("../../components/Search", () => ({
+vi.mock("../../shared/ui/Search", () => ({
   default: ({
     onChange,
     onClear,

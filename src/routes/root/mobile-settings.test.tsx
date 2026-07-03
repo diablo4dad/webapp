@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { DadUser } from "../../auth";
-import { MasterGroup } from "../../common";
+import { MasterGroup } from "../../shared/domain";
 import { MobileSettings } from "./mobile-settings";
 
 type Props = Parameters<typeof MobileSettings>[0];

@@ -1,4 +1,4 @@
-import { MasterGroup } from "../../common";
+import { MasterGroup } from "../../shared/domain";
 import { DEFAULT_GROUP, SEASONS_SLUG } from "./links";
 import { loader } from "./loader";
 

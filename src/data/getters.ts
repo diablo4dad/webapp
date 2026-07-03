@@ -1,4 +1,4 @@
-import { enumKeys } from "../common/enums";
+import { enumKeys } from "../shared/lib/enums";
 import missing from "../image/placeholder.webp";
 import {
   CharacterClass,

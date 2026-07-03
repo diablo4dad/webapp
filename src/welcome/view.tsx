@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { Discord, GitHub } from "../components/Icons";
+import { Discord, GitHub } from "../shared/ui/Icons";
 import { DISCORD_INVITE_LINK } from "../config";
 import wardrobe from "../image/wardrobe@1x.png";
 import styles from "./welcome.module.css";

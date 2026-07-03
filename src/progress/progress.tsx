@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useCollection } from "../ledger/context";
-import { ItemGroup } from "../common";
+import { ItemGroup } from "../shared/domain";
 import { useData } from "../data/context";
 import { filterDb } from "../data/filters";
 import backTrophyIcon from "../image/back-trophy@1x.png";

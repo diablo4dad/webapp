@@ -1,4 +1,4 @@
-import type { MasterGroup } from "../common";
+import type { MasterGroup } from "../shared/domain";
 import type { Collection } from "../data";
 import { selectCollectionById } from "../data/reducers";
 import type { CollectionDragState } from "./types";

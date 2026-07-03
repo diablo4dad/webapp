@@ -13,7 +13,7 @@ vi.mock("../bucket", () => ({
   getIcon: (fileName: string) => `/assets/${fileName}`,
 }));
 
-vi.mock("../components/LazyLoadImageFallback", () => ({
+vi.mock("../shared/ui/LazyLoadImageFallback", () => ({
   FallbackLazyImage: ({
     alt,
     className,

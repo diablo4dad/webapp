@@ -1,4 +1,4 @@
-import { MasterGroup } from "../common";
+import { MasterGroup } from "../shared/domain";
 
 export enum ItemFlag {
   COLLECTED,

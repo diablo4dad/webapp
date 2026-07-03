@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { MasterGroup, SidebarVisibility } from "../../common";
+import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
 import type { DadUser } from "../../auth";
 import { View } from "./view";
 
@@ -28,7 +28,7 @@ vi.mock("../../auth/ui", () => ({
   },
 }));
 
-vi.mock("../../components/Search", () => ({
+vi.mock("../../shared/ui/Search", () => ({
   default: ({
     autoFocus,
     onChange,
@@ -54,7 +54,7 @@ vi.mock("../../components/Search", () => ({
   ),
 }));
 
-vi.mock("../../components/Tooltip", () => ({
+vi.mock("../../shared/ui/Tooltip", () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   TooltipContent: ({ children }: { children: React.ReactNode }) => (
     <div role="tooltip">{children}</div>

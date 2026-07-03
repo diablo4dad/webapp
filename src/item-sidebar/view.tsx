@@ -1,17 +1,17 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 import { getIcon } from "../bucket";
-import Card from "../components/Card";
-import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
+import Card from "../shared/ui/Card";
+import { FallbackLazyImage } from "../shared/ui/LazyLoadImageFallback";
 import {
   CollectionActionType,
   useCollection,
   useCollectionDispatch,
 } from "../ledger/context";
 import { isItemCollected, isItemHidden } from "../ledger/predicate";
-import { enumKeys } from "../common/enums";
-import { hashCode } from "../common/hash";
-import Toggle from "../components/Toggle";
+import { enumKeys } from "../shared/lib/enums";
+import { hashCode } from "../shared/lib/hash";
+import Toggle from "../shared/ui/Toggle";
 import { DATA_REPO } from "../config";
 import {
   CharacterClass,
@@ -65,7 +65,7 @@ import { isEnabled } from "../settings/predicate";
 import { Option } from "../settings/type";
 import { useEditor } from "../editor";
 import { useData } from "../data/context";
-import { MasterGroup } from "../common";
+import { MasterGroup } from "../shared/domain";
 import styles from "./item-sidebar.module.css";
 
 function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {

@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import btnStyles from "../components/Button.module.css";
-import { GripVertical, Pencil, Tick } from "../components/Icons";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
+import btnStyles from "../shared/ui/Button.module.css";
+import { GripVertical, Pencil, Tick } from "../shared/ui/Icons";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../shared/ui/Tooltip";
 import type { Collection } from "../data";
 import styles from "./ledger-group-header.module.css";
 

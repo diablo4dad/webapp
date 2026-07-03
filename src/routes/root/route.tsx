@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../auth";
-import type { MasterGroup, SidebarVisibility } from "../../common";
+import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor";
 import { generateUrl } from "../collection-log/links";

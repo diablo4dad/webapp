@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { DadUser } from "../../auth";
-import type { MasterGroup, SidebarVisibility } from "../../common";
+import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Layout } from "./layout";

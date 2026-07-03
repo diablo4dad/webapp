@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, test, vi } from "vitest";
-import { MasterGroup } from "../common";
+import { MasterGroup } from "../shared/domain";
 import type { Collection } from "../data";
 import type { CollectionDragController } from "./types";
 import { LedgerView, type RenderCollectionInput } from "./view";

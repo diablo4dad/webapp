@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import Card from "../components/Card";
-import { Star } from "../components/Icons";
+import Card from "../shared/ui/Card";
+import { Star } from "../shared/ui/Icons";
 import type { ProgressStats } from "./state";
 import styles from "./progress.module.css";
 

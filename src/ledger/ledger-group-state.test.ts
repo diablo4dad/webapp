@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { MasterGroup } from "../common";
-import { hashCode } from "../common/hash";
+import { MasterGroup } from "../shared/domain";
+import { hashCode } from "../shared/lib/hash";
 import {
   MagicType,
   type Collection,

@@ -4,7 +4,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import type { Collection } from "../data";
 import { LedgerGroupHeader } from "./ledger-group-header";
 
-vi.mock("../components/Tooltip", () => ({
+vi.mock("../shared/ui/Tooltip", () => ({
   Tooltip: ({ children }: { children: ReactNode }) => <>{children}</>,
   TooltipContent: ({ children }: { children: ReactNode }) => (
     <span>{children}</span>

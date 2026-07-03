@@ -10,7 +10,7 @@ type Props = Parameters<typeof SearchField>[0];
 
 type Options = Partial<Props>;
 
-vi.mock("../../components/Search", () => ({
+vi.mock("../../shared/ui/Search", () => ({
   default: ({
     autoFocus,
     onChange,

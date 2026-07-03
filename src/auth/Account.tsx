@@ -1,5 +1,5 @@
 import styles from "./Account.module.css";
-import { Google } from "../components/Icons";
+import { Google } from "../shared/ui/Icons";
 import classNames from "classnames";
 import { DadUser } from "./type";
 

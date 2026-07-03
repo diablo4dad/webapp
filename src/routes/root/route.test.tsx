@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { MasterGroup } from "../../common";
+import { MasterGroup } from "../../shared/domain";
 import type { DadUser } from "../../auth";
 import RootRoute from "./route";
 

@@ -4,9 +4,9 @@ import type {
   PointerEvent as ReactPointerEvent,
 } from "react";
 import { getIcon } from "../bucket";
-import { onTouchStart } from "../common/dom";
-import { Close, Currency, GripVertical, TickCircle } from "../components/Icons";
-import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
+import { onTouchStart } from "../shared/lib/dom";
+import { Close, Currency, GripVertical, TickCircle } from "../shared/ui/Icons";
+import { FallbackLazyImage } from "../shared/ui/LazyLoadImageFallback";
 import { MagicType, type CollectionItem } from "../data";
 import { getItemName, getItemType } from "../data/getters";
 import { getItemDescription } from "../i18n";

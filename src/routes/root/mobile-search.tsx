@@ -1,5 +1,5 @@
-import Button, { BtnColours } from "../../components/Button";
-import { Close } from "../../components/Icons";
+import Button, { BtnColours } from "../../shared/ui/Button";
+import { Close } from "../../shared/ui/Icons";
 import { MobileSearchLayout } from "./mobile-search-layout";
 import { SearchField } from "./search";
 import styles from "./mobile-search.module.css";

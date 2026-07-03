@@ -1,5 +1,5 @@
 import { CollectionLog } from "./type";
-import { hashCode } from "../common/hash";
+import { hashCode } from "../shared/lib/hash";
 
 export function isItemCollected(
   collection: CollectionLog,

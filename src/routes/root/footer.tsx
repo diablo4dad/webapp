@@ -1,4 +1,4 @@
-import { Discord } from "../../components/Icons";
+import { Discord } from "../../shared/ui/Icons";
 import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "../../config";
 import styles from "./footer.module.css";
 

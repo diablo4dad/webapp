@@ -7,11 +7,11 @@ import {
 } from "./type";
 import { SettingsAction, SettingsActionType } from "./context";
 import { ChangeEvent } from "react";
-import { OptionWidgetGroup, WidgetType } from "../common/widget";
-import { ItemGroup, MasterGroup, itemGroups } from "../common";
+import { OptionWidgetGroup, WidgetType } from "../shared/lib/widget";
+import { ItemGroup, MasterGroup, itemGroups } from "../shared/domain";
 import { isEnabled, isLedgerView } from "./predicate";
 import { getNumberValue } from "./accessor";
-import { enumKeys } from "../common/enums";
+import { enumKeys } from "../shared/lib/enums";
 import { CharacterClass, CharacterGender, CollectionGroup } from "../data";
 import i18n from "../i18n";
 import { CollectionLog } from "../ledger/type";

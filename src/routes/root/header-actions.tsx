@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import type { SidebarVisibility } from "../../common";
-import Button, { BtnColours } from "../../components/Button";
+import type { SidebarVisibility } from "../../shared/domain";
+import Button, { BtnColours } from "../../shared/ui/Button";
 import {
   Close,
   Hamburger,
@@ -8,12 +8,12 @@ import {
   SearchIcon,
   SidebarLeft,
   SidebarRight,
-} from "../../components/Icons";
+} from "../../shared/ui/Icons";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "../../components/Tooltip";
+} from "../../shared/ui/Tooltip";
 import styles from "./header-actions.module.css";
 
 type Props = {

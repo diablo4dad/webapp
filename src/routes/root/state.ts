@@ -1,4 +1,4 @@
-import type { SidebarVisibility } from "../../common";
+import type { SidebarVisibility } from "../../shared/domain";
 
 function toggleSidebarVisibility(
   sidebarVisibility: SidebarVisibility,

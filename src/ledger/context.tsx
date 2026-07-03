@@ -7,8 +7,8 @@ import {
 } from "react";
 
 import { CollectionLog } from "./type";
-import { toggleValueInArray } from "../common/arrays";
-import { hashCode } from "../common/hash";
+import { toggleValueInArray } from "../shared/lib/arrays";
+import { hashCode } from "../shared/lib/hash";
 import { VersionInfo } from "../store";
 import { runCollectionLogMigrations } from "../migrations";
 

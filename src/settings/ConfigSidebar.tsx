@@ -1,16 +1,16 @@
 import styles from "./ConfigSidebar.module.css";
-import Toggle from "../components/Toggle";
-import type { MasterGroup } from "../common";
+import Toggle from "../shared/ui/Toggle";
+import type { MasterGroup } from "../shared/domain";
 import { useSettings, useSettingsDispatch } from "./context";
 import { groups } from "./menu";
-import { WidgetType } from "../common/widget";
-import Select from "../components/Select";
+import { WidgetType } from "../shared/lib/widget";
+import Select from "../shared/ui/Select";
 import ItemFilterWidget from "./ItemFilterWidget";
 import CollectionFilterWidget from "./CollectionFilterWidget";
 import { useData } from "../data/context";
 import { useCollection } from "../ledger/context";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
-import { ChevronRight } from "../components/Icons";
+import { ChevronRight } from "../shared/ui/Icons";
 
 type Props = {
   onSelectCollectionGroup: (group: MasterGroup) => void;

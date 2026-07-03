@@ -1,4 +1,4 @@
-import { MasterGroup } from "../../common";
+import { MasterGroup } from "../../shared/domain";
 import {
   CHALLENGES_SLUG,
   DEFAULT_GROUP,

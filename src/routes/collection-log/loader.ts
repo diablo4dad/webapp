@@ -1,4 +1,4 @@
-import type { MasterGroup } from "../../common";
+import type { MasterGroup } from "../../shared/domain";
 import { DEFAULT_SLUG, slugToGroup } from "./links";
 
 type Params = {

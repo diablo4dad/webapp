@@ -22,14 +22,14 @@ import {
   Item,
   Zone,
 } from "../data";
-import { Close, Plus } from "../components/Icons";
+import { Close, Plus } from "../shared/ui/Icons";
 import { getIcon } from "../bucket";
-import { FallbackLazyImage } from "../components/LazyLoadImageFallback";
+import { FallbackLazyImage } from "../shared/ui/LazyLoadImageFallback";
 import { hydrateDadDb } from "../data/factory";
 import { useData } from "../data/context";
 import { useEditor } from "./context";
-import { ItemGroup, MasterGroup, catalogGroups, itemGroups } from "../common";
-import { enumKeys } from "../common/enums";
+import { ItemGroup, MasterGroup, catalogGroups, itemGroups } from "../shared/domain";
+import { enumKeys } from "../shared/lib/enums";
 import { createCollectionItemSettingsFilter } from "../data/filters";
 import { useSettings } from "../settings/context";
 import {
@@ -49,8 +49,8 @@ import warlock from "../image/classes/warlock.webp";
 import series from "../image/miniico/series.webp";
 import transmog from "../image/icons/transmog.webp";
 import placeholder from "../image/placeholder.webp";
-import DeleteConfirmationModal from "../components/DeleteConfirmationModal";
-import Toggle from "../components/Toggle";
+import DeleteConfirmationModal from "../shared/ui/DeleteConfirmationModal";
+import Toggle from "../shared/ui/Toggle";
 import { flattenDadDb } from "../data/transforms";
 import styles from "./CollectionItemEditor.module.css";
 

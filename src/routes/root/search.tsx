@@ -1,4 +1,4 @@
-import Search from "../../components/Search";
+import Search from "../../shared/ui/Search";
 
 type Props = {
   autoFocus?: boolean;

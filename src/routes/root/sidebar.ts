@@ -5,7 +5,7 @@ import {
   constrainSidebarVisibility,
   getSidebarVisibilityPreference,
   type SidebarVisibility,
-} from "../../common";
+} from "../../shared/domain";
 
 type UseSidebarVisibilityResult = {
   setSidebarVisibility: (sidebarVisibility: SidebarVisibility) => void;

@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Accordion } from "@szhsin/react-accordion";
-import { GripVertical, Plus } from "../components/Icons";
-import type { MasterGroup } from "../common";
+import { GripVertical, Plus } from "../shared/ui/Icons";
+import type { MasterGroup } from "../shared/domain";
 import type { Collection } from "../data";
 import type { CollectionDragController } from "./types";
 import type { CollectionParentId } from "./order";
