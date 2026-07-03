@@ -6,7 +6,7 @@ import { Progress } from "../../progress";
 import { Season } from "../../season";
 import { Welcome } from "../../welcome";
 import type { Collection, CollectionItem } from "../../data";
-import type { SidebarVisibility } from "../../common";
+import type { MasterGroup, SidebarVisibility } from "../../common";
 import { ConfigSidebar } from "../../settings/ui";
 import { Layout } from "./layout";
 import styles from "./view.module.css";
@@ -21,6 +21,7 @@ type Props = {
   isLoading: boolean;
   onClickItem: (collectionItem: CollectionItem, collection: Collection) => void;
   onCollectionChange: (collectionId: string, isOpen: boolean) => void;
+  onSelectCollectionGroup: (group: MasterGroup) => void;
   openCollections: string[];
   sidebarVisibility: SidebarVisibility;
 };
@@ -51,6 +52,7 @@ function View({
   isLoading,
   onClickItem,
   onCollectionChange,
+  onSelectCollectionGroup,
   openCollections,
   sidebarVisibility,
 }: Props) {
@@ -67,7 +69,9 @@ function View({
         ) : undefined
       }
       rightSidebar={
-        sidebarVisibility.showConfig ? <ConfigSidebar /> : undefined
+        sidebarVisibility.showConfig ? (
+          <ConfigSidebar onSelectCollectionGroup={onSelectCollectionGroup} />
+        ) : undefined
       }
       main={
         <MainContent

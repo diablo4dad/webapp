@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { DadUser } from "../../auth";
-import type { SidebarVisibility } from "../../common";
+import type { MasterGroup, SidebarVisibility } from "../../common";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Layout } from "./layout";
@@ -14,6 +14,7 @@ type Props = {
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
   onSearchChange: (value: string) => void;
+  onSelectCollectionGroup: (group: MasterGroup) => void;
   onSignIn: () => void;
   onSignOut: () => void;
   onToggleConfig: () => void;
@@ -35,6 +36,7 @@ function View({
   onClearSearch,
   onCloseMobileContent,
   onSearchChange,
+  onSelectCollectionGroup,
   onSignIn,
   onSignOut,
   onToggleConfig,
@@ -78,6 +80,7 @@ function View({
           onClearSearch={onClearSearch}
           onCloseMobileContent={onCloseMobileContent}
           onSearchChange={onSearchChange}
+          onSelectCollectionGroup={onSelectCollectionGroup}
           onSignIn={onSignIn}
           onSignOut={onSignOut}
           onToggleEditMode={onToggleEditMode}

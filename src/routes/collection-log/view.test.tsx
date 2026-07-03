@@ -91,6 +91,7 @@ function renderView({
       isLoading={isLoading}
       onClickItem={vi.fn()}
       onCollectionChange={vi.fn()}
+      onSelectCollectionGroup={vi.fn()}
       openCollections={[]}
       sidebarVisibility={sidebarVisibility}
     />,

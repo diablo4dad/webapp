@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { SidebarVisibility } from "../../common";
+import { MasterGroup, type SidebarVisibility } from "../../common";
 import type { DadUser } from "../../auth";
 import RootRoute from "./route";
 
@@ -14,6 +14,7 @@ type Options = {
 };
 
 const mocks = vi.hoisted(() => ({
+  navigate: vi.fn(),
   signIn: vi.fn(),
   signOut: vi.fn(),
   setSearchTerm: vi.fn(),
@@ -22,10 +23,12 @@ const mocks = vi.hoisted(() => ({
   useAuth: vi.fn(),
   useData: vi.fn(),
   useEditor: vi.fn(),
+  useNavigate: vi.fn(),
 }));
 
 vi.mock("react-router-dom", () => ({
   Outlet: () => <div>route outlet</div>,
+  useNavigate: mocks.useNavigate,
 }));
 
 vi.mock("../../auth/ui", () => ({
@@ -65,7 +68,15 @@ vi.mock("../../editor", () => ({
 }));
 
 vi.mock("../../settings/ui", () => ({
-  ConfigSidebar: () => <div>settings panel</div>,
+  ConfigSidebar: ({
+    onSelectCollectionGroup,
+  }: {
+    onSelectCollectionGroup: (group: MasterGroup) => void;
+  }) => (
+    <button onClick={() => onSelectCollectionGroup(MasterGroup.CHALLENGE)}>
+      settings panel
+    </button>
+  ),
 }));
 
 const signedInUser: DadUser = {
@@ -102,6 +113,7 @@ function renderRoute({
     isEditMode,
     toggleEditMode: mocks.toggleEditMode,
   });
+  mocks.useNavigate.mockReturnValue(mocks.navigate);
 
   const renderResult = render(<RootRoute />);
 

@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { DadUser } from "../../auth";
+import { MasterGroup } from "../../common";
 import { Main } from "./main";
 
 type Props = Parameters<typeof Main>[0];
@@ -39,6 +40,7 @@ vi.mock("./mobile-settings", () => ({
     canEditCatalog,
     isEditMode,
     onClose,
+    onSelectCollectionGroup,
     onSignIn,
     onSignOut,
     onToggleEditMode,
@@ -47,6 +49,7 @@ vi.mock("./mobile-settings", () => ({
     canEditCatalog: boolean;
     isEditMode: boolean;
     onClose: () => void;
+    onSelectCollectionGroup: (group: MasterGroup) => void;
     onSignIn: () => void;
     onSignOut: () => void;
     onToggleEditMode: () => void;
@@ -57,6 +60,9 @@ vi.mock("./mobile-settings", () => ({
       <div>editor mode {isEditMode ? "on" : "off"}</div>
       <div>{user?.email ?? "anonymous"}</div>
       <button onClick={onClose}>close settings</button>
+      <button onClick={() => onSelectCollectionGroup(MasterGroup.SEASONS)}>
+        select group
+      </button>
       <button onClick={onSignIn}>sign in</button>
       <button onClick={onSignOut}>sign out</button>
       <button onClick={onToggleEditMode}>toggle editor</button>
@@ -81,6 +87,7 @@ function renderMain(options: Options = {}) {
     onClearSearch: vi.fn(),
     onCloseMobileContent: vi.fn(),
     onSearchChange: vi.fn(),
+    onSelectCollectionGroup: vi.fn(),
     onSignIn: vi.fn(),
     onSignOut: vi.fn(),
     onToggleEditMode: vi.fn(),
@@ -141,11 +148,15 @@ describe("mobile settings", () => {
     expect(screen.getByText("dad@example.com")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "close settings" }));
+    await user.click(screen.getByRole("button", { name: "select group" }));
     await user.click(screen.getByRole("button", { name: "sign in" }));
     await user.click(screen.getByRole("button", { name: "sign out" }));
     await user.click(screen.getByRole("button", { name: "toggle editor" }));
 
     expect(props.onCloseMobileContent).toHaveBeenCalledTimes(1);
+    expect(props.onSelectCollectionGroup).toHaveBeenCalledWith(
+      MasterGroup.SEASONS,
+    );
     expect(props.onSignIn).toHaveBeenCalledTimes(1);
     expect(props.onSignOut).toHaveBeenCalledTimes(1);
     expect(props.onToggleEditMode).toHaveBeenCalledTimes(1);

@@ -16,16 +16,19 @@ type Options = {
 };
 
 const mocks = vi.hoisted(() => ({
+  navigate: vi.fn(),
   renderView: vi.fn(),
   useAuth: vi.fn(),
   useCatalogLoading: vi.fn(),
   useData: vi.fn(),
   useEditor: vi.fn(),
   useLoaderData: vi.fn(),
+  useNavigate: vi.fn(),
 }));
 
 vi.mock("react-router-dom", () => ({
   useLoaderData: mocks.useLoaderData,
+  useNavigate: mocks.useNavigate,
 }));
 
 vi.mock("../../auth", () => ({
@@ -68,6 +71,12 @@ vi.mock("./view", () => ({
           onClick={() => props.onCollectionChange("general-001", true)}
         >
           Open collection
+        </button>
+        <button
+          type="button"
+          onClick={() => props.onSelectCollectionGroup(MasterGroup.PROMOTIONAL)}
+        >
+          Select group
         </button>
       </div>
     );
@@ -120,6 +129,7 @@ function renderRoute({
   };
 
   mocks.useLoaderData.mockReturnValue({ group: MasterGroup.SEASONS });
+  mocks.useNavigate.mockReturnValue(mocks.navigate);
   mocks.useAuth.mockReturnValue({ isLoading: isAuthLoading });
   mocks.useEditor.mockReturnValue({ canEditCatalog });
   mocks.useCatalogLoading.mockReturnValue({
@@ -231,5 +241,14 @@ describe("actions", () => {
     await user.click(screen.getByRole("button", { name: "Open collection" }));
 
     expect(screen.getByText("open general-001")).toBeInTheDocument();
+  });
+
+  test("navigates between groups", async () => {
+    const user = userEvent.setup();
+    renderRoute();
+
+    await user.click(screen.getByRole("button", { name: "Select group" }));
+
+    expect(mocks.navigate).toHaveBeenCalledWith("/transmogs/promotional");
   });
 });

@@ -1,9 +1,10 @@
 import type { Collection, CollectionItem } from "../../data";
 import { useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { useData } from "../../data/context";
 import { useAuth } from "../../auth";
 import { useEditor } from "../../editor";
+import { generateUrl } from "./links";
 import { loader } from "./loader";
 import type { LoaderPayload } from "./loader";
 import { useCatalogLoading } from "./loading";
@@ -16,6 +17,7 @@ import { View } from "./view";
 
 function Component() {
   const { group } = useLoaderData() as LoaderPayload;
+  const navigate = useNavigate();
   const {
     filteredDb,
     db,
@@ -63,6 +65,10 @@ function Component() {
     setFocusCollectionId(collectionId);
   }
 
+  function onSelectCollectionGroup(collectionGroup: LoaderPayload["group"]) {
+    void navigate(generateUrl(collectionGroup));
+  }
+
   return (
     <View
       catalogError={catalogError}
@@ -74,6 +80,7 @@ function Component() {
       isLoading={viewState.isLoading}
       onClickItem={onClickItem}
       onCollectionChange={setOpenCollection}
+      onSelectCollectionGroup={onSelectCollectionGroup}
       openCollections={openCollections}
       sidebarVisibility={sidebarVisibility}
     />

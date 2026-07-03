@@ -1,10 +1,12 @@
 import { ReactElement, useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../auth";
+import type { MasterGroup } from "../../common";
 import { useData, type DataContextType } from "../../data/context";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor";
+import { generateUrl } from "../collection-log/links";
 import { toggleSidebarVisibility } from "./state";
 import { View } from "./view";
 
@@ -22,6 +24,7 @@ type SidebarControls = {
 };
 
 function RootRoute(): ReactElement {
+  const navigate = useNavigate();
   const {
     searchTerm,
     setSearchTerm,
@@ -52,6 +55,10 @@ function RootRoute(): ReactElement {
     setSearchTerm("");
   }
 
+  function onSelectCollectionGroup(group: MasterGroup) {
+    void navigate(generateUrl(group));
+  }
+
   return (
     <View
       canEditCatalog={canEditCatalog}
@@ -61,6 +68,7 @@ function RootRoute(): ReactElement {
       onClearSearch={onClearSearch}
       onCloseMobileContent={onCloseMobileContent}
       onSearchChange={setSearchTerm}
+      onSelectCollectionGroup={onSelectCollectionGroup}
       onSignIn={signIn}
       onSignOut={signOut}
       onToggleConfig={onToggleConfig}

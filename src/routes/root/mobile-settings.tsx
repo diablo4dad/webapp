@@ -1,4 +1,5 @@
 import type { DadUser } from "../../auth";
+import type { MasterGroup } from "../../common";
 import { Close, Pencil } from "../../components/Icons";
 import { ConfigSidebar } from "../../settings/ui";
 import { AuthActions } from "./auth";
@@ -9,6 +10,7 @@ type Props = {
   canEditCatalog: boolean;
   isEditMode: boolean;
   onClose: () => void;
+  onSelectCollectionGroup: (group: MasterGroup) => void;
   onSignIn: () => void;
   onSignOut: () => void;
   onToggleEditMode: () => void;
@@ -22,6 +24,7 @@ type HeaderProps = {
 type BodyProps = {
   canEditCatalog: boolean;
   isEditMode: boolean;
+  onSelectCollectionGroup: (group: MasterGroup) => void;
   onToggleEditMode: () => void;
 };
 
@@ -40,6 +43,7 @@ function MobileSettings({
   canEditCatalog,
   isEditMode,
   onClose,
+  onSelectCollectionGroup,
   onSignIn,
   onSignOut,
   onToggleEditMode,
@@ -55,6 +59,7 @@ function MobileSettings({
         <Body
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
+          onSelectCollectionGroup={onSelectCollectionGroup}
           onToggleEditMode={onToggleEditMode}
         />
       }
@@ -87,6 +92,7 @@ function Header({ onClose }: HeaderProps) {
 function Body({
   canEditCatalog,
   isEditMode,
+  onSelectCollectionGroup,
   onToggleEditMode,
 }: BodyProps) {
   return (
@@ -97,7 +103,7 @@ function Body({
           onToggleEditMode={onToggleEditMode}
         />
       )}
-      <ConfigSidebar />
+      <ConfigSidebar onSelectCollectionGroup={onSelectCollectionGroup} />
     </>
   );
 }

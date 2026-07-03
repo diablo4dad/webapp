@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { DadUser } from "../../auth";
+import type { MasterGroup } from "../../common";
 import { CollectionEditor, CollectionItemEditor } from "../../editor/ui";
 import { MobileSearch } from "./mobile-search";
 import { MobileSettings } from "./mobile-settings";
@@ -12,6 +13,7 @@ type Props = {
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
   onSearchChange: (value: string) => void;
+  onSelectCollectionGroup: (group: MasterGroup) => void;
   onSignIn: () => void;
   onSignOut: () => void;
   onToggleEditMode: () => void;
@@ -28,6 +30,7 @@ type MobileContentProps = {
   onClearSearch: () => void;
   onClose: () => void;
   onSearchChange: (value: string) => void;
+  onSelectCollectionGroup: (group: MasterGroup) => void;
   onSignIn: () => void;
   onSignOut: () => void;
   onToggleEditMode: () => void;
@@ -43,6 +46,7 @@ function Main({
   onClearSearch,
   onCloseMobileContent,
   onSearchChange,
+  onSelectCollectionGroup,
   onSignIn,
   onSignOut,
   onToggleEditMode,
@@ -63,6 +67,7 @@ function Main({
         onClearSearch={onClearSearch}
         onClose={onCloseMobileContent}
         onSearchChange={onSearchChange}
+        onSelectCollectionGroup={onSelectCollectionGroup}
         onSignIn={onSignIn}
         onSignOut={onSignOut}
         onToggleEditMode={onToggleEditMode}
@@ -81,6 +86,7 @@ function MobileContent({
   onClearSearch,
   onClose,
   onSearchChange,
+  onSelectCollectionGroup,
   onSignIn,
   onSignOut,
   onToggleEditMode,
@@ -102,6 +108,7 @@ function MobileContent({
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           onClose={onClose}
+          onSelectCollectionGroup={onSelectCollectionGroup}
           onSignIn={onSignIn}
           onSignOut={onSignOut}
           onToggleEditMode={onToggleEditMode}

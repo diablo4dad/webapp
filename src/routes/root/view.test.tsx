@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { SidebarVisibility } from "../../common";
+import type { MasterGroup, SidebarVisibility } from "../../common";
 import type { DadUser } from "../../auth";
 import { View } from "./view";
 
@@ -97,6 +97,7 @@ function renderView(options: Options = {}) {
     onClearSearch: vi.fn(),
     onCloseMobileContent: vi.fn(),
     onSearchChange: vi.fn(),
+    onSelectCollectionGroup: vi.fn<(group: MasterGroup) => void>(),
     onSignIn: vi.fn(),
     onSignOut: vi.fn(),
     onToggleConfig: vi.fn(),

@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { DadUser } from "../../auth";
+import { MasterGroup } from "../../common";
 import { MobileSettings } from "./mobile-settings";
 
 type Props = Parameters<typeof MobileSettings>[0];
@@ -28,7 +29,15 @@ vi.mock("../../auth/ui", () => ({
 }));
 
 vi.mock("../../settings/ui", () => ({
-  ConfigSidebar: () => <div>settings panel</div>,
+  ConfigSidebar: ({
+    onSelectCollectionGroup,
+  }: {
+    onSelectCollectionGroup: (group: MasterGroup) => void;
+  }) => (
+    <button onClick={() => onSelectCollectionGroup(MasterGroup.SEASONS)}>
+      settings panel
+    </button>
+  ),
 }));
 
 const signedInUser: DadUser = {
@@ -44,6 +53,7 @@ function renderDrawer(options: Options = {}) {
     canEditCatalog: false,
     isEditMode: false,
     onClose: vi.fn(),
+    onSelectCollectionGroup: vi.fn(),
     onSignIn: vi.fn(),
     onSignOut: vi.fn(),
     onToggleEditMode: vi.fn(),
@@ -68,8 +78,12 @@ describe("settings content", () => {
       .not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "sign in" }));
+    await user.click(screen.getByRole("button", { name: "settings panel" }));
 
     expect(props.onSignIn).toHaveBeenCalledTimes(1);
+    expect(props.onSelectCollectionGroup).toHaveBeenCalledWith(
+      MasterGroup.SEASONS,
+    );
   });
 
   test("renders signed-in auth controls", async () => {

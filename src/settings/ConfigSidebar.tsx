@@ -1,5 +1,6 @@
 import styles from "./ConfigSidebar.module.css";
 import Toggle from "../components/Toggle";
+import type { MasterGroup } from "../common";
 import { useSettings, useSettingsDispatch } from "./context";
 import { groups } from "./menu";
 import { WidgetType } from "../common/widget";
@@ -10,15 +11,16 @@ import { useData } from "../data/context";
 import { useCollection } from "../ledger/context";
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { ChevronRight } from "../components/Icons";
-import { generateUrl } from "../routes/collection-log/links";
-import { useNavigate } from "react-router-dom";
 
-function ConfigSidebar() {
+type Props = {
+  onSelectCollectionGroup: (group: MasterGroup) => void;
+};
+
+function ConfigSidebar({ onSelectCollectionGroup }: Props) {
   const settings = useSettings();
   const dispatch = useSettingsDispatch();
   const { db, group: activeGroup } = useData();
   const log = useCollection();
-  const navigate = useNavigate();
 
   return (
     <div className={styles.Block}>
@@ -95,7 +97,7 @@ function ConfigSidebar() {
                         active={widget.selected(activeGroup)}
                         icon={widget.icon}
                         label={widget.label}
-                        onClick={() => navigate(generateUrl(widget.group))}
+                        onClick={() => onSelectCollectionGroup(widget.group)}
                       />
                     );
                 }
