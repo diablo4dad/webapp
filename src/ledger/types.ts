@@ -11,6 +11,7 @@ type LedgerProps = {
   onToggleCollection?: (collection: Collection) => void;
   onCollectionChange: (collectionId: string, isOpen: boolean) => void;
   openCollections: string[];
+  searchTerm: string;
   depth?: number;
 };
 

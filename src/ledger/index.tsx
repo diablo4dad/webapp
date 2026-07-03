@@ -20,9 +20,10 @@ const Ledger = ({
   onToggleCollection,
   onCollectionChange,
   openCollections,
+  searchTerm,
   depth = 0,
 }: LedgerProps) => {
-  const { db, group, searchTerm, setDb } = useData();
+  const { db, group, setDb } = useData();
   const { isEditMode, openCollectionCreator } = useEditor();
   const {
     activeCollectionDragController,
@@ -99,6 +100,7 @@ const Ledger = ({
           onClickItem={onClickItem}
           onToggleItem={onToggleItem}
           onToggleCollection={onToggleCollection}
+          searchTerm={searchTerm}
           renderSubcollections={(ledgerProps) => <Ledger {...ledgerProps} />}
         />
       )}

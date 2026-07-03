@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toggleValueInArray } from "../../common/arrays";
 import type { Collection, CollectionGroup, CollectionItem } from "../../data";
 import { countAllItemsDabDb } from "../../data/aggregate";
+import { getDefaultItemId } from "../../data/getters";
 import { selectCollectionById, selectItemOrDefault } from "../../data/reducers";
 import {
   getCollectionLogViewModel,
@@ -49,6 +50,13 @@ type ViewState = FocusState & {
 type State = {
   openCollections: string[];
   setOpenCollection: (collectionId: string, isOpen: boolean) => void;
+};
+
+type FocusSelectionState = {
+  focusCollectionId?: string;
+  focusItemId: number;
+  setFocusCollectionId: (collectionId: string | undefined) => void;
+  setFocusItemId: (itemId: number) => void;
 };
 
 const EMPTY_FOCUS_ITEM_ID = -1;
@@ -135,17 +143,39 @@ function useOpenCollections(): State {
   };
 }
 
+function useFocusSelection(collections: CollectionGroup): FocusSelectionState {
+  const [focusItemId, setFocusItemId] = useState(() =>
+    getDefaultItemId(collections),
+  );
+  const [focusCollectionId, setFocusCollectionId] = useState<string>();
+
+  useEffect(() => {
+    if (focusItemId === EMPTY_FOCUS_ITEM_ID) {
+      setFocusItemId(getDefaultItemId(collections));
+    }
+  }, [collections, focusItemId]);
+
+  return {
+    focusCollectionId,
+    focusItemId,
+    setFocusCollectionId,
+    setFocusItemId,
+  };
+}
+
 export {
   getViewState,
   getFocusState,
   getFocusTarget,
   hasNoItems,
   setCollectionOpen,
+  useFocusSelection,
   useOpenCollections,
   type FocusInput,
   type FocusState,
   type FocusTarget,
   type FocusTargetInput,
+  type FocusSelectionState,
   type State,
   type CollectionLogViewModel,
   type ViewState,

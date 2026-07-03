@@ -1,15 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { MasterGroup, type SidebarVisibility } from "../../common";
+import { MasterGroup } from "../../common";
 import type { DadUser } from "../../auth";
 import RootRoute from "./route";
 
 type Options = {
   canEditCatalog?: boolean;
   isEditMode?: boolean;
-  searchTerm?: string;
-  sidebarVisibility?: SidebarVisibility;
   user?: DadUser;
 };
 
@@ -17,11 +15,8 @@ const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
   signIn: vi.fn(),
   signOut: vi.fn(),
-  setSearchTerm: vi.fn(),
-  setSidebarVisibility: vi.fn(),
   toggleEditMode: vi.fn(),
   useAuth: vi.fn(),
-  useData: vi.fn(),
   useEditor: vi.fn(),
   useNavigate: vi.fn(),
 }));
@@ -52,10 +47,6 @@ vi.mock("../../auth/ui", () => ({
 
 vi.mock("../../auth", () => ({
   useAuth: mocks.useAuth,
-}));
-
-vi.mock("../../data/context", () => ({
-  useData: mocks.useData,
 }));
 
 vi.mock("../../editor/ui", () => ({
@@ -90,19 +81,8 @@ const signedInUser: DadUser = {
 function renderRoute({
   canEditCatalog = false,
   isEditMode = false,
-  searchTerm = "",
-  sidebarVisibility = {
-    showConfig: true,
-    showItem: true,
-  },
   user,
 }: Options = {}) {
-  mocks.useData.mockReturnValue({
-    searchTerm,
-    setSearchTerm: mocks.setSearchTerm,
-    setSidebarVisibility: mocks.setSidebarVisibility,
-    sidebarVisibility,
-  });
   mocks.useAuth.mockReturnValue({
     signIn: mocks.signIn,
     signOut: mocks.signOut,
@@ -119,7 +99,6 @@ function renderRoute({
 
   return {
     ...renderResult,
-    sidebarVisibility,
   };
 }
 
@@ -138,28 +117,24 @@ describe("shell content", () => {
     expect(screen.getByText(/Site Version/)).toBeInTheDocument();
   });
 
-  test("passes search changes to data context", () => {
+  test("updates search state", () => {
     renderRoute();
+    const searchField = screen.getByPlaceholderText("Search transmogs");
 
-    fireEvent.change(screen.getByPlaceholderText("Search transmogs"), {
+    fireEvent.change(searchField, {
       target: {
         value: "helm",
       },
     });
 
-    expect(mocks.setSearchTerm).toHaveBeenCalledWith("helm");
+    expect(searchField).toHaveValue("helm");
   });
 });
 
 describe("header actions", () => {
   test("toggles sidebars", async () => {
     const user = userEvent.setup();
-    const route = renderRoute({
-      sidebarVisibility: {
-        showConfig: true,
-        showItem: true,
-      },
-    });
+    renderRoute();
     const itemSidebarButton = screen.getByRole("button", {
       name: "Hide Item Sidebar",
     });
@@ -169,17 +144,15 @@ describe("header actions", () => {
 
     await user.click(itemSidebarButton);
 
-    expect(mocks.setSidebarVisibility).toHaveBeenCalledWith({
-      ...route.sidebarVisibility,
-      showItem: false,
-    });
+    expect(
+      screen.getByRole("button", { name: "Show Item Sidebar" }),
+    ).toHaveAttribute("aria-pressed", "false");
 
     await user.click(settingsSidebarButton);
 
-    expect(mocks.setSidebarVisibility).toHaveBeenCalledWith({
-      ...route.sidebarVisibility,
-      showConfig: false,
-    });
+    expect(
+      screen.getByRole("button", { name: "Show Settings Sidebar" }),
+    ).toHaveAttribute("aria-pressed", "false");
   });
 
   test("shows editor controls only for editors", async () => {
@@ -304,15 +277,20 @@ describe("mobile search", () => {
     });
     fireEvent.submit(mobileSearchField.closest("form")!);
 
-    expect(mocks.setSearchTerm).toHaveBeenCalledWith("sword");
     expect(screen.queryByText("Transmog Search")).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search transmogs")).toHaveValue(
+      "sword",
+    );
     expect(screen.getByText("route outlet")).toBeInTheDocument();
   });
 
   test("clears active search filters from the mobile header", async () => {
     const user = userEvent.setup();
-    renderRoute({
-      searchTerm: "helm",
+    renderRoute();
+    fireEvent.change(screen.getByPlaceholderText("Search transmogs"), {
+      target: {
+        value: "helm",
+      },
     });
 
     expect(
@@ -321,7 +299,10 @@ describe("mobile search", () => {
 
     await user.click(screen.getByRole("button", { name: "Clear search" }));
 
-    expect(mocks.setSearchTerm).toHaveBeenCalledWith("");
+    expect(screen.getByPlaceholderText("Search transmogs")).toHaveValue("");
+    expect(
+      screen.getByRole("button", { name: "Search menu" }),
+    ).toBeInTheDocument();
   });
 
   test("replaces search overlay when the settings drawer opens", async () => {

@@ -37,11 +37,12 @@ const LedgerGroup = ({
   onToggleCollection,
   onCollectionChange,
   openCollections,
+  searchTerm,
   renderSubcollections,
 }: Props) => {
   const settings = useSettings();
   const log = useCollection();
-  const { db, group, searchTerm, setDb } = useData();
+  const { db, group, setDb } = useData();
   const {
     isEditMode,
     openCollectionCreator,
@@ -259,6 +260,7 @@ const LedgerGroup = ({
               onToggleCollection,
               onCollectionChange,
               openCollections,
+              searchTerm,
               depth: depth + 1,
             })}
           </div>

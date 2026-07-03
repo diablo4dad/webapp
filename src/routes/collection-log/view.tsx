@@ -23,6 +23,7 @@ type Props = {
   onCollectionChange: (collectionId: string, isOpen: boolean) => void;
   onSelectCollectionGroup: (group: MasterGroup) => void;
   openCollections: string[];
+  searchTerm: string;
   sidebarVisibility: SidebarVisibility;
 };
 
@@ -40,6 +41,7 @@ type MainContentProps = {
   onClickItem: (collectionItem: CollectionItem, collection: Collection) => void;
   onCollectionChange: (collectionId: string, isOpen: boolean) => void;
   openCollections: string[];
+  searchTerm: string;
 };
 
 function View({
@@ -54,6 +56,7 @@ function View({
   onCollectionChange,
   onSelectCollectionGroup,
   openCollections,
+  searchTerm,
   sidebarVisibility,
 }: Props) {
   return (
@@ -82,6 +85,7 @@ function View({
           onClickItem={onClickItem}
           onCollectionChange={onCollectionChange}
           openCollections={openCollections}
+          searchTerm={searchTerm}
         />
       }
     ></Layout>
@@ -118,6 +122,7 @@ function MainContent({
   onClickItem,
   onCollectionChange,
   openCollections,
+  searchTerm,
 }: MainContentProps) {
   if (isLoading) {
     return <CollectionSkeleton />;
@@ -136,6 +141,7 @@ function MainContent({
         openCollections={openCollections}
         onClickItem={onClickItem}
         onCollectionChange={onCollectionChange}
+        searchTerm={searchTerm}
       />
       {isEmpty && <EmptyState />}
     </>

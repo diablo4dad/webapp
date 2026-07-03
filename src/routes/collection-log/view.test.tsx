@@ -93,6 +93,7 @@ function renderView({
       onCollectionChange={vi.fn()}
       onSelectCollectionGroup={vi.fn()}
       openCollections={[]}
+      searchTerm=""
       sidebarVisibility={sidebarVisibility}
     />,
   );

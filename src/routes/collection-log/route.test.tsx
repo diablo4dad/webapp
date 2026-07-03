@@ -16,6 +16,7 @@ type Options = {
 };
 
 const mocks = vi.hoisted(() => ({
+  filterDb: vi.fn(),
   navigate: vi.fn(),
   renderView: vi.fn(),
   useAuth: vi.fn(),
@@ -24,11 +25,13 @@ const mocks = vi.hoisted(() => ({
   useEditor: vi.fn(),
   useLoaderData: vi.fn(),
   useNavigate: vi.fn(),
+  useOutletContext: vi.fn(),
 }));
 
 vi.mock("react-router-dom", () => ({
   useLoaderData: mocks.useLoaderData,
   useNavigate: mocks.useNavigate,
+  useOutletContext: mocks.useOutletContext,
 }));
 
 vi.mock("../../auth", () => ({
@@ -37,6 +40,10 @@ vi.mock("../../auth", () => ({
 
 vi.mock("../../data/context", () => ({
   useData: mocks.useData,
+}));
+
+vi.mock("../../data/filters", () => ({
+  filterDb: mocks.filterDb,
 }));
 
 vi.mock("../../editor", () => ({
@@ -94,8 +101,10 @@ function item(id: number): CollectionItem {
 function collection(
   id: string,
   collectionItems: CollectionItem[] = [],
+  category?: MasterGroup,
 ): Collection {
   return {
+    category,
     collectionItems,
     id,
     name: id,
@@ -111,17 +120,23 @@ function renderRoute({
 }: Options = {}) {
   const generalItem = item(101);
   const seasonItem = item(202);
-  const generalCollection = collection("general-001", [generalItem]);
-  const seasonCollection = collection("season-002", [seasonItem]);
+  const generalCollection = collection(
+    "general-001",
+    [generalItem],
+    MasterGroup.GENERAL,
+  );
+  const seasonCollection = collection(
+    "season-002",
+    [seasonItem],
+    MasterGroup.SEASONS,
+  );
   const catalogCollections = [generalCollection, seasonCollection];
-  const visibleCollections = [generalCollection];
+  const visibleCollections = [seasonCollection];
   const catalogGroupSources = {
     [MasterGroup.GENERAL]: "bundle",
   };
   const loadedCatalogGroups = [MasterGroup.GENERAL];
   const setCatalogCategoryDb = vi.fn();
-  const setFocusCollectionId = vi.fn();
-  const setFocusItemId = vi.fn();
   const switchDb = vi.fn();
   const sidebarVisibility = {
     showConfig: true,
@@ -130,25 +145,24 @@ function renderRoute({
 
   mocks.useLoaderData.mockReturnValue({ group: MasterGroup.SEASONS });
   mocks.useNavigate.mockReturnValue(mocks.navigate);
+  mocks.useOutletContext.mockReturnValue({
+    searchTerm: "",
+    sidebarVisibility,
+  });
   mocks.useAuth.mockReturnValue({ isLoading: isAuthLoading });
-  mocks.useEditor.mockReturnValue({ canEditCatalog });
+  mocks.useEditor.mockReturnValue({ canEditCatalog, isEditMode: false });
   mocks.useCatalogLoading.mockReturnValue({
     catalogError,
     isCatalogLoading,
   });
+  mocks.filterDb.mockReturnValue(visibleCollections);
   mocks.useData.mockReturnValue({
     catalogGroupSources,
     db: {
       collections: catalogCollections,
     },
-    filteredDb: visibleCollections,
-    focusCollectionId: "season-002",
-    focusItemId: 202,
     loadedCatalogGroups,
     setCatalogCategoryDb,
-    setFocusCollectionId,
-    setFocusItemId,
-    sidebarVisibility,
     switchDb,
   });
 
@@ -163,8 +177,6 @@ function renderRoute({
     seasonCollection,
     seasonItem,
     setCatalogCategoryDb,
-    setFocusCollectionId,
-    setFocusItemId,
     sidebarVisibility,
     switchDb,
     visibleCollections,
@@ -201,7 +213,7 @@ describe("context wiring", () => {
       expect.objectContaining({
         catalogError: "catalog failed",
         collections: route.visibleCollections,
-        focusCollection: route.seasonCollection,
+        focusCollection: undefined,
         focusItem: route.seasonItem,
         isEmpty: false,
         isItemSidebarLoading: false,
@@ -228,9 +240,13 @@ describe("actions", () => {
 
     await user.click(screen.getByRole("button", { name: "Focus item" }));
 
-    expect(route.setFocusItemId).toHaveBeenCalledWith(route.generalItem.id);
-    expect(route.setFocusCollectionId).toHaveBeenCalledWith(
-      route.generalCollection.id,
+    await waitFor(() =>
+      expect(getViewProps()).toEqual(
+        expect.objectContaining({
+          focusCollection: route.seasonCollection,
+          focusItem: route.seasonItem,
+        }),
+      ),
     );
   });
 

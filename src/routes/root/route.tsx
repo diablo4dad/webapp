@@ -2,11 +2,11 @@ import { ReactElement, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../auth";
-import type { MasterGroup } from "../../common";
-import { useData, type DataContextType } from "../../data/context";
+import type { MasterGroup, SidebarVisibility } from "../../common";
 import placeholder from "../../image/placeholder.webp";
 import { useEditor } from "../../editor";
 import { generateUrl } from "../collection-log/links";
+import { useSidebarVisibility } from "./sidebar";
 import { toggleSidebarVisibility } from "./state";
 import { View } from "./view";
 
@@ -25,12 +25,8 @@ type SidebarControls = {
 
 function RootRoute(): ReactElement {
   const navigate = useNavigate();
-  const {
-    searchTerm,
-    setSearchTerm,
-    setSidebarVisibility,
-    sidebarVisibility,
-  } = useData();
+  const [searchTerm, setSearchTerm] = useState("");
+  const { setSidebarVisibility, sidebarVisibility } = useSidebarVisibility();
   const { user, signIn, signOut } = useAuth();
   const { canEditCatalog, isEditMode, toggleEditMode } = useEditor();
 
@@ -76,7 +72,14 @@ function RootRoute(): ReactElement {
       onToggleItemSidebar={onToggleItemSidebar}
       onToggleMobileConfig={onToggleMobileConfig}
       onToggleMobileSearch={onToggleMobileSearch}
-      routeOutlet={<Outlet />}
+      routeOutlet={
+        <Outlet
+          context={{
+            searchTerm,
+            sidebarVisibility,
+          }}
+        />
+      }
       searchTerm={searchTerm}
       sidebarVisibility={sidebarVisibility}
       user={user}
@@ -123,8 +126,8 @@ function useMobileContentControls(): MobileContentControls {
 }
 
 function getSidebarControls(
-  sidebarVisibility: DataContextType["sidebarVisibility"],
-  setSidebarVisibility: DataContextType["setSidebarVisibility"],
+  sidebarVisibility: SidebarVisibility,
+  setSidebarVisibility: (sidebarVisibility: SidebarVisibility) => void,
 ): SidebarControls {
   return {
     onToggleConfig: () => {

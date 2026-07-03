@@ -2,12 +2,14 @@ import { useMemo } from "react";
 import { useCollection } from "../ledger/context";
 import { ItemGroup } from "../common";
 import { useData } from "../data/context";
+import { filterDb } from "../data/filters";
 import backTrophyIcon from "../image/back-trophy@1x.png";
 import emblemIcon from "../image/emblem@1x.png";
 import mountIcon from "../image/mount@1x.png";
 import petIcon from "../image/pet@1x.png";
 import portalIcon from "../image/portal@1x.png";
 import shakoIcon from "../image/shako@1x.png";
+import { useSettings } from "../settings";
 import { getProgressStats } from "./state";
 import { ProgressView, type ProgressViewProps } from "./view";
 
@@ -59,7 +61,12 @@ const progressCards: readonly ProgressCardConfig[] = [
 
 function Progress(props: Props) {
   const collectionLog = useCollection();
-  const { countedDb } = useData();
+  const settings = useSettings();
+  const { db, group } = useData();
+  const countedDb = useMemo(
+    () => filterDb(db.collections, settings, collectionLog, group, null, true),
+    [collectionLog, db.collections, group, settings],
+  );
   const cards = useMemo(
     () =>
       progressCards.map((card) => ({
