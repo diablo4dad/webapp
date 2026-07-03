@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { DadUser } from "../../auth";
+import type { DadUser } from "../../services/auth";
 import type { SidebarVisibility } from "../../shared/domain";
 import { Header } from "./header";
 

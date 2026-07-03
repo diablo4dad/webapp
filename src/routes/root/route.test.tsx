@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { MasterGroup } from "../../shared/domain";
-import type { DadUser } from "../../auth";
+import type { DadUser } from "../../services/auth";
 import RootRoute from "./route";
 
 type Options = {
@@ -26,7 +26,7 @@ vi.mock("react-router-dom", () => ({
   useNavigate: mocks.useNavigate,
 }));
 
-vi.mock("../../auth/ui", () => ({
+vi.mock("../../features/account/ui", () => ({
   Account: ({
     currentUser,
     onLogout,
@@ -45,7 +45,7 @@ vi.mock("../../auth/ui", () => ({
   },
 }));
 
-vi.mock("../../auth", () => ({
+vi.mock("../../services/auth", () => ({
   useAuth: mocks.useAuth,
 }));
 

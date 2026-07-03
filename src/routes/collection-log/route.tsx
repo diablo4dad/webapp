@@ -2,7 +2,7 @@ import type { Collection, CollectionItem } from "../../data";
 import { useEffect, useMemo } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { useData } from "../../data/context";
-import { useAuth } from "../../auth";
+import { useAuth } from "../../services/auth";
 import { useCollection } from "../../ledger/context";
 import { useEditor } from "../../editor";
 import { useSettings } from "../../settings";

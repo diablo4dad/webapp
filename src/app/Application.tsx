@@ -5,7 +5,7 @@ import { SettingsProvider } from "../settings";
 import { CollectionProvider } from "../ledger/context";
 import { getUserCollectionLog, getUserSettings } from "../store/local";
 import { DataProvider } from "../data/context";
-import { AuthProvider } from "../auth";
+import { AuthProvider } from "../services/auth";
 import { runLocalStorageMigrations } from "../migrations/localstorage";
 import { PersistenceLayer } from "../store/PersistenceLayer";
 import { EditorProvider } from "../editor";

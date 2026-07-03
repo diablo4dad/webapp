@@ -2,14 +2,14 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
-import type { DadUser } from "../../auth";
+import type { DadUser } from "../../services/auth";
 import { View } from "./view";
 
 type Props = Parameters<typeof View>[0];
 
 type Options = Partial<Props>;
 
-vi.mock("../../auth/ui", () => ({
+vi.mock("../../features/account/ui", () => ({
   Account: ({
     currentUser,
     onLogout,

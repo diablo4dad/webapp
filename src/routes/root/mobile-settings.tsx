@@ -1,4 +1,4 @@
-import type { DadUser } from "../../auth";
+import type { DadUser } from "../../services/auth";
 import type { MasterGroup } from "../../shared/domain";
 import { Close, Pencil } from "../../shared/ui/Icons";
 import { ConfigSidebar } from "../../settings/ui";

@@ -34,7 +34,7 @@ vi.mock("react-router-dom", () => ({
   useOutletContext: mocks.useOutletContext,
 }));
 
-vi.mock("../../auth", () => ({
+vi.mock("../../services/auth", () => ({
   useAuth: mocks.useAuth,
 }));
 

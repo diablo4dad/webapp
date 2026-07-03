@@ -1,10 +1,10 @@
-import type { DadUser } from "../../auth";
+import type { DadUser } from "../../services/auth";
 import {
   Account,
   Authenticate,
   Direction,
   Orientation,
-} from "../../auth/ui";
+} from "../../features/account/ui";
 
 type Props = {
   onSignIn: () => void;
