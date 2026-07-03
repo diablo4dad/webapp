@@ -1,7 +1,7 @@
 import {
   constrainSidebarVisibility,
   getSidebarVisibilityPreference,
-} from "./index";
+} from "./sidebar";
 
 describe("constrainSidebarVisibility", () => {
   test("allows both sidebars when the viewport can support them", () => {
