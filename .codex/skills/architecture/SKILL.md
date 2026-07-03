@@ -7,6 +7,8 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 
 ## Module Ownership
 
+- Keep browser source grouped by ownership: `app`, `routes`, `features`, `shared`, `services`, and `assets`.
+- Do not add new top-level feature, service, shared-helper, or asset folders under `src`.
 - `src/app`: provider composition and router setup.
 - `src/routes`: route orchestration, route state, route loading, and screen composition.
 - `src/features/<feature>`: feature-specific UI, state, domain helpers, skeletons, and tests.
@@ -27,7 +29,7 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 - Use `src/shared/*` and `src/services/*` only for app-wide shared code and side-effect boundaries.
 - Keep module internals shallow; add one lowercase hyphenated subdirectory per feature/workflow when several support files are needed.
 - Keep feature modules independent from route internals. Routes may pass navigation callbacks or route-derived state into features.
-- During the source-layout transition, add public entrypoints before moving folders and keep compatibility barrels until imports are migrated.
+- During source-layout moves, use one gate per ownership family, update imports in the same gate, and avoid compatibility barrels unless they are needed only within the active gate.
 
 ## Routes
 
