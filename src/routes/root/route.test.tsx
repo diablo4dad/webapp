@@ -49,16 +49,16 @@ vi.mock("../../services/auth", () => ({
   useAuth: mocks.useAuth,
 }));
 
-vi.mock("../../editor/ui", () => ({
+vi.mock("../../features/editor/ui", () => ({
   CollectionEditor: () => <div>collection editor</div>,
   CollectionItemEditor: () => <div>collection item editor</div>,
 }));
 
-vi.mock("../../editor", () => ({
+vi.mock("../../features/editor", () => ({
   useEditor: mocks.useEditor,
 }));
 
-vi.mock("../../settings/ui", () => ({
+vi.mock("../../features/settings/ui", () => ({
   ConfigSidebar: ({
     onSelectCollectionGroup,
   }: {

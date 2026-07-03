@@ -5,7 +5,7 @@ import migration141 from "./migrate1d4d1.json";
 import migration1610 from "./migrate1d6d10.json";
 import migration170 from "./migrate1d7d0.json";
 import { MasterGroup } from "../../shared/domain";
-import { CollectionLog, ItemFlag } from "../../ledger/type";
+import { CollectionLog, ItemFlag } from "../../features/ledger/type";
 import { hashCode } from "../../shared/lib/hash";
 import { isPatchNeeded } from "./util";
 

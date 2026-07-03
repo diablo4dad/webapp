@@ -28,7 +28,7 @@ vi.mock("../../features/account/ui", () => ({
   },
 }));
 
-vi.mock("../../settings/ui", () => ({
+vi.mock("../../features/settings/ui", () => ({
   ConfigSidebar: ({
     onSelectCollectionGroup,
   }: {

@@ -1,7 +1,7 @@
 import type { DadUser } from "../../services/auth";
 import type { MasterGroup } from "../../shared/domain";
 import { Close, Pencil } from "../../shared/ui/Icons";
-import { ConfigSidebar } from "../../settings/ui";
+import { ConfigSidebar } from "../../features/settings/ui";
 import { AuthActions } from "./auth";
 import { MobileSettingsLayout } from "./mobile-settings-layout";
 import styles from "./mobile-settings.module.css";

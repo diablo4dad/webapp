@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react";
-import { SettingsAction } from "../../settings/context";
-import { Option, Settings } from "../../settings/type";
-import { CollectionLog } from "../../ledger/type";
+import { SettingsAction } from "../../features/settings/context";
+import { Option, Settings } from "../../features/settings/type";
+import { CollectionLog } from "../../features/ledger/type";
 import { CollectionGroup } from "../../services/data";
 import { MasterGroup } from "../domain";
 

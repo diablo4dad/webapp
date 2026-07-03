@@ -1,8 +1,8 @@
 import { initStore, StoreData, VersionInfo } from "./index";
-import { Settings } from "../../settings/type";
-import { defaultSettings } from "../../settings/context";
-import { CollectionLog } from "../../ledger/type";
-import { defaultCollection } from "../../ledger/context";
+import { Settings } from "../../features/settings/type";
+import { defaultSettings } from "../../features/settings/context";
+import { CollectionLog } from "../../features/ledger/type";
+import { defaultCollection } from "../../features/ledger/context";
 
 type CollectionLogViewModel = {
   openCollections: string[];

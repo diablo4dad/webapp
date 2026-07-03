@@ -1,9 +1,9 @@
 import Fuse from "fuse.js";
-import { isItemCollected, isItemHidden } from "../../ledger/predicate";
-import { CollectionLog } from "../../ledger/type";
+import { isItemCollected, isItemHidden } from "../../features/ledger/predicate";
+import { CollectionLog } from "../../features/ledger/type";
 import { getEnabledClasses, getEnabledItemTypes, MasterGroup } from "../../shared/domain";
-import { isEnabled } from "../../settings/predicate";
-import { Option, Settings } from "../../settings/type";
+import { isEnabled } from "../../features/settings/predicate";
+import { Option, Settings } from "../../features/settings/type";
 import { getItemIds } from "./getters";
 
 import {

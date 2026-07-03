@@ -13,40 +13,40 @@ type Options = {
   sidebarVisibility?: SidebarVisibility;
 };
 
-vi.mock("../../ledger/empty-state", () => ({
+vi.mock("../../features/ledger/empty-state", () => ({
   default: () => <div>empty collection</div>,
 }));
 
-vi.mock("../../item-sidebar", () => ({
+vi.mock("../../features/item-sidebar", () => ({
   ItemSidebar: ({ collectionItem }: { collectionItem: CollectionItem }) => (
     <div>item sidebar {collectionItem.id}</div>
   ),
   ItemSidebarSkeleton: () => <div>item sidebar loading</div>,
 }));
 
-vi.mock("../../ledger", () => ({
+vi.mock("../../features/ledger", () => ({
   default: ({ collections }: { collections: Collection[] }) => (
     <div>ledger {collections.length}</div>
   ),
 }));
 
-vi.mock("../../ledger/skeleton", () => ({
+vi.mock("../../features/ledger/skeleton", () => ({
   default: () => <div>ledger loading</div>,
 }));
 
-vi.mock("../../progress", () => ({
+vi.mock("../../features/progress", () => ({
   Progress: () => <div>progress</div>,
 }));
 
-vi.mock("../../season", () => ({
+vi.mock("../../features/season", () => ({
   Season: () => <div>season</div>,
 }));
 
-vi.mock("../../welcome", () => ({
+vi.mock("../../features/welcome", () => ({
   Welcome: () => <div>welcome</div>,
 }));
 
-vi.mock("../../settings/ui", () => ({
+vi.mock("../../features/settings/ui", () => ({
   ConfigSidebar: () => <div>config sidebar</div>,
 }));
 

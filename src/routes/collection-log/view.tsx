@@ -1,13 +1,13 @@
-import Ledger from "../../ledger";
-import EmptyState from "../../ledger/empty-state";
-import CollectionSkeleton from "../../ledger/skeleton";
-import { ItemSidebar, ItemSidebarSkeleton } from "../../item-sidebar";
-import { Progress } from "../../progress";
-import { Season } from "../../season";
-import { Welcome } from "../../welcome";
+import Ledger from "../../features/ledger";
+import EmptyState from "../../features/ledger/empty-state";
+import CollectionSkeleton from "../../features/ledger/skeleton";
+import { ItemSidebar, ItemSidebarSkeleton } from "../../features/item-sidebar";
+import { Progress } from "../../features/progress";
+import { Season } from "../../features/season";
+import { Welcome } from "../../features/welcome";
 import type { Collection, CollectionItem } from "../../services/data";
 import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
-import { ConfigSidebar } from "../../settings/ui";
+import { ConfigSidebar } from "../../features/settings/ui";
 import { Layout } from "./layout";
 import styles from "./view.module.css";
 

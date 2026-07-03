@@ -9,7 +9,7 @@ type Props = Parameters<typeof Main>[0];
 
 type Options = Partial<Props>;
 
-vi.mock("../../editor/ui", () => ({
+vi.mock("../../features/editor/ui", () => ({
   CollectionEditor: () => <div>collection editor</div>,
   CollectionItemEditor: () => <div>collection item editor</div>,
 }));

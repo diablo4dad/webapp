@@ -3,7 +3,7 @@ import {
   CollectionActionType,
   useCollection,
   useCollectionDispatch,
-} from "../../ledger/context";
+} from "../../features/ledger/context";
 import { saveCollection, saveVersion } from "./local";
 import { VERSION } from "../config";
 import type { DadUser } from "../auth";

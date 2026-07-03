@@ -1,9 +1,9 @@
 import { VERSION } from "../config";
 
 import { isScreenSmall } from "../../shared/lib/dom";
-import { CollectionLog } from "../../ledger/type";
-import { LedgerView, Option, Settings } from "../../settings/type";
-import { defaultSettings } from "../../settings/context";
+import { CollectionLog } from "../../features/ledger/type";
+import { LedgerView, Option, Settings } from "../../features/settings/type";
+import { defaultSettings } from "../../features/settings/context";
 
 type ViewState = {
   ledger: LedgerState;

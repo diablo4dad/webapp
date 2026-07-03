@@ -46,7 +46,7 @@ vi.mock("../../services/data/filters", () => ({
   filterDb: mocks.filterDb,
 }));
 
-vi.mock("../../editor", () => ({
+vi.mock("../../features/editor", () => ({
   useEditor: mocks.useEditor,
 }));
 
