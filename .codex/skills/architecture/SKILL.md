@@ -9,18 +9,25 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 
 - `src/app`: provider composition and router setup.
 - `src/routes`: route orchestration, route state, route loading, and screen composition.
-- `src/<feature>`: feature-specific UI, state, domain helpers, skeletons, and tests.
-- `src/data`: shared catalog types, getters, reducers, filters, factories, and transforms.
-- `src/store`: localStorage, Firestore, catalog persistence, and persistence adapters.
-- `src/auth`: authentication context and account/auth UI.
+- `src/features/<feature>`: feature-specific UI, state, domain helpers, skeletons, and tests.
+- `src/shared/ui`: reusable UI primitives, icons, modals, tooltips, and form controls.
+- `src/shared/lib`: app-wide generic helpers such as arrays, DOM, hash, enum, and string utilities.
+- `src/shared/domain`: app-wide domain constants and helpers such as catalog groups and shell/sidebar state.
+- `src/services/data`: shared catalog types, getters, reducers, filters, factories, and transforms.
+- `src/services/store`: localStorage, Firestore, catalog persistence, and persistence adapters.
+- `src/services/auth`: authentication context, account types, and auth adapters.
+- `src/services/i18n`, `src/services/bucket`, `src/services/config`, and `src/services/migrations`: cross-cutting services and config.
+- `src/assets/images`: static image assets imported by the browser app.
 - `functions`: Firebase Cloud Functions.
 
 ## Feature Modules
 
-- Prefer top-level feature modules under `src` for self-contained product surfaces.
+- Prefer `src/features/<feature>` for self-contained product surfaces.
 - Keep feature UI, state, helpers, skeletons, and tests near the feature.
-- Use `src/components`, `src/common`, and `src/config` only for app-wide shared code.
+- Use `src/shared/*` and `src/services/*` only for app-wide shared code and side-effect boundaries.
 - Keep module internals shallow; add one lowercase hyphenated subdirectory per feature/workflow when several support files are needed.
+- Keep feature modules independent from route internals. Routes may pass navigation callbacks or route-derived state into features.
+- During the source-layout transition, add public entrypoints before moving folders and keep compatibility barrels until imports are migrated.
 
 ## Routes
 
