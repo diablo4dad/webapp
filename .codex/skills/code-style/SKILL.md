@@ -18,7 +18,7 @@ description: Code style and TypeScript/React conventions for this repository. Us
 - Use short, broad file names when the parent folder supplies context.
 - Avoid repeating the parent or feature name in child filenames.
 - Reserve PascalCase filenames for deliberate compatibility reasons.
-- In complex UI modules, prefer conventional names such as `route.tsx`, `view.tsx`, `layout.tsx`, `state.ts`, `links.ts`, and `loading.ts`.
+- In complex UI modules, prefer conventional names such as `route.tsx`, `view.tsx`, `view-model.ts`, `layout.tsx`, `state.ts`, `links.ts`, and `loading.ts`.
 - Place new product surfaces under `src/features/<feature>`.
 - Place reusable UI under `src/shared/ui`, generic helpers under `src/shared/lib`, and shared domain helpers under `src/shared/domain`.
 - Place app-wide config constants and Firebase setup under `src/config`.

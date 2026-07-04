@@ -24,6 +24,7 @@ description: Clean commit preparation for agentic work. Use before committing, p
 - Separate mechanical moves, import rewrites, behavior changes, test additions, dependency removals, and guidance updates when they can stand alone.
 - Combine changes only when they are inseparable for the active gate.
 - Include AGENTS/SKILL updates when the work introduced a firm future directive or repeatable process lesson.
+- Default to manual review gates before committing; run `git commit` at each gate only when the user explicitly asks for automatic gated commits.
 
 ## Worktree Hygiene
 
