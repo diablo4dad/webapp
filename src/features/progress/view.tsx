@@ -19,13 +19,13 @@ function ProgressView({ className, layout = "expanded", model }: Props) {
   return (
     <div className={progressClassName}>
       {model.cards.map((card) => (
-        <CollectionProgressCard key={card.title} {...card} />
+        <ProgressCard key={card.title} {...card} />
       ))}
     </div>
   );
 }
 
-function CollectionProgressCard({
+function ProgressCard({
   title,
   iconSrc,
   collected,
