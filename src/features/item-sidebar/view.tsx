@@ -12,7 +12,7 @@ import { isItemCollected, isItemHidden } from "../ledger/predicate";
 import { enumKeys } from "../../shared/lib/enums";
 import { hashCode } from "../../shared/lib/hash";
 import Toggle from "../../shared/ui/Toggle";
-import { DATA_REPO } from "../../services/config";
+import { DATA_REPO } from "../../config";
 import {
   CharacterClass,
   Collection,

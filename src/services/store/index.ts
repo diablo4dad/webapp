@@ -1,4 +1,4 @@
-import { VERSION } from "../config";
+import { VERSION } from "../../config";
 
 import { isScreenSmall } from "../../shared/lib/dom";
 import { CollectionLog } from "../../features/ledger/type";

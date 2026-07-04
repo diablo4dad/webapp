@@ -5,7 +5,7 @@ import {
   useCollectionDispatch,
 } from "../../features/ledger/context";
 import { saveCollection, saveVersion } from "./local";
-import { VERSION } from "../config";
+import { VERSION } from "../../config";
 import type { DadUser } from "../auth";
 import { fetchFromFirestore, saveToFirestore } from "./firestore";
 import { useAuth } from "../auth";

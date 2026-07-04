@@ -1,4 +1,4 @@
-import { ICON_BUCKET } from "../config";
+import { ICON_BUCKET } from "../../config";
 
 export function getIcon(fileName: string): string {
   if (process.env.NODE_ENV === "development") {

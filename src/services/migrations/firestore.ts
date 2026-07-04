@@ -1,6 +1,6 @@
 import { ArtifactMeta } from "../../features/ledger/type";
 import { FirebaseData } from "../store";
-import { VERSION } from "../config";
+import { VERSION } from "../../config";
 
 import { isPatchNeeded } from "./util";
 

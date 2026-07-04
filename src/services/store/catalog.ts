@@ -81,7 +81,7 @@ export type CatalogCollectionNodeMove = {
 };
 
 async function getCatalogFirestore() {
-  const { firestore } = await import("../config/firebase");
+  const { firestore } = await import("../../config/firebase");
   return firestore;
 }
 

@@ -7,7 +7,7 @@ import {
   saveCollection,
   saveVersion,
 } from "../store/local";
-import { VERSION } from "../config";
+import { VERSION } from "../../config";
 import { runCollectionLogMigrations } from "./index";
 
 export function runLocalStorageMigrations() {

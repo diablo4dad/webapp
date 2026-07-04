@@ -1,8 +1,8 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { firestore } from "../config/firebase";
+import { firestore } from "../../config/firebase";
 import { FirebaseData } from "./index";
 import { CollectionLog } from "../../features/ledger/type";
-import { VERSION } from "../config";
+import { VERSION } from "../../config";
 import { runFirestoreMigrations } from "../migrations/firestore";
 
 export async function fetchFromFirestore(

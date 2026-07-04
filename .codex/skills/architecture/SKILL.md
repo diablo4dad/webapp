@@ -7,7 +7,7 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 
 ## Module Ownership
 
-- Keep browser source grouped by ownership: `app`, `routes`, `features`, `shared`, `services`, and `assets`.
+- Keep browser source grouped by ownership: `app`, `routes`, `features`, `shared`, `services`, `config`, and `assets`.
 - Do not add new top-level feature, service, shared-helper, or asset folders under `src`.
 - `src/app`: provider composition and router setup.
 - `src/routes`: route orchestration, route state, route loading, and screen composition.
@@ -18,7 +18,8 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 - `src/services/data`: shared catalog types, getters, reducers, filters, factories, and transforms.
 - `src/services/store`: localStorage, Firestore, catalog persistence, and persistence adapters.
 - `src/services/auth`: authentication context, account types, and auth adapters.
-- `src/services/i18n`, `src/services/bucket`, `src/services/config`, and `src/services/migrations`: cross-cutting services and config.
+- `src/services/i18n`, `src/services/bucket`, and `src/services/migrations`: cross-cutting services and migration boundaries.
+- `src/config`: app-wide config constants, deploy-varying values, and Firebase app/client initialization.
 - `src/assets/images`: static image assets imported by the browser app.
 - `functions`: Firebase Cloud Functions.
 
