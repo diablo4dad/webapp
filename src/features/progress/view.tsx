@@ -1,21 +1,16 @@
 import classNames from "classnames";
 import Card from "../../shared/ui/Card";
 import { Star } from "../../shared/ui/Icons";
-import type { ProgressStats } from "./state";
-import styles from "./progress.module.css";
-
-type ProgressCard = ProgressStats & {
-  iconSrc?: string;
-  title: string;
-};
+import type { ProgressCardViewModel, ProgressViewModel } from "./view-model";
+import styles from "./view.module.css";
 
 type Props = {
-  cards: readonly ProgressCard[];
   className?: string;
   layout?: "expanded" | "stacked";
+  model: ProgressViewModel;
 };
 
-function ProgressView({ cards, className, layout = "expanded" }: Props) {
+function ProgressView({ className, layout = "expanded", model }: Props) {
   const progressClassName = classNames(styles.ProgressList, className, {
     [styles.ProgressListExpanded]: layout === "expanded",
     [styles.ProgressListStacked]: layout === "stacked",
@@ -23,7 +18,7 @@ function ProgressView({ cards, className, layout = "expanded" }: Props) {
 
   return (
     <div className={progressClassName}>
-      {cards.map((card) => (
+      {model.cards.map((card) => (
         <CollectionProgressCard key={card.title} {...card} />
       ))}
     </div>
@@ -37,14 +32,12 @@ function CollectionProgressCard({
   total,
   percent,
   isComplete,
-}: ProgressCard) {
+}: ProgressCardViewModel) {
   return (
     <Card className={styles.ProgressCard}>
-      {iconSrc && (
-        <div className={styles.ProgressCardIcon}>
-          <img src={iconSrc} alt="" />
-        </div>
-      )}
+      <div className={styles.ProgressCardIcon}>
+        <img src={iconSrc} alt="" />
+      </div>
       <div className={styles.ProgressCardLabel}>Collection</div>
       <div className={styles.ProgressCardSummary}>
         <div className={styles.ProgressCardTitle}>{title}</div>
@@ -75,4 +68,4 @@ function CollectionProgressCard({
 }
 
 export { ProgressView };
-export type { ProgressCard, Props as ProgressViewProps };
+export type { Props as ProgressViewProps };
