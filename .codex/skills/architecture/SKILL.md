@@ -26,6 +26,7 @@ description: Architecture guidance for this React/Firebase repository. Use when 
 
 - Prefer `src/features/<feature>` for self-contained product surfaces.
 - Keep feature UI, state, helpers, skeletons, and tests near the feature.
+- Keep exported feature component controllers in `src/features/<feature>/index.tsx`; pass props or view models into render-only `view.tsx` components.
 - Use `src/shared/*` and `src/services/*` only for app-wide shared code and side-effect boundaries.
 - Keep module internals shallow; add one lowercase hyphenated subdirectory per feature/workflow when several support files are needed.
 - Keep feature modules independent from route internals. Routes may pass navigation callbacks or route-derived state into features.
