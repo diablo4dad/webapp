@@ -2,7 +2,7 @@ import { CharacterClass, Item } from "../../services/data";
 import {
   canSelectCollectionItem,
   selectCollectionItem,
-} from "./collectionItemSelection";
+} from "./collection-item-selection";
 
 function item(id: number, itemTypeName: string, usableByClass: number[]): Item {
   return {

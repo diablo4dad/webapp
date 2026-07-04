@@ -1,2 +1,2 @@
-export { default as Account, Direction } from "./Account";
-export { default as Authenticate, Orientation } from "./Authenticate";
+export { Account, Direction } from "./profile";
+export { Authenticate, Orientation } from "./sign-in";

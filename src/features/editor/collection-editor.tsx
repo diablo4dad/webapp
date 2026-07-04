@@ -13,8 +13,8 @@ import {
   updateCatalogCollectionNode,
 } from "../../services/store/catalog";
 import { useEditor } from "./context";
-import drawerStyles from "./CollectionItemEditor.module.css";
-import styles from "./CollectionEditor.module.css";
+import drawerStyles from "./collection-item-editor.module.css";
+import styles from "./collection-editor.module.css";
 
 type FormState = {
   description: string;
@@ -346,4 +346,4 @@ function CollectionEditor() {
   );
 }
 
-export default CollectionEditor;
+export { CollectionEditor };

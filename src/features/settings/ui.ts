@@ -1,3 +1,3 @@
-export { default as CollectionFilterWidget } from "./CollectionFilterWidget";
-export { default as ConfigSidebar } from "./ConfigSidebar";
-export { default as ItemFilterWidget } from "./ItemFilterWidget";
+export { CollectionFilterWidget } from "./collection-filter-widget";
+export { ConfigSidebar } from "./config-sidebar";
+export { ItemFilterWidget } from "./item-filter-widget";

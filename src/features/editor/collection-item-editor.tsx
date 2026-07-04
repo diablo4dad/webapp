@@ -13,30 +13,46 @@ import {
   moveCatalogCollectionItem,
   updateCatalogCollectionItem,
 } from "../../services/store/catalog";
-import {
-  CharacterClass,
-  Chest,
-  Collection,
-  CollectionItem,
-  CollectionItemRef,
-  Item,
-  Zone,
-} from "../../services/data";
+import { CharacterClass, Chest, Item, Zone } from "../../services/data";
 import { Close, Plus } from "../../shared/ui/Icons";
 import { getIcon } from "../../services/bucket";
 import { FallbackLazyImage } from "../../shared/ui/LazyLoadImageFallback";
 import { hydrateDadDb } from "../../services/data/factory";
 import { useData } from "../../services/data/context";
 import { useEditor } from "./context";
-import { ItemGroup, MasterGroup, catalogGroups, itemGroups } from "../../shared/domain";
+import {
+  ItemGroup,
+  MasterGroup,
+  catalogGroups,
+  itemGroups,
+} from "../../shared/domain";
 import { enumKeys } from "../../shared/lib/enums";
 import { createCollectionItemSettingsFilter } from "../../services/data/filters";
 import { useSettings } from "../settings/context";
 import {
   canSelectCollectionItem,
-  isPlayerTitle,
   selectCollectionItem,
-} from "./collectionItemSelection";
+} from "./collection-item-selection";
+import {
+  COLLECTION_ITEM_INITIAL_FORM,
+  buildCandidateCollectionItem,
+  buildCollectionItemRef,
+  buildCollectionOptions,
+  createInitialState,
+  enumOptions,
+  getItemDisplayName,
+  getItemGroupLabel,
+  getPreviewName,
+  getSingleUsableClass,
+  hasEditorChanges,
+  itemUsableBy,
+  sortItems,
+  type CollectionItemBooleanField,
+  type CollectionItemEditorInitialState,
+  type CollectionItemFormState,
+  type CollectionItemGroupOption,
+  type CollectionItemTextField,
+} from "./collection-item-editor-state";
 import i18n from "../../services/i18n";
 import barbarian from "../../assets/images/classes/barbarian.webp";
 import druid from "../../assets/images/classes/druid.webp";
@@ -52,71 +68,11 @@ import placeholder from "../../assets/images/placeholder.webp";
 import DeleteConfirmationModal from "../../shared/ui/DeleteConfirmationModal";
 import Toggle from "../../shared/ui/Toggle";
 import { flattenDadDb } from "../../services/data/transforms";
-import styles from "./CollectionItemEditor.module.css";
-
-type FormState = {
-  claim: string;
-  claimDescription: string;
-  claimZone: string;
-  claimChest: string;
-  claimMonster: string;
-  season: string;
-  outOfRotation: boolean;
-  premium: boolean;
-  promotional: boolean;
-  unobtainable: boolean;
-  useBaseItemName: boolean;
-};
-
-type TextField =
-  | "claim"
-  | "claimDescription"
-  | "claimZone"
-  | "claimChest"
-  | "claimMonster"
-  | "season";
-
-type BooleanField =
-  | "outOfRotation"
-  | "premium"
-  | "promotional"
-  | "unobtainable"
-  | "useBaseItemName";
-
-type EnumOption = {
-  label: string;
-  value: number;
-};
-
-type ItemGroupOption = {
-  label: string;
-  itemTypes: string[];
-  value: ItemGroup;
-};
-
-type CollectionOption = {
-  disabled: boolean;
-  id: string;
-  label: string;
-};
+import styles from "./collection-item-editor.module.css";
 
 type PreviewTag = {
   icon: string;
   label: string;
-};
-
-const initialForm: FormState = {
-  claim: "",
-  claimDescription: "",
-  claimZone: "",
-  claimChest: "",
-  claimMonster: "",
-  season: "",
-  outOfRotation: false,
-  premium: false,
-  promotional: false,
-  unobtainable: false,
-  useBaseItemName: false,
 };
 
 const classIconMap = new Map<CharacterClass, string>([
@@ -129,197 +85,6 @@ const classIconMap = new Map<CharacterClass, string>([
   [CharacterClass.PALADIN, paladin],
   [CharacterClass.WARLOCK, warlock],
 ]);
-
-function labelFromEnumKey(key: string): string {
-  return key
-    .toLowerCase()
-    .split("_")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
-function enumOptions(enumValue: Record<string, string | number>): EnumOption[] {
-  return Object.entries(enumValue)
-    .filter(
-      ([key, value]) => Number.isNaN(Number(key)) && typeof value === "number",
-    )
-    .map(([key, value]) => ({
-      label: labelFromEnumKey(key),
-      value: Number(value),
-    }));
-}
-
-function getItemDisplayName(item: Item): string {
-  return item.name;
-}
-
-type EditorInitialState = {
-  form: FormState;
-  selectedItems: Item[];
-  targetCollectionId: string;
-};
-
-function buildCollectionItemRef(
-  form: FormState,
-  selectedItems: Item[],
-): CollectionItemRef {
-  const claimDescription = form.claimDescription.trim();
-  const collectionItem: CollectionItemRef = {
-    claim: form.claim.trim(),
-    outOfRotation: form.outOfRotation,
-    premium: form.premium,
-    promotional: form.promotional,
-    unobtainable: form.unobtainable,
-    useBaseItemName: form.useBaseItemName,
-    items: selectedItems.map((item) => item.id),
-  };
-
-  if (claimDescription.length > 0) {
-    collectionItem.claimDescription = claimDescription;
-  }
-
-  if (form.claimZone !== "") {
-    collectionItem.claimZone = Number(form.claimZone) as Zone;
-  }
-
-  if (form.claimChest !== "") {
-    collectionItem.claimChest = Number(form.claimChest) as Chest;
-  }
-
-  const claimMonster = form.claimMonster.trim();
-  if (claimMonster.length > 0) {
-    collectionItem.claimMonster = claimMonster;
-  }
-
-  if (form.season.trim() !== "") {
-    collectionItem.season = Number(form.season);
-  }
-
-  return collectionItem;
-}
-
-function buildCollectionItem(
-  form: FormState,
-  selectedItems: Item[],
-): CollectionItem {
-  return {
-    ...buildCollectionItemRef(form, selectedItems),
-    id: -1,
-    items: selectedItems,
-  };
-}
-
-function createInitialState(
-  collectionItem?: CollectionItem,
-  collectionId = "",
-): EditorInitialState {
-  if (!collectionItem) {
-    return {
-      form: initialForm,
-      selectedItems: [],
-      targetCollectionId: collectionId,
-    };
-  }
-
-  return {
-    form: {
-      claim: collectionItem.claim ?? "",
-      claimDescription: collectionItem.claimDescription ?? "",
-      claimZone:
-        collectionItem.claimZone === undefined
-          ? ""
-          : String(collectionItem.claimZone),
-      claimChest:
-        collectionItem.claimChest === undefined
-          ? ""
-          : String(collectionItem.claimChest),
-      claimMonster: collectionItem.claimMonster ?? "",
-      season:
-        collectionItem.season === undefined
-          ? ""
-          : String(collectionItem.season),
-      outOfRotation: collectionItem.outOfRotation ?? false,
-      premium: collectionItem.premium ?? false,
-      promotional: collectionItem.promotional ?? false,
-      unobtainable: collectionItem.unobtainable ?? false,
-      useBaseItemName: collectionItem.useBaseItemName ?? false,
-    },
-    selectedItems: collectionItem.items,
-    targetCollectionId: collectionId,
-  };
-}
-
-function hasEditorChanges(
-  initialState: EditorInitialState,
-  form: FormState,
-  selectedItems: Item[],
-  targetCollectionId: string,
-): boolean {
-  return (
-    JSON.stringify(initialState.form) !== JSON.stringify(form) ||
-    initialState.selectedItems.map((item) => item.id).join(",") !==
-      selectedItems.map((item) => item.id).join(",") ||
-    initialState.targetCollectionId !== targetCollectionId
-  );
-}
-
-const itemGroupLabels = new Map<ItemGroup, string>([
-  [ItemGroup.MOUNTS, "Mounts"],
-  [ItemGroup.HORSE_ARMOR, "Horse Armor"],
-  [ItemGroup.TROPHIES, "Trophies"],
-  [ItemGroup.BACK_TROPHIES, "Back Trophies"],
-  [ItemGroup.ARMOR, "Armor"],
-  [ItemGroup.WEAPONS, "Weapons"],
-  [ItemGroup.BODY, "Body Markings"],
-  [ItemGroup.EMOTES, "Emotes"],
-  [ItemGroup.TOWN_PORTALS, "Town Portals"],
-  [ItemGroup.HEADSTONES, "Headstones"],
-  [ItemGroup.EMBLEMS, "Emblems"],
-  [ItemGroup.PLAYER_TITLES, "Player Titles"],
-  [ItemGroup.PETS, "Pets"],
-]);
-
-function getItemGroupLabel(itemGroup: ItemGroup): string {
-  return itemGroupLabels.get(itemGroup) ?? itemGroup;
-}
-
-function buildCandidateCollectionItem(
-  form: FormState,
-  item: Item,
-): CollectionItem {
-  return buildCollectionItem(form, [item]);
-}
-
-function sortItems(a: Item, b: Item): number {
-  return getItemDisplayName(a).localeCompare(getItemDisplayName(b));
-}
-
-function itemUsableBy(characterClass: CharacterClass, item: Item): boolean {
-  return item.usableByClass?.[characterClass] === 1;
-}
-
-function getSingleUsableClass(item: Item): CharacterClass | undefined {
-  const usableClasses = enumKeys(CharacterClass)
-    .map((characterClassKey) => CharacterClass[characterClassKey])
-    .filter((characterClass) => itemUsableBy(characterClass, item));
-
-  return usableClasses.length === 1 ? usableClasses[0] : undefined;
-}
-
-function getPreviewName(
-  collectionItem: CollectionItem | undefined,
-  focusItem: Item | undefined,
-): string {
-  if (!collectionItem || !focusItem) {
-    return "No item selected";
-  }
-
-  if (collectionItem.items.length > 1 && isPlayerTitle(focusItem)) {
-    return collectionItem.items.map((item) => item.name).join(" ");
-  }
-
-  return getItemDisplayName(focusItem);
-}
 
 function getItemPreviewTags(item: Item | undefined): PreviewTag[] {
   if (!item) {
@@ -335,56 +100,23 @@ function getItemPreviewTags(item: Item | undefined): PreviewTag[] {
   return tags;
 }
 
-function getCollectionCategory(collection?: Collection): string | undefined {
-  return collection?.rootCategory ?? collection?.category;
-}
-
-function buildCollectionOptions(
-  collections: Collection[],
-  activeCollection?: Collection,
-): CollectionOption[] {
-  const activeCategory = getCollectionCategory(activeCollection);
-
-  if (!activeCategory) {
-    return [];
-  }
-
-  return collections
-    .filter((collection) => getCollectionCategory(collection) === activeCategory)
-    .flatMap((collection) => {
-      const options: CollectionOption[] = [
-        {
-          disabled: collection.subcollections.length > 0,
-          id: collection.id,
-          label: collection.name,
-        },
-      ];
-
-      return [
-        ...options,
-        ...collection.subcollections.map((subcollection) => ({
-          disabled: subcollection.subcollections.length > 0,
-          id: subcollection.id,
-          label: `${collection.name} / ${subcollection.name}`,
-        })),
-      ];
-    });
-}
-
 function CollectionItemEditor() {
   const { db, setCatalogCategoryDb } = useData();
   const { activeCollectionItemEditor, closeCollectionItemEditor } = useEditor();
   const settings = useSettings();
-  const [form, setForm] = useState<FormState>(initialForm);
+  const [form, setForm] = useState<CollectionItemFormState>(
+    COLLECTION_ITEM_INITIAL_FORM,
+  );
   const [itemGroup, setItemGroup] = useState<ItemGroup | "">("");
   const [itemSearch, setItemSearch] = useState("");
   const [selectedItems, setSelectedItems] = useState<Item[]>([]);
   const [targetCollectionId, setTargetCollectionId] = useState("");
-  const [initialState, setInitialState] = useState<EditorInitialState>({
-    form: initialForm,
-    selectedItems: [],
-    targetCollectionId: "",
-  });
+  const [initialState, setInitialState] =
+    useState<CollectionItemEditorInitialState>({
+      form: COLLECTION_ITEM_INITIAL_FORM,
+      selectedItems: [],
+      targetCollectionId: "",
+    });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -497,7 +229,7 @@ function CollectionItemEditor() {
     !hasSelectedTransmogName && !form.useBaseItemName;
 
   const updateTextField =
-    (field: TextField) =>
+    (field: CollectionItemTextField) =>
     (
       event: ChangeEvent<
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -510,7 +242,8 @@ function CollectionItemEditor() {
     };
 
   const updateBooleanField =
-    (field: BooleanField) => (event: ChangeEvent<HTMLInputElement>) => {
+    (field: CollectionItemBooleanField) =>
+    (event: ChangeEvent<HTMLInputElement>) => {
       setForm((current) => ({
         ...current,
         [field]: event.target.checked,
@@ -854,7 +587,7 @@ function CollectionItemEditor() {
                   }
                 >
                   <option value="">All item groups</option>
-                  {itemGroupOptions.map((option: ItemGroupOption) => (
+                  {itemGroupOptions.map((option: CollectionItemGroupOption) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
@@ -1132,4 +865,4 @@ function CollectionItemEditor() {
   );
 }
 
-export default CollectionItemEditor;
+export { CollectionItemEditor };

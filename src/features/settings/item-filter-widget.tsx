@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import styles from "./ItemFilterWidget.module.css";
+import styles from "./item-filter-widget.module.css";
 
 type Props = {
   active: boolean;
@@ -22,4 +22,4 @@ function ItemFilterWidget({ active, count, label, onClick }: Props) {
   );
 }
 
-export default ItemFilterWidget;
+export { ItemFilterWidget };

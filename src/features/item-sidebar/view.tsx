@@ -17,10 +17,8 @@ import {
   CharacterClass,
   Collection,
   CollectionItem,
-  Item,
   MagicType,
   getDefaultItem,
-  Zone,
 } from "../../services/data";
 import {
   getClassIconVariant,
@@ -37,28 +35,6 @@ import {
   isVesselOfHatredItem,
 } from "../../services/data/predicates";
 import i18n, { getItemDescription } from "../../services/i18n";
-import barbarian from "../../assets/images/classes/barbarian.webp";
-import druid from "../../assets/images/classes/druid.webp";
-import necromancer from "../../assets/images/classes/necromancer.webp";
-import rogue from "../../assets/images/classes/rogue.webp";
-import sorceress from "../../assets/images/classes/sorcerer.webp";
-import spiritborn from "../../assets/images/classes/spiritborn.webp";
-import paladin from "../../assets/images/classes/paladin.png";
-import warlock from "../../assets/images/classes/warlock.webp";
-import expansion from "../../assets/images/logo/d4ico_x1.png";
-import unobtainable from "../../assets/images/miniico/mystery.webp";
-import premium from "../../assets/images/miniico/purse.webp";
-import season from "../../assets/images/miniico/season.webp";
-import series from "../../assets/images/miniico/series.webp";
-import oor from "../../assets/images/miniico/skull.webp";
-import wardrobe from "../../assets/images/miniico/wardrobe.webp";
-import salvage from "../../assets/images/icons/salvage.webp";
-import fracturedPeaks from "../../assets/images/region/fractured_peaks.webp";
-import drySteppes from "../../assets/images/region/dry_steppes.webp";
-import kehjistan from "../../assets/images/region/kehjistan.webp";
-import hawezar from "../../assets/images/region/hawezar.webp";
-import scosglen from "../../assets/images/region/scosglen.webp";
-import nahantu from "../../assets/images/region/nahantu.webp";
 import { getPreferredClass, getPreferredGender } from "../settings/accessor";
 import { useSettings } from "../settings/context";
 import { isEnabled } from "../settings/predicate";
@@ -66,11 +42,9 @@ import { Option } from "../settings/type";
 import { useEditor } from "../editor";
 import { useData } from "../../services/data/context";
 import { MasterGroup } from "../../shared/domain";
+import { classIconMap, itemTagIcons, regionIconMap } from "./item-assets";
+import { buildSalvageSourceItems, isUsableBy } from "./view-model";
 import styles from "./item-sidebar.module.css";
-
-function usableBy(clazz: CharacterClass, dci: CollectionItem): boolean {
-  return dci.items.some((di) => di.usableByClass?.[clazz] === 1);
-}
 
 type ItemProps = {
   className?: string;
@@ -89,26 +63,6 @@ const classIconCssMap = new Map<CharacterClass, string>([
   [CharacterClass.WARLOCK, styles.WarlockClassIcon],
 ]);
 
-const classIconMap = new Map<CharacterClass, string>([
-  [CharacterClass.BARBARIAN, barbarian],
-  [CharacterClass.DRUID, druid],
-  [CharacterClass.ROGUE, rogue],
-  [CharacterClass.SORCERER, sorceress],
-  [CharacterClass.NECROMANCER, necromancer],
-  [CharacterClass.SPIRITBORN, spiritborn],
-  [CharacterClass.PALADIN, paladin],
-  [CharacterClass.WARLOCK, warlock],
-]);
-
-const regionIconMap = new Map<Zone, string>([
-  [Zone.FRACTURED_PEAKS, fracturedPeaks],
-  [Zone.SCOSGLEN, scosglen],
-  [Zone.HAWEZAR, hawezar],
-  [Zone.KEHJISTAN, kehjistan],
-  [Zone.DRY_STEPPES, drySteppes],
-  [Zone.NAHANTU, nahantu],
-]);
-
 const magicTypeCssMap = new Map<MagicType, string>([
   [MagicType.COMMON, styles.ItemMagicTypeCommon],
   [MagicType.MAGIC, styles.ItemMagicTypeMagic],
@@ -117,22 +71,6 @@ const magicTypeCssMap = new Map<MagicType, string>([
   [MagicType.MYTHIC, styles.ItemMagicTypeMythic],
   [MagicType.RARE, styles.ItemMagicTypeRare],
 ]);
-
-const magicTypeSortOrder = new Map<MagicType, number>([
-  [MagicType.COMMON, 0],
-  [MagicType.MAGIC, 1],
-  [MagicType.RARE, 2],
-  [MagicType.LEGENDARY, 3],
-  [MagicType.UNIQUE, 4],
-  [MagicType.MYTHIC, 5],
-]);
-
-function getMagicTypeSortRank(item: Item): number {
-  return item.magicType === undefined
-    ? Number.MAX_SAFE_INTEGER
-    : magicTypeSortOrder.get(item.magicType as MagicType) ??
-        Number.MAX_SAFE_INTEGER;
-}
 
 function getMagicTypeClassName(magicType: MagicType): string {
   return classNames(styles.ItemMagicType, magicTypeCssMap.get(magicType));
@@ -150,30 +88,6 @@ function renderMagicTypeLabel(magicType: MagicType): React.ReactNode {
       {i18n.magicType[magicType]}
     </span>
   );
-}
-
-function buildSalvageSourceItems(focusItem: Item): Item[] {
-  const seen = new Set<string>();
-  const hide = new Array<string>("(PH)", "[PH]", "[ph_", "(DNS)");
-
-  return [focusItem, ...focusItem.similarItemsRefs]
-    .filter((item) => item.salvageable === true)
-    .filter((item) => item.name.trim().length > 0)
-    .filter((item) => !hide.some((token) => item.name.includes(token)))
-    .filter((item) => {
-      const key = `${item.name}:${item.magicType ?? "none"}`;
-
-      if (seen.has(key)) {
-        return false;
-      }
-
-      seen.add(key);
-      return true;
-    })
-    .sort(
-      (leftItem, rightItem) =>
-        getMagicTypeSortRank(leftItem) - getMagicTypeSortRank(rightItem),
-    );
 }
 
 function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
@@ -212,14 +126,17 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
 
   const classNameStr = classNames({
     [styles.Block]: true,
-    [styles.Barbarian]: usableBy(CharacterClass.BARBARIAN, collectionItem),
-    [styles.Druid]: usableBy(CharacterClass.DRUID, collectionItem),
-    [styles.Necromancer]: usableBy(CharacterClass.NECROMANCER, collectionItem),
-    [styles.Rogue]: usableBy(CharacterClass.ROGUE, collectionItem),
-    [styles.Sorcerer]: usableBy(CharacterClass.SORCERER, collectionItem),
-    [styles.Spiritborn]: usableBy(CharacterClass.SPIRITBORN, collectionItem),
-    [styles.Paladin]: usableBy(CharacterClass.PALADIN, collectionItem),
-    [styles.Warlock]: usableBy(CharacterClass.WARLOCK, collectionItem),
+    [styles.Barbarian]: isUsableBy(CharacterClass.BARBARIAN, collectionItem),
+    [styles.Druid]: isUsableBy(CharacterClass.DRUID, collectionItem),
+    [styles.Necromancer]: isUsableBy(
+      CharacterClass.NECROMANCER,
+      collectionItem,
+    ),
+    [styles.Rogue]: isUsableBy(CharacterClass.ROGUE, collectionItem),
+    [styles.Sorcerer]: isUsableBy(CharacterClass.SORCERER, collectionItem),
+    [styles.Spiritborn]: isUsableBy(CharacterClass.SPIRITBORN, collectionItem),
+    [styles.Paladin]: isUsableBy(CharacterClass.PALADIN, collectionItem),
+    [styles.Warlock]: isUsableBy(CharacterClass.WARLOCK, collectionItem),
     [className ?? ""]: true,
   });
 
@@ -344,7 +261,7 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
             <div key={item.id} className={styles.ItemSalvageSource}>
               <img
                 className={styles.ItemSalvageSourceIcon}
-                src={salvage}
+                src={itemTagIcons.salvage}
                 alt=""
               />
               <span>
@@ -358,43 +275,49 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
       <div className={styles.ItemTags}>
         {collectionItem.items.some(isVesselOfHatredItem) && (
           <div className={styles.ItemTag}>
-            <img className={styles.ItemTagIcon} src={expansion} />
+            <img className={styles.ItemTagIcon} src={itemTagIcons.expansion} />
             <span>VoH Item</span>
           </div>
         )}
         {collectionItem.season && (
           <div className={styles.ItemTag}>
-            <img className={styles.ItemTagIcon} src={season} />
+            <img className={styles.ItemTagIcon} src={itemTagIcons.season} />
             <span>Season {collectionItem.season}</span>
           </div>
         )}
         {focusItem.series && (
           <div className={styles.ItemTag}>
-            <img className={styles.ItemTagIcon} src={series} />
+            <img className={styles.ItemTagIcon} src={itemTagIcons.series} />
             <span>{focusItem.series.replaceAll('"', "")}</span>
           </div>
         )}
         {collectionItem.premium && (
           <div className={styles.ItemTag}>
-            <img className={styles.ItemTagIcon} src={premium} />
+            <img className={styles.ItemTagIcon} src={itemTagIcons.premium} />
             <span>Premium</span>
           </div>
         )}
         {collectionItem.items.some(doesHaveWardrobePlaceholder) && (
           <div className={styles.ItemTag}>
-            <img className={styles.ItemTagIcon} src={wardrobe} />
+            <img className={styles.ItemTagIcon} src={itemTagIcons.wardrobe} />
             <span>Wardrobe Icon</span>
           </div>
         )}
         {collectionItem.outOfRotation && (
           <div className={styles.ItemTag}>
-            <img className={styles.ItemTagIcon} src={oor} />
+            <img
+              className={styles.ItemTagIcon}
+              src={itemTagIcons.outOfRotation}
+            />
             <span>Out of Rotation</span>
           </div>
         )}
         {collectionItem.unobtainable && (
           <div className={styles.ItemTag}>
-            <img className={styles.ItemTagIcon} src={unobtainable} />
+            <img
+              className={styles.ItemTagIcon}
+              src={itemTagIcons.unobtainable}
+            />
             <span>Unobtainable</span>
           </div>
         )}

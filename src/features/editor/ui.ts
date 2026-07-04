@@ -1,2 +1,2 @@
-export { default as CollectionEditor } from "./CollectionEditor";
-export { default as CollectionItemEditor } from "./CollectionItemEditor";
+export { CollectionEditor } from "./collection-editor";
+export { CollectionItemEditor } from "./collection-item-editor";

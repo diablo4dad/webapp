@@ -1,7 +1,7 @@
-import styles from "./Account.module.css";
-import { Google } from "../../shared/ui/Icons";
 import classNames from "classnames";
 import type { DadUser } from "../../services/auth";
+import { Google } from "../../shared/ui/Icons";
+import styles from "./profile.module.css";
 
 enum Direction {
   COLUMN,
@@ -44,14 +44,13 @@ function Account({
       </div>
       <div className={styles.Badge}>
         {["firebase", "google"].includes(currentUser.providerId) && (
-          <button className={styles.Icon}>
+          <span className={styles.Icon} aria-hidden="true">
             <Google />
-          </button>
+          </span>
         )}
       </div>
     </div>
   );
 }
 
-export { Direction };
-export default Account;
+export { Account, Direction };
