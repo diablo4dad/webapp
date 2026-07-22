@@ -3,7 +3,7 @@ import styles from "./mobile-settings-layout.module.css";
 
 type Props = {
   body: ReactNode;
-  footer: ReactNode;
+  footer?: ReactNode;
   header: ReactNode;
   onClose: () => void;
 };
@@ -23,7 +23,9 @@ function MobileSettingsLayout({
         <div className={styles.MobileSettingsLayoutHeader}>{header}</div>
         <div className={styles.MobileSettingsLayoutBody}>
           <div className={styles.MobileSettingsLayoutContent}>{body}</div>
-          <div className={styles.MobileSettingsLayoutFooter}>{footer}</div>
+          {footer && (
+            <div className={styles.MobileSettingsLayoutFooter}>{footer}</div>
+          )}
         </div>
       </aside>
     </div>

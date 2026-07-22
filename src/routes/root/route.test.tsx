@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import { vi } from "vitest";
 import { MasterGroup } from "../../shared/domain";
 import type { DadUser } from "../../services/auth";
@@ -13,6 +14,7 @@ type Options = {
 
 const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
+  pathname: "/",
   signIn: vi.fn(),
   signOut: vi.fn(),
   toggleEditMode: vi.fn(),
@@ -22,7 +24,22 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("react-router-dom", () => ({
+  Link: ({
+    children,
+    to,
+    ...props
+  }: {
+    children: ReactNode;
+    to: string;
+  }) => (
+    <a href={to} {...props}>
+      {children}
+    </a>
+  ),
   Outlet: () => <div>route outlet</div>,
+  useLocation: () => ({
+    pathname: mocks.pathname,
+  }),
   useNavigate: mocks.useNavigate,
 }));
 
@@ -104,6 +121,7 @@ function renderRoute({
 
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.pathname = "/";
 });
 
 describe("shell content", () => {
@@ -175,6 +193,15 @@ describe("header actions", () => {
 
     expect(mocks.toggleEditMode).toHaveBeenCalledTimes(1);
   });
+
+  test("shows main navigation for everyone", () => {
+    renderRoute();
+
+    expect(screen.getByRole("link", { name: "Collection" }))
+      .toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Database" }))
+      .toHaveAttribute("href", "/database");
+  });
 });
 
 describe("auth actions", () => {
@@ -202,18 +229,18 @@ describe("auth actions", () => {
 });
 
 describe("mobile settings", () => {
-  test("opens settings drawer from the mobile menu button", async () => {
+  test("opens collection settings from the settings button", async () => {
     const user = userEvent.setup();
     renderRoute({
       canEditCatalog: true,
     });
-    const mobileMenuButton = screen.getByRole("button", {
-      name: "Settings menu",
+    const mobileSettingsButton = screen.getByRole("button", {
+      name: "Collection settings",
     });
 
-    await user.click(mobileMenuButton);
+    await user.click(mobileSettingsButton);
 
-    expect(screen.getByText("Settings")).toBeInTheDocument();
+    expect(screen.getByText("Collection Settings")).toBeInTheDocument();
     expect(screen.getByText("route outlet")).toBeInTheDocument();
     expect(screen.getByText("settings panel")).toBeInTheDocument();
     const mobileEditorToggle = screen.getByRole("button", { name: /off/i });
@@ -228,28 +255,77 @@ describe("mobile settings", () => {
   test("returns to the ledger when the settings drawer closes", async () => {
     const user = userEvent.setup();
     renderRoute();
-    const mobileMenuButton = screen.getByRole("button", {
-      name: "Settings menu",
+    const mobileSettingsButton = screen.getByRole("button", {
+      name: "Collection settings",
     });
 
-    await user.click(mobileMenuButton);
+    await user.click(mobileSettingsButton);
     await user.click(screen.getByRole("button", { name: "Close settings" }));
 
-    expect(screen.queryByText("Settings")).not.toBeInTheDocument();
+    expect(screen.queryByText("Collection Settings")).not.toBeInTheDocument();
     expect(screen.getByText("route outlet")).toBeInTheDocument();
   });
 
   test("keeps settings drawer open when panel content is clicked", async () => {
     const user = userEvent.setup();
     renderRoute();
-    const mobileMenuButton = screen.getByRole("button", {
-      name: "Settings menu",
+    const mobileSettingsButton = screen.getByRole("button", {
+      name: "Collection settings",
     });
 
-    await user.click(mobileMenuButton);
+    await user.click(mobileSettingsButton);
     await user.click(screen.getByText("settings panel"));
 
-    expect(screen.getByText("Settings")).toBeInTheDocument();
+    expect(screen.getByText("Collection Settings")).toBeInTheDocument();
+  });
+});
+
+describe("mobile site menu", () => {
+  test("opens site menu from the hamburger button", async () => {
+    const user = userEvent.setup();
+    renderRoute({
+      user: signedInUser,
+    });
+
+    await user.click(screen.getByRole("button", { name: "Site menu" }));
+
+    expect(screen.getByText("Menu")).toBeInTheDocument();
+    const mobileNavigation = within(screen.getByRole("navigation", {
+      name: "Mobile navigation",
+    }));
+
+    expect(mobileNavigation.getByRole("link", { name: "Collection" }))
+      .toHaveAttribute("href", "/");
+    expect(mobileNavigation.getByRole("link", { name: "Database" }))
+      .toHaveAttribute("href", "/database");
+
+    const mobileMenu = screen.getByText("Menu").closest("aside");
+
+    expect(mobileMenu).not.toBeNull();
+
+    await user.click(
+      within(mobileMenu as HTMLElement).getByRole("button", {
+        name: "sign out dad@example.com",
+      }),
+    );
+
+    expect(mocks.signOut).toHaveBeenCalledTimes(1);
+  });
+
+  test("tracks the active route in the site menu", async () => {
+    const user = userEvent.setup();
+    mocks.pathname = "/database";
+    renderRoute();
+
+    await user.click(screen.getByRole("button", { name: "Site menu" }));
+
+    expect(screen.getByText("Menu")).toBeInTheDocument();
+    const mobileNavigation = within(screen.getByRole("navigation", {
+      name: "Mobile navigation",
+    }));
+
+    expect(mobileNavigation.getByRole("link", { name: "Database" }))
+      .toHaveAttribute("aria-current", "page");
   });
 });
 
@@ -310,9 +386,22 @@ describe("mobile search", () => {
     renderRoute();
 
     await user.click(screen.getByRole("button", { name: "Search menu" }));
-    await user.click(screen.getByRole("button", { name: "Settings menu" }));
+    await user.click(
+      screen.getByRole("button", { name: "Collection settings" }),
+    );
 
     expect(screen.queryByText("Transmog Search")).not.toBeInTheDocument();
-    expect(screen.getByText("Settings")).toBeInTheDocument();
+    expect(screen.getByText("Collection Settings")).toBeInTheDocument();
+  });
+
+  test("replaces search overlay when the site menu opens", async () => {
+    const user = userEvent.setup();
+    renderRoute();
+
+    await user.click(screen.getByRole("button", { name: "Search menu" }));
+    await user.click(screen.getByRole("button", { name: "Site menu" }));
+
+    expect(screen.queryByText("Transmog Search")).not.toBeInTheDocument();
+    expect(screen.getByText("Menu")).toBeInTheDocument();
   });
 });

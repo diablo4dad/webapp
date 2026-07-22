@@ -34,6 +34,7 @@ export {
   Play,
   Plus,
   ReplyArrow,
+  Reset,
   SearchIcon,
   SidebarLeft,
   SidebarRight,

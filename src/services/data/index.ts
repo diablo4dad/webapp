@@ -130,6 +130,7 @@ export type Collection = Omit<
 export type CollectionGroup = Collection[];
 
 export type DadDbRef = {
+  buildVersion?: string;
   collections: CollectionRef[];
   itemTypes: ItemType[];
   items: ItemRef[];

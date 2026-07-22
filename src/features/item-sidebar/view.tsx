@@ -42,7 +42,11 @@ import { Option } from "../settings/type";
 import { useEditor } from "../editor";
 import { useData } from "../../services/data/context";
 import { MasterGroup } from "../../shared/domain";
-import { classIconMap, itemTagIcons, regionIconMap } from "./item-assets";
+import {
+  classIconMap,
+  itemTagIcons,
+  regionIconMap,
+} from "../../shared/domain/item-assets";
 import { buildSalvageSourceItems, isUsableBy } from "./view-model";
 import styles from "./item-sidebar.module.css";
 

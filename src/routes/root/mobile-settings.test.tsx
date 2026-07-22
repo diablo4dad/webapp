@@ -1,32 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import type { DadUser } from "../../services/auth";
 import { MasterGroup } from "../../shared/domain";
 import { MobileSettings } from "./mobile-settings";
 
 type Props = Parameters<typeof MobileSettings>[0];
 
 type Options = Partial<Props>;
-
-vi.mock("../../features/account/ui", () => ({
-  Account: ({
-    currentUser,
-    onLogout,
-  }: {
-    currentUser: DadUser;
-    onLogout: () => void;
-  }) => <button onClick={onLogout}>sign out {currentUser.email}</button>,
-  Authenticate: ({ onAuth }: { onAuth: () => void }) => (
-    <button onClick={onAuth}>sign in</button>
-  ),
-  Direction: {
-    ROW: "row",
-  },
-  Orientation: {
-    ROW: "row",
-  },
-}));
 
 vi.mock("../../features/settings/ui", () => ({
   ConfigSidebar: ({
@@ -40,22 +20,12 @@ vi.mock("../../features/settings/ui", () => ({
   ),
 }));
 
-const signedInUser: DadUser = {
-  email: "dad@example.com",
-  isEditor: false,
-  providerId: "discord",
-  roles: [],
-  uid: "dad-user",
-};
-
 function renderDrawer(options: Options = {}) {
   const props: Props = {
     canEditCatalog: false,
     isEditMode: false,
     onClose: vi.fn(),
     onSelectCollectionGroup: vi.fn(),
-    onSignIn: vi.fn(),
-    onSignOut: vi.fn(),
     onToggleEditMode: vi.fn(),
     ...options,
   };
@@ -68,35 +38,22 @@ function renderDrawer(options: Options = {}) {
 }
 
 describe("settings content", () => {
-  test("renders settings and anonymous auth controls", async () => {
+  test("renders collection settings controls", async () => {
     const user = userEvent.setup();
     const { props } = renderDrawer();
 
-    expect(screen.getByText("Settings")).toBeInTheDocument();
+    expect(screen.getByText("Collection Settings")).toBeInTheDocument();
     expect(screen.getByText("settings panel")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Off" }))
       .not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "sign in" }))
+      .not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "sign in" }));
     await user.click(screen.getByRole("button", { name: "settings panel" }));
 
-    expect(props.onSignIn).toHaveBeenCalledTimes(1);
     expect(props.onSelectCollectionGroup).toHaveBeenCalledWith(
       MasterGroup.SEASONS,
     );
-  });
-
-  test("renders signed-in auth controls", async () => {
-    const user = userEvent.setup();
-    const { props } = renderDrawer({
-      user: signedInUser,
-    });
-
-    await user.click(
-      screen.getByRole("button", { name: "sign out dad@example.com" }),
-    );
-
-    expect(props.onSignOut).toHaveBeenCalledTimes(1);
   });
 });
 

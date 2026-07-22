@@ -1,11 +1,29 @@
 .HeaderLayout {
+    --header-navigation-light-x: 50%;
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--space-4);
     width: 100%;
     padding: 0 var(--space-4);
     box-sizing: border-box;
+    isolation: isolate;
+}
+
+.HeaderLayout::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(
+            ellipse 8rem 8rem at var(--header-navigation-light-x) top,
+            rgba(55, 62, 73, 0.2) 0%,
+            rgba(48, 54, 64, 0.09) 48%,
+            rgba(0, 0, 0, 0) 100%
+        );
+    content: "";
+    pointer-events: none;
 }
 
 .HeaderLayoutBrand {
@@ -13,23 +31,38 @@
 }
 
 .HeaderLayoutLogo {
+    grid-column: 1;
+    grid-row: 1;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    width: 100%;
+    width: auto;
     min-width: 0;
     padding: var(--space-4) 0;
 }
 
 .HeaderLayoutTitle {
+    grid-column: 2;
+    grid-row: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     min-width: 0;
     padding: var(--space-4) 0;
 }
 
+.HeaderLayoutNavigation {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: none;
+    justify-content: center;
+    min-width: 0;
+    padding: 1rem 0 var(--space-3);
+}
+
 .HeaderLayoutControls {
+    grid-column: 3;
+    grid-row: 1;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -73,6 +106,7 @@
 
 @media screen and (min-width: 1200px) {
     .HeaderLayout {
+        --header-navigation-light-x: clamp(22rem, 24vw, 30rem);
         grid-template-columns: repeat(6, minmax(0, 1fr));
         align-items: center;
         gap: var(--space-4);
@@ -88,15 +122,28 @@
     }
 
     .HeaderLayoutLogo {
+        grid-column: auto;
+        grid-row: auto;
         flex: 0 0 auto;
         width: auto;
         padding: var(--space-4) 0;
     }
 
     .HeaderLayoutTitle {
+        grid-column: auto;
+        grid-row: auto;
         flex: 0 1 auto;
         justify-content: flex-start;
         padding: var(--space-4) 0;
+    }
+
+    .HeaderLayoutNavigation {
+        display: flex;
+        grid-column: auto;
+        grid-row: auto;
+        flex: 0 0 auto;
+        justify-content: flex-start;
+        padding: var(--space-4) 0 var(--space-4) 1rem;
     }
 
     .HeaderLayoutControls {

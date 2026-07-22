@@ -1,5 +1,10 @@
 import { Discord } from "../../shared/ui/Icons";
-import { DISCORD_INVITE_LINK, LAST_UPDATED, SITE_VERSION } from "../../config";
+import {
+  DATABASE_VERSION,
+  DISCORD_INVITE_LINK,
+  LAST_UPDATED,
+  SITE_VERSION,
+} from "../../config";
 import styles from "./footer.module.css";
 
 function Footer() {
@@ -38,6 +43,9 @@ function VersionInfo() {
   return (
     <div className={styles.FooterVersionInfo}>
       <div>Last updated {LAST_UPDATED}</div>
+      <div>
+        Database Version <code>{DATABASE_VERSION}</code>
+      </div>
       <div>
         Site Version <code>{SITE_VERSION}</code>
       </div>

@@ -3,6 +3,7 @@ import type { SidebarVisibility } from "../../shared/domain";
 import Button, { BtnColours } from "../../shared/ui/Button";
 import {
   Close,
+  Gear,
   Hamburger,
   Pencil,
   SearchIcon,
@@ -21,20 +22,23 @@ type Props = {
   hasSearchFilter: boolean;
   isEditMode: boolean;
   isMobileConfigOpen: boolean;
+  isMobileMenuOpen: boolean;
   isMobileSearchOpen: boolean;
   onClearSearch: () => void;
   onToggleConfig: () => void;
   onToggleEditMode: () => void;
   onToggleItemSidebar: () => void;
   onToggleMobileConfig: () => void;
+  onToggleMobileMenu: () => void;
   onToggleMobileSearch: () => void;
   sidebarVisibility: SidebarVisibility;
+  showCollectionControls: boolean;
 };
 
 type ToggleProps = {
   ariaLabel?: string;
   children: ReactNode;
-  isPressed: boolean;
+  isPressed?: boolean;
   onToggle: () => void;
   tooltip: string;
 };
@@ -53,32 +57,39 @@ function HeaderActions({
   hasSearchFilter,
   isEditMode,
   isMobileConfigOpen,
+  isMobileMenuOpen,
   isMobileSearchOpen,
   onClearSearch,
   onToggleConfig,
   onToggleEditMode,
   onToggleItemSidebar,
   onToggleMobileConfig,
+  onToggleMobileMenu,
   onToggleMobileSearch,
   sidebarVisibility,
+  showCollectionControls,
 }: Props) {
   return (
     <>
-      <SidebarToggle
-        isPressed={sidebarVisibility.showItem}
-        onToggle={onToggleItemSidebar}
-        sidebarName="Item"
-      >
-        <SidebarLeft />
-      </SidebarToggle>
-      <SidebarToggle
-        isPressed={sidebarVisibility.showConfig}
-        onToggle={onToggleConfig}
-        sidebarName="Settings"
-      >
-        <SidebarRight />
-      </SidebarToggle>
-      {canEditCatalog && (
+      {showCollectionControls && (
+        <>
+          <SidebarToggle
+            isPressed={sidebarVisibility.showItem}
+            onToggle={onToggleItemSidebar}
+            sidebarName="Item"
+          >
+            <SidebarLeft />
+          </SidebarToggle>
+          <SidebarToggle
+            isPressed={sidebarVisibility.showConfig}
+            onToggle={onToggleConfig}
+            sidebarName="Settings"
+          >
+            <SidebarRight />
+          </SidebarToggle>
+        </>
+      )}
+      {canEditCatalog && showCollectionControls && (
         <HeaderToggle
           ariaLabel={isEditMode ? "Disable editor mode" : "Enable editor mode"}
           isPressed={isEditMode}
@@ -107,11 +118,22 @@ function HeaderActions({
           <SearchIcon />
         </Button>
       )}
+      {showCollectionControls && (
+        <Button
+          aria-label="Collection settings"
+          aria-pressed={isMobileConfigOpen}
+          onClick={onToggleMobileConfig}
+          pressed={isMobileConfigOpen}
+          showOnly={"mobile"}
+        >
+          <Gear />
+        </Button>
+      )}
       <Button
-        aria-label="Settings menu"
-        aria-pressed={isMobileConfigOpen}
-        onClick={onToggleMobileConfig}
-        pressed={isMobileConfigOpen}
+        aria-label="Site menu"
+        aria-pressed={isMobileMenuOpen}
+        onClick={onToggleMobileMenu}
+        pressed={isMobileMenuOpen}
         showOnly={"mobile"}
       >
         <Hamburger />
@@ -149,7 +171,7 @@ function HeaderToggle({
       <TooltipTrigger asChild={true}>
         <Button
           onClick={onToggle}
-          pressed={isPressed}
+          pressed={isPressed ?? false}
           showOnly={"desktop"}
           colour={BtnColours.Dark}
           aria-label={ariaLabel ?? tooltip}

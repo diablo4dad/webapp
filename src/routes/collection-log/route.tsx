@@ -12,7 +12,11 @@ import { generateUrl } from "./links";
 import { loader } from "./loader";
 import type { LoaderPayload } from "./loader";
 import { useCatalogLoading } from "./loading";
-import { useRootOutletContext } from "../root/outlet";
+import {
+  COLLECTION_SHELL_CONTROLS,
+  useRootOutletContext,
+  useRootShellControls,
+} from "../root/outlet";
 import {
   getFocusTarget,
   getViewState,
@@ -27,6 +31,7 @@ function Component() {
   const settings = useSettings();
   const collectionLog = useCollection();
   const { searchTerm, sidebarVisibility } = useRootOutletContext();
+  useRootShellControls(COLLECTION_SHELL_CONTROLS);
   const {
     db,
     switchDb,

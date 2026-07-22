@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
 import type { DadUser } from "../../services/auth";
@@ -91,8 +92,11 @@ function getDefaultSidebarVisibility(): SidebarVisibility {
 function renderView(options: Options = {}) {
   const props: Props = {
     canEditCatalog: false,
+    isContentConstrained: false,
     isEditMode: false,
+    isFooterVisible: true,
     isMobileConfigOpen: false,
+    isMobileMenuOpen: false,
     isMobileSearchOpen: false,
     onClearSearch: vi.fn(),
     onCloseMobileContent: vi.fn(),
@@ -104,13 +108,21 @@ function renderView(options: Options = {}) {
     onToggleEditMode: vi.fn(),
     onToggleItemSidebar: vi.fn(),
     onToggleMobileConfig: vi.fn(),
+    onToggleMobileMenu: vi.fn(),
     onToggleMobileSearch: vi.fn(),
     routeOutlet: <div>route outlet</div>,
+    searchPlaceholder: "Search transmogs",
     searchTerm: "",
+    searchTitle: "Transmog Search",
     sidebarVisibility: getDefaultSidebarVisibility(),
+    showCollectionControls: true,
     ...options,
   };
-  const renderResult = render(<View {...props} />);
+  const renderResult = render(
+    <MemoryRouter>
+      <View {...props} />
+    </MemoryRouter>,
+  );
 
   return {
     ...renderResult,
@@ -136,7 +148,9 @@ describe("shell", () => {
     ).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Clear search" }))
       .toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Settings menu" }))
+    expect(screen.getByRole("button", { name: "Collection settings" }))
+      .toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Site menu" }))
       .toHaveAttribute("aria-pressed", "false");
     expect(screen.getByRole("textbox", { name: "Search transmogs" }))
       .toHaveValue("helm");
@@ -189,7 +203,11 @@ describe("auth actions", () => {
 
     expect(props.onSignIn).toHaveBeenCalledTimes(1);
 
-    rerender(<View {...props} user={signedInUser} />);
+    rerender(
+      <MemoryRouter>
+        <View {...props} user={signedInUser} />
+      </MemoryRouter>,
+    );
 
     await user.click(
       screen.getByRole("button", { name: "sign out dad@example.com" }),
@@ -207,9 +225,9 @@ describe("mobile settings", () => {
       isMobileConfigOpen: true,
     });
 
-    expect(screen.getByRole("button", { name: "Settings menu" }))
+    expect(screen.getByRole("button", { name: "Collection settings" }))
       .toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("Settings")).toBeInTheDocument();
+    expect(screen.getByText("Collection Settings")).toBeInTheDocument();
     expect(screen.getByText("settings panel")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Close settings" }));
@@ -217,6 +235,36 @@ describe("mobile settings", () => {
 
     expect(props.onCloseMobileContent).toHaveBeenCalledTimes(1);
     expect(props.onToggleEditMode).toHaveBeenCalledTimes(1);
+  });
+
+  test("renders site menu from content state", async () => {
+    const user = userEvent.setup();
+    const { props } = renderView({
+      isMobileMenuOpen: true,
+      user: signedInUser,
+    });
+
+    expect(screen.getByRole("button", { name: "Site menu" }))
+      .toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("Menu")).toBeInTheDocument();
+    const mobileNavigation = within(screen.getByRole("navigation", {
+      name: "Mobile navigation",
+    }));
+
+    expect(mobileNavigation.getByRole("link", { name: "Database" }))
+      .toHaveAttribute("href", "/database");
+
+    const mobileMenu = screen.getByText("Menu").closest("aside");
+
+    expect(mobileMenu).not.toBeNull();
+
+    await user.click(
+      within(mobileMenu as HTMLElement).getByRole("button", {
+        name: "sign out dad@example.com",
+      }),
+    );
+
+    expect(props.onSignOut).toHaveBeenCalledTimes(1);
   });
 });
 

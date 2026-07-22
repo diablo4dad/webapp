@@ -24,6 +24,14 @@ const router = createBrowserRouter([
         path: "/transmogs/:collectionId",
         lazy: () => import("../routes/collection-log/route"),
       },
+      {
+        path: "database/:itemId",
+        lazy: () => import("../routes/database-explorer/route"),
+      },
+      {
+        path: "database",
+        lazy: () => import("../routes/database-explorer/route"),
+      },
     ],
   },
 ]);

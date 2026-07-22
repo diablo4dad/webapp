@@ -136,6 +136,7 @@ function renderRoute({
     [MasterGroup.GENERAL]: "bundle",
   };
   const loadedCatalogGroups = [MasterGroup.GENERAL];
+  const setRootShellControls = vi.fn();
   const setCatalogCategoryDb = vi.fn();
   const switchDb = vi.fn();
   const sidebarVisibility = {
@@ -146,7 +147,10 @@ function renderRoute({
   mocks.useLoaderData.mockReturnValue({ group: MasterGroup.SEASONS });
   mocks.useNavigate.mockReturnValue(mocks.navigate);
   mocks.useOutletContext.mockReturnValue({
+    onClearSearch: vi.fn(),
+    onSearchChange: vi.fn(),
     searchTerm: "",
+    setRootShellControls,
     sidebarVisibility,
   });
   mocks.useAuth.mockReturnValue({ isLoading: isAuthLoading });
@@ -177,6 +181,7 @@ function renderRoute({
     seasonCollection,
     seasonItem,
     setCatalogCategoryDb,
+    setRootShellControls,
     sidebarVisibility,
     switchDb,
     visibleCollections,
@@ -230,6 +235,18 @@ describe("context wiring", () => {
     await waitFor(() =>
       expect(route.switchDb).toHaveBeenCalledWith(MasterGroup.SEASONS),
     );
+  });
+
+  test("registers collection shell controls", () => {
+    const route = renderRoute();
+
+    expect(route.setRootShellControls).toHaveBeenCalledWith({
+      isContentConstrained: false,
+      isFooterVisible: true,
+      searchPlaceholder: "Search transmogs",
+      searchTitle: "Transmog Search",
+      showCollectionControls: true,
+    });
   });
 });
 

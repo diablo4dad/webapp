@@ -5,6 +5,7 @@ type Props = {
   onChange: (value: string) => void;
   onClear: () => void;
   onSubmit?: () => void;
+  placeholder?: string;
   value: string;
 };
 
@@ -15,6 +16,7 @@ function SearchField({
   onChange,
   onClear,
   onSubmit,
+  placeholder = SEARCH_PLACEHOLDER,
   value,
 }: Props) {
   return (
@@ -24,7 +26,7 @@ function SearchField({
       onChange={onChange}
       onClear={onClear}
       onSubmit={onSubmit}
-      placeholder={SEARCH_PLACEHOLDER}
+      placeholder={placeholder}
     />
   );
 }

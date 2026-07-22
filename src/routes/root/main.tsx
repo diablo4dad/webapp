@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { DadUser } from "../../services/auth";
 import type { MasterGroup } from "../../shared/domain";
 import { CollectionEditor, CollectionItemEditor } from "../../features/editor/ui";
+import { MobileMenu } from "./mobile-menu";
 import { MobileSearch } from "./mobile-search";
 import { MobileSettings } from "./mobile-settings";
 
@@ -9,6 +10,7 @@ type Props = {
   canEditCatalog: boolean;
   isEditMode: boolean;
   isMobileConfigOpen: boolean;
+  isMobileMenuOpen: boolean;
   isMobileSearchOpen: boolean;
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
@@ -18,7 +20,10 @@ type Props = {
   onSignOut: () => void;
   onToggleEditMode: () => void;
   routeOutlet: ReactNode;
+  searchPlaceholder: string;
   searchTerm: string;
+  searchTitle: string;
+  showCollectionControls: boolean;
   user?: DadUser;
 };
 
@@ -26,6 +31,7 @@ type MobileContentProps = {
   canEditCatalog: boolean;
   isEditMode: boolean;
   isMobileConfigOpen: boolean;
+  isMobileMenuOpen: boolean;
   isMobileSearchOpen: boolean;
   onClearSearch: () => void;
   onClose: () => void;
@@ -34,7 +40,10 @@ type MobileContentProps = {
   onSignIn: () => void;
   onSignOut: () => void;
   onToggleEditMode: () => void;
+  searchPlaceholder: string;
   searchTerm: string;
+  searchTitle: string;
+  showCollectionControls: boolean;
   user?: DadUser;
 };
 
@@ -42,6 +51,7 @@ function Main({
   canEditCatalog,
   isEditMode,
   isMobileConfigOpen,
+  isMobileMenuOpen,
   isMobileSearchOpen,
   onClearSearch,
   onCloseMobileContent,
@@ -51,7 +61,10 @@ function Main({
   onSignOut,
   onToggleEditMode,
   routeOutlet,
+  searchPlaceholder,
   searchTerm,
+  searchTitle,
+  showCollectionControls,
   user,
 }: Props) {
   return (
@@ -63,6 +76,7 @@ function Main({
         canEditCatalog={canEditCatalog}
         isEditMode={isEditMode}
         isMobileConfigOpen={isMobileConfigOpen}
+        isMobileMenuOpen={isMobileMenuOpen}
         isMobileSearchOpen={isMobileSearchOpen}
         onClearSearch={onClearSearch}
         onClose={onCloseMobileContent}
@@ -71,7 +85,10 @@ function Main({
         onSignIn={onSignIn}
         onSignOut={onSignOut}
         onToggleEditMode={onToggleEditMode}
+        searchPlaceholder={searchPlaceholder}
         searchTerm={searchTerm}
+        searchTitle={searchTitle}
+        showCollectionControls={showCollectionControls}
         user={user}
       />
     </>
@@ -82,6 +99,7 @@ function MobileContent({
   canEditCatalog,
   isEditMode,
   isMobileConfigOpen,
+  isMobileMenuOpen,
   isMobileSearchOpen,
   onClearSearch,
   onClose,
@@ -90,29 +108,39 @@ function MobileContent({
   onSignIn,
   onSignOut,
   onToggleEditMode,
+  searchPlaceholder,
   searchTerm,
+  searchTitle,
+  showCollectionControls,
   user,
 }: MobileContentProps) {
   return (
     <>
+      {isMobileMenuOpen && (
+        <MobileMenu
+          onClose={onClose}
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+          user={user}
+        />
+      )}
       {isMobileSearchOpen && (
         <MobileSearch
           onClearSearch={onClearSearch}
           onClose={onClose}
           onSearchChange={onSearchChange}
+          placeholder={searchPlaceholder}
           searchTerm={searchTerm}
+          title={searchTitle}
         />
       )}
-      {isMobileConfigOpen && (
+      {showCollectionControls && isMobileConfigOpen && (
         <MobileSettings
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           onClose={onClose}
           onSelectCollectionGroup={onSelectCollectionGroup}
-          onSignIn={onSignIn}
-          onSignOut={onSignOut}
           onToggleEditMode={onToggleEditMode}
-          user={user}
         />
       )}
     </>

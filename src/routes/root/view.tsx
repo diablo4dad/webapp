@@ -8,8 +8,11 @@ import { Main } from "./main";
 
 type Props = {
   canEditCatalog: boolean;
+  isContentConstrained: boolean;
   isEditMode: boolean;
+  isFooterVisible: boolean;
   isMobileConfigOpen: boolean;
+  isMobileMenuOpen: boolean;
   isMobileSearchOpen: boolean;
   onClearSearch: () => void;
   onCloseMobileContent: () => void;
@@ -21,17 +24,24 @@ type Props = {
   onToggleEditMode: () => void;
   onToggleItemSidebar: () => void;
   onToggleMobileConfig: () => void;
+  onToggleMobileMenu: () => void;
   onToggleMobileSearch: () => void;
   routeOutlet: ReactNode;
+  searchPlaceholder: string;
   searchTerm: string;
+  searchTitle: string;
   sidebarVisibility: SidebarVisibility;
+  showCollectionControls: boolean;
   user?: DadUser;
 };
 
 function View({
   canEditCatalog,
+  isContentConstrained,
   isEditMode,
+  isFooterVisible,
   isMobileConfigOpen,
+  isMobileMenuOpen,
   isMobileSearchOpen,
   onClearSearch,
   onCloseMobileContent,
@@ -43,18 +53,25 @@ function View({
   onToggleEditMode,
   onToggleItemSidebar,
   onToggleMobileConfig,
+  onToggleMobileMenu,
   onToggleMobileSearch,
   routeOutlet,
+  searchPlaceholder,
   searchTerm,
+  searchTitle,
   sidebarVisibility,
+  showCollectionControls,
   user,
 }: Props) {
   return (
     <Layout
+      isFooterVisible={isFooterVisible}
+      isContentConstrained={isContentConstrained}
       header={
         <Header
           canEditCatalog={canEditCatalog}
           isMobileConfigOpen={isMobileConfigOpen}
+          isMobileMenuOpen={isMobileMenuOpen}
           isMobileSearchOpen={isMobileSearchOpen}
           isEditMode={isEditMode}
           onClearSearch={onClearSearch}
@@ -65,9 +82,12 @@ function View({
           onToggleEditMode={onToggleEditMode}
           onToggleItemSidebar={onToggleItemSidebar}
           onToggleMobileConfig={onToggleMobileConfig}
+          onToggleMobileMenu={onToggleMobileMenu}
           onToggleMobileSearch={onToggleMobileSearch}
+          searchPlaceholder={searchPlaceholder}
           searchTerm={searchTerm}
           sidebarVisibility={sidebarVisibility}
+          showCollectionControls={showCollectionControls}
           user={user}
         />
       }
@@ -76,6 +96,7 @@ function View({
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           isMobileConfigOpen={isMobileConfigOpen}
+          isMobileMenuOpen={isMobileMenuOpen}
           isMobileSearchOpen={isMobileSearchOpen}
           onClearSearch={onClearSearch}
           onCloseMobileContent={onCloseMobileContent}
@@ -85,7 +106,10 @@ function View({
           onSignOut={onSignOut}
           onToggleEditMode={onToggleEditMode}
           routeOutlet={routeOutlet}
+          searchPlaceholder={searchPlaceholder}
           searchTerm={searchTerm}
+          searchTitle={searchTitle}
+          showCollectionControls={showCollectionControls}
           user={user}
         />
       }

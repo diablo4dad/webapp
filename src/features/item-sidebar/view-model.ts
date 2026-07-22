@@ -1,14 +1,8 @@
-import { CharacterClass, MagicType } from "../../services/data";
+import { CharacterClass } from "../../services/data";
 import type { CollectionItem, Item } from "../../services/data";
-
-const magicTypeSortOrder = new Map<MagicType, number>([
-  [MagicType.COMMON, 0],
-  [MagicType.MAGIC, 1],
-  [MagicType.RARE, 2],
-  [MagicType.LEGENDARY, 3],
-  [MagicType.UNIQUE, 4],
-  [MagicType.MYTHIC, 5],
-]);
+import {
+  getMagicTypeSortRank as getMagicTypeValueSortRank,
+} from "../../shared/domain/magic-types";
 
 function isUsableBy(characterClass: CharacterClass, item: CollectionItem): boolean {
   return item.items.some(
@@ -17,10 +11,7 @@ function isUsableBy(characterClass: CharacterClass, item: CollectionItem): boole
 }
 
 function getMagicTypeSortRank(item: Item): number {
-  return item.magicType === undefined
-    ? Number.MAX_SAFE_INTEGER
-    : magicTypeSortOrder.get(item.magicType as MagicType) ??
-        Number.MAX_SAFE_INTEGER;
+  return getMagicTypeValueSortRank(item.magicType);
 }
 
 function buildSalvageSourceItems(focusItem: Item): Item[] {

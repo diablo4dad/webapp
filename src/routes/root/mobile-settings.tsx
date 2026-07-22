@@ -1,8 +1,6 @@
-import type { DadUser } from "../../services/auth";
 import type { MasterGroup } from "../../shared/domain";
 import { Close, Pencil } from "../../shared/ui/Icons";
 import { ConfigSidebar } from "../../features/settings/ui";
-import { AuthActions } from "./auth";
 import { MobileSettingsLayout } from "./mobile-settings-layout";
 import styles from "./mobile-settings.module.css";
 
@@ -11,10 +9,7 @@ type Props = {
   isEditMode: boolean;
   onClose: () => void;
   onSelectCollectionGroup: (group: MasterGroup) => void;
-  onSignIn: () => void;
-  onSignOut: () => void;
   onToggleEditMode: () => void;
-  user?: DadUser;
 };
 
 type HeaderProps = {
@@ -28,12 +23,6 @@ type BodyProps = {
   onToggleEditMode: () => void;
 };
 
-type FooterProps = {
-  onSignIn: () => void;
-  onSignOut: () => void;
-  user?: DadUser;
-};
-
 type EditorControlProps = {
   isEditMode: boolean;
   onToggleEditMode: () => void;
@@ -44,30 +33,18 @@ function MobileSettings({
   isEditMode,
   onClose,
   onSelectCollectionGroup,
-  onSignIn,
-  onSignOut,
   onToggleEditMode,
-  user,
 }: Props) {
   return (
     <MobileSettingsLayout
       onClose={onClose}
-      header={
-        <Header onClose={onClose} />
-      }
+      header={<Header onClose={onClose} />}
       body={
         <Body
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           onSelectCollectionGroup={onSelectCollectionGroup}
           onToggleEditMode={onToggleEditMode}
-        />
-      }
-      footer={
-        <Footer
-          onSignIn={onSignIn}
-          onSignOut={onSignOut}
-          user={user}
         />
       }
     />
@@ -77,7 +54,7 @@ function MobileSettings({
 function Header({ onClose }: HeaderProps) {
   return (
     <>
-      <div className={styles.MobileSettingsTitle}>Settings</div>
+      <div className={styles.MobileSettingsTitle}>Collection Settings</div>
       <button
         className={styles.MobileSettingsClose}
         onClick={onClose}
@@ -105,20 +82,6 @@ function Body({
       )}
       <ConfigSidebar onSelectCollectionGroup={onSelectCollectionGroup} />
     </>
-  );
-}
-
-function Footer({
-  onSignIn,
-  onSignOut,
-  user,
-}: FooterProps) {
-  return (
-    <AuthActions
-      onSignIn={onSignIn}
-      onSignOut={onSignOut}
-      user={user}
-    />
   );
 }
 

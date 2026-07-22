@@ -19,18 +19,46 @@ vi.mock("./mobile-search", () => ({
     onClearSearch,
     onClose,
     onSearchChange,
+    placeholder,
     searchTerm,
+    title,
   }: {
     onClearSearch: () => void;
     onClose: () => void;
     onSearchChange: (value: string) => void;
+    placeholder: string;
     searchTerm: string;
+    title: string;
   }) => (
     <div>
       <div>search overlay {searchTerm}</div>
+      <div>search title {title}</div>
+      <div>search placeholder {placeholder}</div>
       <button onClick={() => onSearchChange("sword")}>change search</button>
       <button onClick={onClearSearch}>clear search</button>
       <button onClick={onClose}>close search</button>
+    </div>
+  ),
+}));
+
+vi.mock("./mobile-menu", () => ({
+  MobileMenu: ({
+    onClose,
+    onSignIn,
+    onSignOut,
+    user,
+  }: {
+    onClose: () => void;
+    onSignIn: () => void;
+    onSignOut: () => void;
+    user?: DadUser;
+  }) => (
+    <div>
+      <div>site menu</div>
+      <div>{user?.email ?? "anonymous"}</div>
+      <button onClick={onClose}>close menu</button>
+      <button onClick={onSignIn}>sign in</button>
+      <button onClick={onSignOut}>sign out</button>
     </div>
   ),
 }));
@@ -41,30 +69,21 @@ vi.mock("./mobile-settings", () => ({
     isEditMode,
     onClose,
     onSelectCollectionGroup,
-    onSignIn,
-    onSignOut,
     onToggleEditMode,
-    user,
   }: {
     canEditCatalog: boolean;
     isEditMode: boolean;
     onClose: () => void;
     onSelectCollectionGroup: (group: MasterGroup) => void;
-    onSignIn: () => void;
-    onSignOut: () => void;
     onToggleEditMode: () => void;
-    user?: DadUser;
   }) => (
     <div>
       <div>settings drawer {canEditCatalog ? "editable" : "readonly"}</div>
       <div>editor mode {isEditMode ? "on" : "off"}</div>
-      <div>{user?.email ?? "anonymous"}</div>
       <button onClick={onClose}>close settings</button>
       <button onClick={() => onSelectCollectionGroup(MasterGroup.SEASONS)}>
         select group
       </button>
-      <button onClick={onSignIn}>sign in</button>
-      <button onClick={onSignOut}>sign out</button>
       <button onClick={onToggleEditMode}>toggle editor</button>
     </div>
   ),
@@ -83,6 +102,7 @@ function renderMain(options: Options = {}) {
     canEditCatalog: false,
     isEditMode: false,
     isMobileConfigOpen: false,
+    isMobileMenuOpen: false,
     isMobileSearchOpen: false,
     onClearSearch: vi.fn(),
     onCloseMobileContent: vi.fn(),
@@ -92,7 +112,10 @@ function renderMain(options: Options = {}) {
     onSignOut: vi.fn(),
     onToggleEditMode: vi.fn(),
     routeOutlet: <div>route outlet</div>,
+    searchPlaceholder: "Search transmogs",
     searchTerm: "",
+    searchTitle: "Transmog Search",
+    showCollectionControls: true,
     ...options,
   };
   const renderResult = render(<Main {...props} />);
@@ -122,6 +145,10 @@ describe("mobile search", () => {
     });
 
     expect(screen.getByText("search overlay helm")).toBeInTheDocument();
+    expect(screen.getByText("search title Transmog Search"))
+      .toBeInTheDocument();
+    expect(screen.getByText("search placeholder Search transmogs"))
+      .toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "change search" }));
     await user.click(screen.getByRole("button", { name: "clear search" }));
@@ -134,31 +161,53 @@ describe("mobile search", () => {
 });
 
 describe("mobile settings", () => {
+  test("renders site menu and passes account actions through", async () => {
+    const user = userEvent.setup();
+    const { props } = renderMain({
+      isMobileMenuOpen: true,
+      user: signedInUser,
+    });
+
+    expect(screen.getByText("site menu")).toBeInTheDocument();
+    expect(screen.getByText("dad@example.com")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "close menu" }));
+    await user.click(screen.getByRole("button", { name: "sign in" }));
+    await user.click(screen.getByRole("button", { name: "sign out" }));
+
+    expect(props.onCloseMobileContent).toHaveBeenCalledTimes(1);
+    expect(props.onSignIn).toHaveBeenCalledTimes(1);
+    expect(props.onSignOut).toHaveBeenCalledTimes(1);
+  });
+
   test("renders drawer and passes settings actions through", async () => {
     const user = userEvent.setup();
     const { props } = renderMain({
       canEditCatalog: true,
       isEditMode: true,
       isMobileConfigOpen: true,
-      user: signedInUser,
     });
 
     expect(screen.getByText("settings drawer editable")).toBeInTheDocument();
     expect(screen.getByText("editor mode on")).toBeInTheDocument();
-    expect(screen.getByText("dad@example.com")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "close settings" }));
     await user.click(screen.getByRole("button", { name: "select group" }));
-    await user.click(screen.getByRole("button", { name: "sign in" }));
-    await user.click(screen.getByRole("button", { name: "sign out" }));
     await user.click(screen.getByRole("button", { name: "toggle editor" }));
 
     expect(props.onCloseMobileContent).toHaveBeenCalledTimes(1);
     expect(props.onSelectCollectionGroup).toHaveBeenCalledWith(
       MasterGroup.SEASONS,
     );
-    expect(props.onSignIn).toHaveBeenCalledTimes(1);
-    expect(props.onSignOut).toHaveBeenCalledTimes(1);
     expect(props.onToggleEditMode).toHaveBeenCalledTimes(1);
+  });
+
+  test("hides drawer when collection controls are unavailable", () => {
+    renderMain({
+      isMobileConfigOpen: true,
+      showCollectionControls: false,
+    });
+
+    expect(screen.queryByText(/settings drawer/)).not.toBeInTheDocument();
   });
 });

@@ -9,6 +9,7 @@
     "@floating-ui/react": "^0.27.19",
     "@headlessui/react": "^2.2.10",
     "@szhsin/react-accordion": "^1.2.4",
+    "@tanstack/react-virtual": "^3.14.7",
     "classnames": "^2.5.1",
     "firebase": "^12.15.0",
     "fuse.js": "^7.0.0",
@@ -22,6 +23,7 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/assets/*.js'",
+    "generate:build-info": "node scripts/generate-build-info.cjs",
     "build": "npm run typecheck && vite build",
     "check": "npm run lint && npm test && npm run build",
     "e2e": "start-server-and-test start:e2e http://127.0.0.1:5173 e2e:run",
@@ -32,11 +34,11 @@
     "lint:fix": "npm run lint -- --fix",
     "preview": "vite preview",
     "set:editor-role": "node scripts/set-editor-role.cjs",
-    "start": "vite",
-    "start:e2e": "vite --host 127.0.0.1 --port 5173 --strictPort",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "start": "npm run generate:build-info && vite",
+    "start:e2e": "npm run generate:build-info && vite --host 127.0.0.1 --port 5173 --strictPort",
+    "test": "npm run generate:build-info && vitest run",
+    "test:watch": "npm run generate:build-info && vitest",
+    "typecheck": "npm run generate:build-info && tsc --noEmit",
     "upload:catalog-seed": "node scripts/upload-catalog-seed.cjs"
   },
   "husky": {

@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import type { DadUser } from "../../services/auth";
 import type { SidebarVisibility } from "../../shared/domain";
@@ -55,27 +56,33 @@ vi.mock("./header-actions", () => ({
     hasSearchFilter,
     isEditMode,
     isMobileConfigOpen,
+    isMobileMenuOpen,
     isMobileSearchOpen,
     onClearSearch,
     onToggleConfig,
     onToggleEditMode,
     onToggleItemSidebar,
     onToggleMobileConfig,
+    onToggleMobileMenu,
     onToggleMobileSearch,
     sidebarVisibility,
+    showCollectionControls,
   }: {
     canEditCatalog: boolean;
     hasSearchFilter: boolean;
     isEditMode: boolean;
     isMobileConfigOpen: boolean;
+    isMobileMenuOpen: boolean;
     isMobileSearchOpen: boolean;
     onClearSearch: () => void;
     onToggleConfig: () => void;
     onToggleEditMode: () => void;
     onToggleItemSidebar: () => void;
     onToggleMobileConfig: () => void;
+    onToggleMobileMenu: () => void;
     onToggleMobileSearch: () => void;
     sidebarVisibility: SidebarVisibility;
+    showCollectionControls: boolean;
   }) => (
     <div>
       <div>item sidebar {sidebarVisibility.showItem ? "shown" : "hidden"}</div>
@@ -83,14 +90,17 @@ vi.mock("./header-actions", () => ({
         settings sidebar {sidebarVisibility.showConfig ? "shown" : "hidden"}
       </div>
       <div>mobile config {isMobileConfigOpen ? "open" : "closed"}</div>
+      <div>mobile menu {isMobileMenuOpen ? "open" : "closed"}</div>
       <div>mobile search {isMobileSearchOpen ? "open" : "closed"}</div>
       <div>search filter {hasSearchFilter ? "active" : "inactive"}</div>
       <div>catalog {canEditCatalog ? "editable" : "readonly"}</div>
       <div>editor {isEditMode ? "on" : "off"}</div>
+      <div>collection controls {showCollectionControls ? "shown" : "hidden"}</div>
       <button onClick={onToggleItemSidebar}>toggle item sidebar</button>
       <button onClick={onToggleConfig}>toggle settings sidebar</button>
       <button onClick={onToggleEditMode}>toggle editor</button>
       <button onClick={onToggleMobileConfig}>toggle mobile config</button>
+      <button onClick={onToggleMobileMenu}>toggle mobile menu</button>
       <button onClick={onToggleMobileSearch}>toggle mobile search</button>
       <button onClick={onClearSearch}>clear mobile search</button>
     </div>
@@ -117,6 +127,7 @@ function renderHeader(options: Options = {}) {
     canEditCatalog: false,
     isEditMode: false,
     isMobileConfigOpen: false,
+    isMobileMenuOpen: false,
     isMobileSearchOpen: false,
     onClearSearch: vi.fn(),
     onSearchChange: vi.fn(),
@@ -126,12 +137,19 @@ function renderHeader(options: Options = {}) {
     onToggleEditMode: vi.fn(),
     onToggleItemSidebar: vi.fn(),
     onToggleMobileConfig: vi.fn(),
+    onToggleMobileMenu: vi.fn(),
     onToggleMobileSearch: vi.fn(),
+    searchPlaceholder: "Search transmogs",
     searchTerm: "",
     sidebarVisibility: getDefaultSidebarVisibility(),
+    showCollectionControls: true,
     ...options,
   };
-  const renderResult = render(<Header {...props} />);
+  const renderResult = render(
+    <MemoryRouter>
+      <Header {...props} />
+    </MemoryRouter>,
+  );
 
   return {
     ...renderResult,
@@ -149,6 +167,17 @@ describe("brand", () => {
     expect(screen.getByText("Dad")).toBeInTheDocument();
     expect(screen.getByText("Bringing closure to the completionist in you"))
       .toBeInTheDocument();
+  });
+});
+
+describe("navigation", () => {
+  test("shows the main navigation for everyone", () => {
+    renderHeader();
+
+    expect(screen.getByRole("link", { name: "Collection" }))
+      .toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Database" }))
+      .toHaveAttribute("href", "/database");
   });
 });
 
@@ -185,6 +214,7 @@ describe("actions", () => {
       canEditCatalog: true,
       isEditMode: true,
       isMobileConfigOpen: true,
+      isMobileMenuOpen: true,
       isMobileSearchOpen: true,
       searchTerm: "helm",
       sidebarVisibility: {
@@ -196,10 +226,12 @@ describe("actions", () => {
     expect(screen.getByText("item sidebar shown")).toBeInTheDocument();
     expect(screen.getByText("settings sidebar hidden")).toBeInTheDocument();
     expect(screen.getByText("mobile config open")).toBeInTheDocument();
+    expect(screen.getByText("mobile menu open")).toBeInTheDocument();
     expect(screen.getByText("mobile search open")).toBeInTheDocument();
     expect(screen.getByText("search filter active")).toBeInTheDocument();
     expect(screen.getByText("catalog editable")).toBeInTheDocument();
     expect(screen.getByText("editor on")).toBeInTheDocument();
+    expect(screen.getByText("collection controls shown")).toBeInTheDocument();
 
     await user.click(
       screen.getByRole("button", { name: "toggle item sidebar" }),
@@ -212,6 +244,9 @@ describe("actions", () => {
       screen.getByRole("button", { name: "toggle mobile config" }),
     );
     await user.click(
+      screen.getByRole("button", { name: "toggle mobile menu" }),
+    );
+    await user.click(
       screen.getByRole("button", { name: "toggle mobile search" }),
     );
     await user.click(screen.getByRole("button", { name: "clear mobile search" }));
@@ -220,6 +255,7 @@ describe("actions", () => {
     expect(props.onToggleConfig).toHaveBeenCalledTimes(1);
     expect(props.onToggleEditMode).toHaveBeenCalledTimes(1);
     expect(props.onToggleMobileConfig).toHaveBeenCalledTimes(1);
+    expect(props.onToggleMobileMenu).toHaveBeenCalledTimes(1);
     expect(props.onToggleMobileSearch).toHaveBeenCalledTimes(1);
     expect(props.onClearSearch).toHaveBeenCalledTimes(1);
   });
@@ -234,7 +270,11 @@ describe("auth", () => {
 
     expect(props.onSignIn).toHaveBeenCalledTimes(1);
 
-    rerender(<Header {...props} user={signedInUser} />);
+    rerender(
+      <MemoryRouter>
+        <Header {...props} user={signedInUser} />
+      </MemoryRouter>,
+    );
 
     await user.click(
       screen.getByRole("button", { name: "sign out dad@example.com" }),

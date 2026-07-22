@@ -24,6 +24,7 @@ const CATALOG_NODE_COLLECTION = "collectionNodes";
 const DEFAULT_CATALOG_VERSION_ID = "v3";
 const CATALOG_COLLECTION_NODE_BUNDLE_ENDPOINT =
   "/api/catalog/collectionNodes.bundle";
+let staticDadDbRefPromise: Promise<DadDbRef> | undefined;
 
 type StaticItemData = Pick<DadDbRef, "itemTypes" | "items">;
 export type CatalogCollectionNodeSource = "bundle" | "firestore";
@@ -978,6 +979,15 @@ export async function resolveCatalogVersionId(): Promise<string> {
 }
 
 export async function fetchStaticDadDbRef(): Promise<DadDbRef> {
+  staticDadDbRefPromise ??= fetchStaticDadDbRefFromSource().catch((error) => {
+    staticDadDbRefPromise = undefined;
+    throw error;
+  });
+
+  return staticDadDbRefPromise;
+}
+
+async function fetchStaticDadDbRefFromSource(): Promise<DadDbRef> {
   const response = await fetch("/d4dad.json");
   if (!response.ok) {
     throw new Error(

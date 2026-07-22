@@ -8,17 +8,21 @@ type Props = {
   onClearSearch: () => void;
   onClose: () => void;
   onSearchChange: (value: string) => void;
+  placeholder: string;
   searchTerm: string;
+  title: string;
 };
 
 type HeaderProps = {
   onClose: () => void;
+  title: string;
 };
 
 type BodyProps = {
   onClearSearch: () => void;
   onClose: () => void;
   onSearchChange: (value: string) => void;
+  placeholder: string;
   searchTerm: string;
 };
 
@@ -31,19 +35,22 @@ function MobileSearch({
   onClearSearch,
   onClose,
   onSearchChange,
+  placeholder,
   searchTerm,
+  title,
 }: Props) {
   return (
     <MobileSearchLayout
       onClose={onClose}
       header={
-        <Header onClose={onClose} />
+        <Header onClose={onClose} title={title} />
       }
       body={
         <Body
           onClearSearch={onClearSearch}
           onClose={onClose}
           onSearchChange={onSearchChange}
+          placeholder={placeholder}
           searchTerm={searchTerm}
         />
       }
@@ -57,11 +64,11 @@ function MobileSearch({
   );
 }
 
-function Header({ onClose }: HeaderProps) {
+function Header({ onClose, title }: HeaderProps) {
   return (
     <>
       <div className={styles.MobileSearchTitle}>
-        Transmog Search
+        {title}
       </div>
       <button
         className={styles.MobileSearchClose}
@@ -78,6 +85,7 @@ function Body({
   onClearSearch,
   onClose,
   onSearchChange,
+  placeholder,
   searchTerm,
 }: BodyProps) {
   return (
@@ -87,6 +95,7 @@ function Body({
         onChange={onSearchChange}
         onClear={onClearSearch}
         onSubmit={onClose}
+        placeholder={placeholder}
         autoFocus={true}
       />
     </div>

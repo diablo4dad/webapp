@@ -7,11 +7,13 @@ import {
   HeaderTitle,
 } from "./header-brand";
 import { HeaderLayout } from "./header-layout";
+import { HeaderNavigation } from "./header-navigation";
 import { SearchField } from "./search";
 
 type Props = {
   canEditCatalog: boolean;
   isMobileConfigOpen: boolean;
+  isMobileMenuOpen: boolean;
   isMobileSearchOpen: boolean;
   isEditMode: boolean;
   onClearSearch: () => void;
@@ -22,15 +24,19 @@ type Props = {
   onToggleEditMode: () => void;
   onToggleItemSidebar: () => void;
   onToggleMobileConfig: () => void;
+  onToggleMobileMenu: () => void;
   onToggleMobileSearch: () => void;
+  searchPlaceholder: string;
   searchTerm: string;
   sidebarVisibility: SidebarVisibility;
+  showCollectionControls: boolean;
   user?: DadUser;
 };
 
 function Header({
   canEditCatalog,
   isMobileConfigOpen,
+  isMobileMenuOpen,
   isMobileSearchOpen,
   isEditMode,
   onClearSearch,
@@ -41,20 +47,25 @@ function Header({
   onToggleEditMode,
   onToggleItemSidebar,
   onToggleMobileConfig,
+  onToggleMobileMenu,
   onToggleMobileSearch,
+  searchPlaceholder,
   searchTerm,
   sidebarVisibility,
+  showCollectionControls,
   user,
 }: Props) {
   return (
     <HeaderLayout
       logo={<HeaderLogo />}
+      navigation={<HeaderNavigation />}
       title={<HeaderTitle />}
       search={
         <SearchField
           value={searchTerm}
           onChange={onSearchChange}
           onClear={onClearSearch}
+          placeholder={searchPlaceholder}
         />
       }
       actions={
@@ -63,14 +74,17 @@ function Header({
           hasSearchFilter={searchTerm.length > 0}
           isEditMode={isEditMode}
           isMobileConfigOpen={isMobileConfigOpen}
+          isMobileMenuOpen={isMobileMenuOpen}
           isMobileSearchOpen={isMobileSearchOpen}
           onClearSearch={onClearSearch}
           onToggleConfig={onToggleConfig}
           onToggleEditMode={onToggleEditMode}
           onToggleItemSidebar={onToggleItemSidebar}
           onToggleMobileConfig={onToggleMobileConfig}
+          onToggleMobileMenu={onToggleMobileMenu}
           onToggleMobileSearch={onToggleMobileSearch}
           sidebarVisibility={sidebarVisibility}
+          showCollectionControls={showCollectionControls}
         />
       }
       auth={

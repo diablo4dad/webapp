@@ -45,7 +45,9 @@ function renderOverlay(options: Options = {}) {
     onClearSearch: vi.fn(),
     onClose: vi.fn(),
     onSearchChange: vi.fn(),
+    placeholder: "Search transmogs",
     searchTerm: "helm",
+    title: "Transmog Search",
     ...options,
   };
   const renderResult = render(<MobileSearch {...props} />);
@@ -64,6 +66,7 @@ describe("search field", () => {
     });
 
     expect(searchField).toHaveValue("helm");
+    expect(screen.getByText("Transmog Search")).toBeInTheDocument();
 
     fireEvent.change(searchField, {
       target: {
@@ -72,6 +75,17 @@ describe("search field", () => {
     });
 
     expect(props.onSearchChange).toHaveBeenCalledWith("sword");
+  });
+
+  test("uses the provided route search copy", () => {
+    renderOverlay({
+      placeholder: "Search database",
+      title: "Database Search",
+    });
+
+    expect(screen.getByText("Database Search")).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Search database" }))
+      .toHaveValue("helm");
   });
 
   test("passes clear action through", async () => {

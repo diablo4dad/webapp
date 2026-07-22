@@ -1,0 +1,65 @@
+.MobileMenuTitle {
+    color: var(--app-text-accent);
+    font-family: "PT Serif", serif;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    text-shadow: var(--shadow-text-subtle);
+}
+
+.MobileMenuClose {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--app-text-secondary);
+    cursor: pointer;
+}
+
+.MobileMenuClose svg {
+    width: var(--space-7);
+    height: var(--space-7);
+    fill: currentColor;
+}
+
+.MobileMenuNav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+}
+
+.MobileMenuNavLink,
+.MobileMenuNavLinkActive {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    border: 1px solid var(--app-border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0 var(--space-4);
+    background-color: var(--app-surface-raised);
+    color: var(--app-text-secondary);
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.MobileMenuNavLinkActive {
+    border-color: rgba(249, 166, 32, 0.55);
+    background-color: rgba(249, 166, 32, 0.1);
+    color: var(--secondary-color);
+    text-shadow: var(--shadow-text-subtle);
+}
+
+.MobileMenuAccount {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    width: 100%;
+}
+
+.MobileMenuAccountTitle {
+    color: var(--app-text-accent);
+    font-size: var(--font-size-md);
+    font-weight: 700;
+}

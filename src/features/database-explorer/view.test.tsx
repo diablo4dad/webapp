@@ -1,0 +1,882 @@
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterAll, afterEach, beforeAll, vi } from "vitest";
+import { MagicType, type ItemRef } from "../../services/data";
+import {
+  ALL_OPTION_VALUE,
+  DEFAULT_FILTERS,
+  DEFAULT_SORT_MODE,
+  type ExplorerItem,
+  type FilterOption,
+} from "./state";
+import { View } from "./view";
+import styles from "./view.module.css";
+
+const emptyOptions: FilterOption[] = [
+  {
+    label: "All",
+    value: ALL_OPTION_VALUE,
+  },
+];
+const itemTypeOptions: FilterOption[] = [
+  {
+    label: "All item types",
+    value: ALL_OPTION_VALUE,
+  },
+  {
+    label: "Sword",
+    value: "1",
+  },
+];
+const classOptions: FilterOption[] = [
+  {
+    label: "All classes",
+    value: ALL_OPTION_VALUE,
+  },
+  {
+    label: "Sorcerer",
+    value: "2",
+  },
+];
+const magicTypeOptions: FilterOption[] = [
+  {
+    label: "All magic types",
+    value: ALL_OPTION_VALUE,
+  },
+  {
+    label: "Magic",
+    value: String(MagicType.MAGIC),
+  },
+];
+const originalOffsetHeight = Object.getOwnPropertyDescriptor(
+  HTMLElement.prototype,
+  "offsetHeight",
+);
+const originalOffsetWidth = Object.getOwnPropertyDescriptor(
+  HTMLElement.prototype,
+  "offsetWidth",
+);
+
+beforeAll(() => {
+  Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
+    configurable: true,
+    get() {
+      return this.getAttribute("aria-label") === "Database item results"
+        ? 680
+        : 0;
+    },
+  });
+  Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+    configurable: true,
+    get() {
+      return this.getAttribute("aria-label") === "Database item results"
+        ? 360
+        : 0;
+    },
+  });
+});
+
+afterAll(() => {
+  if (originalOffsetHeight) {
+    Object.defineProperty(
+      HTMLElement.prototype,
+      "offsetHeight",
+      originalOffsetHeight,
+    );
+  }
+
+  if (originalOffsetWidth) {
+    Object.defineProperty(
+      HTMLElement.prototype,
+      "offsetWidth",
+      originalOffsetWidth,
+    );
+  }
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
+
+type ViewProps = Parameters<typeof View>[0];
+
+function renderView(overrides: Partial<ViewProps> = {}) {
+  const props = {
+    classOptions,
+    filteredItems: [],
+    filters: DEFAULT_FILTERS,
+    isLoading: false,
+    itemTypeOptions,
+    magicTypeOptions,
+    onFilterChange: vi.fn(),
+    onRetry: vi.fn(),
+    onSelectItem: vi.fn(),
+    onSortModeChange: vi.fn(),
+    sortMode: DEFAULT_SORT_MODE,
+    totalCount: 0,
+    ...overrides,
+  };
+  const renderResult = render(<View {...props} />);
+
+  return {
+    ...renderResult,
+    props,
+  };
+}
+
+function createExplorerItem(item: Partial<ItemRef> = {}): ExplorerItem {
+  const mergedItem: ItemRef = {
+    icon: 1,
+    id: 100,
+    itemType: 1,
+    magicType: MagicType.MAGIC,
+    name: "Azure Blade",
+    ...item,
+  };
+
+  return {
+    idText: String(mergedItem.id),
+    item: mergedItem,
+    itemTypeName: "Sword",
+    searchText: mergedItem.name,
+    source: "static",
+  };
+}
+
+function createClientRect(top: number): DOMRect {
+  return {
+    bottom: top,
+    height: 0,
+    left: 0,
+    right: 0,
+    toJSON: () => ({}),
+    top,
+    width: 0,
+    x: 0,
+    y: top,
+  } as DOMRect;
+}
+
+describe("database explorer surface", () => {
+  test("renders compact filters in the item sidebar", () => {
+    const { container } = renderView();
+
+    const title = screen.getByRole("heading", { name: "Database Explorer" });
+    const filters = screen.getByRole("region", { name: "Database filters" });
+    const emptyList = screen.getByText("No items found.");
+
+    expect(title).toHaveClass(styles.ViewListTitle);
+    expect(
+      title.compareDocumentPosition(filters) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      filters.compareDocumentPosition(emptyList) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    const itemTypeFilter = screen.getByRole("button", {
+      name: "Item Type: Show all",
+    });
+    const itemQualityFilter = screen.getByRole("button", {
+      name: "Item Quality: Show all",
+    });
+    const classFilter = screen.getByRole("button", {
+      name: "Class: Show all",
+    });
+
+    expect(itemTypeFilter).toHaveClass(styles.ViewFilterControl);
+    expect(itemQualityFilter).toHaveClass(styles.ViewFilterControl);
+    expect(classFilter).toHaveClass(styles.ViewFilterControl);
+    expect(
+      itemTypeFilter.compareDocumentPosition(itemQualityFilter) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      itemQualityFilter.compareDocumentPosition(classFilter) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(container.querySelector("select")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Source")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Flag")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Search")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Reset filters" }))
+      .not.toBeInTheDocument();
+  });
+
+  test("shows active filter labels in the compact controls", () => {
+    renderView({
+      filters: {
+        ...DEFAULT_FILTERS,
+        characterClass: "2",
+        itemTypeId: "1",
+        magicType: String(MagicType.MAGIC),
+      },
+    });
+
+    expect(screen.getByRole("button", { name: "Item Type: Sword" }))
+      .toHaveClass(styles.ViewFilterControlActive);
+    expect(screen.getByRole("button", { name: "Item Quality: Magic" }))
+      .toHaveClass(styles.ViewFilterControlActive);
+    expect(screen.getByRole("button", { name: "Class: Sorcerer" }))
+      .toHaveClass(styles.ViewFilterControlActive);
+  });
+
+  test("opens filter options and applies a selected value", async () => {
+    const user = userEvent.setup();
+    const onFilterChange = vi.fn();
+
+    renderView({
+      onFilterChange,
+    });
+
+    await user.click(screen.getByRole("button", {
+      name: "Item Type: Show all",
+    }));
+
+    expect(screen.queryByText("No items found.")).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Item Type filter options" }))
+      .toHaveClass(styles.ViewFilterOptions);
+    expect(screen.getByText("Choose Item Type to Show")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Show all" }))
+      .toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Sword" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Sword" }));
+
+    expect(onFilterChange).toHaveBeenCalledWith({ itemTypeId: "1" });
+    expect(screen.queryByRole("button", { name: "Sword" }))
+      .not.toBeInTheDocument();
+    expect(screen.getByText("No items found.")).toBeInTheDocument();
+  });
+
+  test("positions filter options at the top and restores list scroll on close", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <div data-testid="scroll-parent">
+        <View
+          classOptions={classOptions}
+          filteredItems={[]}
+          filters={DEFAULT_FILTERS}
+          isLoading={false}
+          itemTypeOptions={itemTypeOptions}
+          magicTypeOptions={magicTypeOptions}
+          onFilterChange={vi.fn()}
+          onRetry={vi.fn()}
+          onSelectItem={vi.fn()}
+          onSortModeChange={vi.fn()}
+          sortMode={DEFAULT_SORT_MODE}
+          totalCount={0}
+        />
+      </div>,
+    );
+
+    const scrollParent = screen.getByTestId("scroll-parent");
+    const getComputedStyle = window.getComputedStyle.bind(window);
+
+    vi.spyOn(window, "getComputedStyle").mockImplementation((element) => {
+      const computedStyle = getComputedStyle(element);
+
+      return new Proxy(computedStyle, {
+        get(target, property, receiver) {
+          if (property === "overflowY") {
+            return element instanceof HTMLElement &&
+              element.dataset.testid === "scroll-parent"
+              ? "auto"
+              : "visible";
+          }
+
+          const value = Reflect.get(target, property, receiver);
+
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    });
+
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockImplementation(function getBoundingClientRect(
+        this: HTMLElement,
+      ) {
+        return this.classList.contains(styles.View)
+          ? createClientRect(-scrollParent.scrollTop)
+          : createClientRect(0);
+      });
+
+    scrollParent.scrollTop = 280;
+
+    await user.click(screen.getByRole("button", {
+      name: "Item Type: Show all",
+    }));
+
+    await waitFor(() => expect(scrollParent.scrollTop).toBe(0));
+
+    scrollParent.scrollTop = 160;
+
+    await user.click(screen.getByRole("button", {
+      name: "Class: Show all",
+    }));
+
+    await waitFor(() => expect(scrollParent.scrollTop).toBe(0));
+
+    scrollParent.scrollTop = 120;
+
+    await user.click(screen.getByRole("button", {
+      name: "Class: Show all",
+    }));
+
+    await waitFor(() => expect(scrollParent.scrollTop).toBe(280));
+  });
+
+  test("switches the mobile pane from results to item detail", async () => {
+    const user = userEvent.setup();
+    const onSelectItem = vi.fn();
+    const selectedItem = createExplorerItem();
+
+    renderView({
+      filteredItems: [selectedItem],
+      onSelectItem,
+      selectedItem,
+      totalCount: 1,
+    });
+
+    const resultsPane = document.querySelector(`.${styles.ViewResultsPane}`);
+    const itemPane = document.querySelector(`.${styles.ViewItemPane}`);
+    const list = screen.getByLabelText("Database item results");
+
+    expect(resultsPane).not.toBeNull();
+    expect(itemPane).not.toBeNull();
+    expect(resultsPane).not.toHaveClass(
+      styles.ViewResultsPaneMobileHidden,
+    );
+    expect(itemPane).toHaveClass(styles.ViewItemPaneMobileHidden);
+
+    await user.click(await within(list).findByRole("button", {
+      name: /Azure Blade/,
+    }));
+
+    expect(onSelectItem).toHaveBeenCalledWith(selectedItem);
+    expect(resultsPane).toHaveClass(styles.ViewResultsPaneMobileHidden);
+    expect(itemPane).not.toHaveClass(styles.ViewItemPaneMobileHidden);
+
+    await user.click(screen.getByRole("button", {
+      name: "Back to item list",
+    }));
+
+    expect(resultsPane).not.toHaveClass(
+      styles.ViewResultsPaneMobileHidden,
+    );
+    expect(itemPane).toHaveClass(styles.ViewItemPaneMobileHidden);
+  });
+
+  test("positions detail at the top and restores list scroll on back", async () => {
+    const user = userEvent.setup();
+    const onSelectItem = vi.fn();
+    const selectedItem = createExplorerItem();
+
+    render(
+      <div data-testid="scroll-parent">
+        <View
+          classOptions={emptyOptions}
+          filteredItems={[selectedItem]}
+          filters={DEFAULT_FILTERS}
+          isLoading={false}
+          itemTypeOptions={emptyOptions}
+          magicTypeOptions={emptyOptions}
+          onFilterChange={vi.fn()}
+          onRetry={vi.fn()}
+          onSelectItem={onSelectItem}
+          onSortModeChange={vi.fn()}
+          selectedItem={selectedItem}
+          sortMode={DEFAULT_SORT_MODE}
+          totalCount={1}
+        />
+      </div>,
+    );
+
+    const scrollParent = screen.getByTestId("scroll-parent");
+    const list = screen.getByLabelText("Database item results");
+    const listItem = await within(list).findByRole("button", {
+      name: /Azure Blade/,
+    });
+
+    const getComputedStyle = window.getComputedStyle.bind(window);
+
+    vi.spyOn(window, "getComputedStyle").mockImplementation((element) => {
+      const computedStyle = getComputedStyle(element);
+
+      return new Proxy(computedStyle, {
+        get(target, property, receiver) {
+          if (property === "overflowY") {
+            return element instanceof HTMLElement &&
+              element.dataset.testid === "scroll-parent"
+              ? "auto"
+              : "visible";
+          }
+
+          const value = Reflect.get(target, property, receiver);
+
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    });
+
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockImplementation(function getBoundingClientRect(
+        this: HTMLElement,
+      ) {
+        return this.classList.contains(styles.View)
+          ? createClientRect(-scrollParent.scrollTop)
+          : createClientRect(0);
+      });
+
+    scrollParent.scrollTop = 320;
+
+    await user.click(listItem);
+
+    expect(onSelectItem).toHaveBeenCalledWith(selectedItem);
+    await waitFor(() => expect(scrollParent.scrollTop).toBe(0));
+
+    await user.click(screen.getByRole("button", {
+      name: "Back to item list",
+    }));
+
+    await waitFor(() => expect(scrollParent.scrollTop).toBe(320));
+  });
+
+  test("can open the mobile item detail pane initially", () => {
+    const selectedItem = createExplorerItem();
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      showSelectedItemInitially: true,
+      totalCount: 1,
+    });
+
+    expect(document.querySelector(`.${styles.ViewResultsPane}`))
+      .toHaveClass(styles.ViewResultsPaneMobileHidden);
+    expect(document.querySelector(`.${styles.ViewItemPane}`))
+      .not.toHaveClass(styles.ViewItemPaneMobileHidden);
+  });
+
+  test("uses magic type colour for list item names", () => {
+    const { container } = render(
+      <View
+        classOptions={emptyOptions}
+        filteredItems={[createExplorerItem()]}
+        filters={DEFAULT_FILTERS}
+        isLoading={false}
+        itemTypeOptions={emptyOptions}
+        magicTypeOptions={emptyOptions}
+        onFilterChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSelectItem={vi.fn()}
+        onSortModeChange={vi.fn()}
+        sortMode={DEFAULT_SORT_MODE}
+        totalCount={1}
+      />,
+    );
+
+    expect(screen.getByText("Azure Blade")).toHaveClass(
+      styles.ViewMagicTypeMagic,
+    );
+    expect(container.querySelector(`.${styles.ViewListItemIcon}`))
+      .not.toBeInTheDocument();
+    expect(screen.queryByText("Game data")).not.toBeInTheDocument();
+  });
+
+  test("renders inventory images with the compact property layout", () => {
+    const selectedItem = createExplorerItem({
+      description: "A blade wrapped in cold light.",
+      filename: "base/meta/Item/Azure_Blade",
+      invImages: [[2100, 0]],
+      isTransmog: true,
+      salvageable: true,
+      series: '"Frozen Steel"',
+      similarItems: [101],
+      transmogName: "Azure Edge",
+    });
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    const inventorySection = screen
+      .getByRole("heading", { name: "Inventory Images" })
+      .closest("section");
+
+    expect(inventorySection).not.toBeNull();
+
+    const detailHeader = document.querySelector(
+      `.${styles.ViewDetailHeader}`,
+    );
+
+    expect(detailHeader).not.toBeNull();
+
+    const inventory = within(inventorySection as HTMLElement);
+    const detail = within(detailHeader as HTMLElement);
+    const detailIcon = (detailHeader as HTMLElement).querySelector(
+      `.${styles.ViewDetailIcon}`,
+    );
+    const detailNameLabel = detail
+      .getAllByText("Name")
+      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+    const detailTransmogNameLabel = detail
+      .getAllByText("Transmog Name")
+      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+    const detailSeriesLabel = detail
+      .getAllByText("Series")
+      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+    const descriptionLabel = detail
+      .getAllByText("Description")
+      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+    const detailItemIdLabel = detail
+      .getAllByText("Item ID")
+      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+    const detailItemTypeLabel = screen
+      .getAllByText("Item Type")
+      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+    const detailMagicTypeLabel = screen
+      .getAllByText("Item Quality")
+      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+    const detailPreferredZoneLabel = screen
+      .getAllByText("Preferred Zone")
+      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+    const usableByClassesHeading = screen.getByRole("heading", {
+      name: "Usable by Classes",
+    });
+    const detailHeaderCard = (detailHeader as HTMLElement).closest(
+      `.${styles.ViewDetailCard}`,
+    );
+    const usableByClassesCard = usableByClassesHeading.closest(
+      `.${styles.ViewDetailCard}`,
+    );
+
+    expect(inventory.getByText("Sorcerer")).toBeInTheDocument();
+    expect(inventory.queryByText("Male")).not.toBeInTheDocument();
+    expect(inventory.queryByText("Female")).not.toBeInTheDocument();
+    expect(inventory.getByText("Male: 2100")).toHaveClass(
+      styles.ViewInventoryImage,
+    );
+    expect(inventory.getByText("Female: none")).toHaveClass(
+      styles.ViewInventoryMissing,
+    );
+    expect(screen.queryByRole("heading", { name: "Properties" }))
+      .not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Similar Items" }))
+      .not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Available Classes" }))
+      .not.toBeInTheDocument();
+    expect(screen.queryByText("Icon")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Description" }))
+      .not.toBeInTheDocument();
+    expect(screen.queryByText("Transmog")).not.toBeInTheDocument();
+    expect(screen.queryByText("Salvageable")).not.toBeInTheDocument();
+    expect(detail.getByText("Azure Blade")).toBeInTheDocument();
+    expect(detail.getByText("A blade wrapped in cold light."))
+      .toBeInTheDocument();
+    expect(detail.getByText("Azure Edge")).toBeInTheDocument();
+    expect(detail.getByText("Frozen Steel")).toBeInTheDocument();
+    expect(detail.getByText("100")).toBeInTheDocument();
+    expect(detail.getByText("Sword (1)")).toBeInTheDocument();
+    expect(detailIcon).not.toBeNull();
+    expect(detailHeaderCard).not.toBeNull();
+    expect(usableByClassesCard).not.toBeNull();
+    expect(usableByClassesCard).not.toBe(detailHeaderCard);
+    expect(detailNameLabel).not.toBeUndefined();
+    expect(detailTransmogNameLabel).not.toBeUndefined();
+    expect(detailSeriesLabel).not.toBeUndefined();
+    expect(descriptionLabel).not.toBeUndefined();
+    expect(detailItemIdLabel).not.toBeUndefined();
+    expect(detailItemTypeLabel).not.toBeUndefined();
+    expect(detailMagicTypeLabel).not.toBeUndefined();
+    expect(detailPreferredZoneLabel).not.toBeUndefined();
+    expect(
+      (detailIcon as HTMLElement).compareDocumentPosition(
+        detailNameLabel as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      (detailNameLabel as HTMLElement).compareDocumentPosition(
+        detailItemIdLabel as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      (detailItemIdLabel as HTMLElement).compareDocumentPosition(
+        detailItemTypeLabel as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      (detailItemTypeLabel as HTMLElement).compareDocumentPosition(
+        detailSeriesLabel as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      (detailSeriesLabel as HTMLElement).compareDocumentPosition(
+        descriptionLabel as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      (descriptionLabel as HTMLElement).compareDocumentPosition(
+        detailTransmogNameLabel as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      (detailTransmogNameLabel as HTMLElement).compareDocumentPosition(
+        detailMagicTypeLabel as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      (detailMagicTypeLabel as HTMLElement).compareDocumentPosition(
+        detailPreferredZoneLabel as HTMLElement,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      (detailPreferredZoneLabel as HTMLElement).compareDocumentPosition(
+        usableByClassesHeading,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    const dataminedFileHeading = screen.getByRole("heading", {
+      name: "Datamined File",
+    });
+
+    expect(
+      (inventorySection as HTMLElement).compareDocumentPosition(
+        dataminedFileHeading,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(screen.getByText("base/meta/Item/Azure_Blade"))
+      .toHaveClass(styles.ViewDataminedFileName);
+    expect(screen.queryByRole("link", {
+      name: "base/meta/Item/Azure_Blade",
+    })).not.toBeInTheDocument();
+  });
+
+  test("fetches and renders datamined file json", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue({
+        item: {
+          id: 100,
+          name: "Azure Blade",
+          unsafe: "<script>alert(1)</script>",
+        },
+      }),
+      ok: true,
+    });
+    const selectedItem = createExplorerItem({
+      filename: "base/meta/Item/Azure_Blade",
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    const showJsonButton = screen.getByRole("button", { name: "Show JSON" });
+
+    expect(showJsonButton).toHaveTextContent("▸");
+
+    await user.click(showJsonButton);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("base/meta/Item/Azure_Blade.json"),
+      {
+        signal: expect.any(AbortSignal),
+      },
+    );
+
+    const jsonPreview = await screen.findByLabelText("Datamined file JSON");
+
+    expect(jsonPreview).toHaveClass(styles.ViewJsonPreview);
+    expect(jsonPreview.textContent).toContain('"name": "Azure Blade"');
+    expect(jsonPreview.textContent).toContain(
+      '"unsafe": "<script>alert(1)</script>"',
+    );
+    expect(jsonPreview.querySelector("script")).toBeNull();
+    expect(screen.getByRole("button", { name: "Hide JSON" }))
+      .toHaveTextContent("▾");
+  });
+
+  test("shows datamined file json load errors", async () => {
+    const user = userEvent.setup();
+    const selectedItem = createExplorerItem({
+      filename: "base/meta/Item/Missing_Blade",
+    });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+    }));
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    await user.click(screen.getByRole("button", { name: "Show JSON" }));
+
+    expect(await screen.findByRole("alert"))
+      .toHaveTextContent("Failed to load JSON (404).");
+    expect(screen.getByRole("button", { name: "Retry JSON" }))
+      .toHaveTextContent("↻");
+  });
+
+  test("places result totals below the item list", () => {
+    render(
+      <View
+        classOptions={emptyOptions}
+        filteredItems={[createExplorerItem()]}
+        filters={DEFAULT_FILTERS}
+        isLoading={false}
+        itemTypeOptions={emptyOptions}
+        magicTypeOptions={emptyOptions}
+        onFilterChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSelectItem={vi.fn()}
+        onSortModeChange={vi.fn()}
+        sortMode={DEFAULT_SORT_MODE}
+        totalCount={12}
+      />,
+    );
+
+    const list = screen.getByLabelText("Database item results");
+    const results = screen.getByText("1 results");
+    const indexed = screen.getByText("12 indexed");
+    const stats = results.closest("section");
+
+    expect(stats).not.toBeNull();
+    expect(
+      list.compareDocumentPosition(stats as HTMLElement) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(results).toHaveClass(styles.ViewStatsResults);
+    expect(indexed).toHaveClass(styles.ViewStatsIndexed);
+  });
+
+  test("virtualizes long item result lists", () => {
+    const items = Array.from({ length: 200 }, (_, index) =>
+      createExplorerItem({
+        id: index + 100,
+        name: `Item ${index + 1}`,
+      }),
+    );
+
+    render(
+      <View
+        classOptions={emptyOptions}
+        filteredItems={items}
+        filters={DEFAULT_FILTERS}
+        isLoading={false}
+        itemTypeOptions={emptyOptions}
+        magicTypeOptions={emptyOptions}
+        onFilterChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSelectItem={vi.fn()}
+        onSortModeChange={vi.fn()}
+        sortMode={DEFAULT_SORT_MODE}
+        totalCount={items.length}
+      />,
+    );
+
+    expect(screen.getByText("Item 1")).toBeInTheDocument();
+    expect(screen.queryByText("Item 200")).not.toBeInTheDocument();
+  });
+
+  test("renders item list sort controls", async () => {
+    const user = userEvent.setup();
+    const onSortModeChange = vi.fn();
+    const { rerender } = render(
+      <View
+        classOptions={emptyOptions}
+        filteredItems={[createExplorerItem()]}
+        filters={DEFAULT_FILTERS}
+        isLoading={false}
+        itemTypeOptions={emptyOptions}
+        magicTypeOptions={emptyOptions}
+        onFilterChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSelectItem={vi.fn()}
+        onSortModeChange={onSortModeChange}
+        sortMode="nameAsc"
+        totalCount={1}
+      />,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Database Explorer" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Sort results" }))
+      .toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Name" }))
+      .toHaveTextContent("↑");
+    expect(screen.getByRole("button", { name: "Name" }))
+      .toHaveClass(styles.ViewListSortButtonActive);
+
+    await user.click(screen.getByRole("button", { name: "Name" }));
+
+    expect(onSortModeChange).toHaveBeenLastCalledWith("nameDesc");
+    expect(screen.queryByRole("button", { name: "Quality" }))
+      .not.toBeInTheDocument();
+
+    rerender(
+      <View
+        classOptions={emptyOptions}
+        filteredItems={[createExplorerItem()]}
+        filters={DEFAULT_FILTERS}
+        isLoading={false}
+        itemTypeOptions={emptyOptions}
+        magicTypeOptions={emptyOptions}
+        onFilterChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSelectItem={vi.fn()}
+        onSortModeChange={onSortModeChange}
+        sortMode="nameDesc"
+        totalCount={1}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Name" }))
+      .toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Name" }))
+      .toHaveTextContent("↓");
+
+    await user.click(screen.getByRole("button", { name: "Name" }));
+
+    expect(onSortModeChange).toHaveBeenLastCalledWith("none");
+
+    rerender(
+      <View
+        classOptions={emptyOptions}
+        filteredItems={[createExplorerItem()]}
+        filters={DEFAULT_FILTERS}
+        isLoading={false}
+        itemTypeOptions={emptyOptions}
+        magicTypeOptions={emptyOptions}
+        onFilterChange={vi.fn()}
+        onRetry={vi.fn()}
+        onSelectItem={vi.fn()}
+        onSortModeChange={onSortModeChange}
+        sortMode="none"
+        totalCount={1}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Name" }))
+      .toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "Name" }))
+      .toHaveTextContent("↕");
+    expect(screen.getByRole("button", { name: "Name" }))
+      .not.toHaveClass(styles.ViewListSortButtonActive);
+
+    await user.click(screen.getByRole("button", { name: "Name" }));
+
+    expect(onSortModeChange).toHaveBeenLastCalledWith("nameAsc");
+  });
+});
