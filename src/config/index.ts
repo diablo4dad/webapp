@@ -1,11 +1,10 @@
 import {
   DATABASE_VERSION,
+  LAST_UPDATED,
   SITE_VERSION,
   VERSION,
 } from "./build-info.generated";
 
-const LAST_UPDATED = "July 4th, 2026";
-const BITCOIN_WALLET = "bc1q6f9zjtsetdgf7v9ga6fxaw7228xgtplllxgw77";
 const DISCORD_INVITE_LINK = "https://discord.gg/mPRBrU2kYT";
 const DATA_REPO =
   "https://raw.githubusercontent.com/DiabloTools/d4data/master/json";
@@ -20,5 +19,4 @@ export {
   DISCORD_INVITE_LINK,
   DATA_REPO,
   ICON_BUCKET,
-  BITCOIN_WALLET,
 };

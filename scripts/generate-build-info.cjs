@@ -12,6 +12,20 @@ const outputPath = path.join(
   "config",
   "build-info.generated.ts",
 );
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -31,9 +45,39 @@ function parseVersion(version) {
   };
 }
 
-function createBuildInfo({ databaseVersion, siteVersion }) {
+function getDayOrdinalSuffix(day) {
+  if (day >= 11 && day <= 13) {
+    return "th";
+  }
+
+  switch (day % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
+}
+
+function formatLastUpdated(date) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    throw new Error("Invalid last updated date.");
+  }
+
+  const day = date.getDate();
+
+  return `${MONTH_NAMES[date.getMonth()]} ${day}${getDayOrdinalSuffix(
+    day,
+  )}, ${date.getFullYear()}`;
+}
+
+function createBuildInfo({ databaseVersion, now = new Date(), siteVersion }) {
   return {
     databaseVersion,
+    lastUpdated: formatLastUpdated(now),
     siteVersion,
     version: parseVersion(siteVersion),
   };
@@ -46,10 +90,11 @@ function renderBuildInfoModule(buildInfo) {
 // Do not edit it manually.
 
 const DATABASE_VERSION = ${JSON.stringify(buildInfo.databaseVersion)};
+const LAST_UPDATED = ${JSON.stringify(buildInfo.lastUpdated)};
 const SITE_VERSION = ${JSON.stringify(buildInfo.siteVersion)};
 const VERSION = { major: ${major}, minor: ${minor}, revision: ${revision} };
 
-export { DATABASE_VERSION, SITE_VERSION, VERSION };
+export { DATABASE_VERSION, LAST_UPDATED, SITE_VERSION, VERSION };
 `;
 }
 
@@ -83,7 +128,9 @@ function main() {
   writeBuildInfo(outputPath, buildInfo);
   console.log(
     `[build-info] Wrote ${path.relative(repoRoot, outputPath)} ` +
-      `(site ${buildInfo.siteVersion}, database ${buildInfo.databaseVersion})`,
+      `(site ${buildInfo.siteVersion}, ` +
+      `database ${buildInfo.databaseVersion}, ` +
+      `updated ${buildInfo.lastUpdated})`,
   );
 }
 
@@ -100,6 +147,7 @@ if (require.main === module) {
 
 module.exports = {
   createBuildInfo,
+  formatLastUpdated,
   parseVersion,
   renderBuildInfoModule,
 };

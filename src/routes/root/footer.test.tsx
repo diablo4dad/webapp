@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { DATABASE_VERSION, SITE_VERSION } from "../../config";
+import { DATABASE_VERSION, LAST_UPDATED, SITE_VERSION } from "../../config";
 import { Footer } from "./footer";
 
 describe("footer content", () => {
@@ -7,6 +7,8 @@ describe("footer content", () => {
     render(<Footer />);
 
     expect(screen.getByText("Join the Discord Server")).toBeInTheDocument();
+    expect(screen.getByText(`Last updated ${LAST_UPDATED}`))
+      .toBeInTheDocument();
     const databaseVersion = screen
       .getByText(DATABASE_VERSION, { selector: "code" })
       .closest("div");
