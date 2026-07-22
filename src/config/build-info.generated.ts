@@ -2,7 +2,7 @@
 // Do not edit it manually.
 
 const DATABASE_VERSION = "3.1.1.72836";
-const SITE_VERSION = "2.2.0";
-const VERSION = { major: 2, minor: 2, revision: 0 };
+const SITE_VERSION = "2.3.0";
+const VERSION = { major: 2, minor: 3, revision: 0 };
 
 export { DATABASE_VERSION, SITE_VERSION, VERSION };
