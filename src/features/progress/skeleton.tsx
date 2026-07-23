@@ -19,15 +19,11 @@ function ProgressSkeleton({
   return (
     <Card className={cardClassName}>
       <span className={styles.SkeletonIcon} />
-      <span className={styles.SkeletonLabel} />
-      <span className={styles.SkeletonSummary}>
+      <span className={styles.SkeletonContent}>
         <span className={styles.SkeletonTitle} />
         <span className={styles.SkeletonStats} />
       </span>
-      <span className={styles.SkeletonBar}>
-        <span className={styles.SkeletonBarFill} />
-      </span>
-      <span className={styles.SkeletonDetail} />
+      <span className={styles.SkeletonBar} />
     </Card>
   );
 }
