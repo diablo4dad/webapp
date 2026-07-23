@@ -53,7 +53,7 @@ vi.mock("../../features/editor", () => ({
   useEditor: mocks.useEditor,
 }));
 
-vi.mock("../collection-log/loading", () => ({
+vi.mock("../tracker/loading", () => ({
   getCatalogLoadPlan: mocks.getCatalogLoadPlan,
   useCatalogLoading: mocks.useCatalogLoading,
 }));

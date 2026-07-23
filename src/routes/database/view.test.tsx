@@ -161,7 +161,7 @@ function createClientRect(top: number): DOMRect {
   } as DOMRect;
 }
 
-describe("database explorer surface", () => {
+describe("database surface", () => {
   test("shows a loading skeleton", () => {
     renderView({
       isLoading: true,

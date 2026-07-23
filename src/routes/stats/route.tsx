@@ -30,7 +30,7 @@ import { collectionGroupIconMap } from "../../shared/domain/item-assets";
 import {
   getCatalogLoadPlan,
   useCatalogLoading,
-} from "../collection-log/loading";
+} from "../tracker/loading";
 import {
   STATS_SHELL_CONTROLS,
   useRootOutletContext,

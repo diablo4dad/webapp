@@ -60,7 +60,7 @@ const dadDbRef: DadDbRef = {
   ],
 };
 
-describe("database explorer items", () => {
+describe("database items", () => {
   test("creates static explorer rows", () => {
     const items = createStaticExplorerItems(dadDbRef);
 

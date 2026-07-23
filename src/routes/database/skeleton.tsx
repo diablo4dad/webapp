@@ -7,7 +7,7 @@ import {
 import { Layout } from "./layout";
 import styles from "./skeleton.module.css";
 
-function DatabaseExplorerSkeleton() {
+function DatabaseSkeleton() {
   return (
     <Layout isListPaneVisible={true}>
       <section
@@ -28,4 +28,4 @@ function DatabaseExplorerSkeleton() {
   );
 }
 
-export { DatabaseExplorerSkeleton };
+export { DatabaseSkeleton };

@@ -18,19 +18,19 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: () => import("../routes/collection-log/route"),
+        lazy: () => import("../routes/tracker/route"),
       },
       {
         path: "/transmogs/:collectionId",
-        lazy: () => import("../routes/collection-log/route"),
+        lazy: () => import("../routes/tracker/route"),
       },
       {
         path: "database/:itemId",
-        lazy: () => import("../routes/database-explorer/route"),
+        lazy: () => import("../routes/database/route"),
       },
       {
         path: "database",
-        lazy: () => import("../routes/database-explorer/route"),
+        lazy: () => import("../routes/database/route"),
       },
       {
         path: "stats",

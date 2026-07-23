@@ -5,7 +5,7 @@ import { useAuth } from "../../services/auth";
 import type { MasterGroup, SidebarVisibility } from "../../shared/domain";
 import placeholder from "../../assets/images/placeholder.webp";
 import { useEditor } from "../../features/editor";
-import { generateUrl } from "../collection-log/links";
+import { generateUrl } from "../tracker/links";
 import {
   COLLECTION_SHELL_CONTROLS,
   type RootShellControls,

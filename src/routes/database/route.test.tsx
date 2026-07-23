@@ -80,7 +80,7 @@ beforeEach(() => {
   mocks.fetchStaticDadDbRef.mockResolvedValue(dadDbRef());
 });
 
-describe("database explorer route", () => {
+describe("database route", () => {
   test("renders loaded database results for everyone", async () => {
     renderRoute("/database", "helm");
 

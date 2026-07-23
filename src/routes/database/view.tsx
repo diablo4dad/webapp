@@ -27,7 +27,7 @@ import {
   type SortMode,
 } from "./state";
 import { Layout } from "./layout";
-import { DatabaseExplorerSkeleton } from "./skeleton";
+import { DatabaseSkeleton } from "./skeleton";
 import styles from "./view.module.css";
 
 type Props = {
@@ -249,7 +249,7 @@ function View({
   }
 
   if (isLoading) {
-    return <DatabaseExplorerSkeleton />;
+    return <DatabaseSkeleton />;
   }
 
   return (
