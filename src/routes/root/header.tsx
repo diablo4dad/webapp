@@ -30,6 +30,7 @@ type Props = {
   searchTerm: string;
   sidebarVisibility: SidebarVisibility;
   showCollectionControls: boolean;
+  showSearch: boolean;
   user?: DadUser;
 };
 
@@ -53,6 +54,7 @@ function Header({
   searchTerm,
   sidebarVisibility,
   showCollectionControls,
+  showSearch,
   user,
 }: Props) {
   return (
@@ -61,12 +63,14 @@ function Header({
       navigation={<HeaderNavigation />}
       title={<HeaderTitle />}
       search={
-        <SearchField
-          value={searchTerm}
-          onChange={onSearchChange}
-          onClear={onClearSearch}
-          placeholder={searchPlaceholder}
-        />
+        showSearch ? (
+          <SearchField
+            value={searchTerm}
+            onChange={onSearchChange}
+            onClear={onClearSearch}
+            placeholder={searchPlaceholder}
+          />
+        ) : undefined
       }
       actions={
         <HeaderActions
@@ -85,6 +89,7 @@ function Header({
           onToggleMobileSearch={onToggleMobileSearch}
           sidebarVisibility={sidebarVisibility}
           showCollectionControls={showCollectionControls}
+          showSearch={showSearch}
         />
       }
       auth={

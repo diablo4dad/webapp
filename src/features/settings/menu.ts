@@ -8,7 +8,13 @@ import {
 import { SettingsAction, SettingsActionType } from "./context";
 import { ChangeEvent } from "react";
 import { OptionWidgetGroup, WidgetType } from "../../shared/lib/widget";
-import { ItemGroup, MasterGroup, itemGroups } from "../../shared/domain";
+import {
+  collectionFilterGroups,
+  collectionGroupLabels,
+  ItemGroup,
+  MasterGroup,
+  itemGroups,
+} from "../../shared/domain";
 import { isEnabled, isLedgerView } from "./predicate";
 import { getNumberValue } from "./accessor";
 import { enumKeys } from "../../shared/lib/enums";
@@ -17,20 +23,16 @@ import i18n from "../../services/i18n";
 import { CollectionLog } from "../ledger/type";
 import { filterDb } from "../../services/data/filters";
 import { countAllItemsDabDb } from "../../services/data/aggregate";
-import GeneralIcon from "../../assets/images/icons/goblin.webp";
-import CashShopIcon from "../../assets/images/icons/purse.webp";
-import PromoIcon from "../../assets/images/icons/chest.webp";
-import SeasonIcon from "../../assets/images/icons/season.webp";
-import ChallengeIcon from "../../assets/images/icons/dungeon.webp";
-import GlobalIcon from "../../assets/images/icons/wardrobe.webp";
+import { collectionGroupIconMap } from "../../shared/domain/item-assets";
 
 const collectionMeta = new Map([
-  [MasterGroup.GENERAL, { label: "Essential Collection", icon: GeneralIcon }],
-  [MasterGroup.SEASONS, { label: "Seasons", icon: SeasonIcon }],
-  [MasterGroup.CHALLENGE, { label: "Challenges", icon: ChallengeIcon }],
-  [MasterGroup.SHOP_ITEMS, { label: "Tejal's Shop", icon: CashShopIcon }],
-  [MasterGroup.PROMOTIONAL, { label: "Promotional", icon: PromoIcon }],
-  [MasterGroup.UNIVERSAL, { label: "Universal", icon: GlobalIcon }],
+  ...collectionFilterGroups.map((group) => [
+    group,
+    {
+      label: collectionGroupLabels[group],
+      icon: collectionGroupIconMap.get(group) ?? "",
+    },
+  ] as const),
 ]);
 
 const itemOptions = [

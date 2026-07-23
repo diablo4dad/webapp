@@ -35,13 +35,25 @@ const catalogGroups = [
   MasterGroup.CHALLENGE,
 ] as const;
 
-const locale = {
-  [MasterGroup.SHOP_ITEMS]: "Cash Shop",
-  [MasterGroup.GENERAL]: "General",
-  [MasterGroup.PROMOTIONAL]: "Promotion",
+const collectionFilterGroups = [
+  MasterGroup.GENERAL,
+  MasterGroup.SEASONS,
+  MasterGroup.CHALLENGE,
+  MasterGroup.SHOP_ITEMS,
+  MasterGroup.PROMOTIONAL,
+  MasterGroup.UNIVERSAL,
+] as const;
+
+const collectionGroupLabels = {
+  [MasterGroup.GENERAL]: "Essential",
+  [MasterGroup.SHOP_ITEMS]: "Tejal's Shop",
+  [MasterGroup.PROMOTIONAL]: "Promotional",
   [MasterGroup.SEASONS]: "Seasons",
-  [MasterGroup.CHALLENGE]: "Challenge",
-};
+  [MasterGroup.CHALLENGE]: "Challenges",
+  [MasterGroup.UNIVERSAL]: "Universal",
+} as const satisfies Record<MasterGroup, string>;
+
+const locale = collectionGroupLabels;
 
 const itemGroups = new Map([
   [ItemGroup.MOUNTS, ["Mount"]],
@@ -136,6 +148,8 @@ export {
   ItemGroup,
   MasterGroup,
   catalogGroups,
+  collectionFilterGroups,
+  collectionGroupLabels,
   getEnabledClasses,
   getEnabledItemTypes,
   itemGroups,

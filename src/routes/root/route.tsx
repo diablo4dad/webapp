@@ -102,6 +102,7 @@ function RootRoute(): ReactElement {
       searchTitle={shellControls.searchTitle}
       sidebarVisibility={sidebarVisibility}
       showCollectionControls={shellControls.showCollectionControls}
+      showSearch={shellControls.showSearch}
       user={user}
     />
   );

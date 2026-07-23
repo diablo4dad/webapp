@@ -32,6 +32,7 @@ function renderActions(options: Options = {}) {
     onToggleMobileSearch: vi.fn(),
     sidebarVisibility: getDefaultSidebarVisibility(),
     showCollectionControls: true,
+    showSearch: true,
     ...options,
   };
   const renderResult = render(<HeaderActions {...props} />);
@@ -154,6 +155,20 @@ describe("mobile menu action", () => {
 
     expect(props.onClearSearch).toHaveBeenCalledTimes(1);
     expect(props.onToggleMobileSearch).not.toHaveBeenCalled();
+  });
+
+  test("hides search actions when the active route does not expose them", () => {
+    renderActions({
+      hasSearchFilter: true,
+      showSearch: false,
+    });
+
+    expect(
+      screen.queryByRole("button", { name: "Search menu" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Clear search" }),
+    ).not.toBeInTheDocument();
   });
 
   test("reflects collection settings state and passes toggle action through", async () => {

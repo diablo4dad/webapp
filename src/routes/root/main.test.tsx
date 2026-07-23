@@ -116,6 +116,7 @@ function renderMain(options: Options = {}) {
     searchTerm: "",
     searchTitle: "Transmog Search",
     showCollectionControls: true,
+    showSearch: true,
     ...options,
   };
   const renderResult = render(<Main {...props} />);
@@ -157,6 +158,15 @@ describe("mobile search", () => {
     expect(props.onSearchChange).toHaveBeenCalledWith("sword");
     expect(props.onClearSearch).toHaveBeenCalledTimes(1);
     expect(props.onCloseMobileContent).toHaveBeenCalledTimes(1);
+  });
+
+  test("hides overlay when search is unavailable", () => {
+    renderMain({
+      isMobileSearchOpen: true,
+      showSearch: false,
+    });
+
+    expect(screen.queryByText(/search overlay/)).not.toBeInTheDocument();
   });
 });
 

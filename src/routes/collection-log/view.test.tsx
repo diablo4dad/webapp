@@ -34,10 +34,6 @@ vi.mock("../../features/ledger/skeleton", () => ({
   default: () => <div>ledger loading</div>,
 }));
 
-vi.mock("../../features/progress", () => ({
-  Progress: () => <div>progress</div>,
-}));
-
 vi.mock("../../features/season", () => ({
   Season: () => <div>season</div>,
 }));
@@ -105,7 +101,6 @@ describe("hero", () => {
 
     expect(screen.getByText("welcome")).toBeInTheDocument();
     expect(screen.getByText("season")).toBeInTheDocument();
-    expect(screen.getByText("progress")).toBeInTheDocument();
   });
 });
 

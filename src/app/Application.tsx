@@ -32,6 +32,10 @@ const router = createBrowserRouter([
         path: "database",
         lazy: () => import("../routes/database-explorer/route"),
       },
+      {
+        path: "stats",
+        lazy: () => import("../routes/stats/route"),
+      },
     ],
   },
 ]);

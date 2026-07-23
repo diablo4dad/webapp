@@ -12,6 +12,7 @@ vi.mock("../services/store/catalog", () => ({
       itemTypes: [],
     }),
   ),
+  fetchHybridDadDbRefsByCategory: vi.fn(() => Promise.resolve([])),
 }));
 
 test("renders without crashing", async () => {

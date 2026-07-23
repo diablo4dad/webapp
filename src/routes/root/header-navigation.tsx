@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import styles from "./header-navigation.module.css";
 
 type NavigationItem = {
-  id: "collection" | "database";
+  id: "tracker" | "database" | "stats";
   label: string;
   to: string;
 };
@@ -40,9 +40,14 @@ function HeaderNavigation() {
 function getNavigationItems(): NavigationItem[] {
   return [
     {
-      id: "collection",
-      label: "Collection",
+      id: "tracker",
+      label: "Tracker",
       to: "/",
+    },
+    {
+      id: "stats",
+      label: "Stats",
+      to: "/stats",
     },
     {
       id: "database",
@@ -57,7 +62,11 @@ function getActiveNavigationId(pathname: string): NavigationItem["id"] {
     return "database";
   }
 
-  return "collection";
+  if (pathname.startsWith("/stats")) {
+    return "stats";
+  }
+
+  return "tracker";
 }
 
 export { HeaderNavigation, getActiveNavigationId, getNavigationItems };

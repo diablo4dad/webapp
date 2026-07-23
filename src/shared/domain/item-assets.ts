@@ -1,4 +1,5 @@
 import { CharacterClass, Zone } from "../../services/data";
+import { MasterGroup } from "./catalog";
 import barbarian from "../../assets/images/classes/barbarian.webp";
 import druid from "../../assets/images/classes/druid.webp";
 import necromancer from "../../assets/images/classes/necromancer.webp";
@@ -7,7 +8,13 @@ import rogue from "../../assets/images/classes/rogue.webp";
 import sorceress from "../../assets/images/classes/sorcerer.webp";
 import spiritborn from "../../assets/images/classes/spiritborn.webp";
 import warlock from "../../assets/images/classes/warlock.webp";
+import challengeCollection from "../../assets/images/icons/dungeon.webp";
+import generalCollection from "../../assets/images/icons/goblin.webp";
+import promotionalCollection from "../../assets/images/icons/chest.webp";
 import salvage from "../../assets/images/icons/salvage.webp";
+import seasonCollection from "../../assets/images/icons/season.webp";
+import shopCollection from "../../assets/images/icons/purse.webp";
+import universalCollection from "../../assets/images/icons/wardrobe.webp";
 import unobtainable from "../../assets/images/miniico/mystery.webp";
 import premium from "../../assets/images/miniico/purse.webp";
 import season from "../../assets/images/miniico/season.webp";
@@ -42,6 +49,15 @@ const regionIconMap = new Map<Zone, string>([
   [Zone.NAHANTU, nahantu],
 ]);
 
+const collectionGroupIconMap = new Map<MasterGroup, string>([
+  [MasterGroup.GENERAL, generalCollection],
+  [MasterGroup.SHOP_ITEMS, shopCollection],
+  [MasterGroup.PROMOTIONAL, promotionalCollection],
+  [MasterGroup.SEASONS, seasonCollection],
+  [MasterGroup.CHALLENGE, challengeCollection],
+  [MasterGroup.UNIVERSAL, universalCollection],
+]);
+
 const itemTagIcons = {
   expansion,
   outOfRotation,
@@ -53,4 +69,4 @@ const itemTagIcons = {
   wardrobe,
 };
 
-export { classIconMap, itemTagIcons, regionIconMap };
+export { classIconMap, collectionGroupIconMap, itemTagIcons, regionIconMap };

@@ -143,6 +143,7 @@ function renderHeader(options: Options = {}) {
     searchTerm: "",
     sidebarVisibility: getDefaultSidebarVisibility(),
     showCollectionControls: true,
+    showSearch: true,
     ...options,
   };
   const renderResult = render(
@@ -174,8 +175,10 @@ describe("navigation", () => {
   test("shows the main navigation for everyone", () => {
     renderHeader();
 
-    expect(screen.getByRole("link", { name: "Collection" }))
+    expect(screen.getByRole("link", { name: "Tracker" }))
       .toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Stats" }))
+      .toHaveAttribute("href", "/stats");
     expect(screen.getByRole("link", { name: "Database" }))
       .toHaveAttribute("href", "/database");
   });

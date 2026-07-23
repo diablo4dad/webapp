@@ -57,6 +57,7 @@ describe("database explorer route", () => {
       searchPlaceholder: "Search database",
       searchTitle: "Database Search",
       showCollectionControls: false,
+      showSearch: true,
     });
   });
 

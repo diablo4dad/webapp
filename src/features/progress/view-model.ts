@@ -7,11 +7,22 @@ import mountIcon from "../../assets/images/mount@1x.png";
 import petIcon from "../../assets/images/pet@1x.png";
 import portalIcon from "../../assets/images/portal@1x.png";
 import shakoIcon from "../../assets/images/shako@1x.png";
-import { getProgressStats, type ProgressStats } from "./state";
+import {
+  getAllProgressStats,
+  getProgressStats,
+  type ProgressStats,
+} from "./state";
 
 type ProgressCardConfig = {
   iconSrc: string;
   itemGroups: readonly ItemGroup[];
+  title: string;
+};
+
+type ProgressScopeSource = {
+  collections: CollectionGroup;
+  iconSrc?: string;
+  id: string;
   title: string;
 };
 
@@ -20,8 +31,25 @@ type ProgressCardViewModel = ProgressStats & {
   title: string;
 };
 
+type ProgressSummaryViewModel = ProgressStats & {
+  title: string;
+};
+
+type ProgressScopeViewModel = ProgressSummaryViewModel & {
+  iconSrc?: string;
+  id: string;
+  positionLabel: string;
+};
+
 type ProgressViewModel = {
   cards: readonly ProgressCardViewModel[];
+  grandTotal: ProgressSummaryViewModel;
+  selectedScope: ProgressScopeViewModel;
+};
+
+type ProgressViewModelOptions = {
+  scopeSources?: readonly ProgressScopeSource[];
+  selectedScopeId?: string;
 };
 
 const progressCards: readonly ProgressCardConfig[] = [
@@ -65,15 +93,61 @@ const progressCards: readonly ProgressCardConfig[] = [
 function getProgressViewModel(
   collectionLog: CollectionLog,
   collections: CollectionGroup,
+  options: ProgressViewModelOptions = {},
 ): ProgressViewModel {
+  const cards = progressCards.map((card) => ({
+    iconSrc: card.iconSrc,
+    title: card.title,
+    ...getProgressStats(collectionLog, collections, card.itemGroups),
+  }));
+  const grandTotal = {
+    title: "Grand Total",
+    ...getAllProgressStats(collectionLog, collections),
+  };
+  const selectedScope = getSelectedScopeViewModel(
+    collectionLog,
+    grandTotal,
+    options,
+  );
+
   return {
-    cards: progressCards.map((card) => ({
-      iconSrc: card.iconSrc,
-      title: card.title,
-      ...getProgressStats(collectionLog, collections, card.itemGroups),
-    })),
+    cards,
+    grandTotal,
+    selectedScope,
+  };
+}
+
+function getSelectedScopeViewModel(
+  collectionLog: CollectionLog,
+  grandTotal: ProgressSummaryViewModel,
+  {
+    scopeSources = [],
+    selectedScopeId,
+  }: ProgressViewModelOptions,
+): ProgressScopeViewModel {
+  const scopeViewModels = scopeSources.map((source, index) => ({
+    iconSrc: source.iconSrc,
+    id: source.id,
+    positionLabel: `${index + 1} of ${scopeSources.length}`,
+    title: source.title,
+    ...getAllProgressStats(collectionLog, source.collections),
+  }));
+  const selectedScope = scopeViewModels.find(
+    (scope) => scope.id === selectedScopeId,
+  );
+
+  return selectedScope ?? {
+    id: "current",
+    positionLabel: "1 of 1",
+    ...grandTotal,
   };
 }
 
 export { getProgressViewModel };
-export type { ProgressCardViewModel, ProgressViewModel };
+export type {
+  ProgressCardViewModel,
+  ProgressScopeSource,
+  ProgressScopeViewModel,
+  ProgressSummaryViewModel,
+  ProgressViewModel,
+};

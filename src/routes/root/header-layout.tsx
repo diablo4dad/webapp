@@ -6,7 +6,7 @@ type Props = {
   auth: ReactNode;
   logo: ReactNode;
   navigation?: ReactNode;
-  search: ReactNode;
+  search?: ReactNode;
   title: ReactNode;
 };
 
@@ -28,7 +28,9 @@ function HeaderLayout({
         )}
       </div>
       <div className={styles.HeaderLayoutControls}>
-        <div className={styles.HeaderLayoutSearch}>{search}</div>
+        {search && (
+          <div className={styles.HeaderLayoutSearch}>{search}</div>
+        )}
         <div className={styles.HeaderLayoutButtons}>{actions}</div>
         <div className={styles.HeaderLayoutSpacer} />
         <div className={styles.HeaderLayoutAuth}>{auth}</div>

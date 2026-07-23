@@ -33,6 +33,7 @@ type Props = {
   onToggleMobileSearch: () => void;
   sidebarVisibility: SidebarVisibility;
   showCollectionControls: boolean;
+  showSearch: boolean;
 };
 
 type ToggleProps = {
@@ -68,6 +69,7 @@ function HeaderActions({
   onToggleMobileSearch,
   sidebarVisibility,
   showCollectionControls,
+  showSearch,
 }: Props) {
   return (
     <>
@@ -99,24 +101,26 @@ function HeaderActions({
           <Pencil />
         </HeaderToggle>
       )}
-      {hasSearchFilter ? (
-        <Button
-          aria-label="Clear search"
-          onClick={onClearSearch}
-          showOnly={"mobile"}
-        >
-          <Close />
-        </Button>
-      ) : (
-        <Button
-          aria-label="Search menu"
-          aria-pressed={isMobileSearchOpen}
-          onClick={onToggleMobileSearch}
-          pressed={isMobileSearchOpen}
-          showOnly={"mobile"}
-        >
-          <SearchIcon />
-        </Button>
+      {showSearch && (
+        hasSearchFilter ? (
+          <Button
+            aria-label="Clear search"
+            onClick={onClearSearch}
+            showOnly={"mobile"}
+          >
+            <Close />
+          </Button>
+        ) : (
+          <Button
+            aria-label="Search menu"
+            aria-pressed={isMobileSearchOpen}
+            onClick={onToggleMobileSearch}
+            pressed={isMobileSearchOpen}
+            showOnly={"mobile"}
+          >
+            <SearchIcon />
+          </Button>
+        )
       )}
       {showCollectionControls && (
         <Button

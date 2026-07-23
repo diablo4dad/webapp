@@ -64,6 +64,7 @@ describe("progress stats", () => {
       collected: 2,
       isComplete: true,
       percent: 100,
+      remaining: 0,
       total: 2,
     });
   });
@@ -78,6 +79,7 @@ describe("progress stats", () => {
         collected: 1,
         isComplete: true,
         percent: 100,
+        remaining: 0,
         total: 1,
       });
   });
@@ -90,6 +92,7 @@ describe("progress stats", () => {
         collected: 0,
         isComplete: false,
         percent: 0,
+        remaining: 0,
         total: 0,
       });
   });

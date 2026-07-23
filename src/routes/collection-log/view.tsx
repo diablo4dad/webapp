@@ -2,7 +2,6 @@ import Ledger from "../../features/ledger";
 import EmptyState from "../../features/ledger/empty-state";
 import CollectionSkeleton from "../../features/ledger/skeleton";
 import { ItemSidebar, ItemSidebarSkeleton } from "../../features/item-sidebar";
-import { Progress } from "../../features/progress";
 import { Season } from "../../features/season";
 import { Welcome } from "../../features/welcome";
 import type { Collection, CollectionItem } from "../../services/data";
@@ -97,7 +96,6 @@ function Hero() {
     <>
       <Welcome />
       <Season />
-      <Progress />
     </>
   );
 }

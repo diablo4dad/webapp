@@ -24,6 +24,7 @@ type Props = {
   searchTerm: string;
   searchTitle: string;
   showCollectionControls: boolean;
+  showSearch: boolean;
   user?: DadUser;
 };
 
@@ -44,6 +45,7 @@ type MobileContentProps = {
   searchTerm: string;
   searchTitle: string;
   showCollectionControls: boolean;
+  showSearch: boolean;
   user?: DadUser;
 };
 
@@ -65,6 +67,7 @@ function Main({
   searchTerm,
   searchTitle,
   showCollectionControls,
+  showSearch,
   user,
 }: Props) {
   return (
@@ -89,6 +92,7 @@ function Main({
         searchTerm={searchTerm}
         searchTitle={searchTitle}
         showCollectionControls={showCollectionControls}
+        showSearch={showSearch}
         user={user}
       />
     </>
@@ -112,6 +116,7 @@ function MobileContent({
   searchTerm,
   searchTitle,
   showCollectionControls,
+  showSearch,
   user,
 }: MobileContentProps) {
   return (
@@ -124,7 +129,7 @@ function MobileContent({
           user={user}
         />
       )}
-      {isMobileSearchOpen && (
+      {showSearch && isMobileSearchOpen && (
         <MobileSearch
           onClearSearch={onClearSearch}
           onClose={onClose}

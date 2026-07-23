@@ -197,8 +197,10 @@ describe("header actions", () => {
   test("shows main navigation for everyone", () => {
     renderRoute();
 
-    expect(screen.getByRole("link", { name: "Collection" }))
+    expect(screen.getByRole("link", { name: "Tracker" }))
       .toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Stats" }))
+      .toHaveAttribute("href", "/stats");
     expect(screen.getByRole("link", { name: "Database" }))
       .toHaveAttribute("href", "/database");
   });
@@ -294,8 +296,10 @@ describe("mobile site menu", () => {
       name: "Mobile navigation",
     }));
 
-    expect(mobileNavigation.getByRole("link", { name: "Collection" }))
+    expect(mobileNavigation.getByRole("link", { name: "Tracker" }))
       .toHaveAttribute("href", "/");
+    expect(mobileNavigation.getByRole("link", { name: "Stats" }))
+      .toHaveAttribute("href", "/stats");
     expect(mobileNavigation.getByRole("link", { name: "Database" }))
       .toHaveAttribute("href", "/database");
 

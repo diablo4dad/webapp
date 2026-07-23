@@ -116,6 +116,7 @@ function renderView(options: Options = {}) {
     searchTitle: "Transmog Search",
     sidebarVisibility: getDefaultSidebarVisibility(),
     showCollectionControls: true,
+    showSearch: true,
     ...options,
   };
   const renderResult = render(
@@ -253,6 +254,8 @@ describe("mobile settings", () => {
 
     expect(mobileNavigation.getByRole("link", { name: "Database" }))
       .toHaveAttribute("href", "/database");
+    expect(mobileNavigation.getByRole("link", { name: "Stats" }))
+      .toHaveAttribute("href", "/stats");
 
     const mobileMenu = screen.getByText("Menu").closest("aside");
 

@@ -66,11 +66,13 @@ describe("mobile menu", () => {
     const { props } = renderMenu();
 
     expect(screen.getByText("Menu")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Collection" }))
+    expect(screen.getByRole("link", { name: "Tracker" }))
       .toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Stats" }))
+      .toHaveAttribute("href", "/stats");
     expect(screen.getByRole("link", { name: "Database" }))
       .toHaveAttribute("href", "/database");
-    expect(screen.getByRole("link", { name: "Collection" }))
+    expect(screen.getByRole("link", { name: "Tracker" }))
       .toHaveAttribute("aria-current", "page");
 
     await user.click(screen.getByRole("button", { name: "sign in" }));
