@@ -1,6 +1,4 @@
 .HeaderLayout {
-    --header-navigation-light-x: 50%;
-    position: relative;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
@@ -8,22 +6,6 @@
     width: 100%;
     padding: 0 var(--space-4);
     box-sizing: border-box;
-    isolation: isolate;
-}
-
-.HeaderLayout::before {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-        radial-gradient(
-            ellipse 8rem 8rem at var(--header-navigation-light-x) top,
-            rgba(55, 62, 73, 0.2) 0%,
-            rgba(48, 54, 64, 0.09) 48%,
-            rgba(0, 0, 0, 0) 100%
-        );
-    content: "";
-    pointer-events: none;
 }
 
 .HeaderLayoutBrand {
@@ -106,7 +88,6 @@
 
 @media screen and (min-width: 1200px) {
     .HeaderLayout {
-        --header-navigation-light-x: clamp(22rem, 24vw, 30rem);
         grid-template-columns: repeat(6, minmax(0, 1fr));
         align-items: center;
         gap: var(--space-4);
