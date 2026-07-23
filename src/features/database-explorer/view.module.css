@@ -753,6 +753,10 @@
         max-height: var(--view-results-pane-height);
     }
 
+    .ViewBodyListMode .ViewResultsPane {
+        min-height: 0;
+    }
+
     .ViewResultsCard {
         flex: 0 1 auto;
         height: 100%;
