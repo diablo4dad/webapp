@@ -91,7 +91,7 @@
     position: sticky;
     top: 0;
     z-index: 5;
-    background-color: var(--app-surface);
+    background-color: var(--editor-panel-surface);
     box-shadow: var(--shadow-header);
 }
 
@@ -110,7 +110,6 @@
     flex: 0 0 auto;
     padding: var(--space-4);
     border-bottom: 1px solid var(--app-border-subtle);
-    background-color: var(--app-surface);
 }
 
 .ViewListTitle {
