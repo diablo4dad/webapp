@@ -1,0 +1,177 @@
+.Skeleton {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.Skeleton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 0;
+  width: 15rem;
+  height: 15rem;
+  background: var(--item-sidebar-decoration-background);
+  filter: blur(0.5rem);
+  pointer-events: none;
+}
+
+.SkeletonContent {
+  position: relative;
+  z-index: 1;
+}
+
+.SkeletonHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  column-gap: 1.5rem;
+  padding: 1rem 2rem 0.75rem;
+}
+
+.SkeletonHeading {
+  align-self: end;
+  min-width: 0;
+}
+
+.SkeletonTitle {
+  display: block;
+  width: min(18rem, 100%);
+  height: 1.8rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonType {
+  display: block;
+  width: min(8rem, 50%);
+  height: 0.9rem;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonImage {
+  align-self: end;
+  justify-self: end;
+  width: 5rem;
+  aspect-ratio: 1;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonClasses {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 2rem;
+  margin-bottom: 1rem;
+  border-top: 1px solid var(--app-surface-muted);
+  border-bottom: 1px solid var(--app-surface-muted);
+  background-color: var(--app-surface-raised);
+}
+
+.SkeletonClassIcon {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonActions {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  column-gap: 1rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.SkeletonAction {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 8rem;
+  height: 2rem;
+}
+
+.SkeletonToggle {
+  display: block;
+  flex-shrink: 0;
+  width: 3em;
+  height: 1.9em;
+  border-radius: 1.1em;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonActionLabel {
+  display: block;
+  width: 4.5rem;
+  height: 1rem;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonLocations {
+  margin-bottom: 1rem;
+}
+
+.SkeletonLocation {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem 2rem;
+  border-top: 1px solid var(--app-surface-muted);
+  border-bottom: 1px solid var(--app-surface-muted);
+  background-color: var(--app-surface-raised);
+}
+
+.SkeletonLocationInfo {
+  width: 100%;
+}
+
+.SkeletonLocationDescription {
+  display: block;
+  width: min(18rem, 80%);
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonLocationCategory {
+  display: block;
+  width: 6rem;
+  height: 0.9rem;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonTitle,
+.SkeletonType,
+.SkeletonImage,
+.SkeletonClassIcon,
+.SkeletonToggle,
+.SkeletonActionLabel,
+.SkeletonLocationDescription,
+.SkeletonLocationCategory {
+  animation: skeleton-loading 0.75s linear infinite alternate;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@media screen and (min-width: 480px) {
+  .SkeletonImage {
+    width: 128px;
+  }
+}

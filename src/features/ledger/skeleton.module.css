@@ -2,51 +2,67 @@
   width: 100%;
 }
 
+.SkeletonGroup {
+  width: 100%;
+}
+
 .SkeletonHeader {
-  position: static;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .SkeletonButton {
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   box-sizing: border-box;
   width: 100%;
   padding: 1rem 2rem;
   border-top: 1px solid var(--card-border-top);
-  border-right: none;
   border-bottom: 1px solid var(--card-border-bottom);
-  border-left: none;
   background-color: var(--card-surface);
   box-shadow: var(--card-shadow);
-  text-align: left;
-  cursor: pointer;
+}
+
+.SkeletonHeaderContent {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.SkeletonHeaderText {
+  flex: 1;
+  min-width: 0;
 }
 
 .SkeletonTitle {
-  display: inline-block;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
   margin: 0 0.5rem 0.25rem 0;
-  background-color: var(--skeleton-background);
-  color: var(--app-text);
-  font-size: 1.5rem;
-  text-align: left;
 }
 
-.SkeletonTitle span {
-  visibility: hidden;
+.SkeletonTitleName {
+  display: block;
+  width: min(16rem, 68%);
+  height: 1.8rem;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonCounter {
+  display: block;
+  width: 4rem;
+  height: 1rem;
+  background-color: var(--skeleton-background);
 }
 
 .SkeletonDescription {
+  display: block;
+  width: min(24rem, 86%);
+  height: 1rem;
   background-color: var(--skeleton-background);
-  color: var(--app-text-muted);
-  font-family: "Ubuntu", sans-serif;
-  font-size: 0.875rem;
-  font-weight: 300;
-}
-
-.SkeletonDescription span {
-  visibility: hidden;
 }
 
 .SkeletonActions {
@@ -56,16 +72,92 @@
   font-size: 0.875rem;
 }
 
-.SkeletonActions span {
+.SkeletonAction {
+  display: block;
   width: 3rem;
   height: 3rem;
-  padding: 0.5rem;
+  border: 1px solid var(--control-border);
+  border-radius: 0.5rem;
+  background-color: var(--skeleton-background);
+  box-shadow: var(--shadow-control);
+}
+
+.SkeletonItems {
+  display: flex;
+  flex-direction: column;
+}
+
+.SkeletonItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem 2rem;
+}
+
+.SkeletonItem:nth-child(even) {
+  background-color: var(--app-surface-raised);
+}
+
+.SkeletonItemImage {
+  flex-shrink: 0;
+  width: 4rem;
+  height: 6rem;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonItemInfo {
+  flex: 1;
+  min-width: 0;
+  padding: 0 1rem;
+}
+
+.SkeletonItemName,
+.SkeletonItemType,
+.SkeletonItemDescription {
+  display: block;
+  background-color: var(--skeleton-background);
+}
+
+.SkeletonItemName {
+  width: min(18rem, 72%);
+  height: 1.5rem;
+  margin-bottom: 0.125rem;
+}
+
+.SkeletonItemType {
+  width: min(14rem, 48%);
+  height: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.SkeletonItemDescription {
+  width: min(28rem, 92%);
+  height: 1rem;
+}
+
+.SkeletonItemIcons {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
+.SkeletonItemIcon {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
   background-color: var(--skeleton-background);
 }
 
 .SkeletonTitle,
 .SkeletonDescription,
-.SkeletonActions span {
+.SkeletonCounter,
+.SkeletonAction,
+.SkeletonItemImage,
+.SkeletonItemName,
+.SkeletonItemType,
+.SkeletonItemDescription,
+.SkeletonItemIcon {
   animation: skeleton-loading 0.75s linear infinite alternate;
 }
 
@@ -78,10 +170,84 @@
   }
 }
 
+[data-ledger-view="card"] .SkeletonHeader {
+  position: static;
+}
+
+[data-ledger-view="card"] .SkeletonItems {
+  --grid-layout-gap: 10px;
+  --grid-column-count: 24;
+  --grid-item--min-width: 96px;
+
+  --gap-count: calc(var(--grid-column-count) - 1);
+  --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+  --grid-item--max-width: calc(
+    (100% - var(--total-gap-width)) / var(--grid-column-count)
+  );
+
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr)
+  );
+  gap: var(--grid-layout-gap);
+  padding: 1rem;
+}
+
+[data-ledger-view="card"] .SkeletonItem {
+  position: relative;
+  flex: 1;
+  flex-direction: column;
+  align-items: inherit;
+  padding: 0.5rem 0.5rem 0;
+  border-radius: 0.5rem;
+  background-color: var(--card-surface-muted);
+}
+
+[data-ledger-view="card"] .SkeletonItem:nth-child(even) {
+  background-color: var(--card-surface-muted);
+}
+
+[data-ledger-view="card"] .SkeletonItemImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+}
+
+[data-ledger-view="card"] .SkeletonItemInfo {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5rem;
+}
+
+[data-ledger-view="card"] .SkeletonItemName {
+  width: 100%;
+  height: 1rem;
+  margin-inline: auto;
+}
+
+[data-ledger-view="card"] .SkeletonItemType,
+[data-ledger-view="card"] .SkeletonItemDescription,
+[data-ledger-view="card"] .SkeletonItemIcons {
+  display: none;
+}
+
 @media screen and (min-width: 1200px) {
   .SkeletonButton {
     top: 0;
     height: 6rem;
     padding: 2rem 2rem;
+  }
+
+  .SkeletonItemIcons span {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  [data-ledger-view="card"] .SkeletonItems {
+    --grid-item--min-width: 120px;
+
+    padding: 2rem;
   }
 }
