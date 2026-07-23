@@ -2,7 +2,6 @@ import Fuse from "fuse.js";
 import {
   CharacterClass,
   MagicType,
-  Zone,
   type DadDbRef,
   type ItemRef,
   type ItemType,
@@ -61,20 +60,6 @@ const DEFAULT_FILTERS: Filters = {
   source: "both",
 };
 const DEFAULT_SORT_MODE: SortMode = "nameAsc";
-const SOURCE_OPTIONS: FilterOption[] = [
-  { label: "Both", value: "both" },
-  { label: "Game data", value: "static" },
-  { label: "Custom data", value: "catalog" },
-];
-const FLAG_OPTIONS: Array<FilterOption & { value: FlagFilter }> = [
-  { label: "All", value: "all" },
-  { label: "Transmog", value: "isTransmog" },
-  { label: "Salvageable", value: "salvageable" },
-  { label: "Vessel of Hatred", value: "vesselOfHatred" },
-  { label: "Lord of Hatred", value: "lordOfHatred" },
-  { label: "Icon variants", value: "hasVariants" },
-  { label: "Similar items", value: "hasSimilarItems" },
-];
 const SEARCH_KEYS = [
   "idText",
   "item.name",
@@ -160,10 +145,6 @@ function sortExplorerItems(
   return [...items].sort((a, b) => compareExplorerItems(a, b, sortMode));
 }
 
-function getExplorerItemKey(item: ExplorerItem): string {
-  return `${item.source}:${item.item.id}`;
-}
-
 function getAvailableClasses(item: ItemRef): CharacterClass[] {
   if (item.usableByClass === undefined) {
     return enumKeys(CharacterClass).map(
@@ -188,10 +169,6 @@ function getClassFilterOptions(): FilterOption[] {
       };
     }),
   ];
-}
-
-function getFlagFilterOptions(): FilterOption[] {
-  return FLAG_OPTIONS;
 }
 
 function getItemTypeOptions(items: ExplorerItem[]): FilterOption[] {
@@ -242,28 +219,12 @@ function getMagicTypeOptions(items: ExplorerItem[]): FilterOption[] {
   ];
 }
 
-function getItemIconPath(iconId?: number): string {
-  return `icons/${iconId && iconId > 0 ? iconId : 0}.webp`;
-}
-
 function getMagicTypeLabel(magicType?: number): string {
   if (isMagicTypeNotSet(magicType)) {
     return "Not Set";
   }
 
   return i18n.magicType[magicType as MagicType] ?? `Unknown (${magicType})`;
-}
-
-function getSourceLabel(source: ItemSource): string {
-  return source === "catalog" ? "Custom data" : "Game data";
-}
-
-function getZoneLabel(zone?: number): string {
-  if (zone === undefined || zone === -1) {
-    return "Not set";
-  }
-
-  return i18n.region[zone as Zone] ?? `Unknown (${zone})`;
 }
 
 function hasInventoryImages(item: ItemRef): boolean {
@@ -395,21 +356,12 @@ export {
   ALL_OPTION_VALUE,
   DEFAULT_FILTERS,
   DEFAULT_SORT_MODE,
-  SOURCE_OPTIONS,
   createSearchIndex,
   createStaticExplorerItems,
   filterExplorerItems,
-  getAvailableClasses,
   getClassFilterOptions,
-  getExplorerItemKey,
-  getFlagFilterOptions,
-  getItemIconPath,
   getItemTypeOptions,
-  getMagicTypeLabel,
   getMagicTypeOptions,
-  getSourceLabel,
-  getZoneLabel,
-  hasInventoryImages,
   sortExplorerItems,
 };
 export type {

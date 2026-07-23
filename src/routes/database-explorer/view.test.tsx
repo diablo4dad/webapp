@@ -9,8 +9,11 @@ import {
   type ExplorerItem,
   type FilterOption,
 } from "./state";
+import itemListStyles from "../../features/database-explorer/item-list/view.module.css";
+import itemViewStyles from "../../features/database-explorer/item-view/view.module.css";
 import { View } from "./view";
-import styles from "./view.module.css";
+import layoutStyles from "./layout.module.css";
+import routeStyles from "./view.module.css";
 
 const emptyOptions: FilterOption[] = [
   {
@@ -159,6 +162,18 @@ function createClientRect(top: number): DOMRect {
 }
 
 describe("database explorer surface", () => {
+  test("shows a loading skeleton", () => {
+    renderView({
+      isLoading: true,
+    });
+
+    expect(screen.getByRole("status", { name: "Loading database" }))
+      .toHaveAttribute("aria-busy", "true");
+    expect(screen.queryByText("Loading database")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Database Explorer" }))
+      .not.toBeInTheDocument();
+  });
+
   test("renders compact filters in the item sidebar", () => {
     const { container } = renderView();
 
@@ -166,7 +181,7 @@ describe("database explorer surface", () => {
     const filters = screen.getByRole("region", { name: "Database filters" });
     const emptyList = screen.getByText("No items found.");
 
-    expect(title).toHaveClass(styles.ViewListTitle);
+    expect(title).toHaveClass(itemListStyles.ViewListTitle);
     expect(
       title.compareDocumentPosition(filters) &
         Node.DOCUMENT_POSITION_FOLLOWING,
@@ -185,9 +200,9 @@ describe("database explorer surface", () => {
       name: "Class: Show all",
     });
 
-    expect(itemTypeFilter).toHaveClass(styles.ViewFilterControl);
-    expect(itemQualityFilter).toHaveClass(styles.ViewFilterControl);
-    expect(classFilter).toHaveClass(styles.ViewFilterControl);
+    expect(itemTypeFilter).toHaveClass(itemListStyles.ViewFilterControl);
+    expect(itemQualityFilter).toHaveClass(itemListStyles.ViewFilterControl);
+    expect(classFilter).toHaveClass(itemListStyles.ViewFilterControl);
     expect(
       itemTypeFilter.compareDocumentPosition(itemQualityFilter) &
         Node.DOCUMENT_POSITION_FOLLOWING,
@@ -215,11 +230,11 @@ describe("database explorer surface", () => {
     });
 
     expect(screen.getByRole("button", { name: "Item Type: Sword" }))
-      .toHaveClass(styles.ViewFilterControlActive);
+      .toHaveClass(itemListStyles.ViewFilterControlActive);
     expect(screen.getByRole("button", { name: "Item Quality: Magic" }))
-      .toHaveClass(styles.ViewFilterControlActive);
+      .toHaveClass(itemListStyles.ViewFilterControlActive);
     expect(screen.getByRole("button", { name: "Class: Sorcerer" }))
-      .toHaveClass(styles.ViewFilterControlActive);
+      .toHaveClass(itemListStyles.ViewFilterControlActive);
   });
 
   test("opens filter options and applies a selected value", async () => {
@@ -236,7 +251,7 @@ describe("database explorer surface", () => {
 
     expect(screen.queryByText("No items found.")).not.toBeInTheDocument();
     expect(screen.getByRole("region", { name: "Item Type filter options" }))
-      .toHaveClass(styles.ViewFilterOptions);
+      .toHaveClass(itemListStyles.ViewFilterOptions);
     expect(screen.getByText("Choose Item Type to Show")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Show all" }))
       .toHaveAttribute("aria-pressed", "true");
@@ -298,7 +313,7 @@ describe("database explorer surface", () => {
       .mockImplementation(function getBoundingClientRect(
         this: HTMLElement,
       ) {
-        return this.classList.contains(styles.View)
+        return this.classList.contains(layoutStyles.Layout)
           ? createClientRect(-scrollParent.scrollTop)
           : createClientRect(0);
       });
@@ -340,33 +355,37 @@ describe("database explorer surface", () => {
       totalCount: 1,
     });
 
-    const resultsPane = document.querySelector(`.${styles.ViewResultsPane}`);
-    const itemPane = document.querySelector(`.${styles.ViewItemPane}`);
+    const resultsPane = document.querySelector(
+      `.${routeStyles.ViewResultsPane}`,
+    );
+    const itemPane = document.querySelector(`.${routeStyles.ViewItemPane}`);
     const list = screen.getByLabelText("Database item results");
 
     expect(resultsPane).not.toBeNull();
     expect(itemPane).not.toBeNull();
     expect(resultsPane).not.toHaveClass(
-      styles.ViewResultsPaneMobileHidden,
+      routeStyles.ViewResultsPaneMobileHidden,
     );
-    expect(itemPane).toHaveClass(styles.ViewItemPaneMobileHidden);
+    expect(itemPane).toHaveClass(routeStyles.ViewItemPaneMobileHidden);
 
     await user.click(await within(list).findByRole("button", {
       name: /Azure Blade/,
     }));
 
     expect(onSelectItem).toHaveBeenCalledWith(selectedItem);
-    expect(resultsPane).toHaveClass(styles.ViewResultsPaneMobileHidden);
-    expect(itemPane).not.toHaveClass(styles.ViewItemPaneMobileHidden);
+    expect(resultsPane).toHaveClass(
+      routeStyles.ViewResultsPaneMobileHidden,
+    );
+    expect(itemPane).not.toHaveClass(routeStyles.ViewItemPaneMobileHidden);
 
     await user.click(screen.getByRole("button", {
       name: "Back to item list",
     }));
 
     expect(resultsPane).not.toHaveClass(
-      styles.ViewResultsPaneMobileHidden,
+      routeStyles.ViewResultsPaneMobileHidden,
     );
-    expect(itemPane).toHaveClass(styles.ViewItemPaneMobileHidden);
+    expect(itemPane).toHaveClass(routeStyles.ViewItemPaneMobileHidden);
   });
 
   test("positions detail at the top and restores list scroll on back", async () => {
@@ -425,7 +444,7 @@ describe("database explorer surface", () => {
       .mockImplementation(function getBoundingClientRect(
         this: HTMLElement,
       ) {
-        return this.classList.contains(styles.View)
+        return this.classList.contains(layoutStyles.Layout)
           ? createClientRect(-scrollParent.scrollTop)
           : createClientRect(0);
       });
@@ -454,10 +473,10 @@ describe("database explorer surface", () => {
       totalCount: 1,
     });
 
-    expect(document.querySelector(`.${styles.ViewResultsPane}`))
-      .toHaveClass(styles.ViewResultsPaneMobileHidden);
-    expect(document.querySelector(`.${styles.ViewItemPane}`))
-      .not.toHaveClass(styles.ViewItemPaneMobileHidden);
+    expect(document.querySelector(`.${routeStyles.ViewResultsPane}`))
+      .toHaveClass(routeStyles.ViewResultsPaneMobileHidden);
+    expect(document.querySelector(`.${routeStyles.ViewItemPane}`))
+      .not.toHaveClass(routeStyles.ViewItemPaneMobileHidden);
   });
 
   test("uses magic type colour for list item names", () => {
@@ -479,9 +498,9 @@ describe("database explorer surface", () => {
     );
 
     expect(screen.getByText("Azure Blade")).toHaveClass(
-      styles.ViewMagicTypeMagic,
+      itemListStyles.ViewMagicTypeMagic,
     );
-    expect(container.querySelector(`.${styles.ViewListItemIcon}`))
+    expect(container.querySelector(`.${itemListStyles.ViewListItemIcon}`))
       .not.toBeInTheDocument();
     expect(screen.queryByText("Game data")).not.toBeInTheDocument();
   });
@@ -511,7 +530,7 @@ describe("database explorer surface", () => {
     expect(inventorySection).not.toBeNull();
 
     const detailHeader = document.querySelector(
-      `.${styles.ViewDetailHeader}`,
+      `.${itemViewStyles.ViewDetailHeader}`,
     );
 
     expect(detailHeader).not.toBeNull();
@@ -519,50 +538,58 @@ describe("database explorer surface", () => {
     const inventory = within(inventorySection as HTMLElement);
     const detail = within(detailHeader as HTMLElement);
     const detailIcon = (detailHeader as HTMLElement).querySelector(
-      `.${styles.ViewDetailIcon}`,
+      `.${itemViewStyles.ViewDetailIcon}`,
     );
     const detailNameLabel = detail
       .getAllByText("Name")
-      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+      .find((element) =>
+        element.classList.contains(itemViewStyles.ViewFieldLabel));
     const detailTransmogNameLabel = detail
       .getAllByText("Transmog Name")
-      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+      .find((element) =>
+        element.classList.contains(itemViewStyles.ViewFieldLabel));
     const detailSeriesLabel = detail
       .getAllByText("Series")
-      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+      .find((element) =>
+        element.classList.contains(itemViewStyles.ViewFieldLabel));
     const descriptionLabel = detail
       .getAllByText("Description")
-      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+      .find((element) =>
+        element.classList.contains(itemViewStyles.ViewFieldLabel));
     const detailItemIdLabel = detail
       .getAllByText("Item ID")
-      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+      .find((element) =>
+        element.classList.contains(itemViewStyles.ViewFieldLabel));
     const detailItemTypeLabel = screen
       .getAllByText("Item Type")
-      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+      .find((element) =>
+        element.classList.contains(itemViewStyles.ViewFieldLabel));
     const detailMagicTypeLabel = screen
       .getAllByText("Item Quality")
-      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+      .find((element) =>
+        element.classList.contains(itemViewStyles.ViewFieldLabel));
     const detailPreferredZoneLabel = screen
       .getAllByText("Preferred Zone")
-      .find((element) => element.classList.contains(styles.ViewFieldLabel));
+      .find((element) =>
+        element.classList.contains(itemViewStyles.ViewFieldLabel));
     const usableByClassesHeading = screen.getByRole("heading", {
       name: "Usable by Classes",
     });
     const detailHeaderCard = (detailHeader as HTMLElement).closest(
-      `.${styles.ViewDetailCard}`,
+      `.${itemViewStyles.ViewDetailCard}`,
     );
     const usableByClassesCard = usableByClassesHeading.closest(
-      `.${styles.ViewDetailCard}`,
+      `.${itemViewStyles.ViewDetailCard}`,
     );
 
     expect(inventory.getByText("Sorcerer")).toBeInTheDocument();
     expect(inventory.queryByText("Male")).not.toBeInTheDocument();
     expect(inventory.queryByText("Female")).not.toBeInTheDocument();
     expect(inventory.getByText("Male: 2100")).toHaveClass(
-      styles.ViewInventoryImage,
+      itemViewStyles.ViewInventoryImage,
     );
     expect(inventory.getByText("Female: none")).toHaveClass(
-      styles.ViewInventoryMissing,
+      itemViewStyles.ViewInventoryMissing,
     );
     expect(screen.queryByRole("heading", { name: "Properties" }))
       .not.toBeInTheDocument();
@@ -650,7 +677,7 @@ describe("database explorer surface", () => {
       ) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(screen.getByText("base/meta/Item/Azure_Blade"))
-      .toHaveClass(styles.ViewDataminedFileName);
+      .toHaveClass(itemViewStyles.ViewDataminedFileName);
     expect(screen.queryByRole("link", {
       name: "base/meta/Item/Azure_Blade",
     })).not.toBeInTheDocument();
@@ -694,7 +721,7 @@ describe("database explorer surface", () => {
 
     const jsonPreview = await screen.findByLabelText("Datamined file JSON");
 
-    expect(jsonPreview).toHaveClass(styles.ViewJsonPreview);
+    expect(jsonPreview).toHaveClass(itemViewStyles.ViewJsonPreview);
     expect(jsonPreview.textContent).toContain('"name": "Azure Blade"');
     expect(jsonPreview.textContent).toContain(
       '"unsafe": "<script>alert(1)</script>"',
@@ -756,8 +783,8 @@ describe("database explorer surface", () => {
       list.compareDocumentPosition(stats as HTMLElement) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(results).toHaveClass(styles.ViewStatsResults);
-    expect(indexed).toHaveClass(styles.ViewStatsIndexed);
+    expect(results).toHaveClass(itemListStyles.ViewStatsResults);
+    expect(indexed).toHaveClass(itemListStyles.ViewStatsIndexed);
   });
 
   test("virtualizes long item result lists", () => {
@@ -817,7 +844,7 @@ describe("database explorer surface", () => {
     expect(screen.getByRole("button", { name: "Name" }))
       .toHaveTextContent("↑");
     expect(screen.getByRole("button", { name: "Name" }))
-      .toHaveClass(styles.ViewListSortButtonActive);
+      .toHaveClass(itemListStyles.ViewListSortButtonActive);
 
     await user.click(screen.getByRole("button", { name: "Name" }));
 
@@ -873,7 +900,7 @@ describe("database explorer surface", () => {
     expect(screen.getByRole("button", { name: "Name" }))
       .toHaveTextContent("↕");
     expect(screen.getByRole("button", { name: "Name" }))
-      .not.toHaveClass(styles.ViewListSortButtonActive);
+      .not.toHaveClass(itemListStyles.ViewListSortButtonActive);
 
     await user.click(screen.getByRole("button", { name: "Name" }));
 

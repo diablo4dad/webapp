@@ -1,0 +1,56 @@
+.ViewResultsPane,
+.ViewItemPane {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    min-height: 0;
+}
+
+.ViewResultsPaneMobileHidden,
+.ViewItemPaneMobileHidden {
+    display: none;
+}
+
+.ViewPrimaryAction {
+    min-height: 2.5rem;
+    border: 1px solid var(--action-primary-border);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-4);
+    background: var(--action-primary-background);
+    color: var(--editor-text-strong);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ViewStatePanel {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: center;
+    justify-content: center;
+    min-height: 16rem;
+    padding: var(--space-6);
+    color: var(--editor-text-secondary);
+    text-align: center;
+}
+
+@media screen and (min-width: 1200px) {
+    .ViewResultsPane {
+        --view-results-pane-height: calc(
+            100dvh - var(--view-desktop-shell-header-height) -
+                (var(--space-8) * 2)
+        );
+        position: sticky;
+        top: var(--space-8);
+        height: var(--view-results-pane-height);
+        min-height: 0;
+        max-height: var(--view-results-pane-height);
+    }
+
+    .ViewResultsPaneMobileHidden,
+    .ViewItemPaneMobileHidden {
+        display: flex;
+    }
+}

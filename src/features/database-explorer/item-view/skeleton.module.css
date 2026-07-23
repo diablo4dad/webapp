@@ -1,0 +1,72 @@
+.Skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    min-height: 0;
+}
+
+.SkeletonDetailCard,
+.SkeletonDetailSection {
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.SkeletonDetailCard {
+    min-height: 12rem;
+    padding: var(--space-6);
+}
+
+.SkeletonDetailIcon,
+.SkeletonDetailContent,
+.SkeletonDetailSection span {
+    display: block;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(
+        90deg,
+        rgb(255 255 255 / 7%),
+        rgb(255 255 255 / 13%),
+        rgb(255 255 255 / 7%)
+    );
+    background-size: 200% 100%;
+    animation: skeletonPulse 1400ms ease-in-out infinite;
+}
+
+.SkeletonDetailIcon {
+    flex: 0 0 auto;
+    width: 5rem;
+    height: 5rem;
+    margin-left: auto;
+}
+
+.SkeletonDetailContent {
+    width: min(24rem, 68%);
+    height: 4rem;
+    margin-top: var(--space-3);
+}
+
+.SkeletonDetailContent:last-child {
+    width: min(30rem, 82%);
+    height: 5rem;
+}
+
+.SkeletonDetailSection {
+    min-height: 8rem;
+    padding: var(--space-6);
+}
+
+.SkeletonDetailSection span {
+    width: min(28rem, 72%);
+    height: 3.5rem;
+}
+
+@keyframes skeletonPulse {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}

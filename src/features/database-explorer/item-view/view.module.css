@@ -1,0 +1,349 @@
+.View {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    min-height: 0;
+}
+
+.ViewDetailCard {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.ViewMobileBackButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    gap: var(--space-2);
+    min-height: 2.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-3);
+    background-color: transparent;
+    color: var(--app-text-secondary);
+    font: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background-color 160ms ease,
+        color 160ms ease;
+}
+
+.ViewMobileBackButton:hover {
+    background-color: rgb(255 255 255 / 5%);
+    color: var(--editor-text-strong);
+}
+
+.ViewMobileBackButton:focus-visible {
+    outline: 2px solid var(--field-focus-shadow-color);
+    outline-offset: 2px;
+}
+
+.ViewMobileBackButton svg {
+    flex: 0 0 auto;
+    width: 1.35rem;
+    height: 1.35rem;
+    color: var(--color-neutral-250);
+    fill: currentColor;
+    transition: color 160ms ease;
+}
+
+.ViewMobileBackButton:hover svg {
+    color: var(--color-neutral-150);
+}
+
+.ViewDetailHeader {
+    display: flow-root;
+    padding: var(--space-4);
+}
+
+.ViewDetailIcon {
+    float: right;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(120px, 45vw);
+    margin: 0 0 var(--space-3) var(--space-4);
+    object-fit: contain;
+}
+
+.ViewDetailHeading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.ViewDetailMetaColumn {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+    margin-top: var(--space-3);
+}
+
+.ViewDetailSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--editor-divider);
+}
+
+.ViewDetailSection:last-child {
+    border-bottom: 0;
+}
+
+.ViewDetailSection h3 {
+    margin: 0;
+    color: var(--editor-text-strong);
+    font-size: var(--font-size-md);
+}
+
+.ViewDetailSectionHeader {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.ViewDetailAction {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    min-height: 2.25rem;
+    border: 1px solid var(--editor-control-border);
+    border-radius: var(--radius-sm);
+    padding: 0;
+    background-color: var(--editor-field-surface);
+    color: var(--editor-text-strong);
+    font: inherit;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ViewDetailAction:hover {
+    border-color: var(--editor-border);
+    background-color: var(--color-neutral-830);
+}
+
+.ViewDetailAction:disabled {
+    color: var(--editor-text-muted);
+    cursor: wait;
+    opacity: 0.68;
+}
+
+.ViewJsonStatus {
+    color: var(--editor-text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.ViewDataminedFileName {
+    color: var(--editor-text);
+    overflow-wrap: anywhere;
+}
+
+.ViewJsonError {
+    border: 1px solid var(--feedback-danger-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    background-color: var(--feedback-danger-background);
+    color: var(--feedback-danger-text);
+    font-size: var(--font-size-sm);
+}
+
+.ViewJsonPreview {
+    margin: 0;
+    border: 1px solid var(--editor-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    background-color: var(--editor-field-surface);
+    color: var(--editor-text);
+    overflow: visible;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
+    font-size: var(--font-size-sm);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.ViewField {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.ViewFieldLabel {
+    color: var(--editor-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.ViewFieldValue {
+    min-width: 0;
+    color: var(--editor-text);
+    overflow-wrap: anywhere;
+}
+
+.ViewMagicType {
+    font-weight: 700;
+}
+
+.ViewMagicTypeCommon {
+    color: var(--app-text);
+}
+
+.ViewMagicTypeMagic {
+    color: var(--rarity-magic-color);
+}
+
+.ViewMagicTypeLegendary {
+    color: var(--rarity-legendary-color);
+}
+
+.ViewMagicTypeUnique {
+    color: var(--rarity-unique-color);
+}
+
+.ViewMagicTypeMythic {
+    color: var(--rarity-mythic-color);
+}
+
+.ViewMagicTypeRare {
+    color: var(--rarity-rare-color);
+}
+
+.ViewClassList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.ViewClassListCompact {
+    gap: var(--space-1);
+}
+
+.ViewClassChip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: 2rem;
+    border: 1px solid var(--item-sidebar-tag-border);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-2);
+    background-color: var(--editor-panel-surface);
+    color: var(--editor-text);
+    font-size: var(--font-size-sm);
+}
+
+.ViewClassIcon {
+    width: 1.35rem;
+    height: 1.35rem;
+    object-fit: contain;
+}
+
+.ViewInventoryGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+    font-size: var(--font-size-sm);
+}
+
+.ViewInventoryRow {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.8fr) repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    align-items: center;
+    min-width: 0;
+}
+
+.ViewInventoryClass {
+    color: var(--editor-text-secondary);
+    font-weight: 700;
+}
+
+.ViewInventoryImage,
+.ViewInventoryMissing {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.ViewInventoryMissing {
+    color: var(--editor-text-muted);
+}
+
+.ViewInlineIcon {
+    width: 1.75rem;
+    height: 1.75rem;
+    object-fit: contain;
+}
+
+.ViewInventoryInlineIcon {
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.ViewEmptyDetail {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: center;
+    justify-content: center;
+    min-height: 16rem;
+    padding: var(--space-6);
+    color: var(--editor-text-secondary);
+    text-align: center;
+}
+
+@media screen and (min-width: 720px) {
+    .ViewDetailHeader,
+    .ViewDetailSection {
+        padding: var(--space-6);
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .ViewMobileBackButton {
+        display: none;
+    }
+
+    .ViewDetailHeader {
+        display: grid;
+        grid-template-columns:
+            auto fit-content(18rem)
+            minmax(0, 1fr);
+        align-items: start;
+        column-gap: calc(var(--space-8) + 1rem);
+    }
+
+    .ViewDetailIcon {
+        float: none;
+        justify-self: start;
+        max-width: min(120px, 100%);
+        margin: 0;
+    }
+
+    .ViewDetailHeading,
+    .ViewDetailMetaColumn {
+        margin-top: 0;
+        padding-block: 1rem;
+    }
+}

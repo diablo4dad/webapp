@@ -5,11 +5,8 @@ import {
   createSearchIndex,
   createStaticExplorerItems,
   filterExplorerItems,
-  getAvailableClasses,
   getItemTypeOptions,
-  getMagicTypeLabel,
   getMagicTypeOptions,
-  getSourceLabel,
   sortExplorerItems,
 } from "./state";
 
@@ -186,11 +183,6 @@ describe("database explorer items", () => {
       "Helm",
       "Mount",
     ]);
-    expect(getMagicTypeLabel(MagicType.LEGENDARY)).toBe("Legendary");
-    expect(getMagicTypeLabel(-1)).toBe("Not Set");
-    expect(getMagicTypeLabel()).toBe("Not Set");
-    expect(getSourceLabel("static")).toBe("Game data");
-    expect(getSourceLabel("catalog")).toBe("Custom data");
   });
 
   test("builds magic type options in quality order", () => {
@@ -251,9 +243,12 @@ describe("database explorer items", () => {
   test("treats missing class data as available to all classes", () => {
     const items = createStaticExplorerItems(dadDbRef);
 
-    expect(getAvailableClasses(items[2].item)).toContain(
-      CharacterClass.WARLOCK,
-    );
+    expect(
+      filterExplorerItems(items, {
+        ...DEFAULT_FILTERS,
+        characterClass: String(CharacterClass.WARLOCK),
+      }).map((item) => item.item.id),
+    ).toContain(103);
   });
 
   test("sorts by name and keeps non-alphabetic names last", () => {
