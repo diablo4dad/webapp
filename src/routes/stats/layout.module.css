@@ -1,0 +1,52 @@
+.Layout,
+.LayoutMain {
+    width: 100%;
+    min-width: 0;
+}
+
+.LayoutMain {
+    display: flex;
+    flex-direction: column;
+}
+
+.LayoutDashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    width: 100%;
+    min-width: 0;
+    padding: var(--space-3);
+}
+
+.LayoutSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.LayoutStatus {
+    display: block;
+    width: 100%;
+    min-width: 0;
+}
+
+@media screen and (min-width: 480px) {
+    .LayoutDashboard {
+        gap: var(--space-4);
+        padding: var(--space-4);
+    }
+}
+
+@media screen and (min-width: 720px) {
+    .LayoutDashboard {
+        padding: var(--space-6);
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .LayoutDashboard {
+        gap: var(--space-4);
+        padding: var(--space-8);
+    }
+}

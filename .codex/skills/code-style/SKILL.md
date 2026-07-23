@@ -48,6 +48,7 @@ description: Code style and TypeScript/React conventions for this repository. Us
 - Split large components by responsibility before adding more behavior.
 - Keep tightly coupled one-off child render helpers in the parent file.
 - Extract child components when reuse, size, testing, async loading, or ownership justifies the file boundary.
+- For multi-part UI surfaces, prefer one component per module and keep `view.tsx` focused on composition.
 - Keep skeleton/loading placeholders as explicit standalone components; avoid rendering hydrated components with fake data to create skeleton states.
 - Move complex JSX derivations into named helpers.
 - Keep render components pure where practical; pass data, derived state, and handlers through props.

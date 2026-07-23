@@ -1,0 +1,329 @@
+.Skeleton {
+    --skeleton-padding: var(--space-5);
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+}
+
+.Skeleton::before,
+.Skeleton::after {
+    display: none;
+}
+
+.SkeletonContent {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    justify-content: space-between;
+    min-width: 0;
+    padding: var(--skeleton-padding);
+    border-top: 1px solid var(--card-border-top);
+    border-bottom: 1px solid var(--card-border-bottom);
+    background-color: var(--app-surface-muted);
+}
+
+.SkeletonHeading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.SkeletonMeta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+}
+
+.SkeletonScopeIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    flex: 0 0 auto;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonMetaText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1 1 9rem;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.SkeletonEyebrow {
+    display: block;
+    width: min(11rem, 100%);
+    height: 0.95rem;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonScopePosition {
+    display: block;
+    width: 4.5rem;
+    height: 0.9rem;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonScopeControls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    flex: 0 0 100%;
+    gap: var(--space-2);
+    width: 100%;
+    margin-top: var(--space-2);
+}
+
+.SkeletonScopeControl {
+    display: block;
+    width: 100%;
+    min-height: 2.8rem;
+    border-radius: 999px;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonTitle {
+    display: block;
+    width: min(24rem, 100%);
+    height: 2.8rem;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonSummary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+}
+
+.SkeletonMeter {
+    display: inline-flex;
+    align-items: baseline;
+    align-self: flex-start;
+    gap: var(--space-2);
+}
+
+.SkeletonMeterLabel {
+    display: block;
+    width: 4.5rem;
+    height: 1rem;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonMeterValue {
+    display: block;
+    width: 5.5rem;
+    height: 3rem;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonScopeStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-1);
+    width: 100%;
+    max-width: none;
+}
+
+.SkeletonScopeStat {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.SkeletonScopeStatValue {
+    display: block;
+    width: min(5rem, 100%);
+    height: 1.05rem;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonScopeStatLabel {
+    display: block;
+    width: min(5.75rem, 100%);
+    height: 0.7rem;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonFilters {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+    padding-top: 0;
+}
+
+.SkeletonFilter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2rem;
+}
+
+.SkeletonFilterToggle {
+    display: block;
+    flex-shrink: 0;
+    width: 3em;
+    height: 1.9em;
+    border-radius: 1.1em;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonFilterLabel {
+    display: block;
+    width: 8.5rem;
+    height: 0.9rem;
+    background-color: var(--skeleton-background);
+}
+
+.SkeletonScopeIcon,
+.SkeletonEyebrow,
+.SkeletonScopePosition,
+.SkeletonScopeControl,
+.SkeletonTitle,
+.SkeletonMeterLabel,
+.SkeletonMeterValue,
+.SkeletonScopeStatValue,
+.SkeletonScopeStatLabel,
+.SkeletonFilterToggle,
+.SkeletonFilterLabel {
+    animation: skeleton-loading 0.75s linear infinite alternate;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+@media screen and (min-width: 480px) {
+    .SkeletonMeta {
+        flex-wrap: nowrap;
+    }
+
+    .SkeletonScopeIcon {
+        width: 2.35rem;
+        height: 2.35rem;
+    }
+
+    .SkeletonScopeControls {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-self: stretch;
+        width: auto;
+        margin-top: 0;
+        margin-left: auto;
+        padding-left: var(--space-4);
+    }
+
+    .SkeletonScopeControl {
+        width: 2.35rem;
+        min-height: 2.35rem;
+        border-radius: 50%;
+    }
+
+    .SkeletonScopeStats {
+        gap: var(--space-2);
+    }
+
+    .SkeletonScopeStatValue {
+        height: 1.15rem;
+    }
+
+    .SkeletonScopeStatLabel {
+        height: 0.78rem;
+    }
+
+    .SkeletonFilters {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2) var(--space-5);
+        padding-top: var(--space-1);
+    }
+}
+
+@media screen and (min-width: 720px) {
+    .Skeleton {
+        --skeleton-padding: var(--space-6);
+    }
+
+    .SkeletonTitle {
+        height: 3.45rem;
+    }
+
+    .SkeletonScopeIcon {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .SkeletonScopeControl {
+        width: 2.75rem;
+        min-height: 2.75rem;
+    }
+
+    .SkeletonSummary {
+        display: grid;
+        grid-template-columns: 16rem minmax(0, 18.5rem);
+        align-items: end;
+        gap: var(--space-8);
+    }
+
+    .SkeletonScopeStats {
+        align-self: end;
+        max-width: 18.5rem;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .Skeleton {
+        overflow: visible;
+        max-width: 44rem;
+        padding: var(--skeleton-padding);
+    }
+
+    .Skeleton::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        display: block;
+        border-top: 1px solid var(--card-border-top);
+        border-bottom: 1px solid var(--card-border-bottom);
+        background: var(--welcome-panel-background);
+        clip-path: polygon(0 0, 82% 0, 94% 100%, 0 100%);
+        pointer-events: none;
+    }
+
+    .SkeletonContent {
+        padding: 0;
+        border-top: none;
+        border-bottom: none;
+        background-color: transparent;
+    }
+
+    .SkeletonScopeControls {
+        margin-right: clamp(5.5rem, 20%, 7.5rem);
+    }
+}

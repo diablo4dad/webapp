@@ -1,0 +1,376 @@
+.View {
+    --view-padding: var(--space-5);
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+}
+
+.View::before,
+.View::after {
+    display: none;
+}
+
+.ViewContent {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    justify-content: space-between;
+    min-width: 0;
+    padding: var(--view-padding);
+    border-top: 1px solid var(--card-border-top);
+    border-bottom: 1px solid var(--card-border-bottom);
+    background-color: var(--app-surface-muted);
+}
+
+.ViewHeading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.ViewMeta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+}
+
+.ViewMetaText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1 1 9rem;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.ViewEyebrow {
+    margin: 0;
+    color: var(--app-text-disabled);
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.ViewScope {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.ViewScopePosition {
+    color: var(--app-text-muted);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.ViewScopeIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    flex: 0 0 auto;
+    width: 2.25rem;
+    height: 2.25rem;
+}
+
+.ViewScopeIcon img {
+    width: 1.75rem;
+    height: 1.75rem;
+    object-fit: contain;
+    filter: var(--shadow-progress-icon);
+}
+
+.ViewScopeControls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    flex: 0 0 100%;
+    gap: var(--space-2);
+    width: 100%;
+    margin-top: var(--space-2);
+}
+
+.ViewScopeControl {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 2.8rem;
+    padding: 0;
+    border: 1px solid var(--toggle-bg-color-on);
+    border-radius: 999px;
+    background-color: var(--toggle-bg-color-on);
+    color: var(--app-text);
+    cursor: pointer;
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease,
+        transform 160ms ease;
+}
+
+.ViewScopeControl:hover {
+    border-color: var(--feedback-success-border);
+    background-color: var(--feedback-success-border);
+    color: var(--color-black);
+    transform: translateY(-1px);
+}
+
+.ViewScopeControl:focus-visible {
+    outline: 2px solid var(--field-focus-shadow-color);
+    outline-offset: 2px;
+}
+
+.ViewScopeControl svg {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+.ViewHeading h1 {
+    min-width: 0;
+    margin: 0;
+    color: var(--link-color-action);
+    font-family: "PT Serif", serif;
+    font-size: clamp(2.1rem, 13vw, 2.65rem);
+    line-height: 1.05;
+    text-shadow: 1px 1px 3px var(--color-black);
+}
+
+.ViewSummary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+}
+
+.ViewMeter {
+    display: inline-flex;
+    align-items: baseline;
+    align-self: flex-start;
+    gap: var(--space-2);
+    color: var(--app-text-secondary);
+}
+
+.ViewMeter strong {
+    color: var(--app-text);
+    font-family: "PT Serif", serif;
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.ViewMeter span {
+    color: var(--app-text-muted);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.ViewScopeStats {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    gap: 0;
+    width: 100%;
+    max-width: none;
+}
+
+.ViewScopeStatGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-1);
+    width: 100%;
+}
+
+.ViewScopeStatGrid div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.ViewScopeStatGrid strong {
+    color: var(--app-text);
+    font-size: 1.05rem;
+    line-height: 1;
+}
+
+.ViewScopeStatGrid span {
+    color: var(--app-text-disabled);
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.ViewFilters {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+    padding-top: 0;
+}
+
+.ViewFilter {
+    color: var(--app-text-muted);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.ViewFilter label {
+    width: 100%;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+}
+
+.ViewFilter [type="checkbox"]:checked + label {
+    color: var(--app-text);
+}
+
+@media screen and (min-width: 480px) {
+    .ViewMeta {
+        flex-wrap: nowrap;
+    }
+
+    .ViewScopeIcon {
+        width: 2.35rem;
+        height: 2.35rem;
+    }
+
+    .ViewScopeIcon img {
+        width: 1.85rem;
+        height: 1.85rem;
+    }
+
+    .ViewScopeControls {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-self: stretch;
+        width: auto;
+        margin-top: 0;
+        margin-left: auto;
+        padding-left: var(--space-4);
+    }
+
+    .ViewScopeControl {
+        width: 2.35rem;
+        min-height: 2.35rem;
+        border-radius: 50%;
+    }
+
+    .ViewScopeControl svg {
+        width: 1.35rem;
+        height: 1.35rem;
+    }
+
+    .ViewScopeStatGrid {
+        gap: var(--space-2);
+    }
+
+    .ViewScopeStatGrid strong {
+        font-size: 1.15rem;
+    }
+
+    .ViewScopeStatGrid span {
+        font-size: 0.78rem;
+    }
+
+    .ViewFilters {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2) var(--space-5);
+        padding-top: var(--space-1);
+    }
+
+    .ViewFilter label {
+        width: auto;
+    }
+}
+
+@media screen and (min-width: 720px) {
+    .View {
+        --view-padding: var(--space-6);
+    }
+
+    .ViewHeading h1 {
+        font-size: 3.25rem;
+    }
+
+    .ViewScopeIcon {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .ViewScopeIcon img {
+        width: 2.15rem;
+        height: 2.15rem;
+    }
+
+    .ViewScopeControl {
+        width: 2.75rem;
+        min-height: 2.75rem;
+    }
+
+    .ViewScopeControl svg {
+        width: 1.55rem;
+        height: 1.55rem;
+    }
+
+    .ViewSummary {
+        display: grid;
+        grid-template-columns: 16rem minmax(0, 18.5rem);
+        align-items: end;
+        gap: var(--space-8);
+    }
+
+    .ViewScopeStats {
+        align-self: end;
+        max-width: 18.5rem;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .View {
+        overflow: visible;
+        max-width: 44rem;
+        padding: var(--view-padding);
+    }
+
+    .View::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        display: block;
+        border-top: 1px solid var(--card-border-top);
+        border-bottom: 1px solid var(--card-border-bottom);
+        background: var(--welcome-panel-background);
+        clip-path: polygon(0 0, 82% 0, 94% 100%, 0 100%);
+        pointer-events: none;
+    }
+
+    .ViewContent {
+        padding: 0;
+        border-top: none;
+        border-bottom: none;
+        background-color: transparent;
+    }
+
+    .ViewScopeControls {
+        margin-right: clamp(5.5rem, 20%, 7.5rem);
+    }
+}

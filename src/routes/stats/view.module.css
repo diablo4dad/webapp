@@ -1,0 +1,31 @@
+.ViewLoadError {
+    padding: var(--space-6);
+    color: var(--app-text-muted);
+    line-height: 1.5;
+}
+
+.ViewProgressList {
+    display: grid;
+    gap: var(--space-4);
+    padding: 0;
+}
+
+.ViewProgressListStacked {
+    display: grid;
+}
+
+@media screen and (min-width: 1200px) {
+    .ViewProgressListExpanded {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .ViewProgressListStacked {
+        padding: 0;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .ViewProgressListExpanded {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
