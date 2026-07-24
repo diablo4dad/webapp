@@ -58,9 +58,15 @@
 }
 
 :global([data-ledger-view="card"]) .LedgerGroupAddCard {
+  flex-direction: column;
+  align-items: stretch;
   justify-content: flex-start;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
   padding: 0.5rem 0.5rem 0;
   border-style: dashed;
+  overflow: hidden;
 }
 
 :global([data-ledger-view="card"]) .LedgerGroupAddCardVisual {
@@ -72,6 +78,7 @@
 
 :global([data-ledger-view="card"]) .LedgerGroupAddCardInfo {
   width: 100%;
+  min-width: 0;
   padding: 0.5rem;
   text-align: center;
 }
@@ -79,6 +86,8 @@
 :global([data-ledger-view="card"]) .LedgerGroupAddCardText {
   color: var(--app-text-secondary);
   font-size: 0.875rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 @media screen and (min-width: 1200px) {
