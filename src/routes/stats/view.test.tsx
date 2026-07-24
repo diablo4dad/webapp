@@ -43,6 +43,8 @@ describe("stats view", () => {
 
     expect(screen.getByRole("status", { name: "Loading stats" }))
       .toHaveAttribute("aria-busy", "true");
+    expect(screen.getByTestId("stats-item-filter-skeleton"))
+      .toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Seasons" }))
       .not.toBeInTheDocument();
   });

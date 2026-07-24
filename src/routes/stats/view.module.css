@@ -28,6 +28,32 @@
     min-width: 0;
 }
 
+.ViewItemFilterSkeleton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-width: 0;
+    min-height: 2rem;
+    padding: 0.125rem 0;
+}
+
+.ViewItemFilterSkeletonLabel {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 8rem;
+    height: 1.25rem;
+    background-color: var(--skeleton-background);
+}
+
+.ViewItemFilterSkeletonCount {
+    flex: 0 0 auto;
+    width: 3.25rem;
+    height: 1.9rem;
+    border-radius: 999px;
+    background-color: var(--skeleton-background);
+}
+
 .ViewProgressList {
     display: grid;
     gap: var(--space-4);
@@ -36,6 +62,20 @@
 
 .ViewProgressListStacked {
     display: grid;
+}
+
+.ViewItemFilterSkeletonLabel,
+.ViewItemFilterSkeletonCount {
+    animation: skeleton-loading 0.75s linear infinite alternate;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }
 
 @container (min-width: 480px) {

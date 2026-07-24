@@ -17,6 +17,7 @@ import { Layout } from "./layout";
 import styles from "./view.module.css";
 
 const PROGRESS_CARD_LAYOUT = "expanded" satisfies ProgressLayout;
+const ITEM_FILTER_SKELETON_COUNT = 13;
 
 type Props = {
   catalogError?: string;
@@ -78,7 +79,7 @@ function View({
   if (isLoading) {
     return (
       <Layout
-        header={<ProgressOverviewSkeleton />}
+        header={<HeaderSkeleton />}
         isLoading={true}
         main={
           <ProgressSkeletonList
@@ -110,6 +111,15 @@ function View({
       }
       mainLabel="Item type progress"
     />
+  );
+}
+
+function HeaderSkeleton() {
+  return (
+    <div className={styles.ViewHeader}>
+      <ProgressOverviewSkeleton />
+      <ItemFilterSkeleton count={ITEM_FILTER_SKELETON_COUNT} />
+    </div>
   );
 }
 
@@ -148,6 +158,27 @@ function Header({
         </Card>
       )}
     </div>
+  );
+}
+
+function ItemFilterSkeleton({ count }: { count: number }) {
+  return (
+    <Card
+      className={styles.ViewItemFilters}
+      data-testid="stats-item-filter-skeleton"
+    >
+      <div className={styles.ViewItemFilterGrid}>
+        {Array.from({ length: count }, (_, index) => (
+          <div
+            className={styles.ViewItemFilterSkeleton}
+            key={`stats-item-filter-skeleton-${index}`}
+          >
+            <span className={styles.ViewItemFilterSkeletonLabel} />
+            <span className={styles.ViewItemFilterSkeletonCount} />
+          </div>
+        ))}
+      </div>
+    </Card>
   );
 }
 
