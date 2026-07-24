@@ -32,6 +32,11 @@ export type DropdownWidget = Widget & {
   default: string | number;
 };
 
+export type ItemFilterCount = {
+  owned: number;
+  total: number;
+};
+
 export type ItemFilterWidget = Widget & {
   type: WidgetType.ITEM_FILTER;
   action: (settings: Settings) => SettingsAction;
@@ -41,7 +46,7 @@ export type ItemFilterWidget = Widget & {
     settings: Settings,
     log: CollectionLog,
     group: MasterGroup,
-  ) => number;
+  ) => ItemFilterCount;
 };
 
 export type CollectionFilterWidget = Widget & {

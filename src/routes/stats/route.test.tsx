@@ -249,6 +249,23 @@ describe("stats route", () => {
     expect(showOutOfRotation).toBeChecked();
   });
 
+  test("syncs item filters with settings", async () => {
+    const user = userEvent.setup();
+    renderRoute();
+
+    const armorFilter = screen.getByRole("button", { name: /Armor\s*0\/1/ });
+
+    expect(armorFilter).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("0 collected from 1 total")).toBeInTheDocument();
+
+    await user.click(armorFilter);
+
+    expect(screen.getByRole("button", { name: /Armor\s*0\/1/ }))
+      .toHaveAttribute("aria-pressed", "false");
+    expect(screen.queryByText("0 collected from 1 total"))
+      .not.toBeInTheDocument();
+  });
+
   test("clears stale route search", async () => {
     mocks.useRootOutletContext.mockReturnValue({
       onClearSearch: mocks.onClearSearch,

@@ -116,7 +116,7 @@
     display: none;
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 720px) {
     .ViewExpanded {
         display: flex;
         flex-direction: column;
@@ -188,11 +188,5 @@
         color: var(--progress-card-detail-text);
         font-size: 0.95rem;
         line-height: 1.5;
-    }
-}
-
-@media screen and (min-width: 1600px) {
-    .ViewExpanded {
-        grid-column: span 2;
     }
 }

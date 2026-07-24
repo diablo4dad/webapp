@@ -1,6 +1,7 @@
 import type {
   ProgressScopeViewModel,
 } from "../progress";
+import Card from "../../shared/ui/Card";
 import { ChevronLeft, ChevronRight } from "../../shared/ui/Icons";
 import Toggle from "../../shared/ui/Toggle";
 import styles from "./view.module.css";
@@ -26,8 +27,8 @@ function ProgressOverview({
   selectedScope,
 }: Props) {
   return (
-    <header className={styles.View}>
-      <div className={styles.ViewContent}>
+    <Card className={styles.View}>
+      <header className={styles.ViewContent}>
         <div className={styles.ViewHeading}>
           <div className={styles.ViewMeta}>
             {selectedScope.iconSrc && (
@@ -106,8 +107,8 @@ function ProgressOverview({
             ))}
           </div>
         )}
-      </div>
-    </header>
+      </header>
+    </Card>
   );
 }
 

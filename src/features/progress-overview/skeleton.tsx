@@ -1,9 +1,10 @@
+import Card from "../../shared/ui/Card";
 import styles from "./skeleton.module.css";
 
 function ProgressOverviewSkeleton() {
   return (
-    <header className={styles.Skeleton}>
-      <div className={styles.SkeletonContent}>
+    <Card className={styles.Skeleton}>
+      <header className={styles.SkeletonContent}>
         <div className={styles.SkeletonHeading}>
           <div className={styles.SkeletonMeta}>
             <span className={styles.SkeletonScopeIcon} />
@@ -17,8 +18,8 @@ function ProgressOverviewSkeleton() {
           <span className={styles.SkeletonScopeStats} />
         </div>
         <span className={styles.SkeletonFilters} />
-      </div>
-    </header>
+      </header>
+    </Card>
   );
 }
 

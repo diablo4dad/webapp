@@ -23,7 +23,9 @@ import i18n from "../../services/i18n";
 import { CollectionLog } from "../ledger/type";
 import { filterDb } from "../../services/data/filters";
 import { countAllItemsDabDb } from "../../services/data/aggregate";
+import { countItemInDbOwned } from "../ledger/aggregate";
 import { collectionGroupIconMap } from "../../shared/domain/item-assets";
+import type { ItemFilterCount } from "../../shared/lib/widget";
 
 const collectionMeta = new Map([
   ...collectionFilterGroups.map((group) => [
@@ -158,7 +160,7 @@ function createItemTypeCount(
   settings: Settings,
   log: CollectionLog,
   group: MasterGroup,
-) => number {
+) => ItemFilterCount {
   return (
     collections: CollectionGroup,
     settings: Settings,
@@ -172,7 +174,10 @@ function createItemTypeCount(
       itemGroup === undefined ||
       (itemGroups.get(itemGroup) ?? []).length === 0
     ) {
-      return 0;
+      return {
+        owned: 0,
+        total: 0,
+      };
     }
 
     const countedDb = filterDb(
@@ -187,7 +192,10 @@ function createItemTypeCount(
       true,
     );
 
-    return countAllItemsDabDb(countedDb);
+    return {
+      owned: countItemInDbOwned(log, countedDb),
+      total: countAllItemsDabDb(countedDb),
+    };
   };
 }
 
@@ -198,7 +206,7 @@ function createClassTypeCount(
   settings: Settings,
   log: CollectionLog,
   group: MasterGroup,
-) => number {
+) => ItemFilterCount {
   return (
     collections: CollectionGroup,
     settings: Settings,
@@ -209,7 +217,10 @@ function createClassTypeCount(
     const characterClass = classOptionMap.get(option);
 
     if (characterClass === undefined) {
-      return 0;
+      return {
+        owned: 0,
+        total: 0,
+      };
     }
 
     const countedDb = filterDb(
@@ -224,7 +235,10 @@ function createClassTypeCount(
       true,
     );
 
-    return countAllItemsDabDb(countedDb);
+    return {
+      owned: countItemInDbOwned(log, countedDb),
+      total: countAllItemsDabDb(countedDb),
+    };
   };
 }
 

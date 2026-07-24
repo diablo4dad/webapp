@@ -7,26 +7,16 @@
     display: block;
     width: 100%;
     max-width: none;
-    padding: 0;
-}
-
-.Skeleton::before,
-.Skeleton::after {
-    display: none;
+    padding: var(--skeleton-padding);
 }
 
 .SkeletonContent {
     position: relative;
-    z-index: 1;
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
     justify-content: space-between;
     min-width: 0;
-    padding: var(--skeleton-padding);
-    border-top: 1px solid var(--card-border-top);
-    border-bottom: 1px solid var(--card-border-bottom);
-    background-color: var(--app-surface-muted);
 }
 
 .SkeletonHeading {
@@ -38,8 +28,8 @@
 
 .SkeletonMeta {
     display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
+    flex-wrap: nowrap;
+    align-items: center;
     gap: var(--space-2);
     width: 100%;
     min-width: 0;
@@ -62,10 +52,10 @@
 }
 
 .SkeletonScopeControls {
-    flex: 0 0 100%;
-    width: 100%;
-    height: 2.8rem;
-    margin-top: var(--space-2);
+    flex: 0 0 auto;
+    width: 5.25rem;
+    height: 2.35rem;
+    margin-left: auto;
     border-radius: 999px;
     background-color: var(--skeleton-background);
 }
@@ -94,7 +84,7 @@
 .SkeletonScopeStats {
     display: block;
     width: 100%;
-    height: 2.65rem;
+    min-height: 2.65rem;
     background-color: var(--skeleton-background);
 }
 
@@ -125,10 +115,6 @@
 }
 
 @media screen and (min-width: 480px) {
-    .SkeletonMeta {
-        flex-wrap: nowrap;
-    }
-
     .SkeletonScopeIcon {
         width: 2.35rem;
         height: 2.35rem;
@@ -141,10 +127,7 @@
     .SkeletonScopeControls {
         flex: 0 0 auto;
         align-self: stretch;
-        width: 5.25rem;
         height: auto;
-        margin-top: 0;
-        margin-left: auto;
     }
 
     .SkeletonFilters {
@@ -177,45 +160,12 @@
 
     .SkeletonSummary {
         display: grid;
-        grid-template-columns: 16rem minmax(0, 18.5rem);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
         align-items: end;
         gap: var(--space-8);
     }
 
     .SkeletonScopeStats {
         align-self: end;
-        max-width: 18.5rem;
-    }
-}
-
-@media screen and (min-width: 1200px) {
-    .Skeleton {
-        overflow: visible;
-        max-width: 44rem;
-        padding: var(--skeleton-padding);
-    }
-
-    .Skeleton::before {
-        content: "";
-        position: absolute;
-        z-index: 0;
-        inset: 0;
-        display: block;
-        border-top: 1px solid var(--card-border-top);
-        border-bottom: 1px solid var(--card-border-bottom);
-        background: var(--welcome-panel-background);
-        clip-path: polygon(0 0, 82% 0, 94% 100%, 0 100%);
-        pointer-events: none;
-    }
-
-    .SkeletonContent {
-        padding: 0;
-        border-top: none;
-        border-bottom: none;
-        background-color: transparent;
-    }
-
-    .SkeletonScopeControls {
-        margin-right: clamp(5.5rem, 20%, 7.5rem);
     }
 }

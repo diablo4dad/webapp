@@ -63,7 +63,7 @@
     }
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 720px) {
     .SkeletonExpanded {
         display: flex;
         flex-direction: column;
@@ -107,11 +107,5 @@
     .SkeletonExpanded .SkeletonBar {
         height: 0.6rem;
         margin-bottom: 1.8rem;
-    }
-}
-
-@media screen and (min-width: 1600px) {
-    .SkeletonExpanded {
-        grid-column: span 2;
     }
 }

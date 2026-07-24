@@ -7,26 +7,16 @@
     display: block;
     width: 100%;
     max-width: none;
-    padding: 0;
-}
-
-.View::before,
-.View::after {
-    display: none;
+    padding: var(--view-padding);
 }
 
 .ViewContent {
     position: relative;
-    z-index: 1;
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
     justify-content: space-between;
     min-width: 0;
-    padding: var(--view-padding);
-    border-top: 1px solid var(--card-border-top);
-    border-bottom: 1px solid var(--card-border-bottom);
-    background-color: var(--app-surface-muted);
 }
 
 .ViewHeading {
@@ -38,8 +28,8 @@
 
 .ViewMeta {
     display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
+    flex-wrap: nowrap;
+    align-items: center;
     gap: var(--space-2);
     width: 100%;
     min-width: 0;
@@ -95,24 +85,23 @@
 }
 
 .ViewScopeControls {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
-    flex: 0 0 100%;
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
     gap: var(--space-2);
-    width: 100%;
-    margin-top: var(--space-2);
+    width: auto;
+    margin-left: auto;
 }
 
 .ViewScopeControl {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    min-height: 2.8rem;
+    width: 2.35rem;
+    min-height: 2.35rem;
     padding: 0;
     border: 1px solid var(--toggle-bg-color-on);
-    border-radius: 999px;
+    border-radius: 50%;
     background-color: var(--toggle-bg-color-on);
     color: var(--app-text);
     cursor: pointer;
@@ -241,10 +230,6 @@
 }
 
 @media screen and (min-width: 480px) {
-    .ViewMeta {
-        flex-wrap: nowrap;
-    }
-
     .ViewScopeIcon {
         width: 2.35rem;
         height: 2.35rem;
@@ -256,19 +241,8 @@
     }
 
     .ViewScopeControls {
-        display: inline-flex;
-        flex: 0 0 auto;
         align-self: stretch;
-        width: auto;
-        margin-top: 0;
-        margin-left: auto;
         padding-left: var(--space-4);
-    }
-
-    .ViewScopeControl {
-        width: 2.35rem;
-        min-height: 2.35rem;
-        border-radius: 50%;
     }
 
     .ViewScopeControl svg {
@@ -332,45 +306,12 @@
 
     .ViewSummary {
         display: grid;
-        grid-template-columns: 16rem minmax(0, 18.5rem);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
         align-items: end;
         gap: var(--space-8);
     }
 
     .ViewScopeStats {
         align-self: end;
-        max-width: 18.5rem;
-    }
-}
-
-@media screen and (min-width: 1200px) {
-    .View {
-        overflow: visible;
-        max-width: 44rem;
-        padding: var(--view-padding);
-    }
-
-    .View::before {
-        content: "";
-        position: absolute;
-        z-index: 0;
-        inset: 0;
-        display: block;
-        border-top: 1px solid var(--card-border-top);
-        border-bottom: 1px solid var(--card-border-bottom);
-        background: var(--welcome-panel-background);
-        clip-path: polygon(0 0, 82% 0, 94% 100%, 0 100%);
-        pointer-events: none;
-    }
-
-    .ViewContent {
-        padding: 0;
-        border-top: none;
-        border-bottom: none;
-        background-color: transparent;
-    }
-
-    .ViewScopeControls {
-        margin-right: clamp(5.5rem, 20%, 7.5rem);
     }
 }

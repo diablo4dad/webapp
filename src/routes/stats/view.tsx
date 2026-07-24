@@ -10,6 +10,9 @@ import {
   ProgressOverviewSkeleton,
   type ProgressFilterControl,
 } from "../../features/progress-overview";
+import { ItemFilterWidget } from "../../features/settings/ui";
+import type { ItemFilterCount } from "../../shared/lib/widget";
+import Card from "../../shared/ui/Card";
 import { Layout } from "./layout";
 import styles from "./view.module.css";
 
@@ -18,10 +21,27 @@ const PROGRESS_CARD_LAYOUT = "expanded" satisfies ProgressLayout;
 type Props = {
   catalogError?: string;
   filterControls?: readonly ProgressFilterControl[];
+  itemFilterControls?: readonly ItemFilterControl[];
   isLoading: boolean;
   model: ProgressViewModel;
   onSelectNextScope?: () => void;
   onSelectPreviousScope?: () => void;
+};
+
+type ItemFilterControl = {
+  active: boolean;
+  count: ItemFilterCount;
+  label: string;
+  name: string;
+  onClick: () => void;
+};
+
+type HeaderProps = {
+  filterControls?: readonly ProgressFilterControl[];
+  itemFilterControls?: readonly ItemFilterControl[];
+  onSelectNextScope?: () => void;
+  onSelectPreviousScope?: () => void;
+  selectedScope: ProgressViewModel["selectedScope"];
 };
 
 type ProgressListProps = {
@@ -37,6 +57,7 @@ type ProgressSkeletonListProps = {
 function View({
   catalogError,
   filterControls,
+  itemFilterControls,
   isLoading,
   model,
   onSelectNextScope,
@@ -72,8 +93,9 @@ function View({
   return (
     <Layout
       header={
-        <ProgressOverview
+        <Header
           filterControls={filterControls}
+          itemFilterControls={itemFilterControls}
           onSelectNextScope={onSelectNextScope}
           onSelectPreviousScope={onSelectPreviousScope}
           selectedScope={model.selectedScope}
@@ -88,6 +110,44 @@ function View({
       }
       mainLabel="Item type progress"
     />
+  );
+}
+
+function Header({
+  filterControls,
+  itemFilterControls = [],
+  onSelectNextScope,
+  onSelectPreviousScope,
+  selectedScope,
+}: HeaderProps) {
+  return (
+    <div className={styles.ViewHeader}>
+      <ProgressOverview
+        filterControls={filterControls}
+        onSelectNextScope={onSelectNextScope}
+        onSelectPreviousScope={onSelectPreviousScope}
+        selectedScope={selectedScope}
+      />
+      {itemFilterControls.length > 0 && (
+        <Card
+          className={styles.ViewItemFilters}
+          role="group"
+          aria-label="Item filters"
+        >
+          <div className={styles.ViewItemFilterGrid}>
+            {itemFilterControls.map((control) => (
+              <ItemFilterWidget
+                key={control.name}
+                active={control.active}
+                count={control.count}
+                label={control.label}
+                onClick={control.onClick}
+              />
+            ))}
+          </div>
+        </Card>
+      )}
+    </div>
   );
 }
 

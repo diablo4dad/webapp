@@ -16,9 +16,17 @@ function Layout({
   main,
   mainLabel,
 }: Props) {
+  const dashboardClassName = header
+    ? styles.LayoutDashboard
+    : `${styles.LayoutDashboard} ${styles.LayoutDashboardFull}`;
+
   const content = (
-    <section className={styles.LayoutDashboard} aria-labelledby={labelledBy}>
-      {header}
+    <section className={dashboardClassName} aria-labelledby={labelledBy}>
+      {header && (
+        <div className={styles.LayoutHeader}>
+          {header}
+        </div>
+      )}
       <section className={styles.LayoutSection} aria-label={mainLabel}>
         {main}
       </section>

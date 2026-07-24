@@ -21,12 +21,17 @@ import {
   type ProgressScopeSource,
 } from "../../features/progress";
 import type { ProgressFilterControl } from "../../features/progress-overview";
+import { groups } from "../../features/settings/menu";
 import {
   MasterGroup,
   collectionFilterGroups,
   collectionGroupLabels,
 } from "../../shared/domain";
 import { collectionGroupIconMap } from "../../shared/domain/item-assets";
+import {
+  WidgetType,
+  type ItemFilterWidget as ItemFilterWidgetConfig,
+} from "../../shared/lib/widget";
 import {
   getCatalogLoadPlan,
   useCatalogLoading,
@@ -37,6 +42,13 @@ import {
   useRootShellControls,
 } from "../root/outlet";
 import { View } from "./view";
+
+const ITEM_FILTER_WIDGETS = groups
+  .find((group) => group.label === "Items")
+  ?.widgets
+  .filter((widget): widget is ItemFilterWidgetConfig =>
+    widget.type === WidgetType.ITEM_FILTER,
+  ) ?? [];
 
 function Component() {
   const { onClearSearch, searchTerm } = useRootOutletContext();
@@ -112,6 +124,8 @@ function Component() {
   );
   const [selectedScopeIndex, setSelectedScopeIndex] = useState(0);
   const selectedScope = scopeSources[selectedScopeIndex] ?? scopeSources[0];
+  const selectedScopeGroup =
+    scopeCollectionSources[selectedScopeIndex]?.group ?? MasterGroup.UNIVERSAL;
   const selectedScopeCollections =
     selectedScope?.collections ?? universalCollections;
   const model = useMemo(
@@ -174,6 +188,28 @@ function Component() {
       settings,
     ],
   );
+  const itemFilterControls = useMemo(
+    () =>
+      ITEM_FILTER_WIDGETS.map((widget) => ({
+        active: widget.checked(settings),
+        count: widget.count(
+          db.collections,
+          settings,
+          collectionLog,
+          selectedScopeGroup,
+        ),
+        label: widget.label,
+        name: widget.option,
+        onClick: () => dispatchSettings(widget.action(settings)),
+      })),
+    [
+      collectionLog,
+      db.collections,
+      dispatchSettings,
+      selectedScopeGroup,
+      settings,
+    ],
+  );
   const isCatalogReady = !isAuthLoading && loadPlan.groupsToFetch.length === 0;
 
   useEffect(() => {
@@ -196,6 +232,7 @@ function Component() {
     <View
       catalogError={catalogError}
       filterControls={filterControls}
+      itemFilterControls={itemFilterControls}
       isLoading={isCatalogLoading || !isCatalogReady}
       model={model}
       onSelectNextScope={onSelectNextScope}
