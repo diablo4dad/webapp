@@ -121,6 +121,7 @@ function ConfigWidget({
         <ItemFilterWidget
           active={widget.checked(settings)}
           count={widget.count(collections, settings, log, activeGroup)}
+          countDisplay="total"
           label={widget.label}
           onClick={() => dispatch(widget.action(settings))}
         />
