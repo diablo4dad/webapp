@@ -33,19 +33,30 @@
     justify-content: center;
     min-width: 2.25rem;
     padding: 0.25rem 0.6rem;
+    border: 1px solid var(--selection-border);
     border-radius: 999px;
     background-color: var(--control-dark-border);
-    color: var(--color-neutral-400);
+    color: var(--control-dark-text);
     font-size: 0.95rem;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
 }
 
-.Button:hover .Count,
-.ButtonActive .Count {
-    color: var(--link-color-action);
+.Button:hover .Count {
+    border-color: var(--color-neutral-650);
+    background-color: var(--color-neutral-820);
+    color: var(--app-text-secondary);
 }
 
 .ButtonActive .Count {
+    border-color: var(--color-gold-900);
     background-color: var(--selection-active-background);
+    color: var(--app-text-strong);
+}
+
+.ButtonActive:hover .Count {
+    border-color: var(--color-gold-900);
+    background-color: var(--selection-active-background);
+    color: var(--app-text-strong);
 }
