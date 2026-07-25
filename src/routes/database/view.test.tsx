@@ -671,6 +671,15 @@ describe("database surface", () => {
     const creatorClearButton = creatorScreen.getByRole("button", {
       name: "Clear icon",
     });
+    const creatorCloseButton = creatorScreen.getByRole("button", {
+      name: "Close",
+    });
+    const creatorResetButton = creatorScreen.getByRole("button", {
+      name: "Reset",
+    });
+    const creatorSaveButton = creatorScreen.getByRole("button", {
+      name: "Save item",
+    });
     const creatorClearAction = creatorScreen
       .getByRole("button", { name: "Clear icon" })
       .closest(`.${editorStyles.ViewIconActions}`);
@@ -683,12 +692,15 @@ describe("database surface", () => {
       name: "Close item creator",
     })).toHaveClass(drawerStyles.CloseButton);
     expect(creatorFooter).not.toBeNull();
-    expect(creatorScreen.getByRole("button", { name: "Reset" }))
-      .toHaveClass(drawerStyles.SecondaryButton);
-    expect(creatorScreen.getByRole("button", { name: "Close" }))
-      .toHaveClass(drawerStyles.SecondaryButton);
-    expect(creatorScreen.getByRole("button", { name: "Save item" }))
-      .toHaveClass(drawerStyles.SaveButton);
+    expect(creatorResetButton).toHaveClass(drawerStyles.SecondaryButton);
+    expect(creatorCloseButton).toHaveClass(drawerStyles.SecondaryButton);
+    expect(creatorSaveButton).toHaveClass(drawerStyles.SaveButton);
+    expect(creatorCloseButton.closest(`.${drawerStyles.ActionLeft}`))
+      .not.toBeNull();
+    expect(creatorResetButton.closest(`.${drawerStyles.ActionRight}`))
+      .not.toBeNull();
+    expect(creatorSaveButton.closest(`.${drawerStyles.ActionRight}`))
+      .not.toBeNull();
     expect(creatorItemId).toHaveAttribute("readonly");
     expect(creatorItemId.closest(`.${editorStyles.ViewStandaloneIdRow}`))
       .not.toBeNull();
@@ -744,6 +756,105 @@ describe("database surface", () => {
     expect(creatorScreen.getByRole("button", {
       name: "Close item creator",
     })).toBeInTheDocument();
+  });
+
+  test("enables database editor actions only when form state changes", async () => {
+    const user = userEvent.setup();
+    const selectedItem = createExplorerItem();
+
+    renderView({
+      canEditCatalog: true,
+      filteredItems: [selectedItem],
+      isEditMode: true,
+      selectedItem,
+      totalCount: 1,
+    });
+
+    const overrideForm = screen
+      .getByText("Database Item Override")
+      .closest("form");
+
+    expect(overrideForm).not.toBeNull();
+    const overrideScreen = within(overrideForm as HTMLElement);
+    const overrideImportUrl = overrideScreen.getByLabelText("Import URL");
+    const overrideName = overrideScreen.getByLabelText("Name");
+    const overrideReset = overrideScreen.getByRole("button", {
+      name: "Reset",
+    });
+    const overrideSave = overrideScreen.getByRole("button", {
+      name: "Save override",
+    });
+
+    expect(overrideReset).toBeDisabled();
+    expect(overrideSave).toBeDisabled();
+
+    await user.type(overrideName, "Corrected Blade");
+
+    expect(overrideReset).toBeEnabled();
+    expect(overrideSave).toBeEnabled();
+
+    await user.click(overrideReset);
+
+    expect(overrideName).toHaveValue("");
+    expect(overrideReset).toBeDisabled();
+    expect(overrideSave).toBeDisabled();
+
+    await user.type(overrideImportUrl, "https://example.com/item");
+
+    expect(overrideReset).toBeEnabled();
+    expect(overrideSave).toBeDisabled();
+
+    await user.click(overrideReset);
+
+    expect(overrideImportUrl).toHaveValue("");
+    expect(overrideReset).toBeDisabled();
+    expect(overrideSave).toBeDisabled();
+
+    await user.click(overrideScreen.getByLabelText("Override usable classes"));
+
+    expect(overrideReset).toBeEnabled();
+    expect(overrideSave).toBeEnabled();
+
+    await user.click(overrideReset);
+
+    expect(overrideScreen.getByLabelText("Override usable classes"))
+      .not.toBeChecked();
+    expect(overrideReset).toBeDisabled();
+    expect(overrideSave).toBeDisabled();
+
+    await user.click(screen.getByRole("button", { name: "Add +" }));
+
+    const creator = screen.getByRole("dialog", {
+      name: "New Database item",
+    });
+    const creatorScreen = within(creator);
+    const creatorName = creatorScreen.getByLabelText("Name");
+    const creatorReset = creatorScreen.getByRole("button", {
+      name: "Reset",
+    });
+    const creatorSave = creatorScreen.getByRole("button", {
+      name: "Save item",
+    });
+
+    expect(creatorReset).toBeDisabled();
+    expect(creatorSave).toBeDisabled();
+
+    await user.click(creatorScreen.getByLabelText("Barbarian"));
+
+    expect(creatorScreen.getByLabelText("Barbarian")).not.toBeChecked();
+    expect(creatorReset).toBeEnabled();
+    expect(creatorSave).toBeDisabled();
+
+    await user.type(creatorName, "Missing Blade");
+
+    expect(creatorSave).toBeEnabled();
+
+    await user.click(creatorReset);
+
+    expect(creatorName).toHaveValue("");
+    expect(creatorScreen.getByLabelText("Barbarian")).toBeChecked();
+    expect(creatorReset).toBeDisabled();
+    expect(creatorSave).toBeDisabled();
   });
 
   test("deletes an existing database item record after confirmation", async () => {
@@ -863,6 +974,8 @@ describe("database surface", () => {
     expect(overrideScreen.getByRole("img", {
       name: "Item icon override",
     })).toHaveAttribute("src", iconDataUrl);
+    expect(overrideScreen.getByRole("button", { name: "Save override" }))
+      .toBeEnabled();
     expect(overrideScreen.getByLabelText("Name")).toHaveValue("");
     expect(overrideScreen.getByLabelText("Item Type")).toHaveValue("");
   });

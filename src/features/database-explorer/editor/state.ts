@@ -296,6 +296,62 @@ function applyImportedItemDraft(
   };
 }
 
+function hasOverrideFormChanges(
+  form: OverrideItemFormState,
+  initialForm: OverrideItemFormState,
+): boolean {
+  return !areOverrideFormsEqual(form, initialForm);
+}
+
+function hasStandaloneFormChanges(form: StandaloneItemFormState): boolean {
+  return !areStandaloneFormsEqual(form, STANDALONE_INITIAL_FORM);
+}
+
+function areOverrideFormsEqual(
+  first: OverrideItemFormState,
+  second: OverrideItemFormState,
+): boolean {
+  return first.description === second.description &&
+    first.hasUsableByClassOverride === second.hasUsableByClassOverride &&
+    first.icon === second.icon &&
+    first.iconPreviewUrl === second.iconPreviewUrl &&
+    first.itemType === second.itemType &&
+    first.magicType === second.magicType &&
+    first.name === second.name &&
+    first.preferredZone === second.preferredZone &&
+    first.series === second.series &&
+    first.transmogName === second.transmogName &&
+    areNumberArraysEqual(first.usableByClass, second.usableByClass);
+}
+
+function areStandaloneFormsEqual(
+  first: StandaloneItemFormState,
+  second: StandaloneItemFormState,
+): boolean {
+  return first.description === second.description &&
+    first.icon === second.icon &&
+    first.iconPreviewUrl === second.iconPreviewUrl &&
+    first.itemId === second.itemId &&
+    first.itemType === second.itemType &&
+    first.magicType === second.magicType &&
+    first.name === second.name &&
+    first.preferredZone === second.preferredZone &&
+    first.series === second.series &&
+    first.transmogName === second.transmogName &&
+    areNumberArraysEqual(first.usableByClass, second.usableByClass);
+}
+
+function areNumberArraysEqual(
+  first: readonly number[],
+  second: readonly number[],
+): boolean {
+  if (first.length !== second.length) {
+    return false;
+  }
+
+  return first.every((value, index) => value === second[index]);
+}
+
 function createDefaultUsableByClass(): number[] {
   return getCharacterClassValues().map(() => USABLE_BY_CLASS_ENABLED);
 }
@@ -386,6 +442,8 @@ export {
   buildOverrideWrite,
   buildStandaloneWrite,
   createOverrideForm,
+  hasOverrideFormChanges,
+  hasStandaloneFormChanges,
 };
 export type {
   ImportedItemDraft,

@@ -37,6 +37,8 @@ import {
   buildOverrideWrite,
   buildStandaloneWrite,
   createOverrideForm,
+  hasOverrideFormChanges,
+  hasStandaloneFormChanges,
   type OverrideItemFormState,
   type StandaloneItemFormState,
 } from "./state";
@@ -132,9 +134,11 @@ function DatabaseItemOverrideEditor({
   itemTypes,
   onSaved,
 }: OverrideProps) {
-  const [form, setForm] = useState<OverrideItemFormState>(
+  const initialForm = useMemo(
     () => createOverrideForm(item.catalogItem, item.item),
+    [item.catalogItem, item.item],
   );
+  const [form, setForm] = useState<OverrideItemFormState>(initialForm);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -143,6 +147,8 @@ function DatabaseItemOverrideEditor({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string>();
   const isBusy = isSaving || isDeleting || isImportingIcon || isUploading;
+  const hasFormChanges = hasOverrideFormChanges(form, initialForm);
+  const hasResetState = hasFormChanges || iconImportUrl.trim().length > 0;
   const itemTypeChoices = useMemo(
     () => getItemTypeChoices(itemTypes),
     [itemTypes],
@@ -150,7 +156,7 @@ function DatabaseItemOverrideEditor({
   const iconPreviewUrl = getFormIconPreviewUrl(form);
 
   useEffect(() => {
-    setForm(createOverrideForm(item.catalogItem, item.item));
+    setForm(initialForm);
     setError(undefined);
     setIconImportUrl("");
     setIsDeleting(false);
@@ -158,7 +164,7 @@ function DatabaseItemOverrideEditor({
     setIsImportingIcon(false);
     setIsSaving(false);
     setIsUploading(false);
-  }, [item.catalogItem, item.item]);
+  }, [initialForm]);
 
   function updateForm<TField extends keyof OverrideItemFormState>(
     field: TField,
@@ -172,6 +178,11 @@ function DatabaseItemOverrideEditor({
 
   async function saveOverride(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (isBusy || !hasFormChanges) {
+      return;
+    }
+
     setIsSaving(true);
     setError(undefined);
 
@@ -266,6 +277,11 @@ function DatabaseItemOverrideEditor({
       icon: "",
       iconPreviewUrl: "",
     }));
+  }
+
+  function resetForm() {
+    setForm(initialForm);
+    setIconImportUrl("");
   }
 
   return (
@@ -405,13 +421,13 @@ function DatabaseItemOverrideEditor({
           </label>
           <FormActions
             canDelete={item.catalogItem !== undefined}
+            canReset={hasResetState}
+            canSave={hasFormChanges}
             error={error}
             isDeleting={isDeleting}
             isSaving={isSaving}
             onDelete={() => setIsDeleteModalOpen(true)}
-            onReset={() =>
-              setForm(createOverrideForm(item.catalogItem, item.item))
-            }
+            onReset={resetForm}
             saveLabel="Save override"
           />
         </form>
@@ -447,6 +463,9 @@ function DatabaseItemCreator({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string>();
   const isBusy = isSaving || isImporting || isUploading;
+  const hasFormChanges = hasStandaloneFormChanges(form);
+  const hasResetState = hasFormChanges || importUrl.trim().length > 0;
+  const canSaveItem = hasFormChanges && form.name.trim().length > 0;
   const itemTypeChoices = useMemo(
     () => getItemTypeChoices(itemTypes),
     [itemTypes],
@@ -464,6 +483,11 @@ function DatabaseItemCreator({
 
   async function saveItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (isBusy || !canSaveItem) {
+      return;
+    }
+
     setIsSaving(true);
     setError(undefined);
 
@@ -630,7 +654,7 @@ function DatabaseItemCreator({
                       </span>
                       <input
                         accept="image/*"
-                        disabled={isSaving || isUploading}
+                        disabled={isBusy}
                         type="file"
                         onChange={uploadIcon}
                       />
@@ -638,8 +662,7 @@ function DatabaseItemCreator({
                     <button
                       className={`${drawerStyles.DeleteButton} ${styles.ViewIconActionButton}`}
                       disabled={
-                        isSaving ||
-                        isUploading ||
+                        isBusy ||
                         (form.icon.length === 0 &&
                           form.iconPreviewUrl.length === 0)
                       }
@@ -723,17 +746,7 @@ function DatabaseItemCreator({
                 </label>
               </div>
               <footer className={drawerStyles.Actions}>
-                <div className={drawerStyles.ActionLeft} />
-                <div className={drawerStyles.ActionRight}>
-                  {error && <div className={drawerStyles.Error}>{error}</div>}
-                  <button
-                    className={drawerStyles.SecondaryButton}
-                    disabled={isSaving}
-                    type="button"
-                    onClick={resetForm}
-                  >
-                    Reset
-                  </button>
+                <div className={drawerStyles.ActionLeft}>
                   <button
                     className={drawerStyles.SecondaryButton}
                     disabled={isBusy}
@@ -742,9 +755,20 @@ function DatabaseItemCreator({
                   >
                     Close
                   </button>
+                </div>
+                <div className={drawerStyles.ActionRight}>
+                  {error && <div className={drawerStyles.Error}>{error}</div>}
+                  <button
+                    className={drawerStyles.SecondaryButton}
+                    disabled={isBusy || !hasResetState}
+                    type="button"
+                    onClick={resetForm}
+                  >
+                    Reset
+                  </button>
                   <button
                     className={drawerStyles.SaveButton}
-                    disabled={isSaving}
+                    disabled={isBusy || !canSaveItem}
                     type="submit"
                   >
                     {isSaving ? "Saving" : "Save item"}
@@ -891,6 +915,8 @@ function UsableByClassInput({
 
 function FormActions({
   canDelete = false,
+  canReset,
+  canSave,
   error,
   isDeleting,
   isSaving,
@@ -899,6 +925,8 @@ function FormActions({
   saveLabel,
 }: {
   canDelete?: boolean;
+  canReset: boolean;
+  canSave: boolean;
   error?: string;
   isDeleting: boolean;
   isSaving: boolean;
@@ -924,7 +952,7 @@ function FormActions({
       <span className={styles.ViewActionSpacer} aria-hidden="true" />
       <button
         className={styles.ViewSecondaryButton}
-        disabled={isBusy}
+        disabled={isBusy || !canReset}
         type="button"
         onClick={onReset}
       >
@@ -932,7 +960,7 @@ function FormActions({
       </button>
       <button
         className={styles.ViewPrimaryButton}
-        disabled={isBusy}
+        disabled={isBusy || !canSave}
         type="submit"
       >
         {isSaving ? "Saving" : saveLabel}

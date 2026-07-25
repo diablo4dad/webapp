@@ -11,6 +11,8 @@ import {
   buildOverrideWrite,
   buildStandaloneWrite,
   createOverrideForm,
+  hasOverrideFormChanges,
+  hasStandaloneFormChanges,
   STANDALONE_INITIAL_FORM,
 } from "./state";
 
@@ -99,6 +101,30 @@ describe("database item override state", () => {
     ).toEqual({
       itemId: 101,
     });
+  });
+
+  test("detects override form changes against the initial form", () => {
+    const initialForm = createOverrideForm({
+      itemId: 101,
+      name: "Corrected Helm",
+      usableByClass: usableByClasses(CharacterClass.BARBARIAN),
+    });
+
+    expect(hasOverrideFormChanges(initialForm, initialForm)).toBe(false);
+    expect(hasOverrideFormChanges(
+      {
+        ...initialForm,
+        name: "Corrected Crown",
+      },
+      initialForm,
+    )).toBe(true);
+    expect(hasOverrideFormChanges(
+      {
+        ...initialForm,
+        usableByClass: usableByClasses(CharacterClass.DRUID),
+      },
+      initialForm,
+    )).toBe(true);
   });
 });
 
@@ -236,6 +262,18 @@ describe("standalone database item state", () => {
       name: "Anlace",
       usableByClass: usableByClasses(CharacterClass.ROGUE),
     });
+  });
+
+  test("detects standalone form changes from the empty initial form", () => {
+    expect(hasStandaloneFormChanges(STANDALONE_INITIAL_FORM)).toBe(false);
+    expect(hasStandaloneFormChanges({
+      ...STANDALONE_INITIAL_FORM,
+      name: "Missing Mount",
+    })).toBe(true);
+    expect(hasStandaloneFormChanges({
+      ...STANDALONE_INITIAL_FORM,
+      usableByClass: usableByClasses(CharacterClass.BARBARIAN),
+    })).toBe(true);
   });
 });
 
