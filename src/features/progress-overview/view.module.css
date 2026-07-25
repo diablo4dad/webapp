@@ -100,22 +100,24 @@
     width: 2.35rem;
     min-height: 2.35rem;
     padding: 0;
-    border: 1px solid var(--toggle-bg-color-on);
+    border: 1px solid var(--feedback-success-border);
     border-radius: 50%;
-    background-color: var(--toggle-bg-color-on);
-    color: var(--app-text);
+    background-color: var(--app-surface-raised);
+    color: var(--feedback-success-fill);
+    box-shadow: var(--shadow-control);
     cursor: pointer;
     transition:
         background-color 160ms ease,
         border-color 160ms ease,
         color 160ms ease,
+        box-shadow 160ms ease,
         transform 160ms ease;
 }
 
 .ViewScopeControl:hover {
     border-color: var(--feedback-success-border);
-    background-color: var(--feedback-success-border);
-    color: var(--color-black);
+    background-color: var(--app-surface-muted);
+    color: var(--feedback-success-border);
     transform: translateY(-1px);
 }
 
@@ -127,6 +129,7 @@
 .ViewScopeControl svg {
     width: 1.6rem;
     height: 1.6rem;
+    fill: currentColor;
 }
 
 .ViewHeading h1 {
