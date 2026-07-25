@@ -2,6 +2,7 @@ import classNames from "classnames";
 import type { ReactNode } from "react";
 import {
   CharacterClass,
+  CharacterGender,
   MagicType,
   Zone,
   type ItemRef,
@@ -64,6 +65,10 @@ const magicTypeClassMap = new Map<MagicType, string>([
   [MagicType.MYTHIC, styles.ViewMagicTypeMythic],
   [MagicType.RARE, styles.ViewMagicTypeRare],
 ]);
+const INVENTORY_GENDER_CHOICES = [
+  CharacterGender.MALE,
+  CharacterGender.FEMALE,
+] as const;
 
 function ItemView({
   canEditCatalog,
@@ -91,51 +96,63 @@ function ItemView({
   return (
     <article className={styles.View}>
       <MobileBackButton onBackToList={onBackToList} />
-      <Card className={styles.ViewDetailCard}>
-        <header className={styles.ViewDetailHeader}>
-          <FallbackLazyImage
-            className={styles.ViewDetailIcon}
-            src={getIcon(getItemIconPath(rawItem.icon))}
-            alt=""
-          />
-          <div className={styles.ViewDetailHeading}>
-            <Field label="Name" value={rawItem.name} />
-            <Field label="Item ID" value={rawItem.id} />
-            <Field
-              label="Item Type"
-              value={`${item.itemTypeName} (${rawItem.itemType})`}
+      <div className={styles.ViewSummaryRow}>
+        <Card
+          className={classNames(
+            styles.ViewDetailCard,
+            styles.ViewOverviewCard,
+          )}
+        >
+          <header className={styles.ViewDetailHeader}>
+            <FallbackLazyImage
+              className={styles.ViewDetailIcon}
+              src={getIcon(getItemIconPath(rawItem.icon))}
+              alt=""
             />
-          </div>
-          <div className={styles.ViewDetailMetaColumn}>
-            {rawItem.series && (
+            <div className={styles.ViewDetailHeading}>
+              <Field label="Name" value={rawItem.name} />
+              <Field label="Item ID" value={rawItem.id} />
               <Field
-                label="Series"
-                value={rawItem.series.replaceAll('"', "")}
+                label="Item Type"
+                value={`${item.itemTypeName} (${rawItem.itemType})`}
               />
-            )}
-            {rawItem.description && (
-              <Field label="Description" value={rawItem.description} />
-            )}
-            {rawItem.transmogName && (
-              <Field label="Transmog Name" value={rawItem.transmogName} />
-            )}
-            <Field
-              label="Item Quality"
-              value={<MagicTypeText magicType={rawItem.magicType} />}
-            />
-            <Field
-              label="Preferred Zone"
-              value={getZoneLabel(rawItem.preferredZone)}
-            />
-          </div>
-        </header>
-      </Card>
-      <Card className={styles.ViewDetailCard}>
-        <section className={styles.ViewDetailSection}>
-          <h3>Usable by Classes</h3>
-          <ClassIconList item={rawItem} />
-        </section>
-      </Card>
+            </div>
+            <div className={styles.ViewDetailMetaColumn}>
+              {rawItem.series && (
+                <Field
+                  label="Series"
+                  value={rawItem.series.replaceAll('"', "")}
+                />
+              )}
+              {rawItem.description && (
+                <Field label="Description" value={rawItem.description} />
+              )}
+              {rawItem.transmogName && (
+                <Field label="Transmog Name" value={rawItem.transmogName} />
+              )}
+              <Field
+                label="Item Quality"
+                value={<MagicTypeText magicType={rawItem.magicType} />}
+              />
+              <Field
+                label="Preferred Zone"
+                value={getZoneLabel(rawItem.preferredZone)}
+              />
+            </div>
+          </header>
+        </Card>
+        <Card
+          className={classNames(
+            styles.ViewDetailCard,
+            styles.ViewClassCard,
+          )}
+        >
+          <section className={styles.ViewDetailSection}>
+            <h3>Usable by Classes</h3>
+            <ClassIconList item={rawItem} />
+          </section>
+        </Card>
+      </div>
       {hasInventoryImages(rawItem) && (
         <Card className={styles.ViewDetailCard}>
           <section className={styles.ViewDetailSection}>
@@ -310,35 +327,20 @@ function ClassIconList({
 }
 
 function InventoryImageGrid({ item }: { item: ItemRef }) {
-  const rows = (item.invImages ?? [])
-    .map((images, index) => ({
-      characterClass: index as CharacterClass,
-      femaleIconId: images[1],
-      maleIconId: images[0],
-    }))
-    .filter((row) => row.maleIconId > 0 || row.femaleIconId > 0);
+  const images = getInventoryImages(item);
 
-  if (rows.length === 0) {
+  if (images.length === 0) {
     return <span>None</span>;
   }
 
   return (
     <div className={styles.ViewInventoryGrid}>
-      {rows.map((row) => (
-        <div key={row.characterClass} className={styles.ViewInventoryRow}>
-          <span className={styles.ViewInventoryClass}>
-            {i18n.characterClass[row.characterClass] ??
-              `Class ${row.characterClass}`}
-          </span>
-          <InventoryImage
-            iconId={row.maleIconId}
-            label="Male"
-          />
-          <InventoryImage
-            iconId={row.femaleIconId}
-            label="Female"
-          />
-        </div>
+      {images.map((image) => (
+        <InventoryImage
+          key={`${image.characterClass}-${image.gender}`}
+          iconId={image.iconId}
+          label={image.label}
+        />
       ))}
     </div>
   );
@@ -351,23 +353,42 @@ function InventoryImage({
   iconId: number;
   label: string;
 }) {
-  if (iconId <= 0) {
-    return <span className={styles.ViewInventoryMissing}>{label}: none</span>;
-  }
-
   return (
-    <span className={styles.ViewInventoryImage}>
+    <figure className={styles.ViewInventoryImage}>
       <FallbackLazyImage
-        className={classNames(
-          styles.ViewInlineIcon,
-          styles.ViewInventoryInlineIcon,
-        )}
+        className={styles.ViewInventoryAsset}
         src={getIcon(getItemIconPath(iconId))}
-        alt=""
+        alt={label}
       />
-      {label}: {iconId}
-    </span>
+      <figcaption>{label}</figcaption>
+    </figure>
   );
+}
+
+function getInventoryImages(item: ItemRef) {
+  return (item.invImages ?? []).flatMap((images, index) => {
+    const characterClass = index as CharacterClass;
+
+    return INVENTORY_GENDER_CHOICES
+      .map((gender) => ({
+        characterClass,
+        gender,
+        iconId: images[gender],
+        label: getInventoryImageLabel(characterClass, gender),
+      }))
+      .filter((image) => image.iconId > 0);
+  });
+}
+
+function getInventoryImageLabel(
+  characterClass: CharacterClass,
+  gender: CharacterGender,
+): string {
+  const classLabel = i18n.characterClass[characterClass] ??
+    `Class ${characterClass}`;
+  const genderLabel = i18n.characterGender[gender] ?? `Gender ${gender}`;
+
+  return `${classLabel} (${genderLabel})`;
 }
 
 function getAvailableClasses(item: ItemRef): CharacterClass[] {
@@ -403,11 +424,15 @@ function getZoneLabel(zone?: number): string {
 }
 
 function hasInventoryImages(item: ItemRef): boolean {
-  return (
-    item.invImages?.some((genderImages) =>
-      genderImages.some((iconId) => iconId > 0),
-    ) ?? false
-  );
+  return countInventoryImages(item) > 1;
+}
+
+function countInventoryImages(item: ItemRef): number {
+  return item.invImages?.reduce(
+    (total, genderImages) =>
+      total + genderImages.filter((iconId) => iconId > 0).length,
+    0,
+  ) ?? 0;
 }
 
 export { ItemView };

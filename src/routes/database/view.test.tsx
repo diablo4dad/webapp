@@ -1010,7 +1010,7 @@ describe("database surface", () => {
     const selectedItem = createExplorerItem({
       description: "A blade wrapped in cold light.",
       filename: "base/meta/Item/Azure_Blade",
-      invImages: [[2100, 0]],
+      invImages: [[2100, 2101], [2200, 0]],
       isTransmog: true,
       salvageable: true,
       series: '"Frozen Steel"',
@@ -1082,16 +1082,34 @@ describe("database surface", () => {
     const usableByClassesCard = usableByClassesHeading.closest(
       `.${itemViewStyles.ViewDetailCard}`,
     );
+    const summaryRow = detailHeaderCard?.parentElement;
+    const usableClassBadge = screen.getByText("Sorcerer").closest(
+      `.${itemViewStyles.ViewClassChip}`,
+    );
 
-    expect(inventory.getByText("Sorcerer")).toBeInTheDocument();
-    expect(inventory.queryByText("Male")).not.toBeInTheDocument();
-    expect(inventory.queryByText("Female")).not.toBeInTheDocument();
-    expect(inventory.getByText("Male: 2100")).toHaveClass(
+    const inventoryMaleImage = inventory.getByRole("img", {
+      name: "Sorcerer (Male)",
+    });
+    const inventoryMaleLabel = inventory.getByText("Sorcerer (Male)");
+    const inventoryFemaleLabel = inventory.getByText("Sorcerer (Female)");
+
+    expect(inventoryMaleImage).toHaveClass(
+      itemViewStyles.ViewInventoryAsset,
+    );
+    expect(inventoryMaleLabel.closest("figure")).toHaveClass(
       itemViewStyles.ViewInventoryImage,
     );
-    expect(inventory.getByText("Female: none")).toHaveClass(
-      itemViewStyles.ViewInventoryMissing,
+    expect(inventoryFemaleLabel.closest("figure")).toHaveClass(
+      itemViewStyles.ViewInventoryImage,
     );
+    expect(
+      inventoryMaleLabel.compareDocumentPosition(inventoryFemaleLabel) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(inventory.queryByText("2100")).not.toBeInTheDocument();
+    expect(inventory.queryByText("2101")).not.toBeInTheDocument();
+    expect(inventory.queryByText("Druid (Female)"))
+      .not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Properties" }))
       .not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Similar Items" }))
@@ -1114,6 +1132,10 @@ describe("database surface", () => {
     expect(detailHeaderCard).not.toBeNull();
     expect(usableByClassesCard).not.toBeNull();
     expect(usableByClassesCard).not.toBe(detailHeaderCard);
+    expect(summaryRow).toHaveClass(itemViewStyles.ViewSummaryRow);
+    expect(usableByClassesCard?.parentElement).toBe(summaryRow);
+    expect(usableByClassesCard).toHaveClass(itemViewStyles.ViewClassCard);
+    expect(usableClassBadge).not.toBeNull();
     expect(detailNameLabel).not.toBeUndefined();
     expect(detailTransmogNameLabel).not.toBeUndefined();
     expect(detailSeriesLabel).not.toBeUndefined();
@@ -1182,6 +1204,21 @@ describe("database surface", () => {
     expect(screen.queryByRole("link", {
       name: "base/meta/Item/Azure_Blade",
     })).not.toBeInTheDocument();
+  });
+
+  test("hides inventory images when there is only one icon variant", () => {
+    const selectedItem = createExplorerItem({
+      invImages: [[2100, 0]],
+    });
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    expect(screen.queryByRole("heading", { name: "Inventory Images" }))
+      .not.toBeInTheDocument();
   });
 
   test("fetches and renders datamined file json", async () => {

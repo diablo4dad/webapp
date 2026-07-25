@@ -13,6 +13,30 @@
     overflow: hidden;
 }
 
+.ViewOverviewCard {
+    container: view-overview / inline-size;
+}
+
+.ViewSummaryRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: stretch;
+    min-width: 0;
+}
+
+.ViewSummaryRow > .ViewDetailCard {
+    height: 100%;
+}
+
+.ViewClassCard {
+    min-width: 0;
+}
+
+.ViewClassCard .ViewDetailSection {
+    flex: 1 1 auto;
+}
+
 .ViewMobileBackButton {
     display: inline-flex;
     align-items: center;
@@ -197,7 +221,7 @@
 .ViewFieldValue {
     min-width: 0;
     color: var(--editor-text);
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
 }
 
 .ViewMagicType {
@@ -241,8 +265,8 @@
 .ViewClassChip {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-1);
-    min-height: 2rem;
+    gap: var(--space-2);
+    min-height: 3rem;
     border: 1px solid var(--item-sidebar-tag-border);
     border-radius: var(--radius-sm);
     padding: 0 var(--space-2);
@@ -252,52 +276,47 @@
 }
 
 .ViewClassIcon {
-    width: 1.35rem;
-    height: 1.35rem;
+    width: 2rem;
+    height: 2rem;
     object-fit: contain;
 }
 
 .ViewInventoryGrid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-1);
-    font-size: var(--font-size-sm);
-}
-
-.ViewInventoryRow {
-    display: grid;
-    grid-template-columns: minmax(7rem, 0.8fr) repeat(2, minmax(0, 1fr));
-    gap: var(--space-2);
-    align-items: center;
     min-width: 0;
+    overflow-x: visible;
+    overflow-y: visible;
+    font-size: var(--font-size-sm);
+    white-space: normal;
 }
 
-.ViewInventoryClass {
+.ViewInventoryImage {
+    display: inline-block;
+    width: 7.5rem;
+    margin: 0 var(--space-4) var(--space-3) 0;
     color: var(--editor-text-secondary);
     font-weight: 700;
+    text-align: center;
+    vertical-align: top;
+    white-space: normal;
 }
 
-.ViewInventoryImage,
-.ViewInventoryMissing {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-    min-width: 0;
-}
-
-.ViewInventoryMissing {
-    color: var(--editor-text-muted);
-}
-
-.ViewInlineIcon {
-    width: 1.75rem;
-    height: 1.75rem;
+.ViewInventoryAsset {
+    display: block;
+    width: 7.5rem;
+    height: 11.25rem;
+    border: 1px solid var(--item-sidebar-tag-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--editor-panel-surface);
+    box-sizing: border-box;
     object-fit: contain;
 }
 
-.ViewInventoryInlineIcon {
-    width: 1.35rem;
-    height: 1.35rem;
+.ViewInventoryImage figcaption {
+    margin-top: var(--space-2);
+    color: var(--editor-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
 }
 
 .ViewEmptyDetail {
@@ -324,26 +343,43 @@
     .ViewMobileBackButton {
         display: none;
     }
+}
 
+@media screen and (min-width: 1600px) {
+    .ViewSummaryRow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@container view-overview (min-width: 40rem) {
     .ViewDetailHeader {
-        display: grid;
-        grid-template-columns:
-            auto fit-content(18rem)
-            minmax(0, 1fr);
-        align-items: start;
-        column-gap: calc(var(--space-8) + 1rem);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: var(--space-4) calc(var(--space-8) + 1rem);
     }
 
     .ViewDetailIcon {
+        flex: 0 0 auto;
         float: none;
-        justify-self: start;
         max-width: min(120px, 100%);
         margin: 0;
     }
 
     .ViewDetailHeading,
     .ViewDetailMetaColumn {
+        width: fit-content;
+        max-width: 100%;
         margin-top: 0;
         padding-block: 1rem;
+    }
+
+    .ViewDetailHeading {
+        flex: 0 1 auto;
+    }
+
+    .ViewDetailMetaColumn {
+        flex: 1 1 auto;
+        min-width: min-content;
     }
 }
