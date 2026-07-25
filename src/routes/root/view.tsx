@@ -32,6 +32,7 @@ type Props = {
   searchTitle: string;
   sidebarVisibility: SidebarVisibility;
   showCollectionControls: boolean;
+  showEditorControl?: boolean;
   showSearch: boolean;
   user?: DadUser;
 };
@@ -62,6 +63,7 @@ function View({
   searchTitle,
   sidebarVisibility,
   showCollectionControls,
+  showEditorControl = showCollectionControls,
   showSearch,
   user,
 }: Props) {
@@ -90,6 +92,7 @@ function View({
           searchTerm={searchTerm}
           sidebarVisibility={sidebarVisibility}
           showCollectionControls={showCollectionControls}
+          showEditorControl={showEditorControl}
           showSearch={showSearch}
           user={user}
         />
@@ -113,6 +116,7 @@ function View({
           searchTerm={searchTerm}
           searchTitle={searchTitle}
           showCollectionControls={showCollectionControls}
+          showEditorControl={showEditorControl}
           showSearch={showSearch}
           user={user}
         />

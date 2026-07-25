@@ -1,0 +1,450 @@
+.ViewPanel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.ViewOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 6500;
+    display: flex;
+    justify-content: stretch;
+    overflow: hidden;
+    background: transparent;
+    isolation: isolate;
+}
+
+.ViewOverlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--overlay-backdrop-editor);
+    -webkit-backdrop-filter: blur(0.2rem);
+    backdrop-filter: blur(0.2rem);
+    pointer-events: none;
+}
+
+.ViewDrawer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100dvh;
+    background-color: var(--editor-panel);
+    color: var(--editor-text);
+    box-shadow: var(--shadow-drawer);
+}
+
+.ViewDrawerForm {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+}
+
+.ViewDrawerBody {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    min-height: 0;
+    padding: var(--space-4);
+    overflow-y: auto;
+}
+
+.ViewForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+    padding: var(--space-4);
+}
+
+.ViewHeader {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: flex-start;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.ViewKicker {
+    color: var(--editor-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.ViewTitle {
+    margin: var(--space-1) 0 0;
+    color: var(--editor-text-strong);
+    font-size: var(--font-size-md);
+}
+
+.ViewStatus {
+    flex: 0 0 auto;
+    border: 1px solid var(--editor-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+    background-color: var(--editor-panel-surface-muted);
+    color: var(--editor-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.ViewSection {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.ViewEditorGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.ViewFieldStack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.ViewStandaloneIdRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.ViewIconSection {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+    min-width: 0;
+}
+
+.ViewIconPreview {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 7.5rem;
+    height: 11.25rem;
+    border: 1px solid var(--editor-control-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--editor-field-surface);
+    color: var(--editor-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-align: center;
+    overflow: hidden;
+}
+
+.ViewIconPreview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.ViewIconActions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: stretch;
+    min-width: 0;
+    max-width: 12rem;
+}
+
+.ViewIconActions .ViewFileAction,
+.ViewIconActions .ViewIconActionButton {
+    width: 100%;
+}
+
+.ViewField {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.ViewClassFieldset {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+    margin: 0;
+    border: 1px solid var(--editor-control-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    background-color: var(--editor-field-surface);
+}
+
+.ViewClassLegend {
+    padding: 0 var(--space-1);
+    color: var(--editor-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.ViewClassGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.ViewClassGridTwoColumn {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ViewClassToggle {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: 2.5rem;
+    border: 1px solid var(--editor-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2);
+    background-color: var(--editor-panel-surface-muted);
+    color: var(--editor-text-strong);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.ViewClassToggle:has(input:disabled) {
+    color: var(--editor-text-secondary);
+    opacity: 0.72;
+}
+
+.ViewClassToggle label {
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.ViewLabel {
+    color: var(--editor-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.ViewInput,
+.ViewTextArea {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--editor-control-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--editor-field-surface);
+    color: var(--editor-text-strong);
+    font: inherit;
+}
+
+.ViewInput {
+    min-height: 2.5rem;
+    padding: 0 var(--space-3);
+}
+
+.ViewInputReadOnly {
+    background-color: var(--editor-panel-surface-muted);
+    color: var(--editor-text-secondary);
+    cursor: default;
+}
+
+.ViewTextArea {
+    resize: vertical;
+    min-height: 12rem;
+    padding: var(--space-3);
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
+    font-size: var(--font-size-sm);
+    line-height: 1.45;
+    white-space: pre;
+}
+
+.ViewDescription {
+    min-height: 7rem;
+    font-family: inherit;
+    white-space: pre-wrap;
+}
+
+.ViewInput:focus,
+.ViewTextArea:focus {
+    outline: 2px solid var(--field-focus-shadow-color);
+    outline-offset: 2px;
+}
+
+.ViewFileAction {
+    position: relative;
+    box-shadow: var(--shadow-control);
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        color 160ms ease,
+        box-shadow 160ms ease;
+    overflow: hidden;
+}
+
+.ViewFileAction:hover {
+    border-color: var(--editor-border);
+    background-color: var(--app-surface-raised);
+}
+
+.ViewFileAction input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.ViewIconActionButton {
+    box-shadow: var(--shadow-control);
+}
+
+.ViewActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+}
+
+.ViewError {
+    flex: 1 1 100%;
+    border: 1px solid var(--feedback-danger-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    background-color: var(--feedback-danger-background);
+    color: var(--feedback-danger-text);
+    font-size: var(--font-size-sm);
+}
+
+.ViewPrimaryButton,
+.ViewSecondaryButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-3);
+    font: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-control);
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.ViewPrimaryButton {
+    border: 1px solid var(--rarity-legendary-color);
+    background-color: var(--rarity-legendary-color);
+    color: var(--color-neutral-950);
+}
+
+.ViewSecondaryButton {
+    border: 1px solid var(--editor-control-border);
+    background-color: var(--app-surface-muted);
+    color: var(--editor-text-strong);
+}
+
+.ViewSecondaryButton:hover {
+    border-color: var(--editor-border);
+    background-color: var(--app-surface-raised);
+}
+
+.ViewPrimaryButton:disabled,
+.ViewSecondaryButton:disabled {
+    cursor: wait;
+    opacity: 0.68;
+}
+
+.ViewHeaderButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    border: 1px solid var(--rarity-legendary-color);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-3);
+    background-color: rgba(249, 166, 32, 0.14);
+    color: var(--editor-text-strong);
+    font: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ViewHeaderButton:hover {
+    background-color: rgba(249, 166, 32, 0.22);
+}
+
+.ViewHeaderButton:focus-visible {
+    outline: 2px solid var(--field-focus-shadow-color);
+    outline-offset: 2px;
+}
+
+@keyframes ViewDrawerIn {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@media screen and (min-width: 720px) {
+    .ViewForm {
+        padding: var(--space-6);
+    }
+
+    .ViewDrawerBody {
+        padding-right: var(--space-6);
+        padding-left: var(--space-6);
+    }
+
+    .ViewEditorGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ViewSection {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+    }
+
+    .ViewClassGrid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .ViewClassGridTwoColumn {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .ViewOverlay {
+        justify-content: flex-end;
+    }
+
+    .ViewDrawer {
+        width: min(38rem, 100vw);
+        height: 100%;
+        border-left: 1px solid var(--editor-border);
+        animation: ViewDrawerIn 180ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+}

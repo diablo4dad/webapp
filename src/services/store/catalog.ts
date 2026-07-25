@@ -14,20 +14,28 @@ import {
   where,
   writeBatch,
 } from "firebase/firestore";
-import { CollectionItemRef, CollectionRef, DadDbRef } from "../data";
+import { CollectionItemRef, CollectionRef, DadDbRef, ItemRef } from "../data";
 import { assignTransientCollectionItemIds } from "../data/factory";
 
 const CATALOG_COLLECTION = "catalogs";
 const CATALOG_ID = "d4";
 const CATALOG_VERSION_COLLECTION = "versions";
 const CATALOG_NODE_COLLECTION = "collectionNodes";
+const CATALOG_ITEM_COLLECTION = "items";
 const DEFAULT_CATALOG_VERSION_ID = "v3";
 const CATALOG_COLLECTION_NODE_BUNDLE_ENDPOINT =
   "/api/catalog/collectionNodes.bundle";
+const CATALOG_ITEM_BUNDLE_ENDPOINT = "/api/catalog/items.bundle";
+const DEFAULT_STANDALONE_CATALOG_ITEM: Omit<ItemRef, "id"> = {
+  icon: 0,
+  itemType: -1,
+  name: "",
+};
 let staticDadDbRefPromise: Promise<DadDbRef> | undefined;
 
 type StaticItemData = Pick<DadDbRef, "itemTypes" | "items">;
 export type CatalogCollectionNodeSource = "bundle" | "firestore";
+export type CatalogItemSource = "bundle" | "firestore";
 
 export type FetchCatalogCollectionNodesOptions = {
   category?: string;
@@ -35,6 +43,9 @@ export type FetchCatalogCollectionNodesOptions = {
 };
 
 export type FetchHybridDadDbRefOptions = FetchCatalogCollectionNodesOptions;
+export type FetchCatalogItemsOptions = {
+  source?: CatalogItemSource;
+};
 export type FetchHybridDadDbRefByCategoryResult = {
   category: string;
   dadDbRef: DadDbRef;
@@ -74,6 +85,12 @@ export type CatalogCollectionWrite = {
   parentId: string | null;
 };
 
+export type CatalogItemDoc = {
+  itemId: number;
+} & Partial<Omit<ItemRef, "id">>;
+
+export type CatalogItemWrite = CatalogItemDoc;
+
 export type CatalogCollectionNodeMove = {
   category: string;
   collectionId: string;
@@ -100,6 +117,20 @@ function getCatalogCollectionNodeCollectionRef(
   );
 }
 
+function getCatalogItemCollectionRef(
+  firestore: Awaited<ReturnType<typeof getCatalogFirestore>>,
+  versionId: string,
+) {
+  return collection(
+    firestore,
+    CATALOG_COLLECTION,
+    CATALOG_ID,
+    CATALOG_VERSION_COLLECTION,
+    versionId,
+    CATALOG_ITEM_COLLECTION,
+  );
+}
+
 export function getCatalogCollectionNodesBundleName(
   versionId: string,
   category?: string,
@@ -107,6 +138,10 @@ export function getCatalogCollectionNodesBundleName(
   return category
     ? `catalog-${CATALOG_ID}-${versionId}-${category}-${CATALOG_NODE_COLLECTION}`
     : `catalog-${CATALOG_ID}-${versionId}-${CATALOG_NODE_COLLECTION}`;
+}
+
+export function getCatalogItemsBundleName(versionId: string): string {
+  return `catalog-${CATALOG_ID}-${versionId}-${CATALOG_ITEM_COLLECTION}`;
 }
 
 export function getCatalogCollectionNodesBundleUrl(
@@ -121,6 +156,14 @@ export function getCatalogCollectionNodesBundleUrl(
   }
 
   return `${CATALOG_COLLECTION_NODE_BUNDLE_ENDPOINT}?${params.toString()}`;
+}
+
+export function getCatalogItemsBundleUrl(versionId: string): string {
+  const params = new URLSearchParams({
+    versionId,
+  });
+
+  return `${CATALOG_ITEM_BUNDLE_ENDPOINT}?${params.toString()}`;
 }
 
 async function getCatalogCollectionNodeRef(collectionId: string) {
@@ -143,6 +186,22 @@ function getCatalogCollectionNodeDocRef(
     versionId,
     CATALOG_NODE_COLLECTION,
     String(collectionId),
+  );
+}
+
+function getCatalogItemDocRef(
+  firestore: Awaited<ReturnType<typeof getCatalogFirestore>>,
+  versionId: string,
+  itemId: number,
+) {
+  return doc(
+    firestore,
+    CATALOG_COLLECTION,
+    CATALOG_ID,
+    CATALOG_VERSION_COLLECTION,
+    versionId,
+    CATALOG_ITEM_COLLECTION,
+    String(itemId),
   );
 }
 
@@ -175,6 +234,83 @@ function toCatalogCollectionDocs(snapshot: {
       id: node.id,
     }))
     .sort(sortNodes);
+}
+
+function sortCatalogItems(a: CatalogItemDoc, b: CatalogItemDoc): number {
+  return a.itemId - b.itemId;
+}
+
+function toCatalogItemDocs(snapshot: {
+  docs: Array<{ data: () => unknown; id: string }>;
+}): CatalogItemDoc[] {
+  return snapshot.docs
+    .map((item) => {
+      const data = item.data() as CatalogItemDoc & { id?: unknown };
+      const itemId =
+        typeof data.itemId === "number" ? data.itemId : Number(item.id);
+      const { id: _legacyId, ...catalogItem } = data;
+
+      if (!Number.isInteger(itemId)) {
+        throw new Error(`[Catalog] Invalid catalog item id: ${item.id}`);
+      }
+
+      return {
+        ...catalogItem,
+        itemId,
+      };
+    })
+    .sort(sortCatalogItems);
+}
+
+function stripUndefinedFields<T extends object>(data: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined),
+  ) as Partial<T>;
+}
+
+function getCatalogItemOverrides(
+  catalogItem: CatalogItemDoc,
+): Partial<Omit<ItemRef, "id">> {
+  const { itemId: _itemId, ...overrides } = catalogItem;
+
+  return stripUndefinedFields(overrides);
+}
+
+export function coalesceCatalogItem(
+  staticItem: ItemRef | undefined,
+  catalogItem: CatalogItemDoc | undefined,
+): ItemRef {
+  if (!catalogItem) {
+    return staticItem ?? {
+      ...DEFAULT_STANDALONE_CATALOG_ITEM,
+      id: -1,
+    };
+  }
+
+  return {
+    ...(staticItem ?? DEFAULT_STANDALONE_CATALOG_ITEM),
+    ...getCatalogItemOverrides(catalogItem),
+    id: catalogItem.itemId,
+  };
+}
+
+export function coalesceCatalogItems(
+  staticItems: ItemRef[],
+  catalogItems: CatalogItemDoc[] = [],
+): ItemRef[] {
+  const catalogItemsById = new Map(
+    catalogItems.map((catalogItem) => [catalogItem.itemId, catalogItem]),
+  );
+  const staticItemIds = new Set(staticItems.map((item) => item.id));
+
+  return [
+    ...staticItems.map((staticItem) =>
+      coalesceCatalogItem(staticItem, catalogItemsById.get(staticItem.id)),
+    ),
+    ...catalogItems
+      .filter((catalogItem) => !staticItemIds.has(catalogItem.itemId))
+      .map((catalogItem) => coalesceCatalogItem(undefined, catalogItem)),
+  ];
 }
 
 function warnIfCatalogVersionIsNotPublished(
@@ -509,6 +645,83 @@ export async function fetchCatalogCollectionNodes(
   }
 
   return fetchCatalogCollectionNodesFromFirestore(versionId, options.category);
+}
+
+export async function fetchCatalogItemsFromFirestore(
+  versionId: string,
+): Promise<CatalogItemDoc[]> {
+  const firestore = await getCatalogFirestore();
+  const itemCollectionRef = getCatalogItemCollectionRef(firestore, versionId);
+  const snapshot = await getDocs(itemCollectionRef);
+
+  return toCatalogItemDocs(snapshot);
+}
+
+export async function fetchCatalogItemsFromBundle(
+  versionId: string,
+): Promise<CatalogItemDoc[]> {
+  const firestore = await getCatalogFirestore();
+  const response = await fetch(getCatalogItemsBundleUrl(versionId));
+
+  if (!response.ok) {
+    throw new Error(
+      `[Catalog] Failed to load bundled catalog items for version "${versionId}" (${response.status}).`,
+    );
+  }
+
+  const bundleData = response.body ?? (await response.arrayBuffer());
+  await loadBundle(firestore, bundleData);
+
+  const bundleName = getCatalogItemsBundleName(versionId);
+  const cachedQuery = await namedQuery(firestore, bundleName);
+
+  if (!cachedQuery) {
+    throw new Error(`[Catalog] Bundle did not contain query "${bundleName}".`);
+  }
+
+  const snapshot = await getDocsFromCache(cachedQuery);
+
+  return toCatalogItemDocs(snapshot);
+}
+
+export async function fetchCatalogItems(
+  options: FetchCatalogItemsOptions = {},
+): Promise<CatalogItemDoc[]> {
+  const versionId = await resolveCatalogVersionId();
+  const version = await fetchCatalogVersion(versionId);
+
+  warnIfCatalogVersionIsNotPublished(versionId, version);
+
+  return fetchCatalogItemsForVersion(versionId, options.source);
+}
+
+async function fetchCatalogItemsForVersion(
+  versionId: string,
+  source: CatalogItemSource | undefined,
+): Promise<CatalogItemDoc[]> {
+  if (source === "bundle") {
+    return fetchCatalogItemsFromBundle(versionId);
+  }
+
+  return fetchCatalogItemsFromFirestore(versionId);
+}
+
+export async function upsertCatalogItem(
+  catalogItem: CatalogItemWrite,
+): Promise<void> {
+  if (!Number.isInteger(catalogItem.itemId)) {
+    throw new Error("[Catalog] Catalog item writes require an integer item id.");
+  }
+
+  const firestore = await getCatalogFirestore();
+  const versionId = await resolveCatalogVersionId();
+  const itemRef = getCatalogItemDocRef(
+    firestore,
+    versionId,
+    catalogItem.itemId,
+  );
+
+  await setDoc(itemRef, stripUndefinedFields(catalogItem));
 }
 
 export async function addCatalogCollectionNode(
@@ -1015,6 +1228,11 @@ export async function fetchHybridDadDbRefsByCategory(
   const staticData = await fetchStaticItemData();
   const versionId = await resolveCatalogVersionId();
   const version = await fetchCatalogVersion(versionId);
+  const itemData = await fetchHybridItemData(
+    versionId,
+    staticData,
+    options.source,
+  );
 
   warnIfCatalogVersionIsNotPublished(versionId, version);
 
@@ -1028,8 +1246,8 @@ export async function fetchHybridDadDbRefsByCategory(
       return {
         category,
         dadDbRef: {
-          itemTypes: staticData.itemTypes,
-          items: staticData.items,
+          itemTypes: itemData.itemTypes,
+          items: itemData.items,
           collections: buildCollectionTree(nodes),
         },
       };
@@ -1043,6 +1261,11 @@ export async function fetchHybridDadDbRef(
   const staticData = await fetchStaticItemData();
   const versionId = await resolveCatalogVersionId();
   const version = await fetchCatalogVersion(versionId);
+  const itemData = await fetchHybridItemData(
+    versionId,
+    staticData,
+    options.source,
+  );
   const nodes = await fetchCatalogCollectionNodes(versionId, options);
 
   if (nodes.length === 0 && !options.category) {
@@ -1056,8 +1279,34 @@ export async function fetchHybridDadDbRef(
   const collections = buildCollectionTree(nodes);
 
   return {
-    itemTypes: staticData.itemTypes,
-    items: staticData.items,
+    itemTypes: itemData.itemTypes,
+    items: itemData.items,
     collections,
   };
+}
+
+async function fetchHybridItemData(
+  versionId: string,
+  staticData: StaticItemData,
+  source: CatalogItemSource | undefined,
+): Promise<StaticItemData> {
+  try {
+    const catalogItems = await fetchCatalogItemsForVersion(versionId, source);
+
+    return {
+      itemTypes: staticData.itemTypes,
+      items: coalesceCatalogItems(staticData.items, catalogItems),
+    };
+  } catch (error) {
+    if (source !== "bundle") {
+      throw error;
+    }
+
+    console.warn(
+      "[Catalog] Failed to load catalog item overrides. Continuing with static database items.",
+      error,
+    );
+
+    return staticData;
+  }
 }

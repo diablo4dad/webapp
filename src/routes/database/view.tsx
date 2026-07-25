@@ -6,12 +6,15 @@ import {
   useState,
 } from "react";
 import { DATA_REPO } from "../../config";
+import type { ItemType } from "../../services/data";
 import Card from "../../shared/ui/Card";
+import { DatabaseItemCreator } from "../../features/database-explorer/editor";
 import {
   ItemList,
   type FilterControlConfig,
   type FilterControlKey,
 } from "../../features/database-explorer/item-list";
+import itemListStyles from "../../features/database-explorer/item-list/view.module.css";
 import {
   ItemView,
   type JsonPreviewState,
@@ -31,16 +34,22 @@ import { DatabaseSkeleton } from "./skeleton";
 import styles from "./view.module.css";
 
 type Props = {
+  canEditCatalog?: boolean;
   classOptions: FilterOption[];
   error?: string;
   filteredItems: ExplorerItem[];
   filters: Filters;
+  isEditMode?: boolean;
   isLoading: boolean;
+  existingItemIds?: number[];
+  itemTypes?: ItemType[];
   itemTypeOptions: FilterOption[];
   magicTypeOptions: FilterOption[];
   onFilterChange: (filters: Partial<Filters>) => void;
+  onRefreshItems?: () => void;
   onRetry: () => void;
   onSelectItem: (item: ExplorerItem) => void;
+  onSelectItemId?: (itemId: number) => void;
   onSortModeChange: (sortMode: SortMode) => void;
   selectedItem?: ExplorerItem;
   showSelectedItemInitially?: boolean;
@@ -53,16 +62,22 @@ type MobilePane = "detail" | "list";
 type MobileScrollAction = "detailTop" | "listRestore";
 
 function View({
+  canEditCatalog = false,
   classOptions,
   error,
   filteredItems,
   filters,
+  isEditMode = false,
   isLoading,
+  existingItemIds = [],
+  itemTypes = [],
   itemTypeOptions,
   magicTypeOptions,
   onFilterChange,
+  onRefreshItems = () => undefined,
   onRetry,
   onSelectItem,
+  onSelectItemId = () => undefined,
   onSortModeChange,
   selectedItem,
   showSelectedItemInitially = false,
@@ -96,6 +111,20 @@ function View({
   });
   const selectedItemFileUrl = selectedItem?.item.filename
     ? getDataminedFileUrl(selectedItem.item.filename)
+    : undefined;
+  const createItemAction = canEditCatalog && isEditMode
+    ? (
+        <DatabaseItemCreator
+          existingItemIds={existingItemIds}
+          itemTypes={itemTypes}
+          triggerClassName={itemListStyles.ViewListAddButton}
+          triggerLabel="Add +"
+          onSaved={(createdItemId) => {
+            onRefreshItems();
+            onSelectItemId(createdItemId);
+          }}
+        />
+      )
     : undefined;
   const isListPaneVisible = mobilePane === "list";
   const isDetailPaneVisible = mobilePane === "detail";
@@ -272,6 +301,7 @@ function View({
             <ItemList
               filterControls={filterControls}
               filterOptionsRef={filterOptionsRef}
+              headerAction={createItemAction}
               items={filteredItems}
               listRef={itemListRef}
               onApplyFilter={applyFilter}
@@ -291,9 +321,13 @@ function View({
             })}
           >
             <ItemView
+              canEditCatalog={canEditCatalog}
+              isEditMode={isEditMode}
               item={selectedItem}
+              itemTypes={itemTypes}
               jsonPreview={jsonPreview}
               onBackToList={showItemList}
+              onRefreshItems={onRefreshItems}
               onToggleJsonPreview={toggleJsonPreview}
             />
           </section>

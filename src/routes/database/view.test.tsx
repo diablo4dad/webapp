@@ -9,8 +9,13 @@ import {
   type ExplorerItem,
   type FilterOption,
 } from "./state";
+import editorStyles from "../../features/database-explorer/editor/view.module.css";
+import drawerStyles from "../../features/editor/collection-item-editor.module.css";
+import itemListSkeletonStyles from "../../features/database-explorer/item-list/skeleton.module.css";
 import itemListStyles from "../../features/database-explorer/item-list/view.module.css";
+import itemViewSkeletonStyles from "../../features/database-explorer/item-view/skeleton.module.css";
 import itemViewStyles from "../../features/database-explorer/item-view/view.module.css";
+import buttonStyles from "../../shared/ui/Button.module.css";
 import { View } from "./view";
 import layoutStyles from "./layout.module.css";
 import routeStyles from "./view.module.css";
@@ -167,8 +172,22 @@ describe("database surface", () => {
       isLoading: true,
     });
 
-    expect(screen.getByRole("status", { name: "Loading database" }))
+    const status = screen.getByRole("status", { name: "Loading database" });
+
+    expect(status)
       .toHaveAttribute("aria-busy", "true");
+    expect(status.querySelectorAll(
+      `.${itemListSkeletonStyles.SkeletonFilterControl}`,
+    )).toHaveLength(3);
+    expect(status.querySelectorAll(
+      `.${itemListSkeletonStyles.SkeletonRowName}`,
+    )).toHaveLength(10);
+    expect(document.querySelector(
+      `.${itemViewSkeletonStyles.SkeletonBackButton}`,
+    )).toBeInTheDocument();
+    expect(document.querySelectorAll(
+      `.${itemViewSkeletonStyles.SkeletonField}`,
+    )).toHaveLength(7);
     expect(screen.queryByText("Loading database")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Database Explorer" }))
       .not.toBeInTheDocument();
@@ -477,6 +496,216 @@ describe("database surface", () => {
       .toHaveClass(routeStyles.ViewResultsPaneMobileHidden);
     expect(document.querySelector(`.${routeStyles.ViewItemPane}`))
       .not.toHaveClass(routeStyles.ViewItemPaneMobileHidden);
+  });
+
+  test("renders database editor surfaces in edit mode", async () => {
+    const user = userEvent.setup();
+    const selectedItem = createExplorerItem();
+
+    renderView({
+      canEditCatalog: true,
+      existingItemIds: [100],
+      filteredItems: [selectedItem],
+      isEditMode: true,
+      itemTypes: [
+        {
+          id: 1,
+          name: "Sword",
+        },
+      ],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    const sortButton = screen.getByRole("button", { name: "Sort" });
+    const addButton = screen.getByRole("button", { name: "Add +" });
+
+    expect(addButton).toBeInTheDocument();
+    expect(addButton).toHaveClass(buttonStyles.Btn);
+    expect(addButton).toHaveClass(buttonStyles.BtnGreen);
+    expect(addButton).toHaveClass(itemListStyles.ViewListAddButton);
+    expect(sortButton).toHaveAttribute("aria-pressed", "false");
+    expect(sortButton).not.toHaveClass(
+      itemListStyles.ViewListSortButtonActive,
+    );
+    expect(
+      sortButton.compareDocumentPosition(addButton) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(screen.getByText("Database Item Override")).toBeInTheDocument();
+
+    const override = screen
+      .getByText("Database Item Override")
+      .closest("form");
+
+    expect(override).not.toBeNull();
+    const overrideScreen = within(override as HTMLElement);
+    const overrideName = overrideScreen.getByLabelText("Name");
+    const overrideSeries = overrideScreen.getByLabelText("Series");
+    const overrideTransmogName = overrideScreen.getByLabelText(
+      "Transmog Name",
+    );
+    const overrideTextStack = overrideName.closest(
+      `.${editorStyles.ViewFieldStack}`,
+    );
+    const overrideUploadAction = overrideScreen
+      .getByText("Upload icon")
+      .closest(`.${editorStyles.ViewIconActions}`);
+    const overrideUploadLabel = overrideScreen
+      .getByText("Upload icon")
+      .closest("label");
+    const overrideClearButton = overrideScreen.getByRole("button", {
+      name: "Clear icon",
+    });
+    const overrideClearAction = overrideScreen
+      .getByRole("button", { name: "Clear icon" })
+      .closest(`.${editorStyles.ViewIconActions}`);
+
+    expect(overrideName).toBeInTheDocument();
+    expect(overrideTextStack).not.toBeNull();
+    expect(overrideSeries.closest(`.${editorStyles.ViewFieldStack}`))
+      .toBe(overrideTextStack);
+    expect(overrideTransmogName.closest(`.${editorStyles.ViewFieldStack}`))
+      .toBe(overrideTextStack);
+    expect(overrideScreen.getByLabelText("Item Type"))
+      .toBeInTheDocument();
+    expect(overrideScreen.getByLabelText("Item Quality"))
+      .toBeInTheDocument();
+    expect(overrideScreen.queryByLabelText("Preferred Zone"))
+      .not.toBeInTheDocument();
+    expect(overrideScreen.getByLabelText("Override usable classes"))
+      .toBeInTheDocument();
+    expect(overrideScreen.getByLabelText("Override usable classes").closest(
+      `.${editorStyles.ViewClassToggle}`,
+    )).not.toBeNull();
+    expect(overrideScreen.getByLabelText("Barbarian")).toBeDisabled();
+    expect(overrideScreen.getByLabelText("Barbarian").closest(
+      `.${editorStyles.ViewClassToggle}`,
+    )).not.toBeNull();
+    expect(overrideUploadAction).not.toBeNull();
+    expect(overrideUploadLabel).toHaveClass(drawerStyles.SecondaryButton);
+    expect(overrideUploadLabel).toHaveClass(editorStyles.ViewFileAction);
+    expect(overrideClearAction).toBe(overrideUploadAction);
+    expect(overrideClearButton).toHaveClass(drawerStyles.DeleteButton);
+    expect(overrideClearButton).toHaveClass(editorStyles.ViewIconActionButton);
+    expect(overrideScreen.queryByLabelText("Override Values"))
+      .not.toBeInTheDocument();
+    expect(overrideScreen.queryByLabelText("Transmog"))
+      .not.toBeInTheDocument();
+    expect(overrideScreen.queryByLabelText("Salvageable"))
+      .not.toBeInTheDocument();
+    expect(overrideScreen.queryByLabelText("Vessel of Hatred"))
+      .not.toBeInTheDocument();
+    expect(overrideScreen.queryByLabelText("Lord of Hatred"))
+      .not.toBeInTheDocument();
+
+    await user.click(addButton);
+
+    const creator = screen.getByRole("dialog", {
+      name: "New Database item",
+    });
+
+    expect(creator).toBeInTheDocument();
+    expect(within(creator).getByLabelText("Import URL")).toBeInTheDocument();
+    const creatorScreen = within(creator);
+    const creatorHeader = creatorScreen
+      .getByText("Database Explorer")
+      .closest(`.${drawerStyles.Header}`);
+    const creatorFooter = creatorScreen
+      .getByRole("button", { name: "Save item" })
+      .closest(`.${drawerStyles.Actions}`);
+    const creatorIconSection = creatorScreen
+      .getByText("No icon selected")
+      .closest(`.${editorStyles.ViewIconSection}`);
+    const creatorItemId = creatorScreen.getByLabelText("Item ID");
+    const creatorName = creatorScreen.getByLabelText("Name");
+    const creatorSeries = creatorScreen.getByLabelText("Series");
+    const creatorTransmogName = creatorScreen.getByLabelText("Transmog Name");
+    const creatorTextStack = creatorName.closest(
+      `.${editorStyles.ViewFieldStack}`,
+    );
+    const creatorUploadAction = creatorScreen
+      .getByText("Upload icon")
+      .closest(`.${editorStyles.ViewIconActions}`);
+    const creatorUploadLabel = creatorScreen
+      .getByText("Upload icon")
+      .closest("label");
+    const creatorClearButton = creatorScreen.getByRole("button", {
+      name: "Clear icon",
+    });
+    const creatorClearAction = creatorScreen
+      .getByRole("button", { name: "Clear icon" })
+      .closest(`.${editorStyles.ViewIconActions}`);
+
+    expect(creatorHeader).not.toBeNull();
+    expect(creatorScreen.getByRole("heading", { name: "New Database item" }))
+      .toHaveClass(drawerStyles.Title);
+    expect(creatorScreen.queryByText("Database item")).not.toBeInTheDocument();
+    expect(creatorScreen.getByRole("button", {
+      name: "Close item creator",
+    })).toHaveClass(drawerStyles.CloseButton);
+    expect(creatorFooter).not.toBeNull();
+    expect(creatorScreen.getByRole("button", { name: "Reset" }))
+      .toHaveClass(drawerStyles.SecondaryButton);
+    expect(creatorScreen.getByRole("button", { name: "Close" }))
+      .toHaveClass(drawerStyles.SecondaryButton);
+    expect(creatorScreen.getByRole("button", { name: "Save item" }))
+      .toHaveClass(drawerStyles.SaveButton);
+    expect(creatorItemId).toHaveAttribute("readonly");
+    expect(creatorItemId.closest(`.${editorStyles.ViewStandaloneIdRow}`))
+      .not.toBeNull();
+    expect(creatorIconSection).not.toBeNull();
+    expect(
+      (creatorIconSection as HTMLElement).compareDocumentPosition(
+        creatorItemId,
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      creatorItemId.compareDocumentPosition(creatorName) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(creatorScreen.getByLabelText("Item Type")).toBeInTheDocument();
+    expect(creatorScreen.getByLabelText("Item Quality")).toBeInTheDocument();
+    expect(creatorScreen.queryByLabelText("Preferred Zone"))
+      .not.toBeInTheDocument();
+    expect(creatorScreen.getByLabelText("Barbarian")).toBeChecked();
+    const creatorClassGrid = creatorScreen.getByLabelText("Barbarian").closest(
+      `.${editorStyles.ViewClassGrid}`,
+    );
+
+    expect(creatorClassGrid).not.toBeNull();
+    expect(creatorClassGrid).toHaveClass(editorStyles.ViewClassGridTwoColumn);
+    expect(creatorScreen.getByLabelText("Barbarian").closest(
+      `.${editorStyles.ViewClassToggle}`,
+    )).not.toBeNull();
+    expect(creatorScreen.getByLabelText("Rogue")).toBeChecked();
+    expect(creatorSeries).toBeInTheDocument();
+    expect(creatorTextStack).not.toBeNull();
+    expect(creatorSeries.closest(`.${editorStyles.ViewFieldStack}`))
+      .toBe(creatorTextStack);
+    expect(creatorTransmogName.closest(`.${editorStyles.ViewFieldStack}`))
+      .toBe(creatorTextStack);
+    expect(creatorScreen.getByText("No icon selected")).toBeInTheDocument();
+    expect(creatorUploadAction).not.toBeNull();
+    expect(creatorUploadLabel).toHaveClass(drawerStyles.SecondaryButton);
+    expect(creatorUploadLabel).toHaveClass(editorStyles.ViewFileAction);
+    expect(creatorClearAction).toBe(creatorUploadAction);
+    expect(creatorClearButton).toHaveClass(drawerStyles.DeleteButton);
+    expect(creatorClearButton).toHaveClass(editorStyles.ViewIconActionButton);
+    expect(creatorScreen.queryByLabelText("Icon")).not.toBeInTheDocument();
+    expect(creatorScreen.queryByText("Optional Values"))
+      .not.toBeInTheDocument();
+    expect(creatorScreen.queryByLabelText("Transmog"))
+      .not.toBeInTheDocument();
+    expect(creatorScreen.queryByLabelText("Salvageable"))
+      .not.toBeInTheDocument();
+    expect(creatorScreen.queryByLabelText("Vessel of Hatred"))
+      .not.toBeInTheDocument();
+    expect(creatorScreen.queryByLabelText("Lord of Hatred"))
+      .not.toBeInTheDocument();
+    expect(creatorScreen.getByRole("button", {
+      name: "Close item creator",
+    })).toBeInTheDocument();
   });
 
   test("uses magic type colour for list item names", () => {
@@ -841,12 +1070,12 @@ describe("database surface", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "Sort results" }))
       .toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Name" }))
+    expect(screen.getByRole("button", { name: "Sort" }))
       .toHaveTextContent("↑");
-    expect(screen.getByRole("button", { name: "Name" }))
+    expect(screen.getByRole("button", { name: "Sort" }))
       .toHaveClass(itemListStyles.ViewListSortButtonActive);
 
-    await user.click(screen.getByRole("button", { name: "Name" }));
+    await user.click(screen.getByRole("button", { name: "Sort" }));
 
     expect(onSortModeChange).toHaveBeenLastCalledWith("nameDesc");
     expect(screen.queryByRole("button", { name: "Quality" }))
@@ -869,12 +1098,12 @@ describe("database surface", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Name" }))
+    expect(screen.getByRole("button", { name: "Sort" }))
       .toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("button", { name: "Name" }))
+    expect(screen.getByRole("button", { name: "Sort" }))
       .toHaveTextContent("↓");
 
-    await user.click(screen.getByRole("button", { name: "Name" }));
+    await user.click(screen.getByRole("button", { name: "Sort" }));
 
     expect(onSortModeChange).toHaveBeenLastCalledWith("none");
 
@@ -895,14 +1124,14 @@ describe("database surface", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Name" }))
+    expect(screen.getByRole("button", { name: "Sort" }))
       .toHaveAttribute("aria-pressed", "false");
-    expect(screen.getByRole("button", { name: "Name" }))
+    expect(screen.getByRole("button", { name: "Sort" }))
       .toHaveTextContent("↕");
-    expect(screen.getByRole("button", { name: "Name" }))
+    expect(screen.getByRole("button", { name: "Sort" }))
       .not.toHaveClass(itemListStyles.ViewListSortButtonActive);
 
-    await user.click(screen.getByRole("button", { name: "Name" }));
+    await user.click(screen.getByRole("button", { name: "Sort" }));
 
     expect(onSortModeChange).toHaveBeenLastCalledWith("nameAsc");
   });

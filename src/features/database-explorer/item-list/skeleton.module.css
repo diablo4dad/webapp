@@ -17,6 +17,7 @@
 
 .SkeletonListHeader {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-3);
     align-items: center;
     justify-content: space-between;
@@ -24,10 +25,21 @@
     border-bottom: 1px solid var(--app-border-subtle);
 }
 
+.SkeletonHeaderActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+    min-width: 0;
+}
+
 .SkeletonTitle,
 .SkeletonSort,
-.SkeletonFilters,
-.SkeletonRow,
+.SkeletonAction,
+.SkeletonFilterLabel,
+.SkeletonFilterValue,
+.SkeletonRowName,
+.SkeletonRowMeta,
 .SkeletonStats span {
     display: block;
     border-radius: var(--radius-sm);
@@ -51,9 +63,45 @@
     height: 2.25rem;
 }
 
-.SkeletonFilters {
-    height: 3.1rem;
-    margin: var(--space-3) var(--space-4);
+.SkeletonAction {
+    width: 4.25rem;
+    height: 2.25rem;
+}
+
+.SkeletonFilterControls {
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--app-border-subtle);
+    background-color: var(--editor-panel-surface);
+}
+
+.SkeletonFilterControlList {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+}
+
+.SkeletonFilterControl {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    min-height: 2.55rem;
+    border: 1px solid var(--editor-control-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+    background-color: var(--app-surface-raised);
+    box-sizing: border-box;
+}
+
+.SkeletonFilterLabel {
+    width: min(4.25rem, 74%);
+    height: 0.72rem;
+}
+
+.SkeletonFilterValue {
+    width: min(5.5rem, 92%);
+    height: 0.9rem;
 }
 
 .SkeletonList {
@@ -66,9 +114,26 @@
 }
 
 .SkeletonRow {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.45rem;
     height: 4.25rem;
     border-radius: 0;
+    border-bottom: 1px solid var(--editor-divider);
+    padding: var(--space-3) var(--space-4);
     background-color: rgb(255 255 255 / 5%);
+    box-sizing: border-box;
+}
+
+.SkeletonRowName {
+    width: min(15rem, 72%);
+    height: 1rem;
+}
+
+.SkeletonRowMeta {
+    width: min(9rem, 48%);
+    height: 0.8rem;
 }
 
 .SkeletonStats {
@@ -101,9 +166,13 @@
         padding: var(--space-4) var(--space-6);
     }
 
-    .SkeletonFilters {
-        margin-right: var(--space-6);
-        margin-left: var(--space-6);
+    .SkeletonFilterControlList {
+        padding: var(--space-3) var(--space-6);
+    }
+
+    .SkeletonRow {
+        padding-right: var(--space-6);
+        padding-left: var(--space-6);
     }
 
     .SkeletonStats {
@@ -133,6 +202,10 @@
 
     .SkeletonListHeader {
         background-color: rgb(255 255 255 / 3%);
+    }
+
+    .SkeletonFilterControls {
+        background-color: transparent;
     }
 
     .SkeletonList {

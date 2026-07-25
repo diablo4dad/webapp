@@ -5,6 +5,7 @@ import {
   MagicType,
   Zone,
   type ItemRef,
+  type ItemType,
 } from "../../../services/data";
 import { getIcon } from "../../../services/bucket";
 import i18n from "../../../services/i18n";
@@ -14,17 +15,22 @@ import { FallbackLazyImage } from "../../../shared/ui/LazyLoadImageFallback";
 import { classIconMap } from "../../../shared/domain/item-assets";
 import { isMagicTypeNotSet } from "../../../shared/domain/magic-types";
 import { enumKeys } from "../../../shared/lib/enums";
+import { DatabaseItemOverrideEditor } from "../editor";
+import type { EditorItem } from "../editor";
 import styles from "./view.module.css";
 
-type ItemViewItem = {
-  item: ItemRef;
+type ItemViewItem = EditorItem & {
   itemTypeName: string;
 };
 
 type Props = {
+  canEditCatalog: boolean;
+  isEditMode: boolean;
   item?: ItemViewItem;
+  itemTypes?: ItemType[];
   jsonPreview: JsonPreviewState;
   onBackToList: () => void;
+  onRefreshItems: () => void;
   onToggleJsonPreview: (filename: string) => void;
 };
 
@@ -60,9 +66,13 @@ const magicTypeClassMap = new Map<MagicType, string>([
 ]);
 
 function ItemView({
+  canEditCatalog,
+  isEditMode,
   item,
+  itemTypes = [],
   jsonPreview,
   onBackToList,
+  onRefreshItems,
   onToggleJsonPreview,
 }: Props) {
   if (!item) {
@@ -139,6 +149,13 @@ function ItemView({
           filename={rawItem.filename}
           jsonPreview={jsonPreview}
           onToggleJsonPreview={onToggleJsonPreview}
+        />
+      )}
+      {canEditCatalog && isEditMode && (
+        <DatabaseItemOverrideEditor
+          item={item}
+          itemTypes={itemTypes}
+          onSaved={onRefreshItems}
         />
       )}
     </article>

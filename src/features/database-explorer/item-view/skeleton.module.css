@@ -6,6 +6,13 @@
     min-height: 0;
 }
 
+.SkeletonBackButton {
+    display: block;
+    width: 7rem;
+    height: 2.5rem;
+    border-radius: var(--radius-sm);
+}
+
 .SkeletonDetailCard,
 .SkeletonDetailSection {
     display: flex;
@@ -14,13 +21,23 @@
 }
 
 .SkeletonDetailCard {
-    min-height: 12rem;
-    padding: var(--space-6);
+    flex-direction: column;
+}
+
+.SkeletonDetailHeader {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    min-width: 0;
+    padding: var(--space-4);
 }
 
 .SkeletonDetailIcon,
-.SkeletonDetailContent,
-.SkeletonDetailSection span {
+.SkeletonFieldLabel,
+.SkeletonFieldValue,
+.SkeletonSectionTitle,
+.SkeletonClassChip,
+.SkeletonBackButton {
     display: block;
     border-radius: var(--radius-sm);
     background: linear-gradient(
@@ -34,31 +51,96 @@
 }
 
 .SkeletonDetailIcon {
-    flex: 0 0 auto;
-    width: 5rem;
-    height: 5rem;
+    justify-self: end;
+    width: min(120px, 45vw);
+    height: 7.5rem;
     margin-left: auto;
 }
 
-.SkeletonDetailContent {
-    width: min(24rem, 68%);
-    height: 4rem;
-    margin-top: var(--space-3);
+.SkeletonDetailColumn {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
 }
 
-.SkeletonDetailContent:last-child {
-    width: min(30rem, 82%);
-    height: 5rem;
+.SkeletonField {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.SkeletonFieldLabel {
+    width: 5rem;
+    height: 0.8rem;
+}
+
+.SkeletonFieldValue {
+    width: min(18rem, 82%);
+    height: 1.05rem;
+}
+
+.SkeletonField:nth-child(2) .SkeletonFieldValue {
+    width: min(10rem, 58%);
+}
+
+.SkeletonField:nth-child(3) .SkeletonFieldValue {
+    width: min(14rem, 72%);
 }
 
 .SkeletonDetailSection {
-    min-height: 8rem;
-    padding: var(--space-6);
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
 }
 
-.SkeletonDetailSection span {
-    width: min(28rem, 72%);
-    height: 3.5rem;
+.SkeletonSectionTitle {
+    width: 9rem;
+    height: 1.15rem;
+}
+
+.SkeletonClassList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.SkeletonClassChip {
+    width: 6.75rem;
+    height: 2rem;
+}
+
+@media screen and (min-width: 720px) {
+    .SkeletonDetailHeader,
+    .SkeletonDetailSection {
+        padding: var(--space-6);
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .SkeletonBackButton {
+        display: none;
+    }
+
+    .SkeletonDetailHeader {
+        grid-template-columns:
+            auto fit-content(18rem)
+            minmax(0, 1fr);
+        align-items: start;
+        column-gap: calc(var(--space-8) + 1rem);
+    }
+
+    .SkeletonDetailIcon {
+        justify-self: start;
+        width: 7.5rem;
+        max-width: 100%;
+        margin-left: 0;
+    }
+
+    .SkeletonDetailColumn {
+        padding-block: 1rem;
+    }
 }
 
 @keyframes skeletonPulse {

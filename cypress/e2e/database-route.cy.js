@@ -45,4 +45,46 @@ describe("database route", () => {
       });
     });
   });
+
+  it("keeps document scrolling locked to the app shell", () => {
+    cy.viewport(1440, 900);
+    cy.visit("/database");
+
+    cy.contains("Database Explorer").should("be.visible");
+    cy.window().then((window) => {
+      const layoutContent = window.document.querySelector(
+        "[class*='LayoutContent']",
+      );
+
+      if (!(layoutContent instanceof window.HTMLElement)) {
+        throw new Error("Expected app layout content to exist.");
+      }
+
+      const tallContent = window.document.createElement("div");
+      tallContent.setAttribute("data-test-tall-route-content", "true");
+      tallContent.style.flex = "0 0 auto";
+      tallContent.style.height = "1600px";
+      tallContent.style.width = "1px";
+      layoutContent.append(tallContent);
+
+      const layoutMain = window.document.querySelector(
+        "[class*='LayoutMain']",
+      );
+
+      if (!(layoutMain instanceof window.HTMLElement)) {
+        throw new Error("Expected app layout main to exist.");
+      }
+
+      expect(window.document.documentElement.clientWidth).to.equal(
+        window.innerWidth,
+      );
+      expect(layoutMain.scrollHeight).to.be.greaterThan(
+        layoutMain.clientHeight,
+      );
+      expect(window.getComputedStyle(layoutMain).overflowY)
+        .to.equal("auto");
+
+      tallContent.remove();
+    });
+  });
 });

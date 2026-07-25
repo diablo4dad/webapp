@@ -3,6 +3,7 @@ import { CharacterClass, type DadDbRef, MagicType } from "../../services/data";
 import {
   DEFAULT_FILTERS,
   createSearchIndex,
+  createExplorerItems,
   createStaticExplorerItems,
   filterExplorerItems,
   getItemTypeOptions,
@@ -68,6 +69,57 @@ describe("database items", () => {
       idText: "101",
       itemTypeName: "Helm",
       source: "static",
+    });
+  });
+
+  test("coalesces catalog overrides with static items", () => {
+    const items = createExplorerItems(dadDbRef, [
+      {
+        itemId: 101,
+        name: "Corrected Helm",
+        salvageable: false,
+      },
+    ]);
+
+    expect(items.find((item) => item.item.id === 101)).toMatchObject({
+      catalogItem: {
+        itemId: 101,
+        name: "Corrected Helm",
+      },
+      item: {
+        icon: 1001,
+        id: 101,
+        itemType: 10,
+        name: "Corrected Helm",
+        salvageable: false,
+      },
+      source: "catalog",
+      staticItem: {
+        name: "Weathered Helm",
+      },
+    });
+  });
+
+  test("adds standalone catalog items", () => {
+    const items = createExplorerItems(dadDbRef, [
+      {
+        icon: 9001,
+        itemId: 901,
+        itemType: 20,
+        name: "Missing Mount",
+      },
+    ]);
+
+    expect(items.find((item) => item.item.id === 901)).toMatchObject({
+      item: {
+        icon: 9001,
+        id: 901,
+        itemType: 20,
+        name: "Missing Mount",
+      },
+      itemTypeName: "Mount",
+      source: "catalog",
+      staticItem: undefined,
     });
   });
 

@@ -16,6 +16,18 @@
         "function": "catalogCollectionNodesBundle"
       },
       {
+        "source": "/api/catalog/items.bundle",
+        "function": "catalogItemsBundle"
+      },
+      {
+        "source": "/api/catalog/item-icon",
+        "function": "catalogItemIconUpload"
+      },
+      {
+        "source": "/api/database/item-import",
+        "function": "databaseItemImport"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
@@ -27,5 +39,33 @@
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "auth": {
+      "host": "127.0.0.1",
+      "port": 9099
+    },
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 8080
+    },
+    "functions": {
+      "host": "127.0.0.1",
+      "port": 5001
+    },
+    "hosting": {
+      "host": "127.0.0.1",
+      "port": 5000
+    },
+    "storage": {
+      "host": "127.0.0.1",
+      "port": 9199
+    },
+    "ui": {
+      "enabled": true,
+      "host": "127.0.0.1",
+      "port": 4000
+    },
+    "singleProjectMode": true
   }
 }

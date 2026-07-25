@@ -8,8 +8,10 @@ import {
 const DISCORD_INVITE_LINK = "https://discord.gg/mPRBrU2kYT";
 const DATA_REPO =
   "https://raw.githubusercontent.com/DiabloTools/d4data/master/json";
+const FIREBASE_PROJECT_ID = "d4log-bfc60";
+const FIREBASE_STORAGE_BUCKET = `${FIREBASE_PROJECT_ID}.appspot.com`;
 const ICON_BUCKET =
-  "https://firebasestorage.googleapis.com/v0/b/d4log-bfc60.appspot.com/o";
+  `https://firebasestorage.googleapis.com/v0/b/${FIREBASE_STORAGE_BUCKET}/o`;
 
 export {
   DATABASE_VERSION,
@@ -18,5 +20,7 @@ export {
   LAST_UPDATED,
   DISCORD_INVITE_LINK,
   DATA_REPO,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
   ICON_BUCKET,
 };

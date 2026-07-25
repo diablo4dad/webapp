@@ -2,6 +2,40 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Local Firebase Emulators
+
+The browser app connects to Firebase emulators automatically when served from
+`localhost`, `127.0.0.1`, or `::1`. Set `VITE_FIREBASE_EMULATORS=false` to opt
+out for a local run, or `VITE_FIREBASE_EMULATORS=true` to force emulator mode.
+
+For Vite development, use separate terminals:
+
+```sh
+npm run emulators:backend
+npm run emulators:seed
+npm start
+```
+
+Vite proxies `/api/...` requests to the Functions emulator. The seed command
+exports the static catalogue into Firestore emulator data and uploads
+`public/icons` into the Storage emulator. It also creates a local editor user:
+`editor@d4log.local` / `LocalEditor123!`.
+
+For Firebase Hosting emulator development, build first, then use separate
+terminals:
+
+```sh
+npm run build
+npm run emulators:hosting
+npm run emulators:seed
+```
+
+Then open `http://127.0.0.1:5000`. Emulator state is imported from and exported
+to `tmp/emulators` when using the emulator scripts. To seed a previously
+exported Firestore catalogue, pass `-- --documents <path>` to
+`npm run emulators:seed`. Use `-- --skip-auth`, `-- --editor-email`, or
+`-- --editor-password` to change local editor-user seeding.
+
 ## Available Scripts
 
 In the project directory, you can run:

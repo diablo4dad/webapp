@@ -33,6 +33,7 @@ type Props = {
   onToggleMobileSearch: () => void;
   sidebarVisibility: SidebarVisibility;
   showCollectionControls: boolean;
+  showEditorControl?: boolean;
   showSearch: boolean;
 };
 
@@ -69,6 +70,7 @@ function HeaderActions({
   onToggleMobileSearch,
   sidebarVisibility,
   showCollectionControls,
+  showEditorControl = showCollectionControls,
   showSearch,
 }: Props) {
   return (
@@ -91,7 +93,7 @@ function HeaderActions({
           </SidebarToggle>
         </>
       )}
-      {canEditCatalog && showCollectionControls && (
+      {canEditCatalog && showEditorControl && (
         <HeaderToggle
           ariaLabel={isEditMode ? "Disable editor mode" : "Enable editor mode"}
           isPressed={isEditMode}
@@ -122,9 +124,9 @@ function HeaderActions({
           </Button>
         )
       )}
-      {showCollectionControls && (
+      {(showCollectionControls || showEditorControl) && (
         <Button
-          aria-label="Collection settings"
+          aria-label={showCollectionControls ? "Collection settings" : "Editor settings"}
           aria-pressed={isMobileConfigOpen}
           onClick={onToggleMobileConfig}
           pressed={isMobileConfigOpen}

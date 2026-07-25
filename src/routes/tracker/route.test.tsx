@@ -246,6 +246,7 @@ describe("context wiring", () => {
       searchPlaceholder: "Search transmogs",
       searchTitle: "Transmog Search",
       showCollectionControls: true,
+      showEditorControl: true,
       showSearch: true,
     });
   });

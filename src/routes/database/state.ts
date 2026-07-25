@@ -6,6 +6,10 @@ import {
   type ItemRef,
   type ItemType,
 } from "../../services/data";
+import {
+  coalesceCatalogItem,
+  type CatalogItemDoc,
+} from "../../services/store/catalog";
 import i18n from "../../services/i18n";
 import {
   MAGIC_TYPE_NOT_SET,
@@ -37,12 +41,14 @@ type Filters = {
 };
 
 type ExplorerItem = {
+  catalogItem?: CatalogItemDoc;
   idText: string;
   item: ItemRef;
   itemType?: ItemType;
   itemTypeName: string;
   searchText: string;
   source: ItemSource;
+  staticItem?: ItemRef;
 };
 
 type FilterOption = {
@@ -59,7 +65,7 @@ const DEFAULT_FILTERS: Filters = {
   searchTerm: "",
   source: "both",
 };
-const DEFAULT_SORT_MODE: SortMode = "nameAsc";
+const DEFAULT_SORT_MODE: SortMode = "none";
 const SEARCH_KEYS = [
   "idText",
   "item.name",
@@ -74,39 +80,86 @@ const ITEM_NAME_COLLATOR = new Intl.Collator(undefined, {
   numeric: true,
   sensitivity: "base",
 });
-
 function createStaticExplorerItems(
   dadDbRef: Pick<DadDbRef, "items" | "itemTypes">,
+): ExplorerItem[] {
+  return createExplorerItems(dadDbRef);
+}
+
+function createExplorerItems(
+  dadDbRef: Pick<DadDbRef, "items" | "itemTypes">,
+  catalogItems: CatalogItemDoc[] = [],
 ): ExplorerItem[] {
   const itemTypes = new Map(dadDbRef.itemTypes.map((itemType) => [
     itemType.id,
     itemType,
   ]));
+  const catalogItemsById = new Map(
+    catalogItems.map((catalogItem) => [catalogItem.itemId, catalogItem]),
+  );
+  const staticItemIds = new Set(dadDbRef.items.map((item) => item.id));
 
-  return dadDbRef.items.map((item) => {
-    const itemType = itemTypes.get(item.itemType);
-    const itemTypeName = itemType?.name ?? "Missing item type";
-    const idText = String(item.id);
+  return [
+    ...dadDbRef.items.map((staticItem) => {
+      const catalogItem = catalogItemsById.get(staticItem.id);
+      const item = coalesceCatalogItem(staticItem, catalogItem);
 
-    return {
+      return {
+        catalogItem,
+        item,
+        itemTypes,
+        source: catalogItem ? ("catalog" as const) : ("static" as const),
+        staticItem,
+      };
+    }),
+    ...catalogItems
+      .filter((catalogItem) => !staticItemIds.has(catalogItem.itemId))
+      .map((catalogItem) => ({
+        item: coalesceCatalogItem(undefined, catalogItem),
+        itemTypes,
+        source: "catalog" as const,
+        catalogItem,
+      })),
+  ].map(createExplorerItem);
+}
+
+function createExplorerItem({
+  catalogItem,
+  item,
+  itemTypes,
+  source,
+  staticItem,
+}: {
+  catalogItem?: CatalogItemDoc;
+  item: ItemRef;
+  itemTypes: Map<number, ItemType>;
+  source: ItemSource;
+  staticItem?: ItemRef;
+}): ExplorerItem {
+  const itemType = itemTypes.get(item.itemType);
+  const itemTypeName = itemType?.name ?? "Missing item type";
+  const idText = String(item.id);
+
+  return {
+    catalogItem,
+    idText,
+    item,
+    itemType,
+    itemTypeName,
+    searchText: [
       idText,
-      item,
-      itemType,
+      item.name,
+      item.transmogName,
+      item.description,
+      item.series,
+      item.filename,
       itemTypeName,
-      searchText: [
-        idText,
-        item.name,
-        item.transmogName,
-        item.description,
-        item.series,
-        item.filename,
-        itemTypeName,
-      ]
-        .filter((value): value is string => typeof value === "string")
-        .join(" "),
-      source: "static",
-    };
-  });
+    ]
+      .filter((value): value is string => typeof value === "string")
+      .join(" "),
+    source,
+    staticItem,
+  };
 }
 
 function createSearchIndex(items: ExplorerItem[]): Fuse<ExplorerItem> {
@@ -357,6 +410,7 @@ export {
   DEFAULT_FILTERS,
   DEFAULT_SORT_MODE,
   createSearchIndex,
+  createExplorerItems,
   createStaticExplorerItems,
   filterExplorerItems,
   getClassFilterOptions,

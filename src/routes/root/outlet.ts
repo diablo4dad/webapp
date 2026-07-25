@@ -8,6 +8,7 @@ type RootShellControls = {
   searchPlaceholder: string;
   searchTitle: string;
   showCollectionControls: boolean;
+  showEditorControl: boolean;
   showSearch: boolean;
 };
 
@@ -25,6 +26,7 @@ const COLLECTION_SHELL_CONTROLS: RootShellControls = {
   searchPlaceholder: "Search transmogs",
   searchTitle: "Transmog Search",
   showCollectionControls: true,
+  showEditorControl: true,
   showSearch: true,
 };
 
@@ -34,6 +36,7 @@ const DATABASE_SHELL_CONTROLS: RootShellControls = {
   searchPlaceholder: "Search database",
   searchTitle: "Database Search",
   showCollectionControls: false,
+  showEditorControl: true,
   showSearch: true,
 };
 
@@ -43,6 +46,7 @@ const STATS_SHELL_CONTROLS: RootShellControls = {
   searchPlaceholder: "Search transmogs",
   searchTitle: "Stats Search",
   showCollectionControls: false,
+  showEditorControl: false,
   showSearch: false,
 };
 

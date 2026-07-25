@@ -65,6 +65,7 @@ vi.mock("../root/outlet", () => ({
     searchPlaceholder: "Search transmogs",
     searchTitle: "Stats Search",
     showCollectionControls: false,
+    showEditorControl: false,
     showSearch: false,
   },
   useRootOutletContext: mocks.useRootOutletContext,

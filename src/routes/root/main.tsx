@@ -24,6 +24,7 @@ type Props = {
   searchTerm: string;
   searchTitle: string;
   showCollectionControls: boolean;
+  showEditorControl?: boolean;
   showSearch: boolean;
   user?: DadUser;
 };
@@ -45,6 +46,7 @@ type MobileContentProps = {
   searchTerm: string;
   searchTitle: string;
   showCollectionControls: boolean;
+  showEditorControl?: boolean;
   showSearch: boolean;
   user?: DadUser;
 };
@@ -67,6 +69,7 @@ function Main({
   searchTerm,
   searchTitle,
   showCollectionControls,
+  showEditorControl = showCollectionControls,
   showSearch,
   user,
 }: Props) {
@@ -92,6 +95,7 @@ function Main({
         searchTerm={searchTerm}
         searchTitle={searchTitle}
         showCollectionControls={showCollectionControls}
+        showEditorControl={showEditorControl}
         showSearch={showSearch}
         user={user}
       />
@@ -116,6 +120,7 @@ function MobileContent({
   searchTerm,
   searchTitle,
   showCollectionControls,
+  showEditorControl = showCollectionControls,
   showSearch,
   user,
 }: MobileContentProps) {
@@ -139,13 +144,14 @@ function MobileContent({
           title={searchTitle}
         />
       )}
-      {showCollectionControls && isMobileConfigOpen && (
+      {(showCollectionControls || showEditorControl) && isMobileConfigOpen && (
         <MobileSettings
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           onClose={onClose}
           onSelectCollectionGroup={onSelectCollectionGroup}
           onToggleEditMode={onToggleEditMode}
+          showCollectionControls={showCollectionControls}
         />
       )}
     </>

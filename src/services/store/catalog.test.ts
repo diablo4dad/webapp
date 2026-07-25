@@ -1,6 +1,9 @@
 import {
   buildCollectionTree,
   CatalogCollectionDoc,
+  coalesceCatalogItems,
+  getCatalogItemsBundleName,
+  getCatalogItemsBundleUrl,
   getCatalogCollectionNodesBundleName,
   getCatalogCollectionNodesBundleUrl,
   moveCatalogCollectionItemRefs,
@@ -26,6 +29,71 @@ describe("catalog collection node bundle helpers", () => {
     expect(getCatalogCollectionNodesBundleUrl("v1", "Season")).toBe(
       "/api/catalog/collectionNodes.bundle?versionId=v1&category=Season",
     );
+  });
+});
+
+describe("catalog item bundle helpers", () => {
+  test("builds a stable named query for catalog items", () => {
+    expect(getCatalogItemsBundleName("v1")).toBe("catalog-d4-v1-items");
+  });
+
+  test("builds the catalog item bundle endpoint URL", () => {
+    expect(getCatalogItemsBundleUrl("v1")).toBe(
+      "/api/catalog/items.bundle?versionId=v1",
+    );
+  });
+});
+
+describe("catalog item overrides", () => {
+  test("coalesces partial overrides with static items", () => {
+    const items = coalesceCatalogItems(
+      [
+        {
+          icon: 1001,
+          id: 101,
+          itemType: 10,
+          name: "Weathered Helm",
+          salvageable: true,
+        },
+      ],
+      [
+        {
+          itemId: 101,
+          name: "Corrected Helm",
+          salvageable: false,
+        },
+      ],
+    );
+
+    expect(items).toEqual([
+      {
+        icon: 1001,
+        id: 101,
+        itemType: 10,
+        name: "Corrected Helm",
+        salvageable: false,
+      },
+    ]);
+  });
+
+  test("adds standalone catalog items", () => {
+    const items = coalesceCatalogItems([], [
+      {
+        icon: 9001,
+        itemId: 559001,
+        itemType: 20,
+        name: "Missing Mount",
+      },
+    ]);
+
+    expect(items).toEqual([
+      {
+        icon: 9001,
+        id: 559001,
+        itemType: 20,
+        name: "Missing Mount",
+      },
+    ]);
   });
 });
 

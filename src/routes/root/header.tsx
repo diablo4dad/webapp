@@ -30,6 +30,7 @@ type Props = {
   searchTerm: string;
   sidebarVisibility: SidebarVisibility;
   showCollectionControls: boolean;
+  showEditorControl?: boolean;
   showSearch: boolean;
   user?: DadUser;
 };
@@ -54,6 +55,7 @@ function Header({
   searchTerm,
   sidebarVisibility,
   showCollectionControls,
+  showEditorControl = showCollectionControls,
   showSearch,
   user,
 }: Props) {
@@ -89,6 +91,7 @@ function Header({
           onToggleMobileSearch={onToggleMobileSearch}
           sidebarVisibility={sidebarVisibility}
           showCollectionControls={showCollectionControls}
+          showEditorControl={showEditorControl}
           showSearch={showSearch}
         />
       }

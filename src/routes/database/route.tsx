@@ -5,7 +5,17 @@ import {
   useState,
 } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchStaticDadDbRef } from "../../services/store/catalog";
+import { useEditor } from "../../features/editor";
+import { useData, type DataContextType } from "../../services/data/context";
+import { hydrateDadDb } from "../../services/data/factory";
+import type { ItemType } from "../../services/data";
+import {
+  fetchCatalogItems,
+  fetchHybridDadDbRefsByCategory,
+  fetchStaticDadDbRef,
+  type CatalogItemSource,
+} from "../../services/store/catalog";
+import type { MasterGroup } from "../../shared/domain";
 import {
   DATABASE_SHELL_CONTROLS,
   useRootOutletContext,
@@ -15,7 +25,7 @@ import {
   DEFAULT_FILTERS,
   DEFAULT_SORT_MODE,
   createSearchIndex,
-  createStaticExplorerItems,
+  createExplorerItems,
   filterExplorerItems,
   getClassFilterOptions,
   getItemTypeOptions,
@@ -29,6 +39,7 @@ import { View } from "./view";
 
 type LoadState =
   | {
+      itemTypes: ItemType[];
       items: ExplorerItem[];
       status: "loaded";
     }
@@ -44,11 +55,15 @@ function Component() {
   const navigate = useNavigate();
   const { itemId } = useParams();
   const { searchTerm } = useRootOutletContext();
+  const { canEditCatalog, isEditMode } = useEditor();
+  const { loadedCatalogGroups, setCatalogCategoryDb } = useData();
+  const catalogItemSource = getCatalogItemSource(canEditCatalog);
   useRootShellControls(DATABASE_SHELL_CONTROLS);
   const selectedItemId = getSelectedItemId(itemId);
   const [loadState, setLoadState] = useState<LoadState>({
     status: "loading",
   });
+  const [refreshKey, setRefreshKey] = useState(0);
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [sortMode, setSortMode] = useState<SortMode>(DEFAULT_SORT_MODE);
   const activeFilters = useMemo<Filters>(
@@ -64,11 +79,15 @@ function Component() {
 
     setLoadState({ status: "loading" });
 
-    void fetchStaticDadDbRef()
-      .then((dadDbRef) => {
+    void Promise.all([
+      fetchStaticDadDbRef(),
+      fetchDatabaseCatalogItems(catalogItemSource),
+    ])
+      .then(([dadDbRef, catalogItems]) => {
         if (!cancelled) {
           setLoadState({
-            items: createStaticExplorerItems(dadDbRef),
+            itemTypes: dadDbRef.itemTypes,
+            items: createExplorerItems(dadDbRef, catalogItems),
             status: "loaded",
           });
         }
@@ -85,9 +104,14 @@ function Component() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [catalogItemSource, refreshKey]);
 
   const items = loadState.status === "loaded" ? loadState.items : [];
+  const itemTypes = loadState.status === "loaded" ? loadState.itemTypes : [];
+  const existingItemIds = useMemo(
+    () => items.map((item) => item.item.id),
+    [items],
+  );
   const searchIndex = useMemo(() => createSearchIndex(items), [items]);
   const filteredItems = useMemo(
     () => filterExplorerItems(items, activeFilters, searchIndex),
@@ -141,41 +165,99 @@ function Component() {
   }
 
   function onRetry() {
-    setLoadState({ status: "loading" });
-    void fetchStaticDadDbRef()
-      .then((dadDbRef) => {
-        setLoadState({
-          items: createStaticExplorerItems(dadDbRef),
-          status: "loaded",
-        });
-      })
-      .catch((error) => {
-        setLoadState({
-          error: getLoadErrorMessage(error),
-          status: "error",
-        });
-      });
+    setRefreshKey((current) => current + 1);
+  }
+
+  function onRefreshItems() {
+    setRefreshKey((current) => current + 1);
+    void refreshLoadedCatalogGroupsFromFirestore({
+      loadedCatalogGroups,
+      setCatalogCategoryDb,
+    });
   }
 
   return (
     <View
+      canEditCatalog={canEditCatalog}
       classOptions={getClassFilterOptions()}
       error={loadState.status === "error" ? loadState.error : undefined}
       filteredItems={sortedItems}
       filters={activeFilters}
       isLoading={loadState.status === "loading"}
+      existingItemIds={existingItemIds}
       itemTypeOptions={itemTypeOptions}
       magicTypeOptions={magicTypeOptions}
       onFilterChange={onFilterChange}
+      onRefreshItems={onRefreshItems}
       onRetry={onRetry}
       onSelectItem={handleSelectItem}
+      onSelectItemId={onSelectItemIdChange}
       onSortModeChange={setSortMode}
       selectedItem={selectedItem}
       showSelectedItemInitially={selectedItemId !== undefined}
       sortMode={sortMode}
       totalCount={items.length}
+      isEditMode={isEditMode}
+      itemTypes={itemTypes}
     />
   );
+}
+
+async function refreshLoadedCatalogGroupsFromFirestore({
+  loadedCatalogGroups,
+  setCatalogCategoryDb,
+}: {
+  loadedCatalogGroups: readonly MasterGroup[];
+  setCatalogCategoryDb: DataContextType["setCatalogCategoryDb"];
+}): Promise<void> {
+  if (loadedCatalogGroups.length === 0) {
+    return;
+  }
+
+  try {
+    const refreshedGroups = await fetchHybridDadDbRefsByCategory(
+      [...loadedCatalogGroups],
+      { source: "firestore" },
+    );
+
+    refreshedGroups.forEach((refreshedGroup) => {
+      setCatalogCategoryDb(
+        refreshedGroup.category as MasterGroup,
+        hydrateDadDb(refreshedGroup.dadDbRef),
+        "firestore",
+      );
+    });
+  } catch (error) {
+    console.warn(
+      "[Catalog] Failed to refresh loaded catalog groups after item update.",
+      error,
+    );
+  }
+}
+
+function getCatalogItemSource(
+  canEditCatalog: boolean,
+): CatalogItemSource {
+  return canEditCatalog ? "firestore" : "bundle";
+}
+
+async function fetchDatabaseCatalogItems(
+  source: CatalogItemSource,
+) {
+  try {
+    return await fetchCatalogItems({ source });
+  } catch (error) {
+    if (source === "firestore") {
+      throw error;
+    }
+
+    console.warn(
+      "[Catalog] Failed to load catalog item overrides. Continuing with static database items.",
+      error,
+    );
+
+    return [];
+  }
 }
 
 function getSelectedItem({

@@ -20,10 +20,16 @@ import {
   MagicType,
   type DadDbRef,
 } from "../../services/data";
+import { DataContext, type DataContextType } from "../../services/data/context";
+import { MasterGroup } from "../../shared/domain";
 import { Component } from "./route";
 
 const mocks = vi.hoisted(() => ({
+  fetchCatalogItems: vi.fn(),
+  fetchHybridDadDbRefsByCategory: vi.fn(),
   fetchStaticDadDbRef: vi.fn(),
+  upsertCatalogItem: vi.fn(),
+  useEditor: vi.fn(),
 }));
 const originalOffsetHeight = Object.getOwnPropertyDescriptor(
   HTMLElement.prototype,
@@ -35,7 +41,30 @@ const originalOffsetWidth = Object.getOwnPropertyDescriptor(
 );
 
 vi.mock("../../services/store/catalog", () => ({
+  coalesceCatalogItem: (
+    staticItem: { id: number } | undefined,
+    catalogItem: { itemId: number } | undefined,
+  ) => {
+    if (!catalogItem) {
+      return staticItem;
+    }
+
+    const { itemId, ...overrides } = catalogItem;
+
+    return {
+      ...staticItem,
+      ...overrides,
+      id: itemId,
+    };
+  },
+  fetchCatalogItems: mocks.fetchCatalogItems,
+  fetchHybridDadDbRefsByCategory: mocks.fetchHybridDadDbRefsByCategory,
   fetchStaticDadDbRef: mocks.fetchStaticDadDbRef,
+  upsertCatalogItem: mocks.upsertCatalogItem,
+}));
+
+vi.mock("../../features/editor", () => ({
+  useEditor: mocks.useEditor,
 }));
 
 beforeAll(() => {
@@ -77,7 +106,19 @@ afterAll(() => {
 
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.fetchCatalogItems.mockResolvedValue([]);
+  mocks.fetchHybridDadDbRefsByCategory.mockResolvedValue([
+    {
+      category: MasterGroup.GENERAL,
+      dadDbRef: dadDbRef(),
+    },
+  ]);
   mocks.fetchStaticDadDbRef.mockResolvedValue(dadDbRef());
+  mocks.upsertCatalogItem.mockResolvedValue(undefined);
+  mocks.useEditor.mockReturnValue({
+    canEditCatalog: false,
+    isEditMode: false,
+  });
 });
 
 describe("database route", () => {
@@ -92,6 +133,44 @@ describe("database route", () => {
     expect(await screen.findAllByText("Azure Helm"))
       .not.toHaveLength(0);
     expect(screen.queryByText("Crimson Sword")).not.toBeInTheDocument();
+    expect(mocks.fetchCatalogItems).toHaveBeenCalledWith({
+      source: "bundle",
+    });
+  });
+
+  test("bypasses the cached item bundle for editors", async () => {
+    mocks.useEditor.mockReturnValue({
+      canEditCatalog: true,
+      isEditMode: false,
+    });
+
+    renderRoute("/database");
+
+    expect(await screen.findAllByText("Azure Helm"))
+      .not.toHaveLength(0);
+    expect(mocks.fetchCatalogItems).toHaveBeenCalledWith({
+      source: "firestore",
+    });
+  });
+
+  test("continues with static items when public catalog item loading fails", async () => {
+    const warnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    mocks.fetchCatalogItems.mockRejectedValueOnce(
+      new Error("catalog item bundle failed"),
+    );
+
+    renderRoute("/database");
+
+    expect(await screen.findAllByText("Azure Helm"))
+      .not.toHaveLength(0);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Failed to load catalog item overrides"),
+      expect.any(Error),
+    );
+
+    warnSpy.mockRestore();
   });
 
   test("uses selected item id from the route", async () => {
@@ -135,6 +214,89 @@ describe("database route", () => {
     expect(await screen.findAllByText("Azure Helm"))
       .not.toHaveLength(0);
     expect(mocks.fetchStaticDadDbRef).toHaveBeenCalledTimes(2);
+    expect(mocks.fetchCatalogItems).toHaveBeenCalledTimes(2);
+  });
+
+  test("refreshes explorer items and loaded tracker groups after saving an override", async () => {
+    const user = userEvent.setup();
+    const setCatalogCategoryDb = vi.fn();
+    mocks.useEditor.mockReturnValue({
+      canEditCatalog: true,
+      isEditMode: true,
+    });
+    mocks.fetchCatalogItems
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([
+        {
+          itemId: 101,
+          name: "Updated Helm",
+        },
+      ]);
+    mocks.fetchHybridDadDbRefsByCategory.mockResolvedValueOnce([
+      {
+        category: MasterGroup.GENERAL,
+        dadDbRef: dadDbRef(),
+      },
+      {
+        category: MasterGroup.SHOP_ITEMS,
+        dadDbRef: dadDbRef(),
+      },
+    ]);
+
+    renderRoute("/database/101", "", {
+      loadedCatalogGroups: [MasterGroup.GENERAL, MasterGroup.SHOP_ITEMS],
+      setCatalogCategoryDb:
+        setCatalogCategoryDb as DataContextType["setCatalogCategoryDb"],
+    });
+
+    const overrideForm = (await screen.findByText("Database Item Override"))
+      .closest("form");
+
+    expect(overrideForm).not.toBeNull();
+
+    await user.type(
+      within(overrideForm as HTMLElement).getByLabelText("Name"),
+      "Updated Helm",
+    );
+    await user.click(
+      within(overrideForm as HTMLElement).getByRole("button", {
+        name: "Save override",
+      }),
+    );
+
+    await waitFor(() =>
+      expect(mocks.upsertCatalogItem).toHaveBeenCalledWith({
+        itemId: 101,
+        name: "Updated Helm",
+      }),
+    );
+    await waitFor(() =>
+      expect(mocks.fetchCatalogItems).toHaveBeenCalledTimes(2),
+    );
+    await waitFor(() =>
+      expect(mocks.fetchHybridDadDbRefsByCategory).toHaveBeenCalledWith(
+        [MasterGroup.GENERAL, MasterGroup.SHOP_ITEMS],
+        { source: "firestore" },
+      ),
+    );
+    await waitFor(() =>
+      expect(setCatalogCategoryDb).toHaveBeenCalledWith(
+        MasterGroup.GENERAL,
+        expect.objectContaining({
+          items: expect.any(Array),
+        }),
+        "firestore",
+      ),
+    );
+    expect(setCatalogCategoryDb).toHaveBeenCalledWith(
+      MasterGroup.SHOP_ITEMS,
+      expect.objectContaining({
+        items: expect.any(Array),
+      }),
+      "firestore",
+    );
+    expect(await screen.findAllByText("Updated Helm"))
+      .not.toHaveLength(0);
   });
 
   test("registers database shell controls", () => {
@@ -146,9 +308,11 @@ describe("database route", () => {
       searchPlaceholder: "Search database",
       searchTitle: "Database Search",
       showCollectionControls: false,
+      showEditorControl: true,
       showSearch: true,
     });
   });
+
 });
 
 function dadDbRef(): DadDbRef {
@@ -183,7 +347,11 @@ function dadDbRef(): DadDbRef {
   };
 }
 
-function renderRoute(initialEntry = "/database", searchTerm = "") {
+function renderRoute(
+  initialEntry = "/database",
+  searchTerm = "",
+  dataContextOverrides: Partial<DataContextType> = {},
+) {
   const rootContext = {
     onSearchChange: vi.fn(),
     searchTerm,
@@ -193,28 +361,51 @@ function renderRoute(initialEntry = "/database", searchTerm = "") {
       showItem: true,
     },
   };
+  const dataContext = createDataContext(dataContextOverrides);
   const renderResult = render(
-    <MemoryRouter initialEntries={[initialEntry]}>
-      <Routes>
-        <Route
-          path="/"
-          element={(
-            <>
-              <LocationProbe />
-              <Outlet context={rootContext} />
-            </>
-          )}
-        >
-          <Route path="database" element={<Component />} />
-          <Route path="database/:itemId" element={<Component />} />
-        </Route>
-      </Routes>
-    </MemoryRouter>,
+    <DataContext.Provider value={dataContext}>
+      <MemoryRouter initialEntries={[initialEntry]}>
+        <Routes>
+          <Route
+            path="/"
+            element={(
+              <>
+                <LocationProbe />
+                <Outlet context={rootContext} />
+              </>
+            )}
+          >
+            <Route path="database" element={<Component />} />
+            <Route path="database/:itemId" element={<Component />} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    </DataContext.Provider>,
   );
 
   return {
     ...renderResult,
+    dataContext,
     rootContext,
+  };
+}
+
+function createDataContext(
+  overrides: Partial<DataContextType> = {},
+): DataContextType {
+  return {
+    catalogGroupSources: {},
+    db: {
+      collections: [],
+      itemTypes: [],
+      items: [],
+    },
+    group: MasterGroup.GENERAL,
+    loadedCatalogGroups: [],
+    setCatalogCategoryDb: vi.fn(),
+    setDb: vi.fn(),
+    switchDb: vi.fn(),
+    ...overrides,
   };
 }
 

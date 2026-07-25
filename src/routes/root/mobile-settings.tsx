@@ -10,10 +10,12 @@ type Props = {
   onClose: () => void;
   onSelectCollectionGroup: (group: MasterGroup) => void;
   onToggleEditMode: () => void;
+  showCollectionControls?: boolean;
 };
 
 type HeaderProps = {
   onClose: () => void;
+  title: string;
 };
 
 type BodyProps = {
@@ -21,6 +23,7 @@ type BodyProps = {
   isEditMode: boolean;
   onSelectCollectionGroup: (group: MasterGroup) => void;
   onToggleEditMode: () => void;
+  showCollectionControls?: boolean;
 };
 
 type EditorControlProps = {
@@ -34,27 +37,36 @@ function MobileSettings({
   onClose,
   onSelectCollectionGroup,
   onToggleEditMode,
+  showCollectionControls = true,
 }: Props) {
   return (
     <MobileSettingsLayout
       onClose={onClose}
-      header={<Header onClose={onClose} />}
+      header={(
+        <Header
+          onClose={onClose}
+          title={
+            showCollectionControls ? "Collection Settings" : "Editor Settings"
+          }
+        />
+      )}
       body={
         <Body
           canEditCatalog={canEditCatalog}
           isEditMode={isEditMode}
           onSelectCollectionGroup={onSelectCollectionGroup}
           onToggleEditMode={onToggleEditMode}
+          showCollectionControls={showCollectionControls}
         />
       }
     />
   );
 }
 
-function Header({ onClose }: HeaderProps) {
+function Header({ onClose, title }: HeaderProps) {
   return (
     <>
-      <div className={styles.MobileSettingsTitle}>Collection Settings</div>
+      <div className={styles.MobileSettingsTitle}>{title}</div>
       <button
         className={styles.MobileSettingsClose}
         onClick={onClose}
@@ -71,6 +83,7 @@ function Body({
   isEditMode,
   onSelectCollectionGroup,
   onToggleEditMode,
+  showCollectionControls,
 }: BodyProps) {
   return (
     <>
@@ -80,7 +93,9 @@ function Body({
           onToggleEditMode={onToggleEditMode}
         />
       )}
-      <ConfigSidebar onSelectCollectionGroup={onSelectCollectionGroup} />
+      {showCollectionControls && (
+        <ConfigSidebar onSelectCollectionGroup={onSelectCollectionGroup} />
+      )}
     </>
   );
 }

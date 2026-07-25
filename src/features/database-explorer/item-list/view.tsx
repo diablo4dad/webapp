@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
   type CSSProperties,
+  type ReactNode,
   type RefObject,
 } from "react";
 import { MagicType } from "../../../services/data";
@@ -25,6 +26,7 @@ type ItemListItem = {
 type Props<TItem extends ItemListItem> = {
   filterControls: FilterControlConfig[];
   filterOptionsRef: RefObject<HTMLDivElement | null>;
+  headerAction?: ReactNode;
   items: TItem[];
   listRef: RefObject<HTMLDivElement | null>;
   onApplyFilter: (filterKey: FilterControlKey, value: string) => void;
@@ -54,6 +56,7 @@ type FilterControlConfig = {
 };
 
 type HeaderProps = {
+  action?: ReactNode;
   onSortModeChange: (sortMode: SortMode) => void;
   sortMode: SortMode;
 };
@@ -102,6 +105,7 @@ const ITEM_LIST_ROW_HEIGHT = 68;
 function ItemList<TItem extends ItemListItem>({
   filterControls,
   filterOptionsRef,
+  headerAction,
   items,
   listRef,
   onApplyFilter,
@@ -122,6 +126,7 @@ function ItemList<TItem extends ItemListItem>({
     <div className={styles.View}>
       <div className={styles.ViewStickyControls}>
         <Header
+          action={headerAction}
           onSortModeChange={onSortModeChange}
           sortMode={sortMode}
         />
@@ -159,6 +164,7 @@ function ItemList<TItem extends ItemListItem>({
 }
 
 function Header({
+  action,
   onSortModeChange,
   sortMode,
 }: HeaderProps) {
@@ -168,21 +174,24 @@ function Header({
   return (
     <header className={styles.ViewListHeader}>
       <h2 className={styles.ViewListTitle}>Database Explorer</h2>
-      <div
-        className={styles.ViewListSortControls}
-        role="group"
-        aria-label="Sort results"
-      >
-        <button
-          aria-pressed={isNameSortActive}
-          className={classNames(styles.ViewListSortButton, {
-            [styles.ViewListSortButtonActive]: isNameSortActive,
-          })}
-          type="button"
-          onClick={() => onSortModeChange(nextNameSortMode)}
+      <div className={styles.ViewListHeaderActions}>
+        <div
+          className={styles.ViewListSortControls}
+          role="group"
+          aria-label="Sort results"
         >
-          Name <span aria-hidden="true">{getNameSortGlyph(sortMode)}</span>
-        </button>
+          <button
+            aria-pressed={isNameSortActive}
+            className={classNames(styles.ViewListSortButton, {
+              [styles.ViewListSortButtonActive]: isNameSortActive,
+            })}
+            type="button"
+            onClick={() => onSortModeChange(nextNameSortMode)}
+          >
+            Sort <span aria-hidden="true">{getNameSortGlyph(sortMode)}</span>
+          </button>
+        </div>
+        {action}
       </div>
     </header>
   );
