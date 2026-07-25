@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   deleteField,
   doc,
   getDoc,
@@ -722,6 +723,18 @@ export async function upsertCatalogItem(
   );
 
   await setDoc(itemRef, stripUndefinedFields(catalogItem));
+}
+
+export async function deleteCatalogItem(itemId: number): Promise<void> {
+  if (!Number.isInteger(itemId)) {
+    throw new Error("[Catalog] Catalog item deletes require an integer item id.");
+  }
+
+  const firestore = await getCatalogFirestore();
+  const versionId = await resolveCatalogVersionId();
+  const itemRef = getCatalogItemDocRef(firestore, versionId, itemId);
+
+  await deleteDoc(itemRef);
 }
 
 export async function addCatalogCollectionNode(

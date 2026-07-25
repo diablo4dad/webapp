@@ -121,6 +121,11 @@
     transform: translateY(-1px);
 }
 
+.ViewScopeControl:active {
+    box-shadow: none;
+    transform: translateY(1px);
+}
+
 .ViewScopeControl:focus-visible {
     outline: 2px solid var(--field-focus-shadow-color);
     outline-offset: 2px;

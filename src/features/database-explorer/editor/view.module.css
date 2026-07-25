@@ -320,6 +320,10 @@
     min-width: 0;
 }
 
+.ViewActionSpacer {
+    flex: 1 1 auto;
+}
+
 .ViewError {
     flex: 1 1 100%;
     border: 1px solid var(--feedback-danger-border);
@@ -351,8 +355,8 @@
 }
 
 .ViewPrimaryButton {
-    border: 1px solid var(--rarity-legendary-color);
-    background-color: var(--rarity-legendary-color);
+    border: 1px solid var(--feedback-success-border);
+    background-color: var(--feedback-success-fill);
     color: var(--color-neutral-950);
 }
 
@@ -365,6 +369,11 @@
 .ViewSecondaryButton:hover {
     border-color: var(--editor-border);
     background-color: var(--app-surface-raised);
+}
+
+.ViewActions .ViewPrimaryButton,
+.ViewActions .ViewSecondaryButton {
+    box-shadow: none;
 }
 
 .ViewPrimaryButton:disabled,

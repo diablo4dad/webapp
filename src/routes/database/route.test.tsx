@@ -25,6 +25,7 @@ import { MasterGroup } from "../../shared/domain";
 import { Component } from "./route";
 
 const mocks = vi.hoisted(() => ({
+  deleteCatalogItem: vi.fn(),
   fetchCatalogItems: vi.fn(),
   fetchHybridDadDbRefsByCategory: vi.fn(),
   fetchStaticDadDbRef: vi.fn(),
@@ -57,6 +58,7 @@ vi.mock("../../services/store/catalog", () => ({
       id: itemId,
     };
   },
+  deleteCatalogItem: mocks.deleteCatalogItem,
   fetchCatalogItems: mocks.fetchCatalogItems,
   fetchHybridDadDbRefsByCategory: mocks.fetchHybridDadDbRefsByCategory,
   fetchStaticDadDbRef: mocks.fetchStaticDadDbRef,
@@ -106,6 +108,7 @@ afterAll(() => {
 
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.deleteCatalogItem.mockResolvedValue(undefined);
   mocks.fetchCatalogItems.mockResolvedValue([]);
   mocks.fetchHybridDadDbRefsByCategory.mockResolvedValue([
     {
@@ -219,6 +222,9 @@ describe("database route", () => {
 
   test("refreshes explorer items and loaded tracker groups after saving an override", async () => {
     const user = userEvent.setup();
+    const refreshedItems = createDeferred<
+      Array<{ itemId: number; name: string }>
+    >();
     const setCatalogCategoryDb = vi.fn();
     mocks.useEditor.mockReturnValue({
       canEditCatalog: true,
@@ -226,12 +232,7 @@ describe("database route", () => {
     });
     mocks.fetchCatalogItems
       .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([
-        {
-          itemId: 101,
-          name: "Updated Helm",
-        },
-      ]);
+      .mockReturnValueOnce(refreshedItems.promise);
     mocks.fetchHybridDadDbRefsByCategory.mockResolvedValueOnce([
       {
         category: MasterGroup.GENERAL,
@@ -273,6 +274,9 @@ describe("database route", () => {
     await waitFor(() =>
       expect(mocks.fetchCatalogItems).toHaveBeenCalledTimes(2),
     );
+    expect(screen.queryByRole("status", { name: "Loading database" }))
+      .not.toBeInTheDocument();
+    expect(screen.getAllByText("Azure Helm")).not.toHaveLength(0);
     await waitFor(() =>
       expect(mocks.fetchHybridDadDbRefsByCategory).toHaveBeenCalledWith(
         [MasterGroup.GENERAL, MasterGroup.SHOP_ITEMS],
@@ -295,6 +299,12 @@ describe("database route", () => {
       }),
       "firestore",
     );
+    refreshedItems.resolve([
+      {
+        itemId: 101,
+        name: "Updated Helm",
+      },
+    ]);
     expect(await screen.findAllByText("Updated Helm"))
       .not.toHaveLength(0);
   });
@@ -413,4 +423,19 @@ function LocationProbe() {
   const location = useLocation();
 
   return <div data-testid="location">{location.pathname}</div>;
+}
+
+function createDeferred<T>() {
+  let resolve!: (value: T) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+
+  return {
+    promise,
+    reject,
+    resolve,
+  };
 }

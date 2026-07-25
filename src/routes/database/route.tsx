@@ -77,7 +77,11 @@ function Component() {
   useEffect(() => {
     let cancelled = false;
 
-    setLoadState({ status: "loading" });
+    setLoadState((currentState) =>
+      currentState.status === "loaded"
+        ? currentState
+        : { status: "loading" },
+    );
 
     void Promise.all([
       fetchStaticDadDbRef(),

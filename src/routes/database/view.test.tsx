@@ -1,7 +1,15 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import { MagicType, type ItemRef } from "../../services/data";
+import * as catalogStore from "../../services/store/catalog";
 import {
   ALL_OPTION_VALUE,
   DEFAULT_FILTERS,
@@ -19,6 +27,23 @@ import buttonStyles from "../../shared/ui/Button.module.css";
 import { View } from "./view";
 import layoutStyles from "./layout.module.css";
 import routeStyles from "./view.module.css";
+
+const editorApiMocks = vi.hoisted(() => ({
+  importDatabaseItemFromUrl: vi.fn(),
+  uploadCatalogItemIconDataUrl: vi.fn(),
+}));
+
+vi.mock("../../features/database-explorer/editor/api", async (importActual) => {
+  const actual = await importActual<
+    typeof import("../../features/database-explorer/editor/api")
+  >();
+
+  return {
+    ...actual,
+    importDatabaseItemFromUrl: editorApiMocks.importDatabaseItemFromUrl,
+    uploadCatalogItemIconDataUrl: editorApiMocks.uploadCatalogItemIconDataUrl,
+  };
+});
 
 const emptyOptions: FilterOption[] = [
   {
@@ -103,6 +128,9 @@ afterAll(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
+  editorApiMocks.importDatabaseItemFromUrl.mockReset();
+  editorApiMocks.uploadCatalogItemIconDataUrl.mockReset();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
@@ -554,6 +582,10 @@ describe("database surface", () => {
     const overrideUploadLabel = overrideScreen
       .getByText("Upload icon")
       .closest("label");
+    const overrideIconImportUrl = overrideScreen.getByLabelText("Import URL");
+    const overrideIconImportButton = overrideScreen.getByRole("button", {
+      name: "Import icon",
+    });
     const overrideClearButton = overrideScreen.getByRole("button", {
       name: "Clear icon",
     });
@@ -571,6 +603,8 @@ describe("database surface", () => {
       .toBeInTheDocument();
     expect(overrideScreen.getByLabelText("Item Quality"))
       .toBeInTheDocument();
+    expect(overrideIconImportUrl).toBeInTheDocument();
+    expect(overrideIconImportButton).toBeDisabled();
     expect(overrideScreen.queryByLabelText("Preferred Zone"))
       .not.toBeInTheDocument();
     expect(overrideScreen.getByLabelText("Override usable classes"))
@@ -588,6 +622,8 @@ describe("database surface", () => {
     expect(overrideClearAction).toBe(overrideUploadAction);
     expect(overrideClearButton).toHaveClass(drawerStyles.DeleteButton);
     expect(overrideClearButton).toHaveClass(editorStyles.ViewIconActionButton);
+    expect(overrideScreen.getByRole("button", { name: "Save override" }))
+      .toHaveClass(editorStyles.ViewPrimaryButton);
     expect(overrideScreen.queryByLabelText("Override Values"))
       .not.toBeInTheDocument();
     expect(overrideScreen.queryByLabelText("Transmog"))
@@ -606,6 +642,8 @@ describe("database surface", () => {
     });
 
     expect(creator).toBeInTheDocument();
+    expect(creator.parentElement).toHaveClass(editorStyles.ViewOverlay);
+    expect(creator.parentElement?.parentElement).toBe(document.body);
     expect(within(creator).getByLabelText("Import URL")).toBeInTheDocument();
     const creatorScreen = within(creator);
     const creatorHeader = creatorScreen
@@ -706,6 +744,127 @@ describe("database surface", () => {
     expect(creatorScreen.getByRole("button", {
       name: "Close item creator",
     })).toBeInTheDocument();
+  });
+
+  test("deletes an existing database item record after confirmation", async () => {
+    vi.useFakeTimers();
+    const deleteCatalogItem = vi
+      .spyOn(catalogStore, "deleteCatalogItem")
+      .mockResolvedValue(undefined);
+    const onRefreshItems = vi.fn();
+    const selectedItem: ExplorerItem = {
+      ...createExplorerItem(),
+      catalogItem: {
+        itemId: 100,
+        name: "Azure Blade",
+      },
+    };
+
+    renderView({
+      canEditCatalog: true,
+      filteredItems: [selectedItem],
+      isEditMode: true,
+      onRefreshItems,
+      selectedItem,
+      totalCount: 1,
+    });
+
+    const overrideForm = screen
+      .getByText("Database Item Override")
+      .closest("form");
+
+    expect(overrideForm).not.toBeNull();
+
+    fireEvent.click(
+      within(overrideForm as HTMLElement).getByRole("button", {
+        name: "Delete",
+      }),
+    );
+
+    const confirmation = screen.getByRole("dialog", {
+      name: "Delete database item",
+    });
+
+    expect(confirmation).toBeInTheDocument();
+    expect(within(confirmation).getByText("Azure Blade")).toBeInTheDocument();
+    expect(within(confirmation).getByRole("button", {
+      name: "Delete 3",
+    })).toBeDisabled();
+
+    for (let tick = 0; tick < 3; tick += 1) {
+      await act(async () => {
+        vi.advanceTimersByTime(1000);
+      });
+    }
+
+    await act(async () => {
+      fireEvent.click(within(confirmation).getByRole("button", {
+        name: "Delete",
+      }));
+      await Promise.resolve();
+    });
+
+    expect(deleteCatalogItem).toHaveBeenCalledWith(100);
+    expect(onRefreshItems).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("dialog", {
+      name: "Delete database item",
+    })).not.toBeInTheDocument();
+  });
+
+  test("imports only the icon for an item override URL", async () => {
+    const user = userEvent.setup();
+    const importUrl = "https://www.wowhead.com/diablo-4/item/anlace-784786";
+    const iconDataUrl = "data:image/webp;base64,aWNvbg==";
+    editorApiMocks.importDatabaseItemFromUrl.mockResolvedValue({
+      icon: {
+        contentType: "image/webp",
+        dataUrl: iconDataUrl,
+      },
+      item: {
+        id: 784786,
+        name: "Anlace",
+      },
+      itemTypeName: "Dagger",
+    });
+    editorApiMocks.uploadCatalogItemIconDataUrl.mockResolvedValue({
+      iconId: 4001,
+      path: "icons/4001.webp",
+    });
+    const selectedItem = createExplorerItem();
+
+    renderView({
+      canEditCatalog: true,
+      filteredItems: [selectedItem],
+      isEditMode: true,
+      selectedItem,
+      totalCount: 1,
+    });
+
+    const overrideForm = screen
+      .getByText("Database Item Override")
+      .closest("form");
+
+    expect(overrideForm).not.toBeNull();
+    const overrideScreen = within(overrideForm as HTMLElement);
+
+    await user.type(overrideScreen.getByLabelText("Import URL"), importUrl);
+    await user.click(overrideScreen.getByRole("button", {
+      name: "Import icon",
+    }));
+
+    await waitFor(() =>
+      expect(editorApiMocks.importDatabaseItemFromUrl)
+        .toHaveBeenCalledWith(importUrl),
+    );
+    await waitFor(() =>
+      expect(editorApiMocks.uploadCatalogItemIconDataUrl)
+        .toHaveBeenCalledWith(iconDataUrl),
+    );
+    expect(overrideScreen.getByRole("img", {
+      name: "Item icon override",
+    })).toHaveAttribute("src", iconDataUrl);
+    expect(overrideScreen.getByLabelText("Name")).toHaveValue("");
+    expect(overrideScreen.getByLabelText("Item Type")).toHaveValue("");
   });
 
   test("uses magic type colour for list item names", () => {

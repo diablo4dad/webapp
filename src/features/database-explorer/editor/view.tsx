@@ -1,10 +1,12 @@
 import {
   ChangeEvent,
   FormEvent,
+  type ReactNode,
   useEffect,
   useMemo,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   CharacterClass,
   MagicType,
@@ -12,6 +14,7 @@ import {
   type ItemType,
 } from "../../../services/data";
 import {
+  deleteCatalogItem,
   upsertCatalogItem,
   type CatalogItemDoc,
 } from "../../../services/store/catalog";
@@ -20,6 +23,7 @@ import { getIcon } from "../../../services/bucket";
 import { enumKeys } from "../../../shared/lib/enums";
 import Button, { BtnColours } from "../../../shared/ui/Button";
 import Card from "../../../shared/ui/Card";
+import DeleteConfirmationModal from "../../../shared/ui/DeleteConfirmationModal";
 import { Close } from "../../../shared/ui/Icons";
 import Toggle from "../../../shared/ui/Toggle";
 import {
@@ -132,8 +136,13 @@ function DatabaseItemOverrideEditor({
     () => createOverrideForm(item.catalogItem, item.item),
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [iconImportUrl, setIconImportUrl] = useState("");
+  const [isImportingIcon, setIsImportingIcon] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string>();
+  const isBusy = isSaving || isDeleting || isImportingIcon || isUploading;
   const itemTypeChoices = useMemo(
     () => getItemTypeChoices(itemTypes),
     [itemTypes],
@@ -143,6 +152,10 @@ function DatabaseItemOverrideEditor({
   useEffect(() => {
     setForm(createOverrideForm(item.catalogItem, item.item));
     setError(undefined);
+    setIconImportUrl("");
+    setIsDeleting(false);
+    setIsDeleteModalOpen(false);
+    setIsImportingIcon(false);
     setIsSaving(false);
     setIsUploading(false);
   }, [item.catalogItem, item.item]);
@@ -201,6 +214,52 @@ function DatabaseItemOverrideEditor({
     }
   }
 
+  async function importIcon() {
+    setIsImportingIcon(true);
+    setError(undefined);
+
+    try {
+      const draft = await importDatabaseItemFromUrl(iconImportUrl.trim());
+      const iconDataUrl = draft.icon?.dataUrl;
+
+      if (!iconDataUrl) {
+        throw new Error("No icon was found at the import URL.");
+      }
+
+      const icon = await uploadCatalogItemIconDataUrl(iconDataUrl);
+
+      setForm((currentForm) => ({
+        ...currentForm,
+        icon: String(icon.iconId),
+        iconPreviewUrl: iconDataUrl,
+      }));
+    } catch (importError) {
+      setError(getErrorMessage(importError, "Failed to import icon."));
+    } finally {
+      setIsImportingIcon(false);
+    }
+  }
+
+  async function deleteOverride() {
+    if (!item.catalogItem) {
+      return;
+    }
+
+    setIsDeleting(true);
+    setError(undefined);
+
+    try {
+      await deleteCatalogItem(item.item.id);
+      setForm(createOverrideForm(undefined, item.item));
+      setIsDeleteModalOpen(false);
+      onSaved();
+    } catch (deleteError) {
+      setError(getErrorMessage(deleteError, "Failed to delete item override."));
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   function clearIcon() {
     setForm((currentForm) => ({
       ...currentForm,
@@ -210,131 +269,164 @@ function DatabaseItemOverrideEditor({
   }
 
   return (
-    <Card className={styles.ViewPanel}>
-      <form className={styles.ViewForm} onSubmit={saveOverride}>
-        <div className={styles.ViewHeader}>
-          <div>
-            <div className={styles.ViewKicker}>Database Item Override</div>
-            <h3 className={styles.ViewTitle}>{item.item.name || item.item.id}</h3>
+    <>
+      <Card className={styles.ViewPanel}>
+        <form className={styles.ViewForm} onSubmit={saveOverride}>
+          <div className={styles.ViewHeader}>
+            <div>
+              <div className={styles.ViewKicker}>Database Item Override</div>
+              <h3 className={styles.ViewTitle}>
+                {item.item.name || item.item.id}
+              </h3>
+            </div>
+            <span className={styles.ViewStatus}>
+              {item.staticItem ? "Static item" : "Database item"}
+            </span>
           </div>
-          <span className={styles.ViewStatus}>
-            {item.staticItem ? "Static item" : "Database item"}
-          </span>
-        </div>
-        <section className={styles.ViewIconSection}>
-          <div className={styles.ViewIconPreview}>
-            {iconPreviewUrl ? (
-              <img
-                alt={
-                  form.name
-                    ? `${form.name} icon override`
-                    : "Item icon override"
-                }
-                src={iconPreviewUrl}
-              />
-            ) : (
-              <span>No icon override</span>
-            )}
-          </div>
-          <div className={styles.ViewIconActions}>
-            <label
-              className={`${drawerStyles.SecondaryButton} ${styles.ViewFileAction}`}
-            >
-              <span>{isUploading ? "Uploading icon" : "Upload icon"}</span>
-              <input
-                accept="image/*"
-                disabled={isSaving || isUploading}
-                type="file"
-                onChange={uploadIcon}
-              />
-            </label>
+          <section className={styles.ViewSection}>
+            <TextInput
+              id="database-item-override-icon-import-url"
+              label="Import URL"
+              value={iconImportUrl}
+              onChange={setIconImportUrl}
+              placeholder="https://.../diablo-4/item/..."
+            />
             <button
-              className={`${drawerStyles.DeleteButton} ${styles.ViewIconActionButton}`}
-              disabled={
-                isSaving ||
-                isUploading ||
-                (form.icon.length === 0 && form.iconPreviewUrl.length === 0)
-              }
+              className={styles.ViewSecondaryButton}
+              disabled={isBusy || iconImportUrl.trim().length === 0}
               type="button"
-              onClick={clearIcon}
+              onClick={importIcon}
             >
-              Clear icon
+              {isImportingIcon ? "Importing" : "Import icon"}
             </button>
-          </div>
-        </section>
-        <section className={styles.ViewEditorGrid}>
-          <div className={styles.ViewFieldStack}>
-            <TextInput
-              id="database-item-override-name"
-              label="Name"
-              value={form.name}
-              onChange={(value) => updateForm("name", value)}
-            />
-            <TextInput
-              id="database-item-override-series"
-              label="Series"
-              value={form.series}
-              onChange={(value) => updateForm("series", value)}
-            />
-            <TextInput
-              id="database-item-override-transmog-name"
-              label="Transmog Name"
-              value={form.transmogName}
-              onChange={(value) => updateForm("transmogName", value)}
-            />
-          </div>
-          <div className={styles.ViewFieldStack}>
-            <SelectInput
-              id="database-item-override-type"
-              label="Item Type"
-              options={itemTypeChoices}
-              value={form.itemType}
-              onChange={(value) => updateForm("itemType", value)}
-              emptyLabel="No override"
-            />
-            <SelectInput
-              id="database-item-override-quality"
-              label="Item Quality"
-              options={MAGIC_TYPE_CHOICES}
-              value={form.magicType}
-              onChange={(value) => updateForm("magicType", value)}
-              emptyLabel="No override"
-            />
-          </div>
-        </section>
-        <UsableByClassInput
-          idPrefix="database-item-override-usable"
-          isOverrideEnabled={form.hasUsableByClassOverride}
-          value={form.usableByClass}
-          onChange={(value) => updateForm("usableByClass", value)}
-          onOverrideEnabledChange={(value) =>
-            updateForm("hasUsableByClassOverride", value)
-          }
-        />
-        <label
-          className={styles.ViewField}
-          htmlFor="database-item-override-description"
-        >
-          <span className={styles.ViewLabel}>Description</span>
-          <textarea
-            id="database-item-override-description"
-            className={`${styles.ViewTextArea} ${styles.ViewDescription}`}
-            value={form.description}
-            onChange={(event) =>
-              updateForm("description", event.target.value)}
-            rows={4}
+          </section>
+          <section className={styles.ViewIconSection}>
+            <div className={styles.ViewIconPreview}>
+              {iconPreviewUrl ? (
+                <img
+                  alt={
+                    form.name
+                      ? `${form.name} icon override`
+                      : "Item icon override"
+                  }
+                  src={iconPreviewUrl}
+                />
+              ) : (
+                <span>No icon override</span>
+              )}
+            </div>
+            <div className={styles.ViewIconActions}>
+              <label
+                className={`${drawerStyles.SecondaryButton} ${styles.ViewFileAction}`}
+              >
+                <span>{isUploading ? "Uploading icon" : "Upload icon"}</span>
+                <input
+                  accept="image/*"
+                  disabled={isBusy}
+                  type="file"
+                  onChange={uploadIcon}
+                />
+              </label>
+              <button
+                className={`${drawerStyles.DeleteButton} ${styles.ViewIconActionButton}`}
+                disabled={
+                  isBusy ||
+                  (form.icon.length === 0 && form.iconPreviewUrl.length === 0)
+                }
+                type="button"
+                onClick={clearIcon}
+              >
+                Clear icon
+              </button>
+            </div>
+          </section>
+          <section className={styles.ViewEditorGrid}>
+            <div className={styles.ViewFieldStack}>
+              <TextInput
+                id="database-item-override-name"
+                label="Name"
+                value={form.name}
+                onChange={(value) => updateForm("name", value)}
+              />
+              <TextInput
+                id="database-item-override-series"
+                label="Series"
+                value={form.series}
+                onChange={(value) => updateForm("series", value)}
+              />
+              <TextInput
+                id="database-item-override-transmog-name"
+                label="Transmog Name"
+                value={form.transmogName}
+                onChange={(value) => updateForm("transmogName", value)}
+              />
+            </div>
+            <div className={styles.ViewFieldStack}>
+              <SelectInput
+                id="database-item-override-type"
+                label="Item Type"
+                options={itemTypeChoices}
+                value={form.itemType}
+                onChange={(value) => updateForm("itemType", value)}
+                emptyLabel="No override"
+              />
+              <SelectInput
+                id="database-item-override-quality"
+                label="Item Quality"
+                options={MAGIC_TYPE_CHOICES}
+                value={form.magicType}
+                onChange={(value) => updateForm("magicType", value)}
+                emptyLabel="No override"
+              />
+            </div>
+          </section>
+          <UsableByClassInput
+            idPrefix="database-item-override-usable"
+            isOverrideEnabled={form.hasUsableByClassOverride}
+            value={form.usableByClass}
+            onChange={(value) => updateForm("usableByClass", value)}
+            onOverrideEnabledChange={(value) =>
+              updateForm("hasUsableByClassOverride", value)
+            }
           />
-        </label>
-        <FormActions
-          error={error}
-          isSaving={isSaving}
-          onReset={() =>
-            setForm(createOverrideForm(item.catalogItem, item.item))
-          }
-          saveLabel="Save override"
+          <label
+            className={styles.ViewField}
+            htmlFor="database-item-override-description"
+          >
+            <span className={styles.ViewLabel}>Description</span>
+            <textarea
+              id="database-item-override-description"
+              className={`${styles.ViewTextArea} ${styles.ViewDescription}`}
+              value={form.description}
+              onChange={(event) =>
+                updateForm("description", event.target.value)}
+              rows={4}
+            />
+          </label>
+          <FormActions
+            canDelete={item.catalogItem !== undefined}
+            error={error}
+            isDeleting={isDeleting}
+            isSaving={isSaving}
+            onDelete={() => setIsDeleteModalOpen(true)}
+            onReset={() =>
+              setForm(createOverrideForm(item.catalogItem, item.item))
+            }
+            saveLabel="Save override"
+          />
+        </form>
+      </Card>
+      {isDeleteModalOpen && item.catalogItem && (
+        <DeleteConfirmationModal
+          title="Delete database item"
+          description="This will permanently remove this database item record from the catalogue."
+          subject={item.item.name || String(item.item.id)}
+          isDeleting={isDeleting}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          onConfirm={deleteOverride}
         />
-      </form>
-    </Card>
+      )}
+    </>
   );
 }
 
@@ -394,7 +486,7 @@ function DatabaseItemCreator({
     setError(undefined);
 
     try {
-      const draft = await importDatabaseItemFromUrl(importUrl);
+      const draft = await importDatabaseItemFromUrl(importUrl.trim());
       let nextForm = applyImportedItemDraft(form, draft, itemTypes);
 
       if (draft.icon?.dataUrl) {
@@ -470,7 +562,7 @@ function DatabaseItemCreator({
       >
         {triggerLabel}
       </Button>
-      {isOpen && (
+      {isOpen && createBodyPortal(
         <div className={styles.ViewOverlay} onClick={closeDrawer}>
           <aside
             aria-labelledby="database-item-create-title"
@@ -511,11 +603,7 @@ function DatabaseItemCreator({
                   />
                   <button
                     className={styles.ViewSecondaryButton}
-                    disabled={
-                      isSaving ||
-                      isImporting ||
-                      importUrl.trim().length === 0
-                    }
+                    disabled={isBusy || importUrl.trim().length === 0}
                     type="button"
                     onClick={importItem}
                   >
@@ -665,10 +753,18 @@ function DatabaseItemCreator({
               </footer>
             </form>
           </aside>
-        </div>
+        </div>,
       )}
     </>
   );
+}
+
+function createBodyPortal(children: ReactNode): ReactNode {
+  if (typeof document === "undefined") {
+    return children;
+  }
+
+  return createPortal(children, document.body);
 }
 
 function TextInput({
@@ -794,22 +890,41 @@ function UsableByClassInput({
 }
 
 function FormActions({
+  canDelete = false,
   error,
+  isDeleting,
   isSaving,
+  onDelete,
   onReset,
   saveLabel,
 }: {
+  canDelete?: boolean;
   error?: string;
+  isDeleting: boolean;
   isSaving: boolean;
+  onDelete: () => void;
   onReset: () => void;
   saveLabel: string;
 }) {
+  const isBusy = isSaving || isDeleting;
+
   return (
     <div className={styles.ViewActions}>
       {error && <div className={styles.ViewError}>{error}</div>}
+      {canDelete && (
+        <button
+          className={drawerStyles.DeleteButton}
+          disabled={isBusy}
+          type="button"
+          onClick={onDelete}
+        >
+          Delete
+        </button>
+      )}
+      <span className={styles.ViewActionSpacer} aria-hidden="true" />
       <button
         className={styles.ViewSecondaryButton}
-        disabled={isSaving}
+        disabled={isBusy}
         type="button"
         onClick={onReset}
       >
@@ -817,7 +932,7 @@ function FormActions({
       </button>
       <button
         className={styles.ViewPrimaryButton}
-        disabled={isSaving}
+        disabled={isBusy}
         type="submit"
       >
         {isSaving ? "Saving" : saveLabel}
