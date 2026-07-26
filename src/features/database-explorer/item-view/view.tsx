@@ -18,6 +18,11 @@ import { isMagicTypeNotSet } from "../../../shared/domain/magic-types";
 import { enumKeys } from "../../../shared/lib/enums";
 import { DatabaseItemOverrideEditor } from "../editor";
 import type { EditorItem } from "../editor";
+import {
+  DataminedJsonPreview,
+  type JsonPath,
+  type JsonPreviewState,
+} from "./json-preview";
 import styles from "./view.module.css";
 
 type ItemViewItem = EditorItem & {
@@ -41,30 +46,19 @@ type Props = {
   jsonPreview: JsonPreviewState;
   onBackToList: () => void;
   onRefreshItems: () => void;
+  onResolveJsonReference: (
+    path: JsonPath,
+    targetFileName: string,
+  ) => void;
   onToggleJsonPreview: (filename: string) => void;
 };
 
 type DataminedFileCardProps = {
   filename: string;
   jsonPreview: JsonPreviewState;
+  onResolveJsonReference: Props["onResolveJsonReference"];
   onToggleJsonPreview: (filename: string) => void;
 };
-
-type JsonPreviewState =
-  | {
-      status: "error";
-      message: string;
-    }
-  | {
-      status: "idle";
-    }
-  | {
-      status: "loaded";
-      formattedJson: string;
-    }
-  | {
-      status: "loading";
-    };
 
 const magicTypeClassMap = new Map<MagicType, string>([
   [MagicType.COMMON, styles.ViewMagicTypeCommon],
@@ -88,6 +82,7 @@ function ItemView({
   jsonPreview,
   onBackToList,
   onRefreshItems,
+  onResolveJsonReference,
   onToggleJsonPreview,
 }: Props) {
   if (!item) {
@@ -178,6 +173,7 @@ function ItemView({
         <DataminedFileCard
           filename={rawItem.filename}
           jsonPreview={jsonPreview}
+          onResolveJsonReference={onResolveJsonReference}
           onToggleJsonPreview={onToggleJsonPreview}
         />
       )}
@@ -209,6 +205,7 @@ function MobileBackButton({ onBackToList }: { onBackToList: () => void }) {
 function DataminedFileCard({
   filename,
   jsonPreview,
+  onResolveJsonReference,
   onToggleJsonPreview,
 }: DataminedFileCardProps) {
   return (
@@ -241,13 +238,10 @@ function DataminedFileCard({
           </div>
         )}
         {jsonPreview.status === "loaded" && (
-          <pre
-            aria-label="Datamined file JSON"
-            className={styles.ViewJsonPreview}
-            tabIndex={0}
-          >
-            {jsonPreview.formattedJson}
-          </pre>
+          <DataminedJsonPreview
+            jsonPreview={jsonPreview}
+            onResolveJsonReference={onResolveJsonReference}
+          />
         )}
       </section>
     </Card>
@@ -487,4 +481,4 @@ function countInventoryImages(item: ItemRef): number {
 }
 
 export { ItemView };
-export type { ItemViewItem, JsonPreviewState };
+export type { ItemViewItem };

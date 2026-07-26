@@ -207,6 +207,110 @@
     white-space: pre-wrap;
 }
 
+.ViewJsonCollapseButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25em;
+    margin-right: var(--space-1);
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--editor-text-muted);
+    font: inherit;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ViewJsonCollapseButton:hover {
+    color: var(--link-color-action);
+}
+
+.ViewJsonCollapseButton:focus-visible {
+    outline: 1px solid var(--field-focus-border);
+    outline-offset: 2px;
+}
+
+.ViewJsonCollapseButton::before {
+    content: ">";
+}
+
+.ViewJsonCollapseButton[data-expanded="true"]::before {
+    content: "v";
+}
+
+.ViewJsonArrayDelimiter {
+    color: var(--color-blue-300);
+}
+
+.ViewJsonObjectDelimiter {
+    color: var(--editor-text-strong);
+}
+
+.ViewJsonPunctuation {
+    color: var(--editor-text-muted);
+}
+
+.ViewJsonCollapsedSummary {
+    color: var(--editor-text-muted);
+    font-style: italic;
+}
+
+.ViewJsonValueBoolean {
+    color: var(--color-gold-500);
+}
+
+.ViewJsonValueEnum {
+    color: var(--rarity-magic-color);
+}
+
+.ViewJsonValueMetadata {
+    color: var(--editor-text-muted);
+}
+
+.ViewJsonValueNull {
+    color: var(--editor-text-muted);
+}
+
+.ViewJsonValueNumber {
+    color: var(--color-blue-200);
+}
+
+.ViewJsonValueString {
+    color: var(--color-green-600);
+}
+
+.ViewJsonValueUnknown {
+    color: var(--color-neutral-575);
+}
+
+.ViewJsonReferenceButton {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--link-color-action);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.ViewJsonReferenceButton:hover {
+    color: var(--link-hover-color);
+}
+
+.ViewJsonReferenceButton:disabled {
+    color: var(--editor-text-muted);
+    cursor: wait;
+}
+
+.ViewJsonReferenceStatus {
+    color: var(--editor-text-muted);
+}
+
+.ViewJsonReferenceError {
+    color: var(--feedback-danger-text-strong);
+}
+
 .ViewField {
     display: flex;
     flex-direction: column;

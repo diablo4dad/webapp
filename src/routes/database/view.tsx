@@ -17,11 +17,13 @@ import {
 import itemListStyles from "../../features/database-explorer/item-list/view.module.css";
 import {
   ItemView,
+  type JsonPath,
   type JsonPreviewState,
 } from "../../features/database-explorer/item-view";
 import {
-  fetchFormattedJson,
+  fetchJson,
   getJsonErrorMessage,
+  replaceJsonValueAtPath,
 } from "./json";
 import {
   type CollectionLogReference,
@@ -91,6 +93,9 @@ function View({
   const filterOptionsRef = useRef<HTMLDivElement>(null);
   const itemListRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | undefined>(undefined);
+  const jsonReferenceAbortControllerRef = useRef<
+    AbortController | undefined
+  >(undefined);
   const savedFilterListScrollTopRef = useRef(0);
   const savedListScrollTopRef = useRef(0);
   const pendingFilterScrollActionRef = useRef<
@@ -135,12 +140,14 @@ function View({
 
   useEffect(() => {
     abortControllerRef.current?.abort();
+    jsonReferenceAbortControllerRef.current?.abort();
     setJsonPreview({ status: "idle" });
   }, [selectedItemFileUrl]);
 
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
+      jsonReferenceAbortControllerRef.current?.abort();
     };
   }, []);
 
@@ -249,24 +256,26 @@ function View({
 
   function toggleJsonPreview(filename: string) {
     if (jsonPreview.status === "loaded") {
+      jsonReferenceAbortControllerRef.current?.abort();
       setJsonPreview({ status: "idle" });
       return;
     }
 
     const abortController = new AbortController();
     abortControllerRef.current?.abort();
+    jsonReferenceAbortControllerRef.current?.abort();
     abortControllerRef.current = abortController;
     setJsonPreview({ status: "loading" });
 
-    void fetchFormattedJson(
+    void fetchJson(
       getDataminedFileUrl(filename),
       abortController.signal,
     )
-      .then((formattedJson) => {
+      .then((value) => {
         if (!abortController.signal.aborted) {
           setJsonPreview({
-            formattedJson,
             status: "loaded",
+            value,
           });
         }
       })
@@ -277,6 +286,65 @@ function View({
             status: "error",
           });
         }
+      });
+  }
+
+  function resolveJsonReference(path: JsonPath, targetFileName: string) {
+    const abortController = new AbortController();
+    jsonReferenceAbortControllerRef.current?.abort();
+    jsonReferenceAbortControllerRef.current = abortController;
+
+    setJsonPreview((currentPreview) =>
+      currentPreview.status === "loaded"
+        ? {
+            ...currentPreview,
+            loadingReferencePath: path,
+            referenceError: undefined,
+          }
+        : currentPreview
+    );
+
+    void fetchJson(
+      getDataminedFileUrl(targetFileName),
+      abortController.signal,
+    )
+      .then((value) => {
+        if (abortController.signal.aborted) {
+          return;
+        }
+
+        setJsonPreview((currentPreview) =>
+          currentPreview.status === "loaded"
+            ? {
+                ...currentPreview,
+                loadingReferencePath: undefined,
+                referenceError: undefined,
+                value: replaceJsonValueAtPath(
+                  currentPreview.value,
+                  path,
+                  value,
+                ),
+              }
+            : currentPreview
+        );
+      })
+      .catch((fetchError) => {
+        if (abortController.signal.aborted) {
+          return;
+        }
+
+        setJsonPreview((currentPreview) =>
+          currentPreview.status === "loaded"
+            ? {
+                ...currentPreview,
+                loadingReferencePath: undefined,
+                referenceError: {
+                  message: getJsonErrorMessage(fetchError),
+                  path,
+                },
+              }
+            : currentPreview
+        );
       });
   }
 
@@ -332,6 +400,7 @@ function View({
               jsonPreview={jsonPreview}
               onBackToList={showItemList}
               onRefreshItems={onRefreshItems}
+              onResolveJsonReference={resolveJsonReference}
               onToggleJsonPreview={toggleJsonPreview}
             />
           </section>

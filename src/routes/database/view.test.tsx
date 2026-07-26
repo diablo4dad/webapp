@@ -194,6 +194,13 @@ function createClientRect(top: number): DOMRect {
   } as DOMRect;
 }
 
+function jsonResponse(value: unknown) {
+  return {
+    json: vi.fn().mockResolvedValue(value),
+    ok: true,
+  };
+}
+
 describe("database surface", () => {
   test("shows a loading skeleton", () => {
     renderView({
@@ -1299,16 +1306,15 @@ describe("database surface", () => {
 
   test("fetches and renders datamined file json", async () => {
     const user = userEvent.setup();
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: vi.fn().mockResolvedValue({
+    const fetchMock = vi.fn().mockResolvedValue(
+      jsonResponse({
         item: {
           id: 100,
           name: "Azure Blade",
           unsafe: "<script>alert(1)</script>",
         },
       }),
-      ok: true,
-    });
+    );
     const selectedItem = createExplorerItem({
       filename: "base/meta/Item/Azure_Blade",
     });
@@ -1343,6 +1349,87 @@ describe("database surface", () => {
     expect(jsonPreview.querySelector("script")).toBeNull();
     expect(screen.getByRole("button", { name: "Hide JSON" }))
       .toHaveTextContent("▾");
+  });
+
+  test("embeds datamined sno references in place", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          item: {
+            id: 100,
+            snoActor: {
+              __targetFileName__: "base/meta/Actor/Azure_Actor.acr",
+              id: 901,
+            },
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({
+          displayName: "Azure Actor",
+          snoPower: {
+            __targetFileName__: "base/meta/Power/Azure_Power.pow",
+            id: 902,
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({
+          displayName: "Azure Power",
+        }),
+      );
+    const selectedItem = createExplorerItem({
+      filename: "base/meta/Item/Azure_Blade",
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    await user.click(screen.getByRole("button", { name: "Show JSON" }));
+    await user.click(await screen.findByRole("button", {
+      name: "Load snoActor reference base/meta/Actor/Azure_Actor.acr",
+    }));
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining("base/meta/Actor/Azure_Actor.acr.json"),
+      {
+        signal: expect.any(AbortSignal),
+      },
+    );
+
+    const jsonPreview = await screen.findByLabelText("Datamined file JSON");
+
+    await waitFor(() =>
+      expect(jsonPreview.textContent).toContain(
+        '"displayName": "Azure Actor"',
+      )
+    );
+    expect(jsonPreview.textContent).not.toContain(
+      "base/meta/Actor/Azure_Actor.acr",
+    );
+
+    await user.click(await screen.findByRole("button", {
+      name: "Load snoPower reference base/meta/Power/Azure_Power.pow",
+    }));
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      3,
+      expect.stringContaining("base/meta/Power/Azure_Power.pow.json"),
+      {
+        signal: expect.any(AbortSignal),
+      },
+    );
+    await waitFor(() =>
+      expect(jsonPreview.textContent).toContain(
+        '"displayName": "Azure Power"',
+      )
+    );
   });
 
   test("shows datamined file json load errors", async () => {
