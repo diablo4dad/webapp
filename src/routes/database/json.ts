@@ -1,8 +1,15 @@
 import { DATA_REPO } from "../../config";
 
 type JsonPathSegment = string | number;
+type DataminedFileKind = "base" | "storeString" | "string";
+type DataminedFileDescriptor = {
+  filename: string;
+  kind: DataminedFileKind;
+  label: string;
+};
 
 const DATAMINED_FILE_SEGMENT_PATTERN = /^[ A-Za-z0-9_.-]+$/;
+const DATAMINED_STRING_FILE_ROOT = "enUS_Text/meta/StringList";
 
 async function fetchJson(
   url: string,
@@ -25,6 +32,45 @@ async function fetchFormattedJson(
 }
 
 function getDataminedFileUrl(filename: string): string {
+  const trimmedFilename = validateDataminedFilename(filename);
+  const segments = trimmedFilename.split("/");
+  const encodedFilename = segments.map(encodeURIComponent).join("/");
+
+  return `${DATA_REPO}/${encodedFilename}.json`;
+}
+
+function getDataminedFileDescriptors(
+  filename: string,
+): DataminedFileDescriptor[] {
+  const baseFilename = filename.trim();
+  const baseFile: DataminedFileDescriptor = {
+    filename: baseFilename,
+    kind: "base",
+    label: "Base file",
+  };
+
+  let validatedFilename;
+
+  try {
+    validatedFilename = validateDataminedFilename(filename);
+  } catch {
+    return [baseFile];
+  }
+
+  const inferredStringFiles = getDataminedStringFileDescriptors(
+    validatedFilename,
+  );
+
+  return [
+    {
+      ...baseFile,
+      filename: validatedFilename,
+    },
+    ...inferredStringFiles,
+  ];
+}
+
+function validateDataminedFilename(filename: string): string {
   const trimmedFilename = filename.trim();
 
   if (
@@ -52,9 +98,51 @@ function getDataminedFileUrl(filename: string): string {
     throw new Error("Invalid datamined file reference.");
   }
 
-  const encodedFilename = segments.map(encodeURIComponent).join("/");
+  return trimmedFilename;
+}
 
-  return `${DATA_REPO}/${encodedFilename}.json`;
+function getDataminedStringFileDescriptors(
+  filename: string,
+): DataminedFileDescriptor[] {
+  const segments = filename.split("/");
+
+  if (segments.length < 2) {
+    return [];
+  }
+
+  const itemType = segments.at(-2);
+  const filenameSegment = segments.at(-1);
+
+  if (!itemType || !filenameSegment) {
+    return [];
+  }
+
+  const filenameStem = stripDataminedFileExtension(filenameSegment);
+
+  if (filenameStem.length === 0) {
+    return [];
+  }
+
+  return [
+    {
+      filename: `${DATAMINED_STRING_FILE_ROOT}/${itemType}_${filenameStem}.stl`,
+      kind: "string",
+      label: "String file",
+    },
+    {
+      filename: `${DATAMINED_STRING_FILE_ROOT}/StoreProduct_${filenameStem}.stl`,
+      kind: "storeString",
+      label: "Store string file",
+    },
+  ];
+}
+
+function stripDataminedFileExtension(filenameSegment: string): string {
+  const extensionIndex = filenameSegment.lastIndexOf(".");
+
+  return extensionIndex > 0
+    ? filenameSegment.slice(0, extensionIndex)
+    : filenameSegment;
 }
 
 function formatJson(value: unknown): string {
@@ -116,8 +204,9 @@ export {
   fetchFormattedJson,
   fetchJson,
   formatJson,
+  getDataminedFileDescriptors,
   getDataminedFileUrl,
   getJsonErrorMessage,
   replaceJsonValueAtPath,
 };
-export type { JsonPathSegment };
+export type { DataminedFileDescriptor, JsonPathSegment };

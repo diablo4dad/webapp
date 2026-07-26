@@ -21,6 +21,7 @@ import {
 } from "../../features/database-explorer/item-view";
 import {
   fetchJson,
+  getDataminedFileDescriptors,
   getDataminedFileUrl,
   getJsonErrorMessage,
   replaceJsonValueAtPath,
@@ -64,6 +65,7 @@ type Props = {
 type FilterScrollAction = "filterTop" | "listRestore";
 type MobilePane = "detail" | "list";
 type MobileScrollAction = "detailTop" | "listRestore";
+type JsonPreviewByFilename = Record<string, JsonPreviewState>;
 
 function View({
   canEditCatalog = false,
@@ -92,10 +94,9 @@ function View({
   const viewRef = useRef<HTMLElement>(null);
   const filterOptionsRef = useRef<HTMLDivElement>(null);
   const itemListRef = useRef<HTMLDivElement>(null);
-  const abortControllerRef = useRef<AbortController | undefined>(undefined);
-  const jsonReferenceAbortControllerRef = useRef<
-    AbortController | undefined
-  >(undefined);
+  const jsonAbortControllersRef = useRef<Map<string, AbortController>>(
+    new Map(),
+  );
   const savedFilterListScrollTopRef = useRef(0);
   const savedListScrollTopRef = useRef(0);
   const pendingFilterScrollActionRef = useRef<
@@ -104,9 +105,7 @@ function View({
   const pendingMobileScrollActionRef = useRef<
     MobileScrollAction | undefined
   >(undefined);
-  const [jsonPreview, setJsonPreview] = useState<JsonPreviewState>({
-    status: "idle",
-  });
+  const [jsonPreviews, setJsonPreviews] = useState<JsonPreviewByFilename>({});
   const [openFilterKey, setOpenFilterKey] = useState<FilterControlKey>();
   const [mobilePane, setMobilePane] = useState<MobilePane>(() =>
     showSelectedItemInitially ? "detail" : "list",
@@ -118,6 +117,9 @@ function View({
     magicTypeOptions,
   });
   const selectedItemFileName = selectedItem?.item.filename;
+  const dataminedFiles = selectedItemFileName
+    ? getDataminedFileDescriptors(selectedItemFileName)
+    : [];
   const createItemAction = canEditCatalog && isEditMode
     ? (
         <DatabaseItemCreator
@@ -137,15 +139,13 @@ function View({
   const shouldSyncSelectedListScroll = !isMobileExplorerLayout();
 
   useEffect(() => {
-    abortControllerRef.current?.abort();
-    jsonReferenceAbortControllerRef.current?.abort();
-    setJsonPreview({ status: "idle" });
+    abortAllJsonRequests();
+    setJsonPreviews({});
   }, [selectedItemFileName]);
 
   useEffect(() => {
     return () => {
-      abortControllerRef.current?.abort();
-      jsonReferenceAbortControllerRef.current?.abort();
+      abortAllJsonRequests();
     };
   }, []);
 
@@ -252,35 +252,78 @@ function View({
     setMobilePane("list");
   }
 
-  function toggleJsonPreview(filename: string) {
-    if (jsonPreview.status === "loaded") {
-      jsonReferenceAbortControllerRef.current?.abort();
-      setJsonPreview({ status: "idle" });
-      return;
+  function abortJsonRequest(filename: string) {
+    const abortController = jsonAbortControllersRef.current.get(filename);
+
+    if (abortController) {
+      abortController.abort();
+      jsonAbortControllersRef.current.delete(filename);
+    }
+  }
+
+  function abortAllJsonRequests() {
+    for (const abortController of jsonAbortControllersRef.current.values()) {
+      abortController.abort();
     }
 
-    const abortController = new AbortController();
-    abortControllerRef.current?.abort();
-    jsonReferenceAbortControllerRef.current?.abort();
-    abortControllerRef.current = abortController;
-    setJsonPreview({ status: "loading" });
+    jsonAbortControllersRef.current.clear();
+  }
+
+  function clearJsonPreview(filename: string) {
+    setJsonPreviews((currentPreviews) => {
+      const nextPreviews = { ...currentPreviews };
+
+      delete nextPreviews[filename];
+
+      return nextPreviews;
+    });
+  }
+
+  function setJsonPreview(
+    filename: string,
+    jsonPreview: JsonPreviewState,
+  ) {
+    setJsonPreviews((currentPreviews) => ({
+      ...currentPreviews,
+      [filename]: jsonPreview,
+    }));
+  }
+
+  function clearJsonRequest(filename: string, abortController: AbortController) {
+    if (jsonAbortControllersRef.current.get(filename) === abortController) {
+      jsonAbortControllersRef.current.delete(filename);
+    }
+  }
+
+  function toggleJsonPreview(filename: string) {
+    if (jsonPreviews[filename]?.status === "loaded") {
+      abortJsonRequest(filename);
+      clearJsonPreview(filename);
+      return;
+    }
 
     let dataminedFileUrl;
 
     try {
       dataminedFileUrl = getDataminedFileUrl(filename);
     } catch (fetchError) {
-      setJsonPreview({
+      setJsonPreview(filename, {
         message: getJsonErrorMessage(fetchError),
         status: "error",
       });
       return;
     }
 
+    const abortController = new AbortController();
+    abortJsonRequest(filename);
+    jsonAbortControllersRef.current.set(filename, abortController);
+    setJsonPreview(filename, { status: "loading" });
+
     void fetchJson(dataminedFileUrl, abortController.signal)
       .then((value) => {
         if (!abortController.signal.aborted) {
-          setJsonPreview({
+          clearJsonRequest(filename, abortController);
+          setJsonPreview(filename, {
             status: "loaded",
             value,
           });
@@ -288,7 +331,8 @@ function View({
       })
       .catch((fetchError) => {
         if (!abortController.signal.aborted) {
-          setJsonPreview({
+          clearJsonRequest(filename, abortController);
+          setJsonPreview(filename, {
             message: getJsonErrorMessage(fetchError),
             status: "error",
           });
@@ -296,38 +340,57 @@ function View({
       });
   }
 
-  function resolveJsonReference(path: JsonPath, targetFileName: string) {
-    const abortController = new AbortController();
-    jsonReferenceAbortControllerRef.current?.abort();
-    jsonReferenceAbortControllerRef.current = abortController;
+  function resolveJsonReference(
+    filename: string,
+    path: JsonPath,
+    targetFileName: string,
+  ) {
+    if (jsonPreviews[filename]?.status !== "loaded") {
+      return;
+    }
 
-    setJsonPreview((currentPreview) =>
-      currentPreview.status === "loaded"
+    const abortController = new AbortController();
+    abortJsonRequest(filename);
+    jsonAbortControllersRef.current.set(filename, abortController);
+
+    setJsonPreviews((currentPreviews) => {
+      const currentPreview = currentPreviews[filename];
+
+      return currentPreview?.status === "loaded"
         ? {
-            ...currentPreview,
-            loadingReferencePath: path,
-            referenceError: undefined,
+            ...currentPreviews,
+            [filename]: {
+              ...currentPreview,
+              loadingReferencePath: path,
+              referenceError: undefined,
+            },
           }
-        : currentPreview
-    );
+        : currentPreviews;
+    });
 
     let dataminedFileUrl;
 
     try {
       dataminedFileUrl = getDataminedFileUrl(targetFileName);
     } catch (fetchError) {
-      setJsonPreview((currentPreview) =>
-        currentPreview.status === "loaded"
+      clearJsonRequest(filename, abortController);
+      setJsonPreviews((currentPreviews) => {
+        const currentPreview = currentPreviews[filename];
+
+        return currentPreview?.status === "loaded"
           ? {
-              ...currentPreview,
-              loadingReferencePath: undefined,
-              referenceError: {
-                message: getJsonErrorMessage(fetchError),
-                path,
+              ...currentPreviews,
+              [filename]: {
+                ...currentPreview,
+                loadingReferencePath: undefined,
+                referenceError: {
+                  message: getJsonErrorMessage(fetchError),
+                  path,
+                },
               },
             }
-          : currentPreview
-      );
+          : currentPreviews;
+      });
       return;
     }
 
@@ -337,38 +400,50 @@ function View({
           return;
         }
 
-        setJsonPreview((currentPreview) =>
-          currentPreview.status === "loaded"
+        clearJsonRequest(filename, abortController);
+        setJsonPreviews((currentPreviews) => {
+          const currentPreview = currentPreviews[filename];
+
+          return currentPreview?.status === "loaded"
             ? {
-                ...currentPreview,
-                loadingReferencePath: undefined,
-                referenceError: undefined,
-                value: replaceJsonValueAtPath(
-                  currentPreview.value,
-                  path,
-                  value,
-                ),
+                ...currentPreviews,
+                [filename]: {
+                  ...currentPreview,
+                  loadingReferencePath: undefined,
+                  referenceError: undefined,
+                  value: replaceJsonValueAtPath(
+                    currentPreview.value,
+                    path,
+                    value,
+                  ),
+                },
               }
-            : currentPreview
-        );
+            : currentPreviews;
+        });
       })
       .catch((fetchError) => {
         if (abortController.signal.aborted) {
           return;
         }
 
-        setJsonPreview((currentPreview) =>
-          currentPreview.status === "loaded"
+        clearJsonRequest(filename, abortController);
+        setJsonPreviews((currentPreviews) => {
+          const currentPreview = currentPreviews[filename];
+
+          return currentPreview?.status === "loaded"
             ? {
-                ...currentPreview,
-                loadingReferencePath: undefined,
-                referenceError: {
-                  message: getJsonErrorMessage(fetchError),
-                  path,
+                ...currentPreviews,
+                [filename]: {
+                  ...currentPreview,
+                  loadingReferencePath: undefined,
+                  referenceError: {
+                    message: getJsonErrorMessage(fetchError),
+                    path,
+                  },
                 },
               }
-            : currentPreview
-        );
+            : currentPreviews;
+        });
       });
   }
 
@@ -418,10 +493,11 @@ function View({
             <ItemView
               canEditCatalog={canEditCatalog}
               collectionReferences={collectionReferences}
+              dataminedFiles={dataminedFiles}
               isEditMode={isEditMode}
               item={selectedItem}
               itemTypes={itemTypes}
-              jsonPreview={jsonPreview}
+              jsonPreviews={jsonPreviews}
               onBackToList={showItemList}
               onRefreshItems={onRefreshItems}
               onResolveJsonReference={resolveJsonReference}

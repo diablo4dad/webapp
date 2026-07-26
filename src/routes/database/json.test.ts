@@ -1,5 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { getDataminedFileUrl } from "./json";
+import {
+  getDataminedFileDescriptors,
+  getDataminedFileUrl,
+} from "./json";
 
 describe("datamined json urls", () => {
   test("builds encoded Github raw URLs for datamined file paths", () => {
@@ -26,5 +29,57 @@ describe("datamined json urls", () => {
         "Invalid datamined file reference.",
       );
     }
+  });
+
+  test("derives string file paths from a datamined item path", () => {
+    expect(getDataminedFileDescriptors("base/meta/Item/sword_stor139.itm"))
+      .toEqual([
+        {
+          filename: "base/meta/Item/sword_stor139.itm",
+          kind: "base",
+          label: "Base file",
+        },
+        {
+          filename: "enUS_Text/meta/StringList/Item_sword_stor139.stl",
+          kind: "string",
+          label: "String file",
+        },
+        {
+          filename: "enUS_Text/meta/StringList/StoreProduct_sword_stor139.stl",
+          kind: "storeString",
+          label: "Store string file",
+        },
+      ]);
+  });
+
+  test("derives string file paths from extensionless datamined item paths", () => {
+    expect(getDataminedFileDescriptors("base/meta/Item/Azure_Blade"))
+      .toEqual([
+        {
+          filename: "base/meta/Item/Azure_Blade",
+          kind: "base",
+          label: "Base file",
+        },
+        {
+          filename: "enUS_Text/meta/StringList/Item_Azure_Blade.stl",
+          kind: "string",
+          label: "String file",
+        },
+        {
+          filename: "enUS_Text/meta/StringList/StoreProduct_Azure_Blade.stl",
+          kind: "storeString",
+          label: "Store string file",
+        },
+      ]);
+  });
+
+  test("returns the base file descriptor for unsafe paths", () => {
+    expect(getDataminedFileDescriptors("../Secrets")).toEqual([
+      {
+        filename: "../Secrets",
+        kind: "base",
+        label: "Base file",
+      },
+    ]);
   });
 });

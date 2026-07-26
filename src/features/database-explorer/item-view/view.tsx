@@ -40,25 +40,39 @@ type CollectionLogReference = {
 type Props = {
   canEditCatalog: boolean;
   collectionReferences?: CollectionLogReference[];
+  dataminedFiles?: DataminedFile[];
   isEditMode: boolean;
   item?: ItemViewItem;
   itemTypes?: ItemType[];
-  jsonPreview: JsonPreviewState;
+  jsonPreviews?: JsonPreviewByFilename;
   onBackToList: () => void;
   onRefreshItems: () => void;
   onResolveJsonReference: (
+    filename: string,
     path: JsonPath,
     targetFileName: string,
   ) => void;
   onToggleJsonPreview: (filename: string) => void;
 };
 
-type DataminedFileCardProps = {
+type DataminedFile = {
   filename: string;
+  label: string;
+};
+
+type DataminedFileCardProps = {
+  files: DataminedFile[];
+  jsonPreviews: JsonPreviewByFilename;
+  onResolveJsonReference: Props["onResolveJsonReference"];
+  onToggleJsonPreview: (filename: string) => void;
+};
+type DataminedFileEntryProps = {
+  file: DataminedFile;
   jsonPreview: JsonPreviewState;
   onResolveJsonReference: Props["onResolveJsonReference"];
   onToggleJsonPreview: (filename: string) => void;
 };
+type JsonPreviewByFilename = Readonly<Record<string, JsonPreviewState>>;
 
 const magicTypeClassMap = new Map<MagicType, string>([
   [MagicType.COMMON, styles.ViewMagicTypeCommon],
@@ -72,14 +86,16 @@ const INVENTORY_GENDER_CHOICES = [
   CharacterGender.MALE,
   CharacterGender.FEMALE,
 ] as const;
+const IDLE_JSON_PREVIEW: JsonPreviewState = { status: "idle" };
 
 function ItemView({
   canEditCatalog,
   collectionReferences = [],
+  dataminedFiles = [],
   isEditMode,
   item,
   itemTypes = [],
-  jsonPreview,
+  jsonPreviews = {},
   onBackToList,
   onRefreshItems,
   onResolveJsonReference,
@@ -169,10 +185,10 @@ function ItemView({
       {collectionReferences.length > 0 && (
         <CollectionLogReferenceCard references={collectionReferences} />
       )}
-      {rawItem.filename && (
+      {dataminedFiles.length > 0 && (
         <DataminedFileCard
-          filename={rawItem.filename}
-          jsonPreview={jsonPreview}
+          files={dataminedFiles}
+          jsonPreviews={jsonPreviews}
           onResolveJsonReference={onResolveJsonReference}
           onToggleJsonPreview={onToggleJsonPreview}
         />
@@ -203,8 +219,8 @@ function MobileBackButton({ onBackToList }: { onBackToList: () => void }) {
 }
 
 function DataminedFileCard({
-  filename,
-  jsonPreview,
+  files,
+  jsonPreviews,
   onResolveJsonReference,
   onToggleJsonPreview,
 }: DataminedFileCardProps) {
@@ -212,39 +228,73 @@ function DataminedFileCard({
     <Card className={styles.ViewDetailCard}>
       <section className={styles.ViewDetailSection}>
         <div className={styles.ViewDetailSectionHeader}>
-          <h3>Datamined File</h3>
-          <button
-            aria-label={getJsonPreviewActionLabel(jsonPreview)}
-            className={styles.ViewDetailAction}
-            disabled={jsonPreview.status === "loading"}
-            title={getJsonPreviewActionLabel(jsonPreview)}
-            type="button"
-            onClick={() => onToggleJsonPreview(filename)}
-          >
-            <span aria-hidden="true">
-              {getJsonPreviewActionGlyph(jsonPreview)}
-            </span>
-          </button>
+          <h3>Datamined Files</h3>
         </div>
-        <span className={styles.ViewDataminedFileName}>
-          {filename}
-        </span>
-        {jsonPreview.status === "loading" && (
-          <div className={styles.ViewJsonStatus}>Loading JSON...</div>
-        )}
-        {jsonPreview.status === "error" && (
-          <div className={styles.ViewJsonError} role="alert">
-            {jsonPreview.message}
-          </div>
-        )}
-        {jsonPreview.status === "loaded" && (
-          <DataminedJsonPreview
-            jsonPreview={jsonPreview}
-            onResolveJsonReference={onResolveJsonReference}
-          />
-        )}
+        <div className={styles.ViewDataminedFileList}>
+          {files.map((file) => (
+            <DataminedFileEntry
+              key={file.filename}
+              file={file}
+              jsonPreview={jsonPreviews[file.filename] ?? IDLE_JSON_PREVIEW}
+              onResolveJsonReference={onResolveJsonReference}
+              onToggleJsonPreview={onToggleJsonPreview}
+            />
+          ))}
+        </div>
       </section>
     </Card>
+  );
+}
+
+function DataminedFileEntry({
+  file,
+  jsonPreview,
+  onResolveJsonReference,
+  onToggleJsonPreview,
+}: DataminedFileEntryProps) {
+  return (
+    <article className={styles.ViewDataminedFileEntry}>
+      <div className={styles.ViewDataminedFileHeader}>
+        <div className={styles.ViewDataminedFileText}>
+          <span className={styles.ViewDataminedFileLabel}>
+            {file.label}
+          </span>
+          <span className={styles.ViewDataminedFileName}>
+            {file.filename}
+          </span>
+        </div>
+        <button
+          aria-label={getJsonPreviewActionLabel(jsonPreview, file.label)}
+          className={styles.ViewDetailAction}
+          disabled={jsonPreview.status === "loading"}
+          title={getJsonPreviewActionLabel(jsonPreview, file.label)}
+          type="button"
+          onClick={() => onToggleJsonPreview(file.filename)}
+        >
+          <span aria-hidden="true">
+            {getJsonPreviewActionGlyph(jsonPreview)}
+          </span>
+        </button>
+      </div>
+      {jsonPreview.status === "loading" && (
+        <div className={styles.ViewJsonStatus}>
+          Loading {file.label.toLowerCase()} JSON...
+        </div>
+      )}
+      {jsonPreview.status === "error" && (
+        <div className={styles.ViewJsonError} role="alert">
+          {jsonPreview.message}
+        </div>
+      )}
+      {jsonPreview.status === "loaded" && (
+        <DataminedJsonPreview
+          ariaLabel={`${file.label} JSON`}
+          jsonPreview={jsonPreview}
+          onResolveJsonReference={(path, targetFileName) =>
+            onResolveJsonReference(file.filename, path, targetFileName)}
+        />
+      )}
+    </article>
   );
 }
 
@@ -286,16 +336,19 @@ function CollectionLogReferenceCard({
   );
 }
 
-function getJsonPreviewActionLabel(jsonPreview: JsonPreviewState): string {
+function getJsonPreviewActionLabel(
+  jsonPreview: JsonPreviewState,
+  fileLabel: string,
+): string {
   switch (jsonPreview.status) {
     case "error":
-      return "Retry JSON";
+      return `Retry ${fileLabel} JSON`;
     case "idle":
-      return "Show JSON";
+      return `Show ${fileLabel} JSON`;
     case "loaded":
-      return "Hide JSON";
+      return `Hide ${fileLabel} JSON`;
     case "loading":
-      return "Loading JSON";
+      return `Loading ${fileLabel} JSON`;
   }
 }
 

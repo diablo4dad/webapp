@@ -42,6 +42,7 @@ type JsonPreviewState =
     };
 
 type Props = {
+  ariaLabel?: string;
   jsonPreview: Extract<JsonPreviewState, { status: "loaded" }>;
   onResolveJsonReference: (
     path: JsonPath,
@@ -139,6 +140,7 @@ const PROPERTY_TYPE_RULES: readonly JsonPropertyTypeRule[] = [
 ];
 
 function DataminedJsonPreview({
+  ariaLabel = "Datamined file JSON",
   jsonPreview,
   onResolveJsonReference,
 }: Props) {
@@ -180,7 +182,7 @@ function DataminedJsonPreview({
 
   return (
     <pre
-      aria-label="Datamined file JSON"
+      aria-label={ariaLabel}
       className={styles.ViewJsonPreview}
       tabIndex={0}
     >

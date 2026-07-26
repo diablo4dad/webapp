@@ -1216,7 +1216,7 @@ describe("database surface", () => {
     ).toBeTruthy();
 
     const dataminedFileHeading = screen.getByRole("heading", {
-      name: "Datamined File",
+      name: "Datamined Files",
     });
 
     expect(
@@ -1226,6 +1226,11 @@ describe("database surface", () => {
     ).toBeTruthy();
     expect(screen.getByText("base/meta/Item/Azure_Blade"))
       .toHaveClass(itemViewStyles.ViewDataminedFileName);
+    expect(screen.getByText("enUS_Text/meta/StringList/Item_Azure_Blade.stl"))
+      .toHaveClass(itemViewStyles.ViewDataminedFileName);
+    expect(screen.getByText(
+      "enUS_Text/meta/StringList/StoreProduct_Azure_Blade.stl",
+    )).toHaveClass(itemViewStyles.ViewDataminedFileName);
     expect(screen.queryByRole("link", {
       name: "base/meta/Item/Azure_Blade",
     })).not.toBeInTheDocument();
@@ -1330,7 +1335,9 @@ describe("database surface", () => {
       totalCount: 1,
     });
 
-    const showJsonButton = screen.getByRole("button", { name: "Show JSON" });
+    const showJsonButton = screen.getByRole("button", {
+      name: "Show Base file JSON",
+    });
 
     expect(showJsonButton).toHaveTextContent("▸");
 
@@ -1343,7 +1350,7 @@ describe("database surface", () => {
       },
     );
 
-    const jsonPreview = await screen.findByLabelText("Datamined file JSON");
+    const jsonPreview = await screen.findByLabelText("Base file JSON");
 
     expect(jsonPreview).toHaveClass(itemViewStyles.ViewJsonPreview);
     expect(jsonPreview.textContent).toContain('"name": "Azure Blade"');
@@ -1351,8 +1358,161 @@ describe("database surface", () => {
       '"unsafe": "<script>alert(1)</script>"',
     );
     expect(jsonPreview.querySelector("script")).toBeNull();
-    expect(screen.getByRole("button", { name: "Hide JSON" }))
+    expect(screen.getByRole("button", { name: "Hide Base file JSON" }))
       .toHaveTextContent("▾");
+  });
+
+  test("fetches inferred string files independently", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(jsonResponse({ text: "Item sword text" }))
+      .mockResolvedValueOnce(jsonResponse({ text: "Store sword text" }));
+    const selectedItem = createExplorerItem({
+      filename: "base/meta/Item/sword_stor139.itm",
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    expect(screen.getByText("base/meta/Item/sword_stor139.itm"))
+      .toHaveClass(itemViewStyles.ViewDataminedFileName);
+    expect(screen.getByText(
+      "enUS_Text/meta/StringList/Item_sword_stor139.stl",
+    )).toHaveClass(itemViewStyles.ViewDataminedFileName);
+    expect(screen.getByText(
+      "enUS_Text/meta/StringList/StoreProduct_sword_stor139.stl",
+    )).toHaveClass(itemViewStyles.ViewDataminedFileName);
+
+    await user.click(screen.getByRole("button", {
+      name: "Show String file JSON",
+    }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "enUS_Text/meta/StringList/Item_sword_stor139.stl.json",
+      ),
+      {
+        signal: expect.any(AbortSignal),
+      },
+    );
+    expect(await screen.findByLabelText("String file JSON"))
+      .toHaveTextContent('"Item sword text"');
+    expect(screen.queryByLabelText("Base file JSON"))
+      .not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", {
+      name: "Show Store string file JSON",
+    }));
+
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      expect.stringContaining(
+        "enUS_Text/meta/StringList/StoreProduct_sword_stor139.stl.json",
+      ),
+      {
+        signal: expect.any(AbortSignal),
+      },
+    );
+    expect(await screen.findByLabelText("Store string file JSON"))
+      .toHaveTextContent('"Store sword text"');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  test("embeds sno references into the preview that loaded them", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(
+        jsonResponse({
+          text: "Item sword text",
+          snoActor: {
+            __targetFileName__: "base/meta/Actor/String_Actor.acr",
+            id: 901,
+          },
+        }),
+      )
+      .mockResolvedValueOnce(jsonResponse({ base: "Base sword item" }))
+      .mockResolvedValueOnce(jsonResponse({ displayName: "String Actor" }));
+    const selectedItem = createExplorerItem({
+      filename: "base/meta/Item/sword_stor139.itm",
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    await user.click(screen.getByRole("button", {
+      name: "Show String file JSON",
+    }));
+    await user.click(screen.getByRole("button", {
+      name: "Show Base file JSON",
+    }));
+
+    const stringPreview = await screen.findByLabelText("String file JSON");
+    const basePreview = await screen.findByLabelText("Base file JSON");
+
+    await user.click(await screen.findByRole("button", {
+      name: "Load snoActor reference base/meta/Actor/String_Actor.acr",
+    }));
+
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      expect.stringContaining("base/meta/Actor/String_Actor.acr.json"),
+      {
+        signal: expect.any(AbortSignal),
+      },
+    );
+    await waitFor(() =>
+      expect(stringPreview.textContent).toContain(
+        '"displayName": "String Actor"',
+      )
+    );
+    expect(basePreview.textContent).toContain('"base": "Base sword item"');
+    expect(basePreview.textContent).not.toContain("String Actor");
+  });
+
+  test("shows missing optional datamined file errors per file", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+    });
+    const selectedItem = createExplorerItem({
+      filename: "base/meta/Item/sword_stor139.itm",
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    await user.click(screen.getByRole("button", {
+      name: "Show Store string file JSON",
+    }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining(
+        "enUS_Text/meta/StringList/StoreProduct_sword_stor139.stl.json",
+      ),
+      {
+        signal: expect.any(AbortSignal),
+      },
+    );
+    expect(await screen.findByRole("alert"))
+      .toHaveTextContent("Failed to load JSON (404).");
+    expect(screen.getByRole("button", {
+      name: "Retry Store string file JSON",
+    })).toBeInTheDocument();
+    expect(screen.queryByLabelText("Base file JSON"))
+      .not.toBeInTheDocument();
+    expect(screen.queryByLabelText("String file JSON"))
+      .not.toBeInTheDocument();
   });
 
   test("rejects unsafe datamined file paths before fetching json", async () => {
@@ -1369,7 +1529,9 @@ describe("database surface", () => {
       totalCount: 1,
     });
 
-    await user.click(screen.getByRole("button", { name: "Show JSON" }));
+    await user.click(screen.getByRole("button", {
+      name: "Show Base file JSON",
+    }));
 
     expect(fetchMock).not.toHaveBeenCalled();
     expect(await screen.findByRole("alert"))
@@ -1415,7 +1577,9 @@ describe("database surface", () => {
       totalCount: 1,
     });
 
-    await user.click(screen.getByRole("button", { name: "Show JSON" }));
+    await user.click(screen.getByRole("button", {
+      name: "Show Base file JSON",
+    }));
     await user.click(await screen.findByRole("button", {
       name: "Load snoActor reference base/meta/Actor/Azure_Actor.acr",
     }));
@@ -1428,7 +1592,7 @@ describe("database surface", () => {
       },
     );
 
-    const jsonPreview = await screen.findByLabelText("Datamined file JSON");
+    const jsonPreview = await screen.findByLabelText("Base file JSON");
 
     await waitFor(() =>
       expect(jsonPreview.textContent).toContain(
@@ -1481,7 +1645,9 @@ describe("database surface", () => {
       totalCount: 1,
     });
 
-    await user.click(screen.getByRole("button", { name: "Show JSON" }));
+    await user.click(screen.getByRole("button", {
+      name: "Show Base file JSON",
+    }));
     await user.click(await screen.findByRole("button", {
       name: "Load snoActor reference ../Secrets",
     }));
@@ -1507,11 +1673,13 @@ describe("database surface", () => {
       totalCount: 1,
     });
 
-    await user.click(screen.getByRole("button", { name: "Show JSON" }));
+    await user.click(screen.getByRole("button", {
+      name: "Show Base file JSON",
+    }));
 
     expect(await screen.findByRole("alert"))
       .toHaveTextContent("Failed to load JSON (404).");
-    expect(screen.getByRole("button", { name: "Retry JSON" }))
+    expect(screen.getByRole("button", { name: "Retry Base file JSON" }))
       .toHaveTextContent("↻");
   });
 
