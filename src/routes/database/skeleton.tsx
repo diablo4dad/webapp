@@ -18,9 +18,7 @@ function DatabaseSkeleton() {
         aria-busy="true"
         aria-label="Loading database"
       >
-        <div aria-hidden="true">
-          <ItemListSkeleton />
-        </div>
+        <ItemListSkeleton />
       </section>
       <section
         className={classNames(

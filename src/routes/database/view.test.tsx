@@ -211,6 +211,10 @@ describe("database surface", () => {
 
     expect(status)
       .toHaveAttribute("aria-busy", "true");
+    expect(status.firstElementChild)
+      .toHaveClass(itemListSkeletonStyles.Skeleton);
+    expect(status.firstElementChild)
+      .toHaveAttribute("aria-hidden", "true");
     expect(status.querySelectorAll(
       `.${itemListSkeletonStyles.SkeletonFilterControl}`,
     )).toHaveLength(3);

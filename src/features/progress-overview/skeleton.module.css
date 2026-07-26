@@ -35,20 +35,37 @@
     min-width: 0;
 }
 
+.SkeletonScopeIcon,
+.SkeletonMetaText,
+.SkeletonScopeControls,
+.SkeletonTitle,
+.SkeletonMeter,
+.SkeletonScopeStats,
+.SkeletonFilters {
+    display: block;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(
+        90deg,
+        rgb(255 255 255 / 7%),
+        rgb(255 255 255 / 13%),
+        rgb(255 255 255 / 7%)
+    );
+    background-size: 200% 100%;
+    animation: skeletonPulse 1400ms ease-in-out infinite;
+}
+
 .SkeletonScopeIcon {
     align-self: center;
     flex: 0 0 auto;
     width: 2.25rem;
     height: 2.25rem;
     border-radius: 50%;
-    background-color: var(--skeleton-background);
 }
 
 .SkeletonMetaText {
     flex: 1 1 9rem;
     min-width: 0;
     height: 2.25rem;
-    background-color: var(--skeleton-background);
 }
 
 .SkeletonScopeControls {
@@ -57,14 +74,11 @@
     height: 2.35rem;
     margin-left: auto;
     border-radius: 999px;
-    background-color: var(--skeleton-background);
 }
 
 .SkeletonTitle {
-    display: block;
     width: min(24rem, 100%);
     height: 2.8rem;
-    background-color: var(--skeleton-background);
 }
 
 .SkeletonSummary {
@@ -75,42 +89,27 @@
 }
 
 .SkeletonMeter {
-    display: block;
     width: min(16rem, 100%);
     height: 3.25rem;
-    background-color: var(--skeleton-background);
 }
 
 .SkeletonScopeStats {
-    display: block;
     width: 100%;
     min-height: 2.65rem;
-    background-color: var(--skeleton-background);
 }
 
 .SkeletonFilters {
-    display: block;
     width: min(22rem, 100%);
     height: 4.25rem;
-    background-color: var(--skeleton-background);
 }
 
-.SkeletonScopeIcon,
-.SkeletonMetaText,
-.SkeletonScopeControls,
-.SkeletonTitle,
-.SkeletonMeter,
-.SkeletonScopeStats,
-.SkeletonFilters {
-    animation: skeleton-loading 0.75s linear infinite alternate;
-}
-
-@keyframes skeleton-loading {
-    0% {
-        opacity: 1;
+@keyframes skeletonPulse {
+    from {
+        background-position: 200% 0;
     }
-    100% {
-        opacity: 0.5;
+
+    to {
+        background-position: -200% 0;
     }
 }
 

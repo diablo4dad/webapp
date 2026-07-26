@@ -6,7 +6,7 @@ const SKELETON_FILTER_COUNT = 3;
 
 function ItemListSkeleton() {
   return (
-    <Card className={styles.Skeleton}>
+    <Card aria-hidden="true" className={styles.Skeleton}>
       <div className={styles.SkeletonStickyControls}>
         <header className={styles.SkeletonListHeader}>
           <span className={styles.SkeletonTitle} />

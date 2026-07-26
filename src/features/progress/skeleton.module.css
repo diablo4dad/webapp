@@ -17,7 +17,6 @@
     grid-area: icon;
     width: 3.1rem;
     height: 3.1rem;
-    background-color: var(--skeleton-background);
 }
 
 .SkeletonContent {
@@ -29,11 +28,20 @@
     min-width: 0;
 }
 
+.SkeletonIcon,
 .SkeletonTitle,
 .SkeletonStats,
 .SkeletonBar {
     display: block;
-    background-color: var(--skeleton-background);
+    border-radius: var(--radius-sm);
+    background: linear-gradient(
+        90deg,
+        rgb(255 255 255 / 7%),
+        rgb(255 255 255 / 13%),
+        rgb(255 255 255 / 7%)
+    );
+    background-size: 200% 100%;
+    animation: skeletonPulse 1400ms ease-in-out infinite;
 }
 
 .SkeletonTitle,
@@ -47,19 +55,13 @@
     border-radius: 999px;
 }
 
-.SkeletonIcon,
-.SkeletonTitle,
-.SkeletonStats,
-.SkeletonBar {
-    animation: skeleton-loading 0.75s linear infinite alternate;
-}
-
-@keyframes skeleton-loading {
-    0% {
-        opacity: 1;
+@keyframes skeletonPulse {
+    from {
+        background-position: 200% 0;
     }
-    100% {
-        opacity: 0.5;
+
+    to {
+        background-position: -200% 0;
     }
 }
 
