@@ -1,6 +1,8 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import {
+  Link,
   MemoryRouter,
   Outlet,
   Route,
@@ -23,6 +25,16 @@ import {
 import { DataContext, type DataContextType } from "../../services/data/context";
 import { MasterGroup } from "../../shared/domain";
 import { Component } from "./route";
+
+type RouteEntry = string | {
+  pathname: string;
+  state?: unknown;
+};
+
+type RenderRouteOptions = {
+  rootScrollTop?: number;
+  sourceElement?: ReactNode;
+};
 
 const mocks = vi.hoisted(() => ({
   deleteCatalogItem: vi.fn(),
@@ -219,7 +231,7 @@ describe("database route", () => {
 
     renderRoute("/database/101");
 
-    expect(await screen.findByRole("heading", { name: "Collection Log" }))
+    expect(await screen.findByRole("heading", { name: "Tracker Data" }))
       .toBeInTheDocument();
     expect(screen.getByText("Monster Drop")).toBeInTheDocument();
     expect(screen.getByText("Monster / World Boss")).toBeInTheDocument();
@@ -230,7 +242,12 @@ describe("database route", () => {
   test("routes selected item changes", async () => {
     const user = userEvent.setup();
 
-    renderRoute("/database/102");
+    const { rootScrollContainer } = renderRoute(
+      "/database/102",
+      "",
+      {},
+      { rootScrollTop: 260 },
+    );
 
     const list = await screen.findByLabelText("Database item results");
     await user.click(await within(list).findByRole("button", {
@@ -242,6 +259,33 @@ describe("database route", () => {
         "/database/101",
       );
     });
+    expect(rootScrollContainer.scrollTop).toBe(260);
+  });
+
+  test("resets root scroll when opened from a reset-state link", async () => {
+    const user = userEvent.setup();
+    const { rootScrollContainer } = renderRoute(
+      "/",
+      "",
+      {},
+      {
+        rootScrollTop: 260,
+        sourceElement: (
+          <Link
+            state={{ resetDatabaseScroll: true }}
+            to="/database/101"
+          >
+            Database item
+          </Link>
+        ),
+      },
+    );
+
+    await user.click(screen.getByRole("link", { name: "Database item" }));
+
+    expect(await screen.findAllByText("Azure Helm"))
+      .not.toHaveLength(0);
+    expect(rootScrollContainer.scrollTop).toBe(0);
   });
 
   test("shows load errors and retries", async () => {
@@ -408,9 +452,10 @@ function dadDbRef(): DadDbRef {
 }
 
 function renderRoute(
-  initialEntry = "/database",
+  initialEntry: RouteEntry = "/database",
   searchTerm = "",
   dataContextOverrides: Partial<DataContextType> = {},
+  options: RenderRouteOptions = {},
 ) {
   const rootContext = {
     onSearchChange: vi.fn(),
@@ -422,30 +467,46 @@ function renderRoute(
     },
   };
   const dataContext = createDataContext(dataContextOverrides);
+  let rootScrollContainer: HTMLElement | undefined;
   const renderResult = render(
-    <DataContext.Provider value={dataContext}>
-      <MemoryRouter initialEntries={[initialEntry]}>
-        <Routes>
-          <Route
-            path="/"
-            element={(
-              <>
-                <LocationProbe />
-                <Outlet context={rootContext} />
-              </>
-            )}
-          >
-            <Route path="database" element={<Component />} />
-            <Route path="database/:itemId" element={<Component />} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
-    </DataContext.Provider>,
+    <div
+      data-root-scroll-container="true"
+      data-testid="root-scroll-container"
+      ref={(element) => {
+        if (element && rootScrollContainer === undefined) {
+          element.scrollTop = options.rootScrollTop ?? 0;
+          rootScrollContainer = element;
+        }
+      }}
+    >
+      <DataContext.Provider value={dataContext}>
+        <MemoryRouter initialEntries={[initialEntry]}>
+          <Routes>
+            <Route
+              path="/"
+              element={(
+                <>
+                  <LocationProbe />
+                  <Outlet context={rootContext} />
+                </>
+              )}
+            >
+              {options.sourceElement && (
+                <Route index element={options.sourceElement} />
+              )}
+              <Route path="database" element={<Component />} />
+              <Route path="database/:itemId" element={<Component />} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </DataContext.Provider>
+    </div>,
   );
 
   return {
     ...renderResult,
     dataContext,
+    rootScrollContainer: rootScrollContainer as HTMLElement,
     rootContext,
   };
 }

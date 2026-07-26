@@ -213,9 +213,18 @@ describe("database surface", () => {
     expect(document.querySelector(
       `.${itemViewSkeletonStyles.SkeletonBackButton}`,
     )).toBeInTheDocument();
+    expect(document.querySelector(
+      `.${itemViewSkeletonStyles.SkeletonSummaryRow}`,
+    )).toBeInTheDocument();
+    expect(document.querySelector(
+      `.${itemViewSkeletonStyles.SkeletonClassCard}`,
+    )).toBeInTheDocument();
+    expect(document.querySelectorAll(
+      `.${itemViewSkeletonStyles.SkeletonClassChip}`,
+    )).toHaveLength(5);
     expect(document.querySelectorAll(
       `.${itemViewSkeletonStyles.SkeletonField}`,
-    )).toHaveLength(7);
+    )).toHaveLength(13);
     expect(screen.queryByText("Loading database")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Database Explorer" }))
       .not.toBeInTheDocument();
@@ -1252,7 +1261,7 @@ describe("database surface", () => {
     });
 
     const collectionLogSection = screen
-      .getByRole("heading", { name: "Collection Log" })
+      .getByRole("heading", { name: "Tracker Data" })
       .closest("section");
 
     expect(collectionLogSection).not.toBeNull();

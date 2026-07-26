@@ -269,10 +269,6 @@
     flex-direction: column;
     gap: var(--space-3);
     min-width: 0;
-    border: 1px solid var(--editor-divider);
-    border-radius: var(--radius-sm);
-    padding: var(--space-3);
-    background-color: var(--editor-panel-surface);
 }
 
 .ViewCollectionReferenceHeader {
@@ -403,7 +399,7 @@
 @container view-overview (min-width: 40rem) {
     .ViewDetailHeader {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: flex-start;
         gap: var(--space-4) calc(var(--space-8) + 1rem);
     }
@@ -418,20 +414,19 @@
 
     .ViewDetailHeading,
     .ViewDetailMetaColumn {
-        width: fit-content;
-        max-width: 100%;
+        min-width: 0;
+        width: auto;
         margin-top: 0;
         padding-block: 1rem;
     }
 
     .ViewDetailHeading {
-        flex: 0 1 auto;
+        flex: 0 1 14rem;
         order: 1;
     }
 
     .ViewDetailMetaColumn {
-        flex: 1 1 auto;
-        min-width: min-content;
+        flex: 1 1 18rem;
         order: 2;
     }
 }

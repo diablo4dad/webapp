@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { getIcon } from "../../services/bucket";
 import Card from "../../shared/ui/Card";
 import { FallbackLazyImage } from "../../shared/ui/LazyLoadImageFallback";
@@ -327,7 +328,9 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
         )}
       </div>
       <div className={styles.ItemMeta}>
-        <div>Item ID: {collectionItem.items.map((i) => i.id).join(", ")}</div>
+        <div>
+          Item ID: <ItemIdLinks itemIds={itemIds} />
+        </div>
         {isEnabled(settings, Option.DEBUG) && (
           <>
             {collectionItem.items.length > 1 && (
@@ -362,6 +365,22 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
       </div>
     </Card>
   );
+}
+
+function ItemIdLinks({ itemIds }: { itemIds: number[] }) {
+  return itemIds.map((itemId, index) => (
+    <React.Fragment key={itemId}>
+      {index > 0 && ", "}
+      <Link
+        aria-label={`View database item ${itemId}`}
+        className={styles.ItemDatabaseLink}
+        state={{ resetDatabaseScroll: true }}
+        to={`/database/${itemId}`}
+      >
+        {itemId}
+      </Link>
+    </React.Fragment>
+  ));
 }
 
 export { ItemSidebar };

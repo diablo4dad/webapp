@@ -24,9 +24,32 @@
     flex-direction: column;
 }
 
-.SkeletonDetailHeader {
+.SkeletonOverviewCard {
+    container: skeleton-overview / inline-size;
+}
+
+.SkeletonSummaryRow {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: stretch;
+    min-width: 0;
+}
+
+.SkeletonSummaryRow > .SkeletonDetailCard {
+    height: 100%;
+}
+
+.SkeletonClassCard {
+    min-width: 0;
+}
+
+.SkeletonClassCard .SkeletonDetailSection {
+    flex: 1 1 auto;
+}
+
+.SkeletonDetailHeader {
+    display: flow-root;
     gap: var(--space-4);
     min-width: 0;
     padding: var(--space-4);
@@ -51,17 +74,23 @@
 }
 
 .SkeletonDetailIcon {
-    justify-self: end;
+    float: right;
+    display: block;
     width: min(120px, 45vw);
     height: 7.5rem;
-    margin-left: auto;
+    margin: 0 0 var(--space-3) var(--space-4);
 }
 
-.SkeletonDetailColumn {
+.SkeletonDetailColumn,
+.SkeletonDetailMetaColumn {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
     min-width: 0;
+}
+
+.SkeletonDetailMetaColumn {
+    margin-top: var(--space-3);
 }
 
 .SkeletonField {
@@ -122,24 +151,47 @@
     .SkeletonBackButton {
         display: none;
     }
+}
 
+@media screen and (min-width: 1600px) {
+    .SkeletonSummaryRow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@container skeleton-overview (min-width: 40rem) {
     .SkeletonDetailHeader {
-        grid-template-columns:
-            auto fit-content(18rem)
-            minmax(0, 1fr);
-        align-items: start;
-        column-gap: calc(var(--space-8) + 1rem);
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        gap: var(--space-4) calc(var(--space-8) + 1rem);
     }
 
     .SkeletonDetailIcon {
-        justify-self: start;
+        flex: 0 0 auto;
+        order: 3;
+        float: none;
         width: 7.5rem;
         max-width: 100%;
-        margin-left: 0;
+        margin: 0 0 0 auto;
+    }
+
+    .SkeletonDetailColumn,
+    .SkeletonDetailMetaColumn {
+        min-width: 0;
+        width: auto;
+        margin-top: 0;
+        padding-block: 1rem;
     }
 
     .SkeletonDetailColumn {
-        padding-block: 1rem;
+        flex: 0 1 14rem;
+        order: 1;
+    }
+
+    .SkeletonDetailMetaColumn {
+        flex: 1 1 18rem;
+        order: 2;
     }
 }
 

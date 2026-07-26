@@ -24,7 +24,7 @@ function Layout({
   return (
     <div className={styles.Layout}>
       <div className={styles.LayoutHeader}>{header}</div>
-      <div className={styles.LayoutMain}>
+      <div className={styles.LayoutMain} data-root-scroll-container="true">
         <div className={contentClassName}>{main}</div>
         {isFooterVisible && (
           <footer className={styles.LayoutFooter}>{footer}</footer>

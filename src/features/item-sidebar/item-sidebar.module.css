@@ -291,6 +291,16 @@
   margin-bottom: 0.25rem;
 }
 
+.ItemDatabaseLink {
+  color: var(--link-color-action);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ItemDatabaseLink:hover {
+  text-decoration: underline;
+}
+
 .ItemTags {
   padding-left: 1rem;
   padding-right: 1rem;

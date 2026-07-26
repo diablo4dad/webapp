@@ -128,7 +128,7 @@ body,
     /* theme */
     --secondary-color: var(--color-gold-500);
     --toggle-bg-color-on: #3e885b;
-    --toggle-bg-color-off: #2d3239;
+    --toggle-bg-color-off: #20242a;
 
     /* application surfaces */
     --app-background: var(--color-neutral-850);

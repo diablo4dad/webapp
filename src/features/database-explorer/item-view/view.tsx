@@ -262,7 +262,7 @@ function CollectionLogReferenceCard({
   return (
     <Card className={styles.ViewDetailCard}>
       <section className={styles.ViewDetailSection}>
-        <h3>Collection Log</h3>
+        <h3>Tracker Data</h3>
         <div className={styles.ViewCollectionReferenceList}>
           {references.map((reference, index) => (
             <article

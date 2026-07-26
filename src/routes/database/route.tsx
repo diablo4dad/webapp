@@ -1,10 +1,11 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
 } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEditor } from "../../features/editor";
 import { useData, type DataContextType } from "../../services/data/context";
 import { hydrateDadDb } from "../../services/data/factory";
@@ -21,6 +22,7 @@ import {
   useRootOutletContext,
   useRootShellControls,
 } from "../root/outlet";
+import { scrollRootToTop } from "../root/scroll";
 import {
   DEFAULT_FILTERS,
   DEFAULT_SORT_MODE,
@@ -55,6 +57,7 @@ type LoadState =
     };
 
 function Component() {
+  const location = useLocation();
   const navigate = useNavigate();
   const { itemId } = useParams();
   const { searchTerm } = useRootOutletContext();
@@ -76,6 +79,12 @@ function Component() {
     }),
     [filters, searchTerm],
   );
+
+  useLayoutEffect(() => {
+    if (hasDatabaseScrollResetState(location.state)) {
+      scrollRootToTop();
+    }
+  }, [location.key, location.state]);
 
   useEffect(() => {
     let cancelled = false;
@@ -372,6 +381,17 @@ function getLoadErrorMessage(error: unknown): string {
   return error instanceof Error
     ? error.message
     : "Failed to load database.";
+}
+
+function hasDatabaseScrollResetState(
+  state: unknown,
+): state is { resetDatabaseScroll: true } {
+  return (
+    typeof state === "object" &&
+    state !== null &&
+    "resetDatabaseScroll" in state &&
+    state.resetDatabaseScroll === true
+  );
 }
 
 export { Component };
