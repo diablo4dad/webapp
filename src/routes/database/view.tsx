@@ -5,7 +5,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { DATA_REPO } from "../../config";
 import type { ItemType } from "../../services/data";
 import Card from "../../shared/ui/Card";
 import { DatabaseItemCreator } from "../../features/database-explorer/editor";
@@ -22,6 +21,7 @@ import {
 } from "../../features/database-explorer/item-view";
 import {
   fetchJson,
+  getDataminedFileUrl,
   getJsonErrorMessage,
   replaceJsonValueAtPath,
 } from "./json";
@@ -117,9 +117,7 @@ function View({
     itemTypeOptions,
     magicTypeOptions,
   });
-  const selectedItemFileUrl = selectedItem?.item.filename
-    ? getDataminedFileUrl(selectedItem.item.filename)
-    : undefined;
+  const selectedItemFileName = selectedItem?.item.filename;
   const createItemAction = canEditCatalog && isEditMode
     ? (
         <DatabaseItemCreator
@@ -142,7 +140,7 @@ function View({
     abortControllerRef.current?.abort();
     jsonReferenceAbortControllerRef.current?.abort();
     setJsonPreview({ status: "idle" });
-  }, [selectedItemFileUrl]);
+  }, [selectedItemFileName]);
 
   useEffect(() => {
     return () => {
@@ -267,10 +265,19 @@ function View({
     abortControllerRef.current = abortController;
     setJsonPreview({ status: "loading" });
 
-    void fetchJson(
-      getDataminedFileUrl(filename),
-      abortController.signal,
-    )
+    let dataminedFileUrl;
+
+    try {
+      dataminedFileUrl = getDataminedFileUrl(filename);
+    } catch (fetchError) {
+      setJsonPreview({
+        message: getJsonErrorMessage(fetchError),
+        status: "error",
+      });
+      return;
+    }
+
+    void fetchJson(dataminedFileUrl, abortController.signal)
       .then((value) => {
         if (!abortController.signal.aborted) {
           setJsonPreview({
@@ -304,10 +311,27 @@ function View({
         : currentPreview
     );
 
-    void fetchJson(
-      getDataminedFileUrl(targetFileName),
-      abortController.signal,
-    )
+    let dataminedFileUrl;
+
+    try {
+      dataminedFileUrl = getDataminedFileUrl(targetFileName);
+    } catch (fetchError) {
+      setJsonPreview((currentPreview) =>
+        currentPreview.status === "loaded"
+          ? {
+              ...currentPreview,
+              loadingReferencePath: undefined,
+              referenceError: {
+                message: getJsonErrorMessage(fetchError),
+                path,
+              },
+            }
+          : currentPreview
+      );
+      return;
+    }
+
+    void fetchJson(dataminedFileUrl, abortController.signal)
       .then((value) => {
         if (abortController.signal.aborted) {
           return;
@@ -480,10 +504,6 @@ function StatePanel({
       )}
     </Card>
   );
-}
-
-function getDataminedFileUrl(filename: string): string {
-  return `${DATA_REPO}/${filename}.json`;
 }
 
 function isMobileExplorerLayout(): boolean {

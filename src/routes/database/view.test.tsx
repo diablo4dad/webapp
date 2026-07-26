@@ -1355,6 +1355,27 @@ describe("database surface", () => {
       .toHaveTextContent("▾");
   });
 
+  test("rejects unsafe datamined file paths before fetching json", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn();
+    const selectedItem = createExplorerItem({
+      filename: "../Secrets",
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    await user.click(screen.getByRole("button", { name: "Show JSON" }));
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(await screen.findByRole("alert"))
+      .toHaveTextContent("Invalid datamined file reference.");
+  });
+
   test("embeds datamined sno references in place", async () => {
     const user = userEvent.setup();
     const fetchMock = vi.fn()
@@ -1434,6 +1455,40 @@ describe("database surface", () => {
         '"displayName": "Azure Power"',
       )
     );
+  });
+
+  test("rejects unsafe datamined sno reference paths before fetching json", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn().mockResolvedValue(
+      jsonResponse({
+        item: {
+          id: 100,
+          snoActor: {
+            __targetFileName__: "../Secrets",
+            id: 901,
+          },
+        },
+      }),
+    );
+    const selectedItem = createExplorerItem({
+      filename: "base/meta/Item/Azure_Blade",
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderView({
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    await user.click(screen.getByRole("button", { name: "Show JSON" }));
+    await user.click(await screen.findByRole("button", {
+      name: "Load snoActor reference ../Secrets",
+    }));
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(await screen.findByText("Invalid datamined file reference."))
+      .toHaveClass(itemViewStyles.ViewJsonReferenceError);
   });
 
   test("shows datamined file json load errors", async () => {

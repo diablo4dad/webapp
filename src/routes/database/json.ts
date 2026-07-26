@@ -1,4 +1,8 @@
+import { DATA_REPO } from "../../config";
+
 type JsonPathSegment = string | number;
+
+const DATAMINED_FILE_SEGMENT_PATTERN = /^[ A-Za-z0-9_.-]+$/;
 
 async function fetchJson(
   url: string,
@@ -18,6 +22,39 @@ async function fetchFormattedJson(
   signal?: AbortSignal,
 ): Promise<string> {
   return formatJson(await fetchJson(url, signal));
+}
+
+function getDataminedFileUrl(filename: string): string {
+  const trimmedFilename = filename.trim();
+
+  if (
+    trimmedFilename.length === 0 ||
+    trimmedFilename.startsWith("/") ||
+    trimmedFilename.endsWith("/") ||
+    trimmedFilename.includes("\\") ||
+    trimmedFilename.includes("?") ||
+    trimmedFilename.includes("#")
+  ) {
+    throw new Error("Invalid datamined file reference.");
+  }
+
+  const segments = trimmedFilename.split("/");
+
+  if (
+    segments.some((segment) =>
+      segment.length === 0 ||
+      segment.trim().length === 0 ||
+      segment === "." ||
+      segment === ".." ||
+      !DATAMINED_FILE_SEGMENT_PATTERN.test(segment)
+    )
+  ) {
+    throw new Error("Invalid datamined file reference.");
+  }
+
+  const encodedFilename = segments.map(encodeURIComponent).join("/");
+
+  return `${DATA_REPO}/${encodedFilename}.json`;
 }
 
 function formatJson(value: unknown): string {
@@ -79,6 +116,7 @@ export {
   fetchFormattedJson,
   fetchJson,
   formatJson,
+  getDataminedFileUrl,
   getJsonErrorMessage,
   replaceJsonValueAtPath,
 };

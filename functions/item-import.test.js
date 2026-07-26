@@ -1,7 +1,10 @@
 import { describe, expect, test } from "vitest";
 import itemImport from "./item-import.js";
 
-const { parseImportedItemPage } = itemImport;
+const {
+  getImportedItemImageUrl,
+  parseImportedItemPage,
+} = itemImport;
 
 describe("item import parser", () => {
   test("prefers the item tooltip icon over generic page images", () => {
@@ -74,5 +77,34 @@ describe("item import parser", () => {
       1,
       1,
     ]);
+  });
+
+  test("allows imported item images only from supported HTTPS image hosts", () => {
+    const baseUrl = new URL(
+      "https://www.wowhead.com/diablo-4/item/anlace-784786",
+    );
+
+    expect(getImportedItemImageUrl(
+      "https://wow.zamimg.com/d4/d4/texture/hash/233/2094985449.webp",
+      baseUrl,
+    )).toBe(
+      "https://wow.zamimg.com/d4/d4/texture/hash/233/2094985449.webp",
+    );
+    expect(getImportedItemImageUrl(
+      "//wow.zamimg.com/d4/d4/texture/hash/233/2094985449.webp",
+      baseUrl,
+    )).toBe(
+      "https://wow.zamimg.com/d4/d4/texture/hash/233/2094985449.webp",
+    );
+    expect(getImportedItemImageUrl("http://wow.zamimg.com/icon.webp", baseUrl))
+      .toBeUndefined();
+    expect(getImportedItemImageUrl(
+      "https://wow.zamimg.com.evil.test/icon.webp",
+      baseUrl,
+    )).toBeUndefined();
+    expect(getImportedItemImageUrl(
+      "https://127.0.0.1/icon.webp",
+      baseUrl,
+    )).toBeUndefined();
   });
 });

@@ -1,7 +1,10 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { setGlobalOptions } = require("firebase-functions/v2");
-const { parseImportedItemPage } = require("./item-import");
+const {
+  getImportedItemImageUrl,
+  parseImportedItemPage,
+} = require("./item-import");
 
 setGlobalOptions({ region: "us-central1" });
 
@@ -31,6 +34,8 @@ const ALLOWED_ICON_CONTENT_TYPES = new Set([
   "image/webp",
 ]);
 const ITEM_IMPORT_HOSTNAMES = new Set(["wowhead.com", "www.wowhead.com"]);
+const ITEM_IMPORT_IMAGE_HOSTNAMES = new Set(["wow.zamimg.com"]);
+const MAX_SAFE_REDIRECTS = 3;
 
 function getCatalogCollectionNodesBundleName(versionId, category) {
   return category
@@ -192,20 +197,83 @@ function getImportUrl(value) {
   return url;
 }
 
-async function fetchImageDataUrl(url, baseUrl) {
-  if (!url) {
+function isAllowedHttpsUrl(url, allowedHostnames) {
+  return url.protocol === "https:" && allowedHostnames.has(url.hostname);
+}
+
+function getSafeRedirectUrl(location, baseUrl, allowedHostnames) {
+  if (!location) {
     return undefined;
   }
 
-  let targetUrl;
+  let url;
 
   try {
-    targetUrl = new URL(url, baseUrl).toString();
+    url = new URL(location, baseUrl);
   } catch {
     return undefined;
   }
 
-  const response = await fetch(targetUrl);
+  return isAllowedHttpsUrl(url, allowedHostnames) ? url : undefined;
+}
+
+function isRedirectStatus(status) {
+  return (
+    status === 301 ||
+    status === 302 ||
+    status === 303 ||
+    status === 307 ||
+    status === 308
+  );
+}
+
+async function fetchAllowedUrl(url, allowedHostnames, options = {}) {
+  let targetUrl = new URL(url);
+
+  for (
+    let redirectCount = 0;
+    redirectCount <= MAX_SAFE_REDIRECTS;
+    redirectCount += 1
+  ) {
+    const response = await fetch(targetUrl, {
+      ...options,
+      redirect: "manual",
+    });
+
+    if (!isRedirectStatus(response.status)) {
+      return response;
+    }
+
+    const nextUrl = getSafeRedirectUrl(
+      response.headers.get("location"),
+      targetUrl,
+      allowedHostnames,
+    );
+
+    if (!nextUrl) {
+      throw new Error("Item URL redirected to an unsupported host.");
+    }
+
+    targetUrl = nextUrl;
+  }
+
+  throw new Error("Item URL redirected too many times.");
+}
+
+async function fetchImageDataUrl(url, baseUrl) {
+  const targetUrl = getImportedItemImageUrl(url, baseUrl);
+
+  if (!targetUrl) {
+    return undefined;
+  }
+
+  let response;
+
+  try {
+    response = await fetchAllowedUrl(targetUrl, ITEM_IMPORT_IMAGE_HOSTNAMES);
+  } catch {
+    return undefined;
+  }
 
   if (!response.ok) {
     return undefined;
@@ -375,11 +443,15 @@ exports.databaseItemImport = functions.https.onRequest(
       await requireEditor(request);
       const body = readJsonBody(request);
       const url = getImportUrl(body.url);
-      const importResponse = await fetch(url, {
-        headers: {
-          "User-Agent": "d4log-catalog-editor/1.0",
+      const importResponse = await fetchAllowedUrl(
+        url,
+        ITEM_IMPORT_HOSTNAMES,
+        {
+          headers: {
+            "User-Agent": "d4log-catalog-editor/1.0",
+          },
         },
-      });
+      );
 
       if (!importResponse.ok) {
         throw new Error(`Item URL request failed (${importResponse.status}).`);

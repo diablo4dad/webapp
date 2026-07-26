@@ -16,6 +16,7 @@ const ITEM_IMPORT_CHARACTER_CLASSES = new Map([
   ["paladin", 6],
   ["warlock", 7],
 ]);
+const ITEM_IMPORT_IMAGE_HOSTNAMES = new Set(["wow.zamimg.com"]);
 const HTML_ENTITY_VALUES = new Map([
   ["amp", "&"],
   ["apos", "'"],
@@ -111,6 +112,33 @@ function getItemTooltipIconUrl(html) {
   }
 
   return undefined;
+}
+
+function getImportedItemImageUrl(value, baseUrl) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    return undefined;
+  }
+
+  let url;
+
+  try {
+    url = new URL(value.trim(), baseUrl);
+  } catch {
+    return undefined;
+  }
+
+  if (
+    url.protocol !== "https:" ||
+    !ITEM_IMPORT_IMAGE_HOSTNAMES.has(url.hostname)
+  ) {
+    return undefined;
+  }
+
+  url.hash = "";
+  url.password = "";
+  url.username = "";
+
+  return url.toString();
 }
 
 function getReadablePageText(html) {
@@ -224,5 +252,6 @@ function parseImportedItemPage(html, url) {
 }
 
 module.exports = {
+  getImportedItemImageUrl,
   parseImportedItemPage,
 };
