@@ -44,22 +44,24 @@
     align-self: flex-start;
     gap: var(--space-2);
     min-height: 2.5rem;
-    border: 1px solid transparent;
+    border: 1px solid var(--editor-control-border);
     border-radius: var(--radius-sm);
     padding: 0 var(--space-3);
-    background-color: transparent;
+    background-color: var(--app-surface-raised);
     color: var(--app-text-secondary);
     font: inherit;
     font-size: var(--font-size-sm);
     font-weight: 700;
     cursor: pointer;
     transition:
+        border-color 160ms ease,
         background-color 160ms ease,
         color 160ms ease;
 }
 
 .ViewMobileBackButton:hover {
-    background-color: rgb(255 255 255 / 5%);
+    border-color: var(--editor-border);
+    background-color: var(--color-neutral-830);
     color: var(--editor-text-strong);
 }
 
@@ -361,9 +363,10 @@
 
     .ViewDetailIcon {
         flex: 0 0 auto;
+        order: 3;
         float: none;
         max-width: min(120px, 100%);
-        margin: 0;
+        margin: 0 0 0 auto;
     }
 
     .ViewDetailHeading,
@@ -376,10 +379,12 @@
 
     .ViewDetailHeading {
         flex: 0 1 auto;
+        order: 1;
     }
 
     .ViewDetailMetaColumn {
         flex: 1 1 auto;
         min-width: min-content;
+        order: 2;
     }
 }

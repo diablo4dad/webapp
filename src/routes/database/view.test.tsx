@@ -425,9 +425,14 @@ describe("database surface", () => {
     );
     expect(itemPane).not.toHaveClass(routeStyles.ViewItemPaneMobileHidden);
 
-    await user.click(screen.getByRole("button", {
+    const backButton = screen.getByRole("button", {
       name: "Back to item list",
-    }));
+    });
+
+    expect(backButton).toHaveClass(itemViewStyles.ViewMobileBackButton);
+    expect(backButton).toHaveTextContent("Item List");
+
+    await user.click(backButton);
 
     expect(resultsPane).not.toHaveClass(
       routeStyles.ViewResultsPaneMobileHidden,
