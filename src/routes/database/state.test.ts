@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import { CharacterClass, type DadDbRef, MagicType } from "../../services/data";
 import {
   DEFAULT_FILTERS,
+  createCollectionLogReferencesByItemId,
   createSearchIndex,
   createExplorerItems,
   createStaticExplorerItems,
@@ -121,6 +122,89 @@ describe("database items", () => {
       source: "catalog",
       staticItem: undefined,
     });
+  });
+
+  test("indexes collection log references by item id", () => {
+    const items = createExplorerItems({
+      itemTypes,
+      items: [
+        {
+          id: 201,
+          icon: 2001,
+          itemType: 10,
+          magicType: MagicType.UNIQUE,
+          name: "Ashava Blade",
+        },
+        {
+          id: 202,
+          icon: 2002,
+          itemType: 20,
+          name: "Open World Mount",
+        },
+      ],
+    });
+    const references = createCollectionLogReferencesByItemId(
+      {
+        itemTypes,
+        collections: [
+          {
+            id: "monster",
+            name: "Monster",
+            category: "General",
+            claim: "World Drop",
+            collectionItems: [
+              {
+                claim: "World Drop",
+                items: [202],
+              },
+            ],
+            subcollections: [
+              {
+                id: "world-boss",
+                name: "World Boss",
+                category: "Monster Drop",
+                claim: "World Boss Drop",
+                collectionItems: [
+                  {
+                    claim: "World Boss Drop",
+                    claimDescription: "Dropped by Ashava.",
+                    items: [201, 202],
+                  },
+                ],
+                subcollections: [],
+              },
+            ],
+          },
+        ],
+      },
+      items,
+    );
+
+    expect(references.get(201)).toEqual([
+      {
+        category: "Monster Drop",
+        claim: "World Boss Drop",
+        claimDescription: "Dropped by Ashava.",
+        collectionId: "world-boss",
+        collectionName: "Monster / World Boss",
+      },
+    ]);
+    expect(references.get(202)).toEqual([
+      {
+        category: "Essential",
+        claim: "World Drop",
+        claimDescription: "Dropped throughout Sanctuary.",
+        collectionId: "monster",
+        collectionName: "Monster",
+      },
+      {
+        category: "Monster Drop",
+        claim: "World Boss Drop",
+        claimDescription: "Dropped by Ashava.",
+        collectionId: "world-boss",
+        collectionName: "Monster / World Boss",
+      },
+    ]);
   });
 
   test("searches by item metadata", () => {

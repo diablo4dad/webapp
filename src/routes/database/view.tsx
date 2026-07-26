@@ -24,6 +24,7 @@ import {
   getJsonErrorMessage,
 } from "./json";
 import {
+  type CollectionLogReference,
   type ExplorerItem,
   type FilterOption,
   type Filters,
@@ -36,6 +37,7 @@ import styles from "./view.module.css";
 type Props = {
   canEditCatalog?: boolean;
   classOptions: FilterOption[];
+  collectionReferences?: CollectionLogReference[];
   error?: string;
   filteredItems: ExplorerItem[];
   filters: Filters;
@@ -64,6 +66,7 @@ type MobileScrollAction = "detailTop" | "listRestore";
 function View({
   canEditCatalog = false,
   classOptions,
+  collectionReferences = [],
   error,
   filteredItems,
   filters,
@@ -322,6 +325,7 @@ function View({
           >
             <ItemView
               canEditCatalog={canEditCatalog}
+              collectionReferences={collectionReferences}
               isEditMode={isEditMode}
               item={selectedItem}
               itemTypes={itemTypes}

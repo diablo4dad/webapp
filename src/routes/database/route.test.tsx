@@ -184,6 +184,49 @@ describe("database route", () => {
     expect(screen.getAllByText("102")).not.toHaveLength(0);
   });
 
+  test("renders collection log references for the selected item", async () => {
+    mocks.fetchHybridDadDbRefsByCategory.mockResolvedValueOnce([
+      {
+        category: MasterGroup.GENERAL,
+        dadDbRef: {
+          ...dadDbRef(),
+          collections: [
+            {
+              id: "monster",
+              name: "Monster",
+              category: MasterGroup.GENERAL,
+              collectionItems: [],
+              subcollections: [
+                {
+                  id: "world-boss",
+                  name: "World Boss",
+                  category: "Monster Drop",
+                  collectionItems: [
+                    {
+                      claim: "World Boss Drop",
+                      claimDescription: "Dropped by Ashava.",
+                      items: [101],
+                    },
+                  ],
+                  subcollections: [],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ]);
+
+    renderRoute("/database/101");
+
+    expect(await screen.findByRole("heading", { name: "Collection Log" }))
+      .toBeInTheDocument();
+    expect(screen.getByText("Monster Drop")).toBeInTheDocument();
+    expect(screen.getByText("Monster / World Boss")).toBeInTheDocument();
+    expect(screen.getByText("World Boss Drop")).toBeInTheDocument();
+    expect(screen.getByText("Dropped by Ashava.")).toBeInTheDocument();
+  });
+
   test("routes selected item changes", async () => {
     const user = userEvent.setup();
 
@@ -233,16 +276,23 @@ describe("database route", () => {
     mocks.fetchCatalogItems
       .mockResolvedValueOnce([])
       .mockReturnValueOnce(refreshedItems.promise);
-    mocks.fetchHybridDadDbRefsByCategory.mockResolvedValueOnce([
-      {
-        category: MasterGroup.GENERAL,
-        dadDbRef: dadDbRef(),
-      },
-      {
-        category: MasterGroup.SHOP_ITEMS,
-        dadDbRef: dadDbRef(),
-      },
-    ]);
+    mocks.fetchHybridDadDbRefsByCategory
+      .mockResolvedValueOnce([
+        {
+          category: MasterGroup.GENERAL,
+          dadDbRef: dadDbRef(),
+        },
+      ])
+      .mockResolvedValueOnce([
+        {
+          category: MasterGroup.GENERAL,
+          dadDbRef: dadDbRef(),
+        },
+        {
+          category: MasterGroup.SHOP_ITEMS,
+          dadDbRef: dadDbRef(),
+        },
+      ]);
 
     renderRoute("/database/101", "", {
       loadedCatalogGroups: [MasterGroup.GENERAL, MasterGroup.SHOP_ITEMS],

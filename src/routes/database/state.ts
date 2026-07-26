@@ -1,16 +1,23 @@
 import Fuse from "fuse.js";
 import {
   CharacterClass,
+  DEFAULT_ITEM,
   MagicType,
+  type CollectionItem,
+  type CollectionItemRef,
+  type CollectionRef,
   type DadDbRef,
+  type Item,
   type ItemRef,
   type ItemType,
 } from "../../services/data";
+import { hydrateItem } from "../../services/data/factory";
 import {
   coalesceCatalogItem,
   type CatalogItemDoc,
 } from "../../services/store/catalog";
-import i18n from "../../services/i18n";
+import i18n, { getItemDescription } from "../../services/i18n";
+import { collectionGroupLabels } from "../../shared/domain";
 import {
   MAGIC_TYPE_NOT_SET,
   MAGIC_TYPE_NOT_SET_FILTER_VALUE,
@@ -54,6 +61,27 @@ type ExplorerItem = {
 type FilterOption = {
   label: string;
   value: string;
+};
+
+type CollectionLogReference = {
+  category: string;
+  claim: string;
+  claimDescription: string;
+  collectionId: string;
+  collectionName: string;
+};
+
+type CollectionReferenceContext = {
+  category?: string;
+  claim?: string;
+  claimDescription?: string;
+  claimZone?: CollectionRef["claimZone"];
+  names: string[];
+  outOfRotation?: boolean;
+  premium?: boolean;
+  promotional?: boolean;
+  rootCategory?: string;
+  season?: number;
 };
 
 const ALL_OPTION_VALUE = "all";
@@ -121,6 +149,168 @@ function createExplorerItems(
         catalogItem,
       })),
   ].map(createExplorerItem);
+}
+
+function createCollectionLogReferencesByItemId(
+  dadDbRef: Pick<DadDbRef, "collections" | "itemTypes">,
+  items: ExplorerItem[],
+): Map<number, CollectionLogReference[]> {
+  const itemLookup = createHydratedItemLookup(dadDbRef, items);
+  const references = new Map<number, CollectionLogReference[]>();
+
+  for (const collection of dadDbRef.collections) {
+    addCollectionReferences(collection, itemLookup, references);
+  }
+
+  return references;
+}
+
+function createHydratedItemLookup(
+  dadDbRef: Pick<DadDbRef, "itemTypes">,
+  items: ExplorerItem[],
+): Map<number, Item> {
+  const itemTypes = new Map(dadDbRef.itemTypes.map((itemType) => [
+    itemType.id,
+    itemType,
+  ]));
+  const hydrate = hydrateItem(itemTypes);
+
+  return new Map(
+    items.map((item) => [item.item.id, hydrate(item.item)]),
+  );
+}
+
+function addCollectionReferences(
+  collection: CollectionRef,
+  itemLookup: Map<number, Item>,
+  references: Map<number, CollectionLogReference[]>,
+  parentContext?: CollectionReferenceContext,
+) {
+  const context = createCollectionReferenceContext(collection, parentContext);
+
+  for (const collectionItem of collection.collectionItems ?? []) {
+    addCollectionItemReferences(collection, collectionItem, {
+      context,
+      itemLookup,
+      references,
+    });
+  }
+
+  for (const subcollection of collection.subcollections ?? []) {
+    addCollectionReferences(
+      subcollection,
+      itemLookup,
+      references,
+      context,
+    );
+  }
+}
+
+function addCollectionItemReferences(
+  collection: CollectionRef,
+  collectionItem: CollectionItemRef,
+  {
+    context,
+    itemLookup,
+    references,
+  }: {
+    context: CollectionReferenceContext;
+    itemLookup: Map<number, Item>;
+    references: Map<number, CollectionLogReference[]>;
+  },
+) {
+  const reference = createCollectionLogReference(
+    collection,
+    collectionItem,
+    context,
+    itemLookup,
+  );
+
+  for (const itemId of collectionItem.items) {
+    const itemReferences = references.get(itemId) ?? [];
+    itemReferences.push(reference);
+    references.set(itemId, itemReferences);
+  }
+}
+
+function createCollectionReferenceContext(
+  collection: CollectionRef,
+  parentContext?: CollectionReferenceContext,
+): CollectionReferenceContext {
+  const rootCategory = collection.rootCategory ??
+    parentContext?.rootCategory ??
+    collection.category;
+  const category = collection.category ??
+    collection.rootCategory ??
+    parentContext?.category ??
+    rootCategory;
+
+  return {
+    category,
+    claim: collection.claim ?? parentContext?.claim,
+    claimDescription:
+      collection.claimDescription ?? parentContext?.claimDescription,
+    claimZone: collection.claimZone ?? parentContext?.claimZone,
+    names: [...(parentContext?.names ?? []), collection.name],
+    outOfRotation: collection.outOfRotation ?? parentContext?.outOfRotation,
+    premium: collection.premium ?? parentContext?.premium,
+    promotional: collection.promotional ?? parentContext?.promotional,
+    rootCategory,
+    season: collection.season ?? parentContext?.season,
+  };
+}
+
+function createCollectionLogReference(
+  collection: CollectionRef,
+  collectionItem: CollectionItemRef,
+  context: CollectionReferenceContext,
+  itemLookup: Map<number, Item>,
+): CollectionLogReference {
+  const claim = collectionItem.claim || context.claim || "Not set";
+  const hydratedCollectionItem: CollectionItem = {
+    ...collectionItem,
+    claim,
+    claimDescription:
+      collectionItem.claimDescription ?? context.claimDescription,
+    claimZone: collectionItem.claimZone ?? context.claimZone,
+    id: -1,
+    items: collectionItem.items.map(
+      (itemId) => itemLookup.get(itemId) ?? DEFAULT_ITEM,
+    ),
+    outOfRotation:
+      collectionItem.outOfRotation ?? context.outOfRotation,
+    premium: collectionItem.premium ?? context.premium,
+    promotional: collectionItem.promotional ?? context.promotional,
+    season: collectionItem.season ?? context.season,
+  };
+
+  return {
+    category: getCollectionReferenceCategory(context),
+    claim,
+    claimDescription: getItemDescription(hydratedCollectionItem),
+    collectionId: String(collection.id),
+    collectionName: context.names.join(" / "),
+  };
+}
+
+function getCollectionReferenceCategory(
+  context: CollectionReferenceContext,
+): string {
+  const category = context.category ?? context.rootCategory;
+
+  if (!category) {
+    return "Uncategorized";
+  }
+
+  return getCollectionGroupLabel(category) ?? category;
+}
+
+function getCollectionGroupLabel(category: string): string | undefined {
+  return Object.prototype.hasOwnProperty.call(collectionGroupLabels, category)
+    ? collectionGroupLabels[
+        category as keyof typeof collectionGroupLabels
+      ]
+    : undefined;
 }
 
 function createExplorerItem({
@@ -409,6 +599,7 @@ export {
   ALL_OPTION_VALUE,
   DEFAULT_FILTERS,
   DEFAULT_SORT_MODE,
+  createCollectionLogReferencesByItemId,
   createSearchIndex,
   createExplorerItems,
   createStaticExplorerItems,
@@ -419,6 +610,7 @@ export {
   sortExplorerItems,
 };
 export type {
+  CollectionLogReference,
   ExplorerItem,
   FilterOption,
   Filters,

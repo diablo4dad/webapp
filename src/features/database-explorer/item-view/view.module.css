@@ -254,6 +254,53 @@
     color: var(--rarity-rare-color);
 }
 
+.ViewCollectionReferenceList {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, 18rem), 1fr)
+    );
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.ViewCollectionReference {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+    border: 1px solid var(--editor-divider);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    background-color: var(--editor-panel-surface);
+}
+
+.ViewCollectionReferenceHeader {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.ViewCollectionReferenceCategory {
+    color: var(--editor-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.ViewCollectionReferenceCollection {
+    color: var(--editor-text-strong);
+    font-weight: 700;
+    overflow-wrap: break-word;
+}
+
+.ViewCollectionReferenceFields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-width: 0;
+}
+
 .ViewClassList {
     display: flex;
     flex-wrap: wrap;

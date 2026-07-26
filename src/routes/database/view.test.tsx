@@ -1226,6 +1226,68 @@ describe("database surface", () => {
       .not.toBeInTheDocument();
   });
 
+  test("renders collection log references for the selected item", () => {
+    const selectedItem = createExplorerItem();
+
+    renderView({
+      collectionReferences: [
+        {
+          category: "Monster Drop",
+          claim: "World Boss Drop",
+          claimDescription: "Dropped by Ashava.",
+          collectionId: "world-boss",
+          collectionName: "Monster / World Boss",
+        },
+        {
+          category: "Tejal's Shop",
+          claim: "Cash Shop",
+          claimDescription: "Purchased from the cash shop.",
+          collectionId: "shop",
+          collectionName: "Shop / Barbarian Armor",
+        },
+      ],
+      filteredItems: [selectedItem],
+      selectedItem,
+      totalCount: 1,
+    });
+
+    const collectionLogSection = screen
+      .getByRole("heading", { name: "Collection Log" })
+      .closest("section");
+
+    expect(collectionLogSection).not.toBeNull();
+
+    const collectionLog = within(collectionLogSection as HTMLElement);
+    const worldBossReference = collectionLog
+      .getByText("Monster / World Boss")
+      .closest(`.${itemViewStyles.ViewCollectionReference}`);
+    const shopReference = collectionLog
+      .getByText("Shop / Barbarian Armor")
+      .closest(`.${itemViewStyles.ViewCollectionReference}`);
+
+    expect(worldBossReference).not.toBeNull();
+    expect(shopReference).not.toBeNull();
+    expect(collectionLog.getByText("Monster Drop")).toHaveClass(
+      itemViewStyles.ViewCollectionReferenceCategory,
+    );
+    expect(collectionLog.getByText("Monster / World Boss")).toHaveClass(
+      itemViewStyles.ViewCollectionReferenceCollection,
+    );
+    expect(within(worldBossReference as HTMLElement).getByText("Claim"))
+      .toHaveClass(itemViewStyles.ViewFieldLabel);
+    expect(within(worldBossReference as HTMLElement).getByText(
+      "World Boss Drop",
+    )).toHaveClass(itemViewStyles.ViewFieldValue);
+    expect(within(worldBossReference as HTMLElement).getByText(
+      "Dropped by Ashava.",
+    )).toHaveClass(itemViewStyles.ViewFieldValue);
+    expect(within(shopReference as HTMLElement).getByText("Cash Shop"))
+      .toBeInTheDocument();
+    expect(within(shopReference as HTMLElement).getByText(
+      "Purchased from the cash shop.",
+    )).toBeInTheDocument();
+  });
+
   test("fetches and renders datamined file json", async () => {
     const user = userEvent.setup();
     const fetchMock = vi.fn().mockResolvedValue({

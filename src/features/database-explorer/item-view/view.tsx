@@ -24,8 +24,17 @@ type ItemViewItem = EditorItem & {
   itemTypeName: string;
 };
 
+type CollectionLogReference = {
+  category: string;
+  claim: string;
+  claimDescription: string;
+  collectionId: string;
+  collectionName: string;
+};
+
 type Props = {
   canEditCatalog: boolean;
+  collectionReferences?: CollectionLogReference[];
   isEditMode: boolean;
   item?: ItemViewItem;
   itemTypes?: ItemType[];
@@ -72,6 +81,7 @@ const INVENTORY_GENDER_CHOICES = [
 
 function ItemView({
   canEditCatalog,
+  collectionReferences = [],
   isEditMode,
   item,
   itemTypes = [],
@@ -161,6 +171,9 @@ function ItemView({
           </section>
         </Card>
       )}
+      {collectionReferences.length > 0 && (
+        <CollectionLogReferenceCard references={collectionReferences} />
+      )}
       {rawItem.filename && (
         <DataminedFileCard
           filename={rawItem.filename}
@@ -236,6 +249,44 @@ function DataminedFileCard({
             {jsonPreview.formattedJson}
           </pre>
         )}
+      </section>
+    </Card>
+  );
+}
+
+function CollectionLogReferenceCard({
+  references,
+}: {
+  references: CollectionLogReference[];
+}) {
+  return (
+    <Card className={styles.ViewDetailCard}>
+      <section className={styles.ViewDetailSection}>
+        <h3>Collection Log</h3>
+        <div className={styles.ViewCollectionReferenceList}>
+          {references.map((reference, index) => (
+            <article
+              key={`${reference.collectionId}-${reference.claim}-${index}`}
+              className={styles.ViewCollectionReference}
+            >
+              <div className={styles.ViewCollectionReferenceHeader}>
+                <span className={styles.ViewCollectionReferenceCategory}>
+                  {reference.category}
+                </span>
+                <span className={styles.ViewCollectionReferenceCollection}>
+                  {reference.collectionName}
+                </span>
+              </div>
+              <div className={styles.ViewCollectionReferenceFields}>
+                <Field label="Claim" value={reference.claim} />
+                <Field
+                  label="Claim Description"
+                  value={reference.claimDescription}
+                />
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
     </Card>
   );

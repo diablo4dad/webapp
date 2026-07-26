@@ -8,14 +8,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEditor } from "../../features/editor";
 import { useData, type DataContextType } from "../../services/data/context";
 import { hydrateDadDb } from "../../services/data/factory";
-import type { ItemType } from "../../services/data";
+import type { DadDbRef, ItemType } from "../../services/data";
 import {
   fetchCatalogItems,
   fetchHybridDadDbRefsByCategory,
   fetchStaticDadDbRef,
   type CatalogItemSource,
 } from "../../services/store/catalog";
-import type { MasterGroup } from "../../shared/domain";
+import { catalogGroups, type MasterGroup } from "../../shared/domain";
 import {
   DATABASE_SHELL_CONTROLS,
   useRootOutletContext,
@@ -24,6 +24,7 @@ import {
 import {
   DEFAULT_FILTERS,
   DEFAULT_SORT_MODE,
+  createCollectionLogReferencesByItemId,
   createSearchIndex,
   createExplorerItems,
   filterExplorerItems,
@@ -31,6 +32,7 @@ import {
   getItemTypeOptions,
   getMagicTypeOptions,
   sortExplorerItems,
+  type CollectionLogReference,
   type ExplorerItem,
   type Filters,
   type SortMode,
@@ -39,6 +41,7 @@ import { View } from "./view";
 
 type LoadState =
   | {
+      collectionReferencesByItemId: Map<number, CollectionLogReference[]>;
       itemTypes: ItemType[];
       items: ExplorerItem[];
       status: "loaded";
@@ -87,11 +90,20 @@ function Component() {
       fetchStaticDadDbRef(),
       fetchDatabaseCatalogItems(catalogItemSource),
     ])
-      .then(([dadDbRef, catalogItems]) => {
+      .then(async ([dadDbRef, catalogItems]) => {
+        const items = createExplorerItems(dadDbRef, catalogItems);
+        const collectionReferencesByItemId =
+          await fetchDatabaseCollectionReferences({
+            dadDbRef,
+            items,
+            source: catalogItemSource,
+          });
+
         if (!cancelled) {
           setLoadState({
+            collectionReferencesByItemId,
             itemTypes: dadDbRef.itemTypes,
-            items: createExplorerItems(dadDbRef, catalogItems),
+            items,
             status: "loaded",
           });
         }
@@ -112,6 +124,9 @@ function Component() {
 
   const items = loadState.status === "loaded" ? loadState.items : [];
   const itemTypes = loadState.status === "loaded" ? loadState.itemTypes : [];
+  const collectionReferencesByItemId = loadState.status === "loaded"
+    ? loadState.collectionReferencesByItemId
+    : new Map<number, CollectionLogReference[]>();
   const existingItemIds = useMemo(
     () => items.map((item) => item.item.id),
     [items],
@@ -138,6 +153,9 @@ function Component() {
     itemsById,
     selectedItemId,
   });
+  const selectedItemCollectionReferences = selectedItem
+    ? collectionReferencesByItemId.get(selectedItem.item.id) ?? []
+    : [];
   const onSelectItemIdChange = useCallback(
     (nextItemId: number, options?: { replace?: boolean }) => {
       void navigate(`/database/${nextItemId}`, {
@@ -191,6 +209,7 @@ function Component() {
       existingItemIds={existingItemIds}
       itemTypeOptions={itemTypeOptions}
       magicTypeOptions={magicTypeOptions}
+      collectionReferences={selectedItemCollectionReferences}
       onFilterChange={onFilterChange}
       onRefreshItems={onRefreshItems}
       onRetry={onRetry}
@@ -261,6 +280,40 @@ async function fetchDatabaseCatalogItems(
     );
 
     return [];
+  }
+}
+
+async function fetchDatabaseCollectionReferences({
+  dadDbRef,
+  items,
+  source,
+}: {
+  dadDbRef: DadDbRef;
+  items: ExplorerItem[];
+  source: CatalogItemSource;
+}): Promise<Map<number, CollectionLogReference[]>> {
+  try {
+    const resolvedGroups = await fetchHybridDadDbRefsByCategory(
+      [...catalogGroups],
+      { source },
+    );
+
+    return createCollectionLogReferencesByItemId(
+      {
+        collections: resolvedGroups.flatMap(
+          (resolvedGroup) => resolvedGroup.dadDbRef.collections,
+        ),
+        itemTypes: dadDbRef.itemTypes,
+      },
+      items,
+    );
+  } catch (error) {
+    console.warn(
+      "[Catalog] Failed to load collection log references. Falling back to static database collections.",
+      error,
+    );
+
+    return createCollectionLogReferencesByItemId(dadDbRef, items);
   }
 }
 
