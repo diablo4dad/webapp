@@ -345,27 +345,35 @@
     transform: translateY(0.05rem);
 }
 
-.ViewMagicTypeCommon {
+.ViewItemQualityTransmog {
+    color: var(--rarity-transmog-color);
+}
+
+.ViewItemQualityJunk {
+    color: var(--rarity-junk-color);
+}
+
+.ViewItemQualityCommon {
     color: var(--app-text);
 }
 
-.ViewMagicTypeMagic {
+.ViewItemQualityMagic {
     color: var(--rarity-magic-color);
 }
 
-.ViewMagicTypeLegendary {
+.ViewItemQualityLegendary {
     color: var(--rarity-legendary-color);
 }
 
-.ViewMagicTypeUnique {
+.ViewItemQualityUnique {
     color: var(--rarity-unique-color);
 }
 
-.ViewMagicTypeMythic {
+.ViewItemQualityMythic {
     color: var(--rarity-mythic-color);
 }
 
-.ViewMagicTypeRare {
+.ViewItemQualityRare {
     color: var(--rarity-rare-color);
 }
 

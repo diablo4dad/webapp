@@ -19,7 +19,7 @@ import {
   vi,
 } from "vitest";
 import {
-  MagicType,
+  ItemQuality,
   type DadDbRef,
 } from "../../services/data";
 import { DataContext, type DataContextType } from "../../services/data/context";
@@ -437,14 +437,14 @@ function dadDbRef(): DadDbRef {
         icon: 1,
         id: 101,
         itemType: 1,
-        magicType: MagicType.MAGIC,
+        itemQuality: ItemQuality.MAGIC,
         name: "Azure Helm",
       },
       {
         icon: 2,
         id: 102,
         itemType: 2,
-        magicType: MagicType.LEGENDARY,
+        itemQuality: ItemQuality.LEGENDARY,
         name: "Crimson Sword",
       },
     ],

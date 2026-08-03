@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import {
-  MagicType,
+  ItemQuality,
   type CollectionItem,
   type Item,
 } from "../../services/data";
@@ -20,7 +20,7 @@ function item(id: number): Item {
       id: 1,
       name: "Armor",
     },
-    magicType: MagicType.UNIQUE,
+    itemQuality: ItemQuality.UNIQUE,
     name: `Item ${id}`,
     similarItemsRefs: [],
     usableByClass: [],

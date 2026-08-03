@@ -49,7 +49,7 @@ type Props = {
   existingItemIds?: number[];
   itemTypes?: ItemType[];
   itemTypeOptions: FilterOption[];
-  magicTypeOptions: FilterOption[];
+  itemQualityOptions: FilterOption[];
   onFilterChange: (filters: Partial<Filters>) => void;
   onRefreshItems?: () => void;
   onRetry: () => void;
@@ -79,7 +79,7 @@ function View({
   existingItemIds = [],
   itemTypes = [],
   itemTypeOptions,
-  magicTypeOptions,
+  itemQualityOptions,
   onFilterChange,
   onRefreshItems = () => undefined,
   onRetry,
@@ -114,7 +114,7 @@ function View({
     classOptions,
     filters,
     itemTypeOptions,
-    magicTypeOptions,
+    itemQualityOptions,
   });
   const selectedItemFileName = selectedItem?.item.filename;
   const dataminedFiles = selectedItemFileName
@@ -514,12 +514,12 @@ function createFilterControls({
   classOptions,
   filters,
   itemTypeOptions,
-  magicTypeOptions,
+  itemQualityOptions,
 }: {
   classOptions: FilterOption[];
   filters: Filters;
   itemTypeOptions: FilterOption[];
-  magicTypeOptions: FilterOption[];
+  itemQualityOptions: FilterOption[];
 }): FilterControlConfig[] {
   return [
     {
@@ -529,10 +529,10 @@ function createFilterControls({
       value: filters.itemTypeId,
     },
     {
-      key: "magicType",
+      key: "itemQuality",
       label: "Item Quality",
-      options: magicTypeOptions,
-      value: filters.magicType,
+      options: itemQualityOptions,
+      value: filters.itemQuality,
     },
     {
       key: "characterClass",
@@ -552,8 +552,8 @@ function createFilterUpdate(
       return { characterClass: value };
     case "itemTypeId":
       return { itemTypeId: value };
-    case "magicType":
-      return { magicType: value };
+    case "itemQuality":
+      return { itemQuality: value };
   }
 }
 

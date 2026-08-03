@@ -18,7 +18,7 @@ import {
   CharacterClass,
   Collection,
   CollectionItem,
-  MagicType,
+  ItemQuality,
   getDefaultItem,
 } from "../../services/data";
 import {
@@ -68,29 +68,32 @@ const classIconCssMap = new Map<CharacterClass, string>([
   [CharacterClass.WARLOCK, styles.WarlockClassIcon],
 ]);
 
-const magicTypeCssMap = new Map<MagicType, string>([
-  [MagicType.COMMON, styles.ItemMagicTypeCommon],
-  [MagicType.MAGIC, styles.ItemMagicTypeMagic],
-  [MagicType.LEGENDARY, styles.ItemMagicTypeLegendary],
-  [MagicType.UNIQUE, styles.ItemMagicTypeUnique],
-  [MagicType.MYTHIC, styles.ItemMagicTypeMythic],
-  [MagicType.RARE, styles.ItemMagicTypeRare],
+const itemQualityCssMap = new Map<ItemQuality, string>([
+  [ItemQuality.TRANSMOG, styles.ItemQualityTransmog],
+  [ItemQuality.JUNK, styles.ItemQualityJunk],
+  [ItemQuality.COMMON, styles.ItemQualityCommon],
+  [ItemQuality.MAGIC, styles.ItemQualityMagic],
+  [ItemQuality.LEGENDARY, styles.ItemQualityLegendary],
+  [ItemQuality.UNIQUE, styles.ItemQualityUnique],
+  [ItemQuality.MYTHIC, styles.ItemQualityMythic],
+  [ItemQuality.ICONIC_MYTHIC, styles.ItemQualityMythic],
+  [ItemQuality.RARE, styles.ItemQualityRare],
 ]);
 
-function getMagicTypeClassName(magicType: MagicType): string {
-  return classNames(styles.ItemMagicType, magicTypeCssMap.get(magicType));
+function getItemQualityClassName(itemQuality: ItemQuality): string {
+  return classNames(styles.ItemQuality, itemQualityCssMap.get(itemQuality));
 }
 
-function renderMagicTypeLabel(magicType: MagicType): React.ReactNode {
-  if (magicType === MagicType.COMMON) {
+function renderItemQualityLabel(itemQuality: ItemQuality): React.ReactNode {
+  if (itemQuality === ItemQuality.COMMON) {
     return (
-      <span className={getMagicTypeClassName(MagicType.MAGIC)}>Magic</span>
+      <span className={getItemQualityClassName(ItemQuality.MAGIC)}>Magic</span>
     );
   }
 
   return (
-    <span className={getMagicTypeClassName(magicType)}>
-      {i18n.magicType[magicType]}
+    <span className={getItemQualityClassName(itemQuality)}>
+      {i18n.itemQuality[itemQuality]}
     </span>
   );
 }
@@ -271,7 +274,7 @@ function ItemSidebar({ collection, collectionItem, className }: ItemProps) {
               />
               <span>
                 Salvaged from{" "}
-                {renderMagicTypeLabel(item.magicType as MagicType)} {item.name}
+                {renderItemQualityLabel(item.itemQuality as ItemQuality)} {item.name}
               </span>
             </div>
           ))}

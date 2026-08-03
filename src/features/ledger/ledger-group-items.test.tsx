@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import {
   CharacterClass,
   CharacterGender,
-  MagicType,
+  ItemQuality,
   type Collection,
   type CollectionItem,
   type Item,
@@ -37,7 +37,7 @@ function item(id: number): Item {
       id: 1,
       name: "Armor",
     },
-    magicType: MagicType.UNIQUE,
+    itemQuality: ItemQuality.UNIQUE,
     name: `Item ${id}`,
     similarItemsRefs: [],
     usableByClass: [],

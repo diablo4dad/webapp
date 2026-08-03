@@ -15,7 +15,7 @@ type StandaloneItemFormState = {
   iconPreviewUrl: string;
   itemId: string;
   itemType: string;
-  magicType: string;
+  itemQuality: string;
   name: string;
   preferredZone: string;
   series: string;
@@ -29,7 +29,7 @@ type OverrideItemFormState = {
   icon: string;
   iconPreviewUrl: string;
   itemType: string;
-  magicType: string;
+  itemQuality: string;
   name: string;
   preferredZone: string;
   series: string;
@@ -60,7 +60,7 @@ const OVERRIDE_INITIAL_FORM: OverrideItemFormState = {
   icon: "",
   iconPreviewUrl: "",
   itemType: "",
-  magicType: "",
+  itemQuality: "",
   name: "",
   preferredZone: "",
   series: "",
@@ -73,7 +73,7 @@ const STANDALONE_INITIAL_FORM: StandaloneItemFormState = {
   iconPreviewUrl: "",
   itemId: "",
   itemType: "",
-  magicType: "",
+  itemQuality: "",
   name: "",
   preferredZone: "",
   series: "",
@@ -102,9 +102,9 @@ function createOverrideForm(
     itemType: catalogItem.itemType === undefined
       ? ""
       : String(catalogItem.itemType),
-    magicType: catalogItem.magicType === undefined
+    itemQuality: catalogItem.itemQuality === undefined
       ? ""
-      : String(catalogItem.magicType),
+      : String(catalogItem.itemQuality),
     name: catalogItem.name ?? "",
     preferredZone: catalogItem.preferredZone === undefined
       ? ""
@@ -125,7 +125,7 @@ function buildOverrideWrite(
   const description = form.description.trim();
   const icon = parseOptionalIntegerField(form.icon, "Icon");
   const itemType = parseOptionalIntegerField(form.itemType, "Item type");
-  const magicType = parseOptionalIntegerField(form.magicType, "Item quality");
+  const itemQuality = parseOptionalIntegerField(form.itemQuality, "Item quality");
   const name = form.name.trim();
   const preferredZone = parseOptionalIntegerField(
     form.preferredZone,
@@ -143,7 +143,7 @@ function buildOverrideWrite(
     ...(icon !== undefined ? { icon } : {}),
     itemId,
     ...(itemType !== undefined ? { itemType } : {}),
-    ...(magicType !== undefined ? { magicType } : {}),
+    ...(itemQuality !== undefined ? { itemQuality } : {}),
     ...(name ? { name } : {}),
     ...(preferredZone !== undefined ? { preferredZone } : {}),
     ...(series ? { series } : {}),
@@ -164,7 +164,7 @@ function getPreservedOverrideFields(
     icon: _icon,
     itemId: _itemId,
     itemType: _itemType,
-    magicType: _magicType,
+    itemQuality: _itemQuality,
     name: _name,
     preferredZone: _preferredZone,
     series: _series,
@@ -197,8 +197,8 @@ function buildStandaloneWrite(
   );
   const name = form.name.trim();
   const description = form.description.trim();
-  const magicType = form.magicType.trim().length > 0
-    ? parseIntegerField(form.magicType, "Item quality")
+  const itemQuality = form.itemQuality.trim().length > 0
+    ? parseIntegerField(form.itemQuality, "Item quality")
     : undefined;
   const preferredZone = form.preferredZone.trim().length > 0
     ? parseIntegerField(form.preferredZone, "Preferred zone")
@@ -216,7 +216,7 @@ function buildStandaloneWrite(
     icon,
     itemId,
     itemType,
-    ...(magicType !== undefined ? { magicType } : {}),
+    ...(itemQuality !== undefined ? { itemQuality } : {}),
     name,
     ...(preferredZone !== undefined ? { preferredZone } : {}),
     ...(series ? { series } : {}),
@@ -284,9 +284,9 @@ function applyImportedItemDraft(
     itemType: draft.item.itemType === undefined
       ? resolveItemTypeValue(draft.itemTypeName, itemTypes) ?? form.itemType
       : String(draft.item.itemType),
-    magicType: draft.item.magicType === undefined
-      ? form.magicType
-      : String(draft.item.magicType),
+    itemQuality: draft.item.itemQuality === undefined
+      ? form.itemQuality
+      : String(draft.item.itemQuality),
     name: draft.item.name ?? form.name,
     series: draft.item.series ?? form.series,
     transmogName: draft.item.transmogName ?? form.transmogName,
@@ -316,7 +316,7 @@ function areOverrideFormsEqual(
     first.icon === second.icon &&
     first.iconPreviewUrl === second.iconPreviewUrl &&
     first.itemType === second.itemType &&
-    first.magicType === second.magicType &&
+    first.itemQuality === second.itemQuality &&
     first.name === second.name &&
     first.preferredZone === second.preferredZone &&
     first.series === second.series &&
@@ -333,7 +333,7 @@ function areStandaloneFormsEqual(
     first.iconPreviewUrl === second.iconPreviewUrl &&
     first.itemId === second.itemId &&
     first.itemType === second.itemType &&
-    first.magicType === second.magicType &&
+    first.itemQuality === second.itemQuality &&
     first.name === second.name &&
     first.preferredZone === second.preferredZone &&
     first.series === second.series &&

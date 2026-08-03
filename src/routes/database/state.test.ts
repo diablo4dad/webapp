@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { CharacterClass, type DadDbRef, MagicType } from "../../services/data";
+import { CharacterClass, type DadDbRef, ItemQuality } from "../../services/data";
 import {
   DEFAULT_FILTERS,
   createCollectionLogReferencesByItemId,
@@ -8,7 +8,7 @@ import {
   createStaticExplorerItems,
   filterExplorerItems,
   getItemTypeOptions,
-  getMagicTypeOptions,
+  getItemQualityOptions,
   sortExplorerItems,
 } from "./state";
 
@@ -25,7 +25,7 @@ const dadDbRef: DadDbRef = {
       id: 101,
       icon: 1001,
       itemType: 10,
-      magicType: MagicType.LEGENDARY,
+      itemQuality: ItemQuality.LEGENDARY,
       name: "Weathered Helm",
       salvageable: true,
       similarItems: [102],
@@ -47,7 +47,7 @@ const dadDbRef: DadDbRef = {
       ],
       isTransmog: true,
       itemType: 20,
-      magicType: MagicType.RARE,
+      itemQuality: ItemQuality.RARE,
       name: "Ashen Steed",
       series: "Stable",
       usableByClass: [1, 1, 1, 1, 1, 1, 1, 1],
@@ -132,7 +132,7 @@ describe("database items", () => {
           id: 201,
           icon: 2001,
           itemType: 10,
-          magicType: MagicType.UNIQUE,
+          itemQuality: ItemQuality.UNIQUE,
           name: "Ashava Blade",
         },
         {
@@ -251,14 +251,14 @@ describe("database items", () => {
     ).toEqual([102, 103]);
   });
 
-  test("filters by item type, magic type, and flags", () => {
+  test("filters by item type, item quality, and flags", () => {
     const items = createStaticExplorerItems(dadDbRef);
 
     expect(
       filterExplorerItems(items, {
         ...DEFAULT_FILTERS,
         itemTypeId: "10",
-        magicType: String(MagicType.LEGENDARY),
+        itemQuality: String(ItemQuality.LEGENDARY),
         flag: "salvageable",
       }).map((item) => item.item.id),
     ).toEqual([101]);
@@ -276,7 +276,7 @@ describe("database items", () => {
     ).toEqual([103]);
   });
 
-  test("filters not set magic types from sentinel and missing values", () => {
+  test("filters not set item qualities from sentinel and missing values", () => {
     const items = createStaticExplorerItems({
       itemTypes,
       items: [
@@ -284,7 +284,7 @@ describe("database items", () => {
           id: 201,
           icon: 2001,
           itemType: 10,
-          magicType: -1,
+          itemQuality: -1,
           name: "Sentinel Helm",
         },
         {
@@ -297,7 +297,7 @@ describe("database items", () => {
           id: 203,
           icon: 2003,
           itemType: 10,
-          magicType: MagicType.MAGIC,
+          itemQuality: ItemQuality.MAGIC,
           name: "Magic Helm",
         },
       ],
@@ -306,7 +306,7 @@ describe("database items", () => {
     expect(
       filterExplorerItems(items, {
         ...DEFAULT_FILTERS,
-        magicType: "-1",
+        itemQuality: "-1",
       }).map((item) => item.item.id),
     ).toEqual([201, 202]);
   });
@@ -321,7 +321,7 @@ describe("database items", () => {
     ]);
   });
 
-  test("builds magic type options in quality order", () => {
+  test("builds item quality options in quality order", () => {
     const items = createStaticExplorerItems({
       ...dadDbRef,
       items: [
@@ -330,48 +330,72 @@ describe("database items", () => {
           id: 104,
           icon: 1004,
           itemType: 10,
-          magicType: -1,
+          itemQuality: -1,
           name: "Unset Helm",
         },
         {
           id: 105,
           icon: 1005,
           itemType: 10,
-          magicType: MagicType.MAGIC,
+          itemQuality: ItemQuality.MAGIC,
           name: "Magic Helm",
         },
         {
           id: 106,
           icon: 1006,
           itemType: 10,
-          magicType: MagicType.COMMON,
+          itemQuality: ItemQuality.COMMON,
           name: "Common Helm",
         },
         {
           id: 107,
           icon: 1007,
           itemType: 10,
-          magicType: MagicType.UNIQUE,
+          itemQuality: ItemQuality.UNIQUE,
           name: "Unique Helm",
         },
         {
           id: 108,
           icon: 1008,
           itemType: 10,
-          magicType: MagicType.MYTHIC,
+          itemQuality: ItemQuality.MYTHIC,
           name: "Mythic Helm",
+        },
+        {
+          id: 109,
+          icon: 1009,
+          itemType: 10,
+          itemQuality: ItemQuality.TRANSMOG,
+          name: "Transmog Helm",
+        },
+        {
+          id: 110,
+          icon: 1010,
+          itemType: 10,
+          itemQuality: ItemQuality.JUNK,
+          name: "Junk Helm",
+        },
+        {
+          id: 111,
+          icon: 1011,
+          itemType: 10,
+          itemQuality: ItemQuality.ICONIC_MYTHIC,
+          name: "Iconic Mythic Helm",
         },
       ],
     });
 
-    expect(getMagicTypeOptions(items)).toEqual([
-      { label: "All magic types", value: "all" },
-      { label: "Common", value: String(MagicType.COMMON) },
-      { label: "Magic", value: String(MagicType.MAGIC) },
-      { label: "Rare", value: String(MagicType.RARE) },
-      { label: "Legendary", value: String(MagicType.LEGENDARY) },
-      { label: "Unique", value: String(MagicType.UNIQUE) },
-      { label: "Mythic", value: String(MagicType.MYTHIC) },
+    expect(getItemQualityOptions(items)).toEqual([
+      { label: "All item qualities", value: "all" },
+      { label: "Junk", value: String(ItemQuality.JUNK) },
+      { label: "Transmog", value: String(ItemQuality.TRANSMOG) },
+      { label: "Common", value: String(ItemQuality.COMMON) },
+      { label: "Magic", value: String(ItemQuality.MAGIC) },
+      { label: "Rare", value: String(ItemQuality.RARE) },
+      { label: "Legendary", value: String(ItemQuality.LEGENDARY) },
+      { label: "Unique", value: String(ItemQuality.UNIQUE) },
+      { label: "Mythic", value: String(ItemQuality.MYTHIC) },
+      { label: "Iconic Mythic", value: String(ItemQuality.ICONIC_MYTHIC) },
       { label: "Not Set", value: "-1" },
     ]);
   });

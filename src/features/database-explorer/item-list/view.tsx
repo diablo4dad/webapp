@@ -10,13 +10,13 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
-import { MagicType } from "../../../services/data";
+import { ItemQuality } from "../../../services/data";
 import styles from "./view.module.css";
 
 type ItemListItem = {
   item: {
     id: number;
-    magicType?: number;
+    itemQuality?: number;
     name: string;
   };
   itemTypeName: string;
@@ -40,7 +40,7 @@ type Props<TItem extends ItemListItem> = {
   totalCount: number;
 };
 
-type FilterControlKey = "characterClass" | "itemTypeId" | "magicType";
+type FilterControlKey = "characterClass" | "itemTypeId" | "itemQuality";
 type SortMode = "nameAsc" | "nameDesc" | "none";
 
 type FilterOption = {
@@ -89,13 +89,16 @@ type RowProps<TItem extends ItemListItem> = {
 };
 
 const ALL_OPTION_VALUE = "all";
-const magicTypeClassMap = new Map<MagicType, string>([
-  [MagicType.COMMON, styles.ViewMagicTypeCommon],
-  [MagicType.MAGIC, styles.ViewMagicTypeMagic],
-  [MagicType.LEGENDARY, styles.ViewMagicTypeLegendary],
-  [MagicType.UNIQUE, styles.ViewMagicTypeUnique],
-  [MagicType.MYTHIC, styles.ViewMagicTypeMythic],
-  [MagicType.RARE, styles.ViewMagicTypeRare],
+const itemQualityClassMap = new Map<ItemQuality, string>([
+  [ItemQuality.TRANSMOG, styles.ViewItemQualityTransmog],
+  [ItemQuality.JUNK, styles.ViewItemQualityJunk],
+  [ItemQuality.COMMON, styles.ViewItemQualityCommon],
+  [ItemQuality.MAGIC, styles.ViewItemQualityMagic],
+  [ItemQuality.LEGENDARY, styles.ViewItemQualityLegendary],
+  [ItemQuality.UNIQUE, styles.ViewItemQualityUnique],
+  [ItemQuality.MYTHIC, styles.ViewItemQualityMythic],
+  [ItemQuality.ICONIC_MYTHIC, styles.ViewItemQualityMythic],
+  [ItemQuality.RARE, styles.ViewItemQualityRare],
 ]);
 
 const ITEM_LIST_INITIAL_HEIGHT = 680;
@@ -452,7 +455,7 @@ function Row<TItem extends ItemListItem>({
         <span
           className={classNames(
             styles.ViewListItemName,
-            magicTypeClassMap.get(item.item.magicType as MagicType),
+            itemQualityClassMap.get(item.item.itemQuality as ItemQuality),
           )}
         >
           {item.item.name}

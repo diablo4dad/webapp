@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
-import { MagicType, type CollectionItem, type Item } from "../../services/data";
+import { ItemQuality, type CollectionItem, type Item } from "../../services/data";
 import {
   LedgerGroupItemCard,
   LedgerGroupItemDragGhost,
@@ -8,6 +8,7 @@ import {
 } from "./ledger-group-item-card";
 import type { LedgerGroupItemView } from "./ledger-group-item-view";
 import type { LedgerGroupItemDragState } from "./types";
+import styles from "./ledger-group-item-card.module.css";
 
 vi.mock("../../services/bucket", () => ({
   getIcon: (fileName: string) => `/assets/${fileName}`,
@@ -33,7 +34,7 @@ const item: Item = {
     id: 2,
     name: "Armor",
   },
-  magicType: MagicType.UNIQUE,
+  itemQuality: ItemQuality.UNIQUE,
   name: "Fancy Helm",
   similarItemsRefs: [],
   usableByClass: [],
@@ -65,6 +66,43 @@ const dragState: LedgerGroupItemDragState = {
   pointerY: 120,
   width: 180,
 };
+
+function renderCardForQuality(itemQuality: ItemQuality) {
+  const qualityItem = {
+    ...item,
+    itemQuality,
+    name: `Quality ${itemQuality}`,
+  };
+  const qualityCollectionItem = {
+    ...collectionItem,
+    items: [qualityItem],
+  };
+
+  render(
+    <LedgerGroupItemCard
+      canReorder={false}
+      collectionItem={qualityCollectionItem}
+      isDragging={false}
+      isReordering={false}
+      itemView={{
+        ...itemView,
+        item: qualityItem,
+        showCollected: false,
+      }}
+      onClick={vi.fn()}
+      onQueueReorder={vi.fn()}
+      onStartReorder={vi.fn()}
+      onToggle={vi.fn()}
+    />,
+  );
+
+  const card = screen
+    .getByText(qualityItem.name)
+    .closest("[data-reorder-item='true']");
+  expect(card).toBeInTheDocument();
+
+  return card as HTMLElement;
+}
 
 describe("ledger group item card", () => {
   test("renders details and forwards actions", () => {
@@ -110,6 +148,32 @@ describe("ledger group item card", () => {
     expect(onClick).toHaveBeenCalledOnce();
     expect(onToggle).toHaveBeenCalledOnce();
     expect(onStartReorder).toHaveBeenCalledOnce();
+  });
+
+  test("colours only unique and mythic item names by quality", () => {
+    expect(renderCardForQuality(ItemQuality.UNIQUE)).toHaveClass(
+      styles.LedgerGroupItemUnique,
+    );
+    expect(renderCardForQuality(ItemQuality.MYTHIC)).toHaveClass(
+      styles.LedgerGroupItemMythic,
+    );
+    expect(renderCardForQuality(ItemQuality.ICONIC_MYTHIC)).toHaveClass(
+      styles.LedgerGroupItemMythic,
+    );
+
+    for (const itemQuality of [
+      ItemQuality.TRANSMOG,
+      ItemQuality.JUNK,
+      ItemQuality.COMMON,
+      ItemQuality.MAGIC,
+      ItemQuality.RARE,
+      ItemQuality.LEGENDARY,
+    ]) {
+      const card = renderCardForQuality(itemQuality);
+
+      expect(card).not.toHaveClass(styles.LedgerGroupItemUnique);
+      expect(card).not.toHaveClass(styles.LedgerGroupItemMythic);
+    }
   });
 
   test("renders drag placeholder and ghost", () => {

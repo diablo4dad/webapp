@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { MasterGroup } from "../../shared/domain";
 import { hashCode } from "../../shared/lib/hash";
 import {
-  MagicType,
+  ItemQuality,
   type Collection,
   type CollectionItem,
   type Item,
@@ -19,7 +19,7 @@ function item(id: number): Item {
       id: 1,
       name: "Armor",
     },
-    magicType: MagicType.UNIQUE,
+    itemQuality: ItemQuality.UNIQUE,
     name: `Item ${id}`,
     similarItemsRefs: [],
     usableByClass: [],

@@ -67,6 +67,8 @@ body,
     --color-blue-100: #00adfc;
     --color-blue-brand-discord: #7289da;
     --color-blue-brand-battlenet: #009ae4;
+    --color-rarity-transmog: #a59263;
+    --color-rarity-junk: var(--color-neutral-500);
     --color-rarity-magic: #0080ff;
     --color-rarity-legendary: #e67e22;
     --color-rarity-unique: #deb887;
@@ -259,6 +261,8 @@ body,
     /* item state and rarity */
     --item-collected-color-dark: var(--color-green-900);
     --item-hidden-color-dark: var(--color-red-900);
+    --rarity-transmog-color: var(--color-rarity-transmog);
+    --rarity-junk-color: var(--color-rarity-junk);
     --rarity-magic-color: var(--color-rarity-magic);
     --rarity-legendary-color: var(--color-rarity-legendary);
     --rarity-unique-color: var(--color-rarity-unique);

@@ -154,10 +154,6 @@
   color: var(--rarity-mythic-color) !important;
 }
 
-.LedgerGroupItemRare .LedgerGroupItemName {
-  color: var(--rarity-rare-color) !important;
-}
-
 .LedgerGroupItemIconCollection svg {
   fill: var(--feedback-success-fill);
   margin: calc(0.5rem + 1px);

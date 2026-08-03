@@ -3,7 +3,7 @@ import { hashCode } from "../../shared/lib/hash";
 import {
   CharacterClass,
   CharacterGender,
-  MagicType,
+  ItemQuality,
   type CollectionItem,
   type Item,
 } from "../../services/data";
@@ -19,7 +19,7 @@ function item(overrides: Partial<Item> = {}): Item {
       id: 1,
       name: "Armor",
     },
-    magicType: MagicType.UNIQUE,
+    itemQuality: ItemQuality.UNIQUE,
     name: "Default Helm",
     similarItemsRefs: [],
     usableByClass: [1, 1, 1, 1, 1, 1, 1],

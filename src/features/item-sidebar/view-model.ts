@@ -1,8 +1,8 @@
 import { CharacterClass } from "../../services/data";
 import type { CollectionItem, Item } from "../../services/data";
 import {
-  getMagicTypeSortRank as getMagicTypeValueSortRank,
-} from "../../shared/domain/magic-types";
+  getItemQualitySortRank as getItemQualityValueSortRank,
+} from "../../shared/domain/item-quality";
 
 function isUsableBy(characterClass: CharacterClass, item: CollectionItem): boolean {
   return item.items.some(
@@ -10,8 +10,8 @@ function isUsableBy(characterClass: CharacterClass, item: CollectionItem): boole
   );
 }
 
-function getMagicTypeSortRank(item: Item): number {
-  return getMagicTypeValueSortRank(item.magicType);
+function getItemQualitySortRank(item: Item): number {
+  return getItemQualityValueSortRank(item.itemQuality);
 }
 
 function buildSalvageSourceItems(focusItem: Item): Item[] {
@@ -25,7 +25,7 @@ function buildSalvageSourceItems(focusItem: Item): Item[] {
       hiddenNameTokens.every((token) => !item.name.includes(token)),
     )
     .filter((item) => {
-      const key = `${item.name}:${item.magicType ?? "none"}`;
+      const key = `${item.name}:${item.itemQuality ?? "none"}`;
 
       if (seen.has(key)) {
         return false;
@@ -36,8 +36,8 @@ function buildSalvageSourceItems(focusItem: Item): Item[] {
     })
     .sort(
       (leftItem, rightItem) =>
-        getMagicTypeSortRank(leftItem) - getMagicTypeSortRank(rightItem),
+        getItemQualitySortRank(leftItem) - getItemQualitySortRank(rightItem),
     );
 }
 
-export { buildSalvageSourceItems, getMagicTypeSortRank, isUsableBy };
+export { buildSalvageSourceItems, getItemQualitySortRank, isUsableBy };

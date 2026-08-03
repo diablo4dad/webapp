@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import {
   CharacterClass,
-  MagicType,
+  ItemQuality,
   Zone,
   type ItemType,
 } from "../../../services/data";
@@ -21,13 +21,13 @@ describe("database item override state", () => {
     expect(
       createOverrideForm({
         itemId: 101,
-        magicType: MagicType.RARE,
+        itemQuality: ItemQuality.RARE,
         name: "Corrected Helm",
         usableByClass: usableByClasses(CharacterClass.BARBARIAN),
       }),
     ).toMatchObject({
       hasUsableByClassOverride: true,
-      magicType: String(MagicType.RARE),
+      itemQuality: String(ItemQuality.RARE),
       name: "Corrected Helm",
       usableByClass: usableByClasses(CharacterClass.BARBARIAN),
     });
@@ -39,7 +39,7 @@ describe("database item override state", () => {
         ...OVERRIDE_INITIAL_FORM,
         description: "Corrected description.",
         itemType: "20",
-        magicType: String(MagicType.RARE),
+        itemQuality: String(ItemQuality.RARE),
         name: "Corrected Helm",
         preferredZone: String(Zone.NAHANTU),
         series: "Correction Series",
@@ -54,7 +54,7 @@ describe("database item override state", () => {
       description: "Corrected description.",
       itemId: 101,
       itemType: 20,
-      magicType: MagicType.RARE,
+      itemQuality: ItemQuality.RARE,
       name: "Corrected Helm",
       preferredZone: Zone.NAHANTU,
       series: "Correction Series",
@@ -138,7 +138,7 @@ describe("standalone database item state", () => {
           icon: "3001",
           itemId: "901",
           itemType: "20",
-          magicType: String(MagicType.RARE),
+          itemQuality: String(ItemQuality.RARE),
           name: "Missing Mount",
           preferredZone: String(Zone.NAHANTU),
           series: "Imported Series",
@@ -154,7 +154,7 @@ describe("standalone database item state", () => {
       icon: 3001,
       itemId: 901,
       itemType: 20,
-      magicType: MagicType.RARE,
+      itemQuality: ItemQuality.RARE,
       name: "Missing Mount",
       preferredZone: Zone.NAHANTU,
       series: "Imported Series",
@@ -245,7 +245,7 @@ describe("standalone database item state", () => {
           item: {
             description: "A rare dagger.",
             id: 784786,
-            magicType: MagicType.RARE,
+            itemQuality: ItemQuality.RARE,
             name: "Anlace",
             usableByClass: usableByClasses(CharacterClass.ROGUE),
           },
@@ -258,7 +258,7 @@ describe("standalone database item state", () => {
       iconPreviewUrl: "data:image/png;base64,aWNvbg==",
       itemId: "784786",
       itemType: "20",
-      magicType: String(MagicType.RARE),
+      itemQuality: String(ItemQuality.RARE),
       name: "Anlace",
       usableByClass: usableByClasses(CharacterClass.ROGUE),
     });

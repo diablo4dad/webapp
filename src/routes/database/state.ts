@@ -2,7 +2,7 @@ import Fuse from "fuse.js";
 import {
   CharacterClass,
   DEFAULT_ITEM,
-  MagicType,
+  ItemQuality,
   type CollectionItem,
   type CollectionItemRef,
   type CollectionRef,
@@ -19,11 +19,11 @@ import {
 import i18n, { getItemDescription } from "../../services/i18n";
 import { collectionGroupLabels } from "../../shared/domain";
 import {
-  MAGIC_TYPE_NOT_SET,
-  MAGIC_TYPE_NOT_SET_FILTER_VALUE,
-  getMagicTypeSortRank,
-  isMagicTypeNotSet,
-} from "../../shared/domain/magic-types";
+  ITEM_QUALITY_NOT_SET,
+  ITEM_QUALITY_NOT_SET_FILTER_VALUE,
+  getItemQualitySortRank,
+  isItemQualityNotSet,
+} from "../../shared/domain/item-quality";
 import { enumKeys } from "../../shared/lib/enums";
 
 type ItemSource = "static" | "catalog";
@@ -42,7 +42,7 @@ type Filters = {
   characterClass: string;
   flag: FlagFilter;
   itemTypeId: string;
-  magicType: string;
+  itemQuality: string;
   searchTerm: string;
   source: SourceFilter;
 };
@@ -89,7 +89,7 @@ const DEFAULT_FILTERS: Filters = {
   characterClass: ALL_OPTION_VALUE,
   flag: "all",
   itemTypeId: ALL_OPTION_VALUE,
-  magicType: ALL_OPTION_VALUE,
+  itemQuality: ALL_OPTION_VALUE,
   searchTerm: "",
   source: "both",
 };
@@ -433,28 +433,28 @@ function getItemTypeOptions(items: ExplorerItem[]): FilterOption[] {
   ];
 }
 
-function getMagicTypeOptions(items: ExplorerItem[]): FilterOption[] {
+function getItemQualityOptions(items: ExplorerItem[]): FilterOption[] {
   const options = new Map<string, number>();
 
   for (const item of items) {
-    const magicType = item.item.magicType;
+    const itemQuality = item.item.itemQuality;
 
-    if (isMagicTypeNotSet(magicType)) {
-      options.set(MAGIC_TYPE_NOT_SET_FILTER_VALUE, MAGIC_TYPE_NOT_SET);
+    if (isItemQualityNotSet(itemQuality)) {
+      options.set(ITEM_QUALITY_NOT_SET_FILTER_VALUE, ITEM_QUALITY_NOT_SET);
     } else {
-      options.set(String(magicType), magicType);
+      options.set(String(itemQuality), itemQuality);
     }
   }
 
   return [
-    { label: "All magic types", value: ALL_OPTION_VALUE },
+    { label: "All item qualities", value: ALL_OPTION_VALUE },
     ...Array.from(options.entries())
-      .map(([value, magicType]) => ({
-        label: getMagicTypeLabel(magicType),
-        sortRank: getMagicTypeSortRank(magicType),
+      .map(([value, itemQuality]) => ({
+        label: getItemQualityLabel(itemQuality),
+        sortRank: getItemQualitySortRank(itemQuality),
         value,
       }))
-      .sort(compareMagicTypeOptions)
+      .sort(compareItemQualityOptions)
       .map(({ label, value }) => ({
         label,
         value,
@@ -462,12 +462,12 @@ function getMagicTypeOptions(items: ExplorerItem[]): FilterOption[] {
   ];
 }
 
-function getMagicTypeLabel(magicType?: number): string {
-  if (isMagicTypeNotSet(magicType)) {
+function getItemQualityLabel(itemQuality?: number): string {
+  if (isItemQualityNotSet(itemQuality)) {
     return "Not Set";
   }
 
-  return i18n.magicType[magicType as MagicType] ?? `Unknown (${magicType})`;
+  return i18n.itemQuality[itemQuality as ItemQuality] ?? `Unknown (${itemQuality})`;
 }
 
 function hasInventoryImages(item: ItemRef): boolean {
@@ -495,7 +495,7 @@ function matchesFilters(
     return false;
   }
 
-  if (!matchesMagicTypeFilter(item, filters.magicType)) {
+  if (!matchesItemQualityFilter(item, filters.itemQuality)) {
     return false;
   }
 
@@ -509,19 +509,19 @@ function matchesFilters(
   return matchesFlagFilter(item, filters.flag);
 }
 
-function matchesMagicTypeFilter(item: ItemRef, magicTypeFilter: string): boolean {
-  if (magicTypeFilter === ALL_OPTION_VALUE) {
+function matchesItemQualityFilter(item: ItemRef, itemQualityFilter: string): boolean {
+  if (itemQualityFilter === ALL_OPTION_VALUE) {
     return true;
   }
 
-  if (magicTypeFilter === MAGIC_TYPE_NOT_SET_FILTER_VALUE) {
-    return isMagicTypeNotSet(item.magicType);
+  if (itemQualityFilter === ITEM_QUALITY_NOT_SET_FILTER_VALUE) {
+    return isItemQualityNotSet(item.itemQuality);
   }
 
-  return String(item.magicType) === magicTypeFilter;
+  return String(item.itemQuality) === itemQualityFilter;
 }
 
-function compareMagicTypeOptions(
+function compareItemQualityOptions(
   a: FilterOption & { sortRank: number },
   b: FilterOption & { sortRank: number },
 ): number {
@@ -606,7 +606,7 @@ export {
   filterExplorerItems,
   getClassFilterOptions,
   getItemTypeOptions,
-  getMagicTypeOptions,
+  getItemQualityOptions,
   sortExplorerItems,
 };
 export type {

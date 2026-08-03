@@ -127,7 +127,7 @@ describe("datamined json preview", () => {
           "weapon",
         ],
         bEnabled: true,
-        eMagicType: 3,
+        eItemQuality: 3,
         nLevel: 12,
         name: "Azure Blade",
         snoActor: {
@@ -143,7 +143,7 @@ describe("datamined json preview", () => {
 
     expect(screen.getByText('"arTags"')).not.toHaveAttribute("class");
     expect(screen.getByText('"bEnabled"')).not.toHaveAttribute("class");
-    expect(screen.getByText('"eMagicType"')).not.toHaveAttribute("class");
+    expect(screen.getByText('"eItemQuality"')).not.toHaveAttribute("class");
     expect(screen.getByText('"nLevel"')).not.toHaveAttribute("class");
     expect(screen.getByText('"tStats"')).not.toHaveAttribute("class");
     expect(screen.getByText('"unk_def75bc"')).not.toHaveAttribute("class");

@@ -214,31 +214,39 @@
   object-fit: contain;
 }
 
-.ItemMagicType {
+.ItemQuality {
   font-weight: 700;
 }
 
-.ItemMagicTypeCommon {
+.ItemQualityTransmog {
+  color: var(--rarity-transmog-color);
+}
+
+.ItemQualityJunk {
+  color: var(--rarity-junk-color);
+}
+
+.ItemQualityCommon {
   color: var(--app-text);
 }
 
-.ItemMagicTypeMagic {
+.ItemQualityMagic {
   color: var(--rarity-magic-color);
 }
 
-.ItemMagicTypeLegendary {
+.ItemQualityLegendary {
   color: var(--rarity-legendary-color);
 }
 
-.ItemMagicTypeUnique {
+.ItemQualityUnique {
   color: var(--rarity-unique-color);
 }
 
-.ItemMagicTypeMythic {
+.ItemQualityMythic {
   color: var(--rarity-mythic-color);
 }
 
-.ItemMagicTypeRare {
+.ItemQualityRare {
   color: var(--rarity-rare-color);
 }
 

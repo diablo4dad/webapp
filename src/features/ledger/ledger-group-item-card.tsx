@@ -7,7 +7,7 @@ import { getIcon } from "../../services/bucket";
 import { onTouchStart } from "../../shared/lib/dom";
 import { Close, Currency, GripVertical, TickCircle } from "../../shared/ui/Icons";
 import { FallbackLazyImage } from "../../shared/ui/LazyLoadImageFallback";
-import { MagicType, type CollectionItem } from "../../services/data";
+import { ItemQuality, type CollectionItem } from "../../services/data";
 import { getItemName, getItemType } from "../../services/data/getters";
 import { getItemDescription } from "../../services/i18n";
 import placeholder from "../../assets/images/placeholder.webp";
@@ -49,6 +49,12 @@ type ClassNameOptions = {
   isReordering: boolean;
   itemView: LedgerGroupItemView;
 };
+
+const itemQualityClassMap = new Map<ItemQuality, string>([
+  [ItemQuality.UNIQUE, styles.LedgerGroupItemUnique],
+  [ItemQuality.MYTHIC, styles.LedgerGroupItemMythic],
+  [ItemQuality.ICONIC_MYTHIC, styles.LedgerGroupItemMythic],
+]);
 
 function LedgerGroupItemCard({
   canReorder,
@@ -236,18 +242,22 @@ function getItemClassName({
   isReordering,
   itemView,
 }: ClassNameOptions) {
-  return classNames({
-    [styles.LedgerGroupItem]: true,
-    [styles.LedgerGroupItemDragReady]: canReorder && !isGhost && !isDragging,
-    [styles.LedgerGroupItemDragGhost]: isGhost,
-    [styles.LedgerGroupItemReorderSaving]: isReordering && !isGhost,
-    [styles.LedgerGroupItemCollected]: itemView.showCollected,
-    [styles.LedgerGroupItemHidden]: itemView.showExcluded,
-    [styles.LedgerGroupItemPremium]: collectionItem.premium,
-    [styles.LedgerGroupItemUnique]:
-      itemView.item.magicType === MagicType.UNIQUE,
-    [styles.LedgerGroupItemMythic]: itemView.item.magicType === MagicType.MYTHIC,
-  });
+  const itemQualityClassName = itemQualityClassMap.get(
+    itemView.item.itemQuality as ItemQuality,
+  );
+
+  return classNames(
+    {
+      [styles.LedgerGroupItem]: true,
+      [styles.LedgerGroupItemDragReady]: canReorder && !isGhost && !isDragging,
+      [styles.LedgerGroupItemDragGhost]: isGhost,
+      [styles.LedgerGroupItemReorderSaving]: isReordering && !isGhost,
+      [styles.LedgerGroupItemCollected]: itemView.showCollected,
+      [styles.LedgerGroupItemHidden]: itemView.showExcluded,
+      [styles.LedgerGroupItemPremium]: collectionItem.premium,
+    },
+    itemQualityClassName,
+  );
 }
 
 export {

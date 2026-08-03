@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { describe, expect, test, vi } from "vitest";
 import {
-  MagicType,
+  ItemQuality,
   type Collection,
   type CollectionItem,
   type DadDb,
@@ -23,7 +23,7 @@ function item(id: number): Item {
       id: 1,
       name: "Armor",
     },
-    magicType: MagicType.UNIQUE,
+    itemQuality: ItemQuality.UNIQUE,
     name: `Item ${id}`,
     similarItemsRefs: [],
     usableByClass: [],

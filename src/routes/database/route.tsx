@@ -32,7 +32,7 @@ import {
   filterExplorerItems,
   getClassFilterOptions,
   getItemTypeOptions,
-  getMagicTypeOptions,
+  getItemQualityOptions,
   sortExplorerItems,
   type CollectionLogReference,
   type ExplorerItem,
@@ -150,7 +150,7 @@ function Component() {
     [filteredItems, sortMode],
   );
   const itemTypeOptions = useMemo(() => getItemTypeOptions(items), [items]);
-  const magicTypeOptions = useMemo(() => getMagicTypeOptions(items), [items]);
+  const itemQualityOptions = useMemo(() => getItemQualityOptions(items), [items]);
   const itemsById = useMemo(() => getItemsById(items), [items]);
   const filteredItemsById = useMemo(
     () => getFirstItemsById(sortedItems),
@@ -217,7 +217,7 @@ function Component() {
       isLoading={loadState.status === "loading"}
       existingItemIds={existingItemIds}
       itemTypeOptions={itemTypeOptions}
-      magicTypeOptions={magicTypeOptions}
+      itemQualityOptions={itemQualityOptions}
       collectionReferences={selectedItemCollectionReferences}
       onFilterChange={onFilterChange}
       onRefreshItems={onRefreshItems}

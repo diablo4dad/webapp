@@ -29,7 +29,7 @@ describe("item import parser", () => {
       .toBe("https://wow.zamimg.com/d4/d4/texture/hash/233/2094985449.webp");
     expect(result.item).toMatchObject({
       id: 784786,
-      magicType: 5,
+      itemQuality: 3,
       name: "Anlace",
     });
     expect(result.itemTypeName).toBe("Dagger");

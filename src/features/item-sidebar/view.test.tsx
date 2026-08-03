@@ -7,7 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { describe, expect, test, vi } from "vitest";
-import { MagicType, type CollectionItem, type Item } from "../../services/data";
+import { ItemQuality, type CollectionItem, type Item } from "../../services/data";
 import styles from "./item-sidebar.module.css";
 import { ItemSidebar } from "./view";
 
@@ -36,7 +36,7 @@ function item(id: number, name: string): Item {
       id: 1,
       name: "Sword",
     },
-    magicType: MagicType.MAGIC,
+    itemQuality: ItemQuality.MAGIC,
     name,
     similarItems: [],
     similarItemsRefs: [],

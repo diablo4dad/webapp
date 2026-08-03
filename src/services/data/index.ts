@@ -13,13 +13,16 @@ export enum CharacterClass {
   WARLOCK,
 }
 
-export enum MagicType {
-  COMMON,
-  LEGENDARY,
-  UNIQUE,
-  MAGIC,
-  MYTHIC,
-  RARE,
+export enum ItemQuality {
+  TRANSMOG = 0,
+  JUNK = 1,
+  COMMON = 2,
+  RARE = 3,
+  MAGIC = 4,
+  LEGENDARY = 5,
+  UNIQUE = 6,
+  MYTHIC = 7,
+  ICONIC_MYTHIC = 8,
 }
 
 export enum Zone {
@@ -61,6 +64,13 @@ export type ItemRef = Entity & {
   usableByClass?: number[];
   invImages?: GenderImagesRef[];
   similarItems?: number[];
+  itemQuality?: number;
+  itemUseType?: number;
+  dropQuality?: number[];
+  isWorldDrop?: boolean;
+  isIconicMythic?: boolean;
+  isLegacyMythic?: boolean;
+  isTransmogUnlock?: boolean;
 };
 
 export type GenderImages = [string | null, string | null];

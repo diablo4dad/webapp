@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import {
   CharacterClass,
   CharacterGender,
-  MagicType,
+  ItemQuality,
   Zone,
   type ItemRef,
   type ItemType,
@@ -14,7 +14,7 @@ import Card from "../../../shared/ui/Card";
 import { ChevronLeft } from "../../../shared/ui/Icons";
 import { FallbackLazyImage } from "../../../shared/ui/LazyLoadImageFallback";
 import { classIconMap } from "../../../shared/domain/item-assets";
-import { isMagicTypeNotSet } from "../../../shared/domain/magic-types";
+import { isItemQualityNotSet } from "../../../shared/domain/item-quality";
 import { enumKeys } from "../../../shared/lib/enums";
 import { DatabaseItemOverrideEditor } from "../editor";
 import type { EditorItem } from "../editor";
@@ -74,13 +74,16 @@ type DataminedFileEntryProps = {
 };
 type JsonPreviewByFilename = Readonly<Record<string, JsonPreviewState>>;
 
-const magicTypeClassMap = new Map<MagicType, string>([
-  [MagicType.COMMON, styles.ViewMagicTypeCommon],
-  [MagicType.MAGIC, styles.ViewMagicTypeMagic],
-  [MagicType.LEGENDARY, styles.ViewMagicTypeLegendary],
-  [MagicType.UNIQUE, styles.ViewMagicTypeUnique],
-  [MagicType.MYTHIC, styles.ViewMagicTypeMythic],
-  [MagicType.RARE, styles.ViewMagicTypeRare],
+const itemQualityClassMap = new Map<ItemQuality, string>([
+  [ItemQuality.TRANSMOG, styles.ViewItemQualityTransmog],
+  [ItemQuality.JUNK, styles.ViewItemQualityJunk],
+  [ItemQuality.COMMON, styles.ViewItemQualityCommon],
+  [ItemQuality.MAGIC, styles.ViewItemQualityMagic],
+  [ItemQuality.LEGENDARY, styles.ViewItemQualityLegendary],
+  [ItemQuality.UNIQUE, styles.ViewItemQualityUnique],
+  [ItemQuality.MYTHIC, styles.ViewItemQualityMythic],
+  [ItemQuality.ICONIC_MYTHIC, styles.ViewItemQualityMythic],
+  [ItemQuality.RARE, styles.ViewItemQualityRare],
 ]);
 const INVENTORY_GENDER_CHOICES = [
   CharacterGender.MALE,
@@ -153,7 +156,7 @@ function ItemView({
               )}
               <Field
                 label="Item Quality"
-                value={<MagicTypeText magicType={rawItem.magicType} />}
+                value={<ItemQualityText itemQuality={rawItem.itemQuality} />}
               />
               <Field
                 label="Preferred Zone"
@@ -374,15 +377,15 @@ function Field({ label, value }: { label: string; value: ReactNode }) {
   );
 }
 
-function MagicTypeText({ magicType }: { magicType?: number }) {
+function ItemQualityText({ itemQuality }: { itemQuality?: number }) {
   return (
     <span
       className={classNames(
-        styles.ViewMagicType,
-        magicTypeClassMap.get(magicType as MagicType),
+        styles.ViewItemQuality,
+        itemQualityClassMap.get(itemQuality as ItemQuality),
       )}
     >
-      {getMagicTypeLabel(magicType)}
+      {getItemQualityLabel(itemQuality)}
     </span>
   );
 }
@@ -505,12 +508,12 @@ function getItemIconPath(iconId?: number): string {
   return `icons/${iconId && iconId > 0 ? iconId : 0}.webp`;
 }
 
-function getMagicTypeLabel(magicType?: number): string {
-  if (isMagicTypeNotSet(magicType)) {
+function getItemQualityLabel(itemQuality?: number): string {
+  if (isItemQualityNotSet(itemQuality)) {
     return "Not Set";
   }
 
-  return i18n.magicType[magicType as MagicType] ?? `Unknown (${magicType})`;
+  return i18n.itemQuality[itemQuality as ItemQuality] ?? `Unknown (${itemQuality})`;
 }
 
 function getZoneLabel(zone?: number): string {

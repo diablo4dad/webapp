@@ -8,7 +8,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
-import { MagicType, type ItemRef } from "../../services/data";
+import { ItemQuality, type ItemRef } from "../../services/data";
 import * as catalogStore from "../../services/store/catalog";
 import {
   ALL_OPTION_VALUE,
@@ -71,14 +71,14 @@ const classOptions: FilterOption[] = [
     value: "2",
   },
 ];
-const magicTypeOptions: FilterOption[] = [
+const itemQualityOptions: FilterOption[] = [
   {
-    label: "All magic types",
+    label: "All item qualities",
     value: ALL_OPTION_VALUE,
   },
   {
     label: "Magic",
-    value: String(MagicType.MAGIC),
+    value: String(ItemQuality.MAGIC),
   },
 ];
 const originalOffsetHeight = Object.getOwnPropertyDescriptor(
@@ -144,7 +144,7 @@ function renderView(overrides: Partial<ViewProps> = {}) {
     filters: DEFAULT_FILTERS,
     isLoading: false,
     itemTypeOptions,
-    magicTypeOptions,
+    itemQualityOptions,
     onFilterChange: vi.fn(),
     onRetry: vi.fn(),
     onSelectItem: vi.fn(),
@@ -166,7 +166,7 @@ function createExplorerItem(item: Partial<ItemRef> = {}): ExplorerItem {
     icon: 1,
     id: 100,
     itemType: 1,
-    magicType: MagicType.MAGIC,
+    itemQuality: ItemQuality.MAGIC,
     name: "Azure Blade",
     ...item,
   };
@@ -292,7 +292,7 @@ describe("database surface", () => {
         ...DEFAULT_FILTERS,
         characterClass: "2",
         itemTypeId: "1",
-        magicType: String(MagicType.MAGIC),
+        itemQuality: String(ItemQuality.MAGIC),
       },
     });
 
@@ -343,7 +343,7 @@ describe("database surface", () => {
           filters={DEFAULT_FILTERS}
           isLoading={false}
           itemTypeOptions={itemTypeOptions}
-          magicTypeOptions={magicTypeOptions}
+          itemQualityOptions={itemQualityOptions}
           onFilterChange={vi.fn()}
           onRetry={vi.fn()}
           onSelectItem={vi.fn()}
@@ -473,7 +473,7 @@ describe("database surface", () => {
           filters={DEFAULT_FILTERS}
           isLoading={false}
           itemTypeOptions={emptyOptions}
-          magicTypeOptions={emptyOptions}
+          itemQualityOptions={emptyOptions}
           onFilterChange={vi.fn()}
           onRetry={vi.fn()}
           onSelectItem={onSelectItem}
@@ -1005,7 +1005,7 @@ describe("database surface", () => {
     expect(overrideScreen.getByLabelText("Item Type")).toHaveValue("");
   });
 
-  test("uses magic type colour for list item names", () => {
+  test("uses item quality colour for list item names", () => {
     const { container } = render(
       <View
         classOptions={emptyOptions}
@@ -1013,7 +1013,7 @@ describe("database surface", () => {
         filters={DEFAULT_FILTERS}
         isLoading={false}
         itemTypeOptions={emptyOptions}
-        magicTypeOptions={emptyOptions}
+        itemQualityOptions={emptyOptions}
         onFilterChange={vi.fn()}
         onRetry={vi.fn()}
         onSelectItem={vi.fn()}
@@ -1024,7 +1024,7 @@ describe("database surface", () => {
     );
 
     expect(screen.getByText("Azure Blade")).toHaveClass(
-      itemListStyles.ViewMagicTypeMagic,
+      itemListStyles.ViewItemQualityMagic,
     );
     expect(container.querySelector(`.${itemListStyles.ViewListItemIcon}`))
       .not.toBeInTheDocument();
@@ -1090,7 +1090,7 @@ describe("database surface", () => {
       .getAllByText("Item Type")
       .find((element) =>
         element.classList.contains(itemViewStyles.ViewFieldLabel));
-    const detailMagicTypeLabel = screen
+    const detailItemQualityLabel = screen
       .getAllByText("Item Quality")
       .find((element) =>
         element.classList.contains(itemViewStyles.ViewFieldLabel));
@@ -1167,7 +1167,7 @@ describe("database surface", () => {
     expect(descriptionLabel).not.toBeUndefined();
     expect(detailItemIdLabel).not.toBeUndefined();
     expect(detailItemTypeLabel).not.toBeUndefined();
-    expect(detailMagicTypeLabel).not.toBeUndefined();
+    expect(detailItemQualityLabel).not.toBeUndefined();
     expect(detailPreferredZoneLabel).not.toBeUndefined();
     expect(
       (detailIcon as HTMLElement).compareDocumentPosition(
@@ -1201,11 +1201,11 @@ describe("database surface", () => {
     ).toBeTruthy();
     expect(
       (detailTransmogNameLabel as HTMLElement).compareDocumentPosition(
-        detailMagicTypeLabel as HTMLElement,
+        detailItemQualityLabel as HTMLElement,
       ) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(
-      (detailMagicTypeLabel as HTMLElement).compareDocumentPosition(
+      (detailItemQualityLabel as HTMLElement).compareDocumentPosition(
         detailPreferredZoneLabel as HTMLElement,
       ) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
@@ -1691,7 +1691,7 @@ describe("database surface", () => {
         filters={DEFAULT_FILTERS}
         isLoading={false}
         itemTypeOptions={emptyOptions}
-        magicTypeOptions={emptyOptions}
+        itemQualityOptions={emptyOptions}
         onFilterChange={vi.fn()}
         onRetry={vi.fn()}
         onSelectItem={vi.fn()}
@@ -1730,7 +1730,7 @@ describe("database surface", () => {
         filters={DEFAULT_FILTERS}
         isLoading={false}
         itemTypeOptions={emptyOptions}
-        magicTypeOptions={emptyOptions}
+        itemQualityOptions={emptyOptions}
         onFilterChange={vi.fn()}
         onRetry={vi.fn()}
         onSelectItem={vi.fn()}
@@ -1754,7 +1754,7 @@ describe("database surface", () => {
         filters={DEFAULT_FILTERS}
         isLoading={false}
         itemTypeOptions={emptyOptions}
-        magicTypeOptions={emptyOptions}
+        itemQualityOptions={emptyOptions}
         onFilterChange={vi.fn()}
         onRetry={vi.fn()}
         onSelectItem={vi.fn()}
@@ -1787,7 +1787,7 @@ describe("database surface", () => {
         filters={DEFAULT_FILTERS}
         isLoading={false}
         itemTypeOptions={emptyOptions}
-        magicTypeOptions={emptyOptions}
+        itemQualityOptions={emptyOptions}
         onFilterChange={vi.fn()}
         onRetry={vi.fn()}
         onSelectItem={vi.fn()}
@@ -1813,7 +1813,7 @@ describe("database surface", () => {
         filters={DEFAULT_FILTERS}
         isLoading={false}
         itemTypeOptions={emptyOptions}
-        magicTypeOptions={emptyOptions}
+        itemQualityOptions={emptyOptions}
         onFilterChange={vi.fn()}
         onRetry={vi.fn()}
         onSelectItem={vi.fn()}

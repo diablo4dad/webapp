@@ -9,7 +9,7 @@ import {
 import { createPortal } from "react-dom";
 import {
   CharacterClass,
-  MagicType,
+  ItemQuality,
   type ItemRef,
   type ItemType,
 } from "../../../services/data";
@@ -107,16 +107,19 @@ type CharacterClassChoice = {
   value: CharacterClass;
 };
 
-const MAGIC_TYPE_CHOICES: SelectOption[] = [
-  MagicType.COMMON,
-  MagicType.MAGIC,
-  MagicType.RARE,
-  MagicType.LEGENDARY,
-  MagicType.UNIQUE,
-  MagicType.MYTHIC,
-].map((magicType) => ({
-  label: i18n.magicType[magicType],
-  value: String(magicType),
+const ITEM_QUALITY_CHOICES: SelectOption[] = [
+  ItemQuality.TRANSMOG,
+  ItemQuality.JUNK,
+  ItemQuality.COMMON,
+  ItemQuality.MAGIC,
+  ItemQuality.RARE,
+  ItemQuality.LEGENDARY,
+  ItemQuality.UNIQUE,
+  ItemQuality.MYTHIC,
+  ItemQuality.ICONIC_MYTHIC,
+].map((itemQuality) => ({
+  label: i18n.itemQuality[itemQuality],
+  value: String(itemQuality),
 }));
 const CHARACTER_CLASS_CHOICES: CharacterClassChoice[] = enumKeys(
   CharacterClass,
@@ -389,9 +392,9 @@ function DatabaseItemOverrideEditor({
               <SelectInput
                 id="database-item-override-quality"
                 label="Item Quality"
-                options={MAGIC_TYPE_CHOICES}
-                value={form.magicType}
-                onChange={(value) => updateForm("magicType", value)}
+                options={ITEM_QUALITY_CHOICES}
+                value={form.itemQuality}
+                onChange={(value) => updateForm("itemQuality", value)}
                 emptyLabel="No override"
               />
             </div>
@@ -717,9 +720,9 @@ function DatabaseItemCreator({
                     <SelectInput
                       id="database-item-quality"
                       label="Item Quality"
-                      options={MAGIC_TYPE_CHOICES}
-                      value={form.magicType}
-                      onChange={(value) => updateForm("magicType", value)}
+                      options={ITEM_QUALITY_CHOICES}
+                      value={form.itemQuality}
+                      onChange={(value) => updateForm("itemQuality", value)}
                       emptyLabel="Not set"
                     />
                   </div>

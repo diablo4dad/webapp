@@ -3,7 +3,7 @@ import {
   CharacterGender,
   Chest,
   CollectionItem,
-  MagicType,
+  ItemQuality,
   Zone,
 } from "../data";
 
@@ -25,13 +25,16 @@ const I18N = {
     [CharacterClass.PALADIN]: "Paladin",
     [CharacterClass.WARLOCK]: "Warlock",
   },
-  magicType: {
-    [MagicType.COMMON]: "Common",
-    [MagicType.LEGENDARY]: "Legendary",
-    [MagicType.UNIQUE]: "Unique",
-    [MagicType.MAGIC]: "Magic",
-    [MagicType.MYTHIC]: "Mythic",
-    [MagicType.RARE]: "Rare",
+  itemQuality: {
+    [ItemQuality.TRANSMOG]: "Transmog",
+    [ItemQuality.JUNK]: "Junk",
+    [ItemQuality.COMMON]: "Common",
+    [ItemQuality.RARE]: "Rare",
+    [ItemQuality.MAGIC]: "Magic",
+    [ItemQuality.LEGENDARY]: "Legendary",
+    [ItemQuality.UNIQUE]: "Unique",
+    [ItemQuality.MYTHIC]: "Mythic",
+    [ItemQuality.ICONIC_MYTHIC]: "Iconic Mythic",
   },
   region: {
     [Zone.FRACTURED_PEAKS]: "Fractured Peaks",
@@ -63,8 +66,14 @@ export function getItemDescription(item: CollectionItem): string {
       return `Salvaged from ${baseItem.name}.`;
     }
 
-    if (baseItem.magicType) {
-      if ([MagicType.UNIQUE, MagicType.MYTHIC].includes(baseItem.magicType)) {
+    if (baseItem.itemQuality !== undefined) {
+      if (
+        [
+          ItemQuality.UNIQUE,
+          ItemQuality.MYTHIC,
+          ItemQuality.ICONIC_MYTHIC,
+        ].includes(baseItem.itemQuality)
+      ) {
         return `Salvaged from ${baseItem.name}.`;
       }
     }

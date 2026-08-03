@@ -1,10 +1,13 @@
-const ITEM_IMPORT_MAGIC_TYPES = new Map([
-  ["common", 0],
-  ["legendary", 1],
-  ["unique", 2],
-  ["magic", 3],
-  ["mythic", 4],
-  ["rare", 5],
+const ITEM_IMPORT_ITEM_QUALITIES = new Map([
+  ["transmog", 0],
+  ["junk", 1],
+  ["common", 2],
+  ["rare", 3],
+  ["magic", 4],
+  ["legendary", 5],
+  ["unique", 6],
+  ["mythic", 7],
+  ["iconic mythic", 8],
 ]);
 const ITEM_IMPORT_CHARACTER_CLASSES = new Map([
   ["sorcerer", 0],
@@ -153,7 +156,7 @@ function getReadablePageText(html) {
 
 function parseItemClassification(text) {
   const match = new RegExp(
-    `\\b(${Array.from(ITEM_IMPORT_MAGIC_TYPES.keys()).join("|")})\\s+` +
+    `\\b(${Array.from(ITEM_IMPORT_ITEM_QUALITIES.keys()).join("|")})\\s+` +
       "([A-Z][A-Za-z-]*(?:\\s+[A-Z][A-Za-z-]*){0,3})\\s+" +
       "\\d+\\s+Item\\s+Power\\b",
     "i",
@@ -165,10 +168,10 @@ function parseItemClassification(text) {
 
   const qualityName = match[1].toLowerCase();
   const itemTypeName = match[2].trim();
-  const magicType = ITEM_IMPORT_MAGIC_TYPES.get(qualityName);
+  const itemQuality = ITEM_IMPORT_ITEM_QUALITIES.get(qualityName);
 
   return {
-    ...(magicType === undefined ? {} : { magicType }),
+    ...(itemQuality === undefined ? {} : { itemQuality }),
     itemTypeName,
   };
 }
@@ -236,8 +239,8 @@ function parseImportedItemPage(html, url) {
     item.name = normalizeImportedTitle(title);
   }
 
-  if (classification.magicType !== undefined) {
-    item.magicType = classification.magicType;
+  if (classification.itemQuality !== undefined) {
+    item.itemQuality = classification.itemQuality;
   }
 
   if (usableByClass !== undefined) {
